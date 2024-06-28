@@ -1,0 +1,54 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+* {
+  font-family: 'Inter', sans-serif;
+}
+
+.box {
+  width: 100% !important;
+}
+
+.react-grid-item > .react-resizable-handle::after {
+  display: none;
+}
+
+.custom-icon {
+  position: absolute;
+  right: 3px;
+  bottom: 3px;
+  width: 20px;
+  height: 20px;
+}
+
+.react-resizable-handle {
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M20 12L4 12" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 8L12 4L8 8" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 16L12 20L16 16" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>');
+  background-size: 15px 15px; /* adjust size as necessary */
+  background-repeat: no-repeat;
+  position: relative;
+  /* other styles as needed */
+}
+
+.react-grid-item > .react-resizable-handle.react-resizable-handle-s {
+  bottom: -8px;
+  transform: rotate(0deg);
+}
+
+.react-grid-item > .react-resizable-handle.react-resizable-handle-n {
+  top: -6px;
+  transform: rotate(0deg);
+}
+
+
+.divide-y > :not([hidden]) ~ :not([hidden]) {
+  --tw-divide-y-reverse: 0;
+  border-width: 1px !important;
+}
+
+.custom .react-resizable-hide {
+  background: #000 !important;
+  width: 100% !important;
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
