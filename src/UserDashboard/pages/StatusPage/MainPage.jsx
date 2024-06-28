@@ -1,10 +1,14 @@
-import { Button } from "flowbite-react";
+import EventLogsTable from "../../components/EventLogsTable"
+import { tableData } from "../../components/data/tableData"
 
 function MainPage() {
+
   return (
-    <div className=" flex flex-col gap-6">
-      <h2 className=" text-[24px] text-black">Status Page</h2>
-    </div>
+    <>
+      <div className="w-full flex flex-col justify-start items-center min-h-screen">
+        {tableData && (<EventLogsTable tableData={tableData} />)}
+      </div>
+    </>
   )
 }
 
