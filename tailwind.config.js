@@ -17,6 +17,8 @@ export default {
         primary: {
           DEFAULT: '#0BAAC9',
           '200': 'rgba(11, 170, 201, 0.2)',
+          '300': 'rgba(11, 170, 201, 0.3)',
+          '400': 'rgba(11, 170, 201, 0.4)',
         },
         gray: {
           900: '#111928', // your custom gray-900 color
