@@ -47,6 +47,8 @@
 .custom .react-resizable-hide {
   background: #000 !important;
   width: 100% !important;
+  /* height: 85% !important; */
+  border-radius: 6px !important;
 }
 
 @tailwind base;

@@ -18,11 +18,15 @@ export default {
           DEFAULT: '#0BAAC9',
           '200': 'rgba(11, 170, 201, 0.2)',
           '300': 'rgba(11, 170, 201, 0.3)',
-          '400': 'rgba(11, 170, 201, 0.4)',
+          '400':'#3DD3F1'
         },
         gray: {
+          400:'#9CA3AF',
           900: '#111928', // your custom gray-900 color
         },
+        green: {
+          500:'#0E9F6E',
+        }
         // Add more custom colors here
       },
       keyframes: {

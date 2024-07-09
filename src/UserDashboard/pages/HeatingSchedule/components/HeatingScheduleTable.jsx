@@ -5,7 +5,7 @@ import 'react-resizable/css/styles.css';
 
 function HeatingScheduleTable() {
     const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-    const rowHeight = 70; // Each row represents 70 pixels
+    const rowHeight = 20; // Each row represents 70 pixels
 
     // Dummy data for initial layouts
     const initialLayouts = {
@@ -97,13 +97,13 @@ function HeatingScheduleTable() {
                 <div style={{ display: 'flex', zIndex: '10' }}>
                     <div style={{ width: '60px' }}>
                         {Array.from({ length: 24 }).map((_, index) => (
-                            <div key={index} style={{ height: `${rowHeight}px`, margin: '10px 0', display: 'flex', alignItems: 'flex-start', justifyContent: 'flex-start' }}>
+                            <div key={index} style={{ height: `${rowHeight}px`, margin: '4px 0', display: 'flex', alignItems: 'flex-start', justifyContent: 'flex-start' }}>
                                 {`${index.toString().padStart(2, '0')}:00`}
                             </div>
                         ))}
                     </div>
                     <div style={{ display: 'flex', justifyContent: 'flex-start', gap: '12px', width: '100%', position: 'relative', zIndex: '10' }}>
-                        <div className={`  absolute top-[22px] left-0 bottom-0 right-0 w-full h-full flex flex-col gap-[78px] z-10`}>
+                        <div className={`  absolute top-[18px] left-0 bottom-0 right-0 w-full h-full flex flex-col gap-[22px] z-10`}>
                             {Array.from({ length: 24 }).map((_, index) => (
                                 <div key={index} className='w-full border-t-2 border-[#E8E8E8] border-dotted z-10'></div>
                             ))}
@@ -111,11 +111,11 @@ function HeatingScheduleTable() {
                         {daysOfWeek.map((day) => (
                             <div key={day} style={{ width: '100%', margin: '0 ', position: 'relative', zIndex: '10' }}>
                                 <GridLayout
-                                    className="layout pt-[18px] z-10"
+                                    className="layout pt-[6px] z-10"
                                     compactType={null}
                                     layout={initialLayouts[day]}
                                     cols={1}
-                                    rowHeight={rowHeight}
+                                    rowHeight={14}
                                     width={150}
                                     isDraggable={false}
                                     isResizable={false}

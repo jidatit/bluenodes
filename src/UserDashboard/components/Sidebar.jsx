@@ -114,16 +114,18 @@ const ExampleSidebar = () => {
               <Sidebar.ItemGroup>
                 <Sidebar.Item
                   as={NavLink}
-                  to={NAVIGATION_PATH.userdashboard}
+                  to={NAVIGATION_PATH.statuspage}
                   icon={HiHome}
-                  className={ NAVIGATION_PATH.userdashboard === currentPage ? "bg-gray-100 dark:bg-gray-700" : ""}
+                  className={ NAVIGATION_PATH.statuspage === currentPage ? "bg-gray-100 dark:bg-gray-700" : ""}
                 >
                   Status Page
                 </Sidebar.Item>
 
                 <Sidebar.Item
+                  as={NavLink}
+                  to={NAVIGATION_PATH.operationalOverview}
                   icon={FaRegWindowRestore}
-                  className={"/kanban" === currentPage ? "bg-gray-100 dark:bg-gray-700" : ""}
+                  className={NAVIGATION_PATH.operationalOverview === currentPage ? "bg-gray-100 dark:bg-gray-700" : ""}
                 >
                   Operational overview
                 </Sidebar.Item>

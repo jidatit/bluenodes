@@ -13,7 +13,7 @@ const initialData = {
     {
       id: 'building-a',
       name: 'Building A',
-      roomsAssigned: 1,
+      roomsAssigned: 3,
       totalRooms: 15,
       floors: [
         {
@@ -35,11 +35,11 @@ const initialData = {
           roomsAssigned: 1,
           totalRooms: 5,
           rooms: [
-            { id: 'room-123', name: 'Room 123', type: 'Room type name', algorithmOn: false, programAssigned: null, currentTemperature: '20°C',assigned: false },
-            { id: 'room-234', name: 'Room 234', type: 'Room type name', algorithmOn: false, programAssigned: null, currentTemperature: '20°C',assigned: false },
-            { id: 'room-345', name: 'Room 345', type: 'Room type name', algorithmOn: false, programAssigned: null, currentTemperature: '20°C',assigned: false },
-            { id: 'room-456', name: 'Room 456', type: 'Room type name', algorithmOn: false, programAssigned: null, currentTemperature: '20°C',assigned: false },
-            { id: 'room-567', name: 'Room 567', type: 'Room type name', algorithmOn: true, programAssigned: 'Program 1', currentTemperature: '20°C',assigned: false }
+            { id: 'room-1231', name: 'Room 123', type: 'Room type name', algorithmOn: false, programAssigned: null, currentTemperature: '20°C',assigned: false },
+            { id: 'room-2341', name: 'Room 234', type: 'Room type name', algorithmOn: false, programAssigned: null, currentTemperature: '20°C',assigned: false },
+            { id: 'room-3451', name: 'Room 345', type: 'Room type name', algorithmOn: false, programAssigned: null, currentTemperature: '20°C',assigned: false },
+            { id: 'room-4561', name: 'Room 456', type: 'Room type name', algorithmOn: false, programAssigned: null, currentTemperature: '20°C',assigned: false },
+            { id: 'room-5671', name: 'Room 567', type: 'Room type name', algorithmOn: true, programAssigned: 'Program 1', currentTemperature: '20°C',assigned: false }
           ]
         },
         {
@@ -48,11 +48,58 @@ const initialData = {
           roomsAssigned: 1,
           totalRooms: 5,
           rooms: [
-            { id: 'room-123', name: 'Room 123', type: 'Room type name', algorithmOn: false, programAssigned: null, currentTemperature: '20°C',assigned: false },
-            { id: 'room-234', name: 'Room 234', type: 'Room type name', algorithmOn: false, programAssigned: null, currentTemperature: '20°C',assigned: false },
-            { id: 'room-345', name: 'Room 345', type: 'Room type name', algorithmOn: false, programAssigned: null, currentTemperature: '20°C',assigned: false },
-            { id: 'room-456', name: 'Room 456', type: 'Room type name', algorithmOn: false, programAssigned: null, currentTemperature: '20°C',assigned: false },
-            { id: 'room-567', name: 'Room 567', type: 'Room type name', algorithmOn: true, programAssigned: 'Program 1', currentTemperature: '20°C',assigned: false }
+            { id: 'room-1232', name: 'Room 123', type: 'Room type name', algorithmOn: false, programAssigned: null, currentTemperature: '20°C',assigned: false },
+            { id: 'room-2342', name: 'Room 234', type: 'Room type name', algorithmOn: false, programAssigned: null, currentTemperature: '20°C',assigned: false },
+            { id: 'room-3452', name: 'Room 345', type: 'Room type name', algorithmOn: false, programAssigned: null, currentTemperature: '20°C',assigned: false },
+            { id: 'room-4562', name: 'Room 456', type: 'Room type name', algorithmOn: false, programAssigned: null, currentTemperature: '20°C',assigned: false },
+            { id: 'room-5672', name: 'Room 567', type: 'Room type name', algorithmOn: true, programAssigned: 'Program 1', currentTemperature: '20°C',assigned: false }
+          ]
+        }
+      ]
+    },
+    {
+      id: 'building-b',
+      name: 'Building B',
+      roomsAssigned: 2,
+      totalRooms: 15,
+      floors: [
+        {
+          id: 'floor-1b',
+          name: 'Floor 1',
+          roomsAssigned: 1,
+          totalRooms: 5,
+          rooms: [
+            { id: 'room-11', name: 'Room 123', type: 'Room type name', algorithmOn: false, programAssigned: null, currentTemperature: '20°C',assigned: false },
+            { id: 'room-21', name: 'Room 234', type: 'Room type name', algorithmOn: false, programAssigned: null, currentTemperature: '20°C',assigned: false },
+            { id: 'room-31', name: 'Room 345', type: 'Room type name', algorithmOn: false, programAssigned: null, currentTemperature: '20°C',assigned: false },
+            { id: 'room-41', name: 'Room 456', type: 'Room type name', algorithmOn: false, programAssigned: null, currentTemperature: '20°C',assigned: false },
+            { id: 'room-51', name: 'Room 567', type: 'Room type name', algorithmOn: true, programAssigned: 'Program 1', currentTemperature: '20°C',assigned: false }
+          ]
+        },
+        {
+          id: 'floor-2b',
+          name: 'Floor 2',
+          roomsAssigned: 1,
+          totalRooms: 5,
+          rooms: [
+            { id: 'room-12', name: 'Room 123', type: 'Room type name', algorithmOn: false, programAssigned: null, currentTemperature: '20°C',assigned: false },
+            { id: 'room-22', name: 'Room 234', type: 'Room type name', algorithmOn: false, programAssigned: null, currentTemperature: '20°C',assigned: false },
+            { id: 'room-32', name: 'Room 345', type: 'Room type name', algorithmOn: false, programAssigned: null, currentTemperature: '20°C',assigned: false },
+            { id: 'room-42', name: 'Room 456', type: 'Room type name', algorithmOn: false, programAssigned: null, currentTemperature: '20°C',assigned: false },
+            { id: 'room-52', name: 'Room 567', type: 'Room type name', algorithmOn: true, programAssigned: 'Program 1', currentTemperature: '20°C',assigned: false }
+          ]
+        },
+        {
+          id: 'floor-3b',
+          name: 'Floor 3',
+          roomsAssigned: 0,
+          totalRooms: 5,
+          rooms: [
+            { id: 'room-13', name: 'Room 123', type: 'Room type name', algorithmOn: false, programAssigned: null, currentTemperature: '20°C',assigned: false },
+            { id: 'room-23', name: 'Room 234', type: 'Room type name', algorithmOn: false, programAssigned: null, currentTemperature: '20°C',assigned: false },
+            { id: 'room-33', name: 'Room 345', type: 'Room type name', algorithmOn: false, programAssigned: null, currentTemperature: '20°C',assigned: false },
+            { id: 'room-43', name: 'Room 456', type: 'Room type name', algorithmOn: false, programAssigned: null, currentTemperature: '20°C',assigned: false },
+            { id: 'room-53', name: 'Room 567', type: 'Room type name', algorithmOn: false, programAssigned: null, currentTemperature: '20°C',assigned: false }
           ]
         }
       ]
@@ -67,7 +114,8 @@ const ProgramAssignment = ({ formData, assignmentData,setHandleAssignmentRef, ha
     // Function to create a mapping of room IDs to their default values
     const createDefaultValuesMap = () => {
       const defaultValuesMap = {};
-      initialData.buildings.forEach(building => {
+      const newInitialData = _.cloneDeep(initialData)
+      newInitialData.buildings.forEach(building => {
         building.floors.forEach(floor => {
           floor.rooms.forEach(room => {
             defaultValuesMap[room.id] = {
@@ -145,23 +193,25 @@ const ProgramAssignment = ({ formData, assignmentData,setHandleAssignmentRef, ha
         if (isSelected) {
           room.programAssigned = formData.programName;
           room.algorithmOn = formData.applyAlgorithm;
+          room.assigned = true;
         } else {
           const defaultValues = defaultValuesMap[room.id];
           room.programAssigned = defaultValues.programAssigned;
-          if(defaultValues.programAssigned){
-            newVar += 1
-          }
           room.algorithmOn = defaultValues.algorithmOn;
+          room.assigned = defaultValues.assigned;
         }
       });
   
-    // Update rooms assigned count
-    const previouslyAssigned = floor.roomsAssigned;
-    const newlyAssigned = isSelected ? floor.totalRooms  : 0;
-    const difference = newlyAssigned - previouslyAssigned ;
-    floor.roomsAssigned = newlyAssigned;
-    building.roomsAssigned += difference;
-  
+      // Update rooms assigned count
+      const previouslyAssigned = floor.roomsAssigned;
+      const newlyAssigned = isSelected ? floor.totalRooms  : 0;
+      const difference = newlyAssigned - previouslyAssigned ;
+      floor.roomsAssigned = newlyAssigned;
+      building.roomsAssigned += difference;
+
+      // floor.roomsAssigned = isSelected ? floor.totalRooms : floor.rooms.filter(room => room.assigned).length;
+      // building.roomsAssigned = newData.buildings.reduce((acc, b) => acc + b.floors.reduce((acc, f) => acc + f.roomsAssigned, 0), 0);
+    
       setData(newData);
     };
   
@@ -205,27 +255,27 @@ const ProgramAssignment = ({ formData, assignmentData,setHandleAssignmentRef, ha
     const [noRoomsError, setNoRoomsError] = useState(false);
     const programAssignmentRef = useRef();
 
-  // useCallback to memoize handleSubmit function
-  const handleSubmit = useCallback(() => {
-    const anyRoomSelected = data.buildings.some(building =>
-      building.floors.some(floor =>
-        floor.rooms.some(room => room.assigned)
-      )
-    );
+    // useCallback to memoize handleSubmit function
+    const handleSubmit = useCallback(() => {
+      const anyRoomSelected = data.buildings.some(building =>
+        building.floors.some(floor =>
+          floor.rooms.some(room => room.assigned)
+        )
+      );
 
-    if (!anyRoomSelected) {
-      setNoRoomsError(true);
-      setError(errorMessages.noRoomSelected);
-    } else {
-      setError('');
-      // Submit the form or perform other actions
-    }
-  }, [data, setNoRoomsError, setError]); // Dependency array
+      if (!anyRoomSelected) {
+        setNoRoomsError(true);
+        setError(errorMessages.noRoomSelected);
+      } else {
+        setError('');
+        // Submit the form or perform other actions
+      }
+    }, [data, setNoRoomsError, setError]); // Dependency array
 
-        // Set the handleCheck function in the ref passed from the parent
-        useEffect(() => {
-          setHandleAssignmentRef(handleSubmit);
-        }, [handleSubmit, setHandleAssignmentRef]);
+    // Set the handleCheck function in the ref passed from the parent
+    useEffect(() => {
+      setHandleAssignmentRef(handleSubmit);
+    }, [handleSubmit, setHandleAssignmentRef]);
 
     useEffect(()=>{
       const anyRoomSelected = data.buildings.some(building =>
@@ -301,7 +351,7 @@ const ProgramAssignment = ({ formData, assignmentData,setHandleAssignmentRef, ha
         {!viewSelected ? (data.buildings.map(building => (
           <Accordion className=' border-none' key={building.id} collapseAll >
             <Accordion.Panel className=''>
-              <Accordion.Title className=' p-2 mb-1 flex-row-reverse items-center justify-end gap-3 border-none hover:bg-white focus:ring-none focus:ring-white'>
+              <Accordion.Title className=' p-2 mb-1 flex-row-reverse items-center justify-end gap-3 border-none hover:bg-white focus:ring-none focus:ring-white bg-white'>
                 <p className="text-sm text-gray-900 font-bold">{building.name} 
                   <span className={`text-xs font-normal py-0.5 px-2.5 ml-1 ${building.roomsAssigned === building.totalRooms ? 'text-primary' : 'text-indigo-800'} ${building.roomsAssigned === building.totalRooms ? 'bg-primary-200' : 'bg-indigo-100'} rounded-md`}>
                     {building.roomsAssigned}/{building.totalRooms} rooms assigned
@@ -312,7 +362,7 @@ const ProgramAssignment = ({ formData, assignmentData,setHandleAssignmentRef, ha
                 {building.floors.map(floor => (
                   <Accordion  className=' border-none' key={floor.id} collapseAll={true} >
                     <Accordion.Panel>
-                      <Accordion.Title className=' p-2 mb-1 flex-row-reverse items-center justify-end gap-3 border-none hover:bg-white focus:ring-none focus:ring-white'>
+                      <Accordion.Title className=' p-2 mb-1 flex-row-reverse items-center justify-end gap-3 border-none hover:bg-white focus:ring-none focus:ring-white bg-white'>
                         <p className="text-sm text-gray-900 font-bold">{floor.name} 
                           <span className={`text-xs font-normal py-0.5 px-2.5 ml-1 ${floor.roomsAssigned === floor.totalRooms ? 'text-primary' : 'text-indigo-800'} ${floor.roomsAssigned === floor.totalRooms ? 'bg-primary-200' : 'bg-indigo-100'} rounded-md`}>
                             {floor.roomsAssigned}/{floor.totalRooms} rooms assigned
@@ -370,7 +420,7 @@ const ProgramAssignment = ({ formData, assignmentData,setHandleAssignmentRef, ha
           <div key={building.id}>
             <Accordion className=' border-none' key={building.id} collapseAll={false} >
               <Accordion.Panel className=''>
-                <Accordion.Title className=' p-2 mb-1 flex-row-reverse items-center justify-end gap-3 border-none hover:bg-white focus:ring-none focus:ring-white'>
+                <Accordion.Title className=' p-2 mb-1 flex-row-reverse items-center justify-end gap-3 border-none hover:bg-white focus:ring-none focus:ring-white bg-white'>
                   <p className="text-sm text-gray-900 font-bold">{building.name} 
                     <span className={`text-xs font-normal py-0.5 px-2.5 ml-1 ${building.roomsAssigned === building.totalRooms ? 'text-primary' : 'text-indigo-800'} ${building.roomsAssigned === building.totalRooms ? 'bg-primary-200' : 'bg-indigo-100'} rounded-md`}>
                       {building.roomsAssigned}/{building.totalRooms} rooms assigned
@@ -381,7 +431,7 @@ const ProgramAssignment = ({ formData, assignmentData,setHandleAssignmentRef, ha
                   {building.floors.map(floor => (
                     <Accordion  className=' border-none' key={floor.id} collapseAll={!floor.roomsAssigned} >
                       <Accordion.Panel>
-                        <Accordion.Title className=' p-2 mb-1 flex-row-reverse items-center justify-end gap-3 border-none hover:bg-white focus:ring-none focus:ring-white'>
+                        <Accordion.Title className=' p-2 mb-1 flex-row-reverse items-center justify-end gap-3 border-none hover:bg-white focus:ring-none focus:ring-white bg-white'>
                           <p className="text-sm text-gray-900 font-bold">{floor.name} 
                             <span className={`text-xs font-normal py-0.5 px-2.5 ml-1 ${floor.roomsAssigned === floor.totalRooms ? 'text-primary' : 'text-indigo-800'} ${floor.roomsAssigned === floor.totalRooms ? 'bg-primary-200' : 'bg-indigo-100'} rounded-md`}>
                               {floor.roomsAssigned}/{floor.totalRooms} rooms assigned

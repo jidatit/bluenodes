@@ -48,27 +48,28 @@ function GeneralInformation({ formData, handleChange, errorMessages, generalErro
             <div className="flex items-center gap-2">
               <div className="flex items-center gap-2">
                 <Radio
-                  id="childSafety"
+                  id="childSafetyYes"
                   name="child-safety"
                   value="Yes"
                   onChange={handleChange}
                   required
                   checked={formData.childSafety === "Yes"}
                 />
-                <Label className=" text-sm text-gray-900" htmlFor="childSafety">Yes</Label>
+                <Label className="text-sm text-gray-900" htmlFor="childSafetyYes">Yes</Label>
               </div>
               <div className="flex items-center gap-2">
                 <Radio
-                  id="childSafety"
+                  id="childSafetyNo"
                   name="child-safety"
                   value="No"
                   onChange={handleChange}
                   required
                   checked={formData.childSafety === "No"}
                 />
-                <Label className=" text-sm text-gray-900" htmlFor="childSafety">No</Label>
+                <Label className="text-sm text-gray-900" htmlFor="childSafetyNo">No</Label>
               </div>
             </div>
+
             {errorMessages.childSafety && (
               <div className="text-red-600 text-sm mt-1">
                 {errorMessages.childSafety}
@@ -155,27 +156,30 @@ function GeneralInformation({ formData, handleChange, errorMessages, generalErro
             </div>
             <div className="flex items-center gap-2">
               <div className="flex items-center gap-2">
-                <Radio
-                  id="applyAlgorithm"
-                  name="apply-algorithm"
-                  value="Yes"
-                  onChange={handleChange}
-                  required
-                  checked={formData.applyAlgorithm === "Yes"}
-                />
-                <Label className=" text-sm text-gray-900" htmlFor="applyAlgorithm">Yes</Label>
+                <div className="flex items-center gap-2">
+                  <Radio
+                    id="applyAlgorithmYes"
+                    name="applyAlgorithm"
+                    value="Yes"
+                    onChange={handleChange}
+                    required
+                    checked={formData.applyAlgorithm === "Yes"}
+                  />
+                  <Label className="text-sm text-gray-900" htmlFor="applyAlgorithmYes">Yes</Label>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Radio
+                    id="applyAlgorithmNo"
+                    name="applyAlgorithm"
+                    value="No"
+                    onChange={handleChange}
+                    required
+                    checked={formData.applyAlgorithm === "No"}
+                  />
+                  <Label className="text-sm text-gray-900" htmlFor="applyAlgorithmNo">No</Label>
+                </div>
               </div>
-              <div className="flex items-center gap-2">
-                <Radio
-                  id="applyAlgorithm"
-                  name="apply-algorithm"
-                  value="No"
-                  onChange={handleChange}
-                  required
-                  checked={formData.applyAlgorithm === "No"}
-                />
-                <Label className=" text-sm text-gray-900" htmlFor="applyAlgorithm">No</Label>
-              </div>
+
             </div>
             {errorMessages.applyAlgorithm && (
               <div className="text-red-600 text-sm mt-1">

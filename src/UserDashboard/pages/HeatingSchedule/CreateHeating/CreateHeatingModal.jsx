@@ -74,54 +74,117 @@ export function CreateHeatingModal({ openModal, handleOpenModal, onCreate }) {
 
   const validateField = (id, value) => {
     let error = "";
-
+  
     if (value === "") {
       error = errors.missingSelectionOrInformation;
     } else {
+      const minTemp = id === "minTemp" ? parseFloat(value) : parseFloat(formData.minTemp);
+      const maxTemp = id === "maxTemp" ? parseFloat(value) : parseFloat(formData.maxTemp);
+  
       if (id === "minTemp") {
-        const minTemp = parseFloat(value);
         if (isNaN(minTemp) || minTemp < 10 || minTemp > 29) {
           error = errors.minTempInvalid;
-        } else if (formData.maxTemp && minTemp >= parseFloat(formData.maxTemp)) {
-          error = errors.maxTempLowerThanMinTemp;
+        } else if ( maxTemp !== "" && minTemp >= maxTemp) {
+          // Update error state for maxTemp immediately
+          setErrorMessages((prev) => ({
+            ...prev,
+            maxTemp: errors.maxTempLowerThanMinTemp,
+          }));
+
+        } else {
+          // Clear error for maxTemp if minTemp is valid and lower than maxTemp
+          setErrorMessages((prev) => ({
+            ...prev,
+            maxTemp: "",
+          }));
         }
+        console.log(errorMessages)
       }
+  
       if (id === "maxTemp") {
-        const maxTemp = parseFloat(value);
         if (isNaN(maxTemp) || maxTemp < 11 || maxTemp > 30) {
           error = errors.maxTempInvalid;
-        } else if (formData.minTemp && maxTemp <= parseFloat(formData.minTemp)) {
+        } else if (minTemp !== "" && maxTemp <= minTemp) {
           error = errors.maxTempLowerThanMinTemp;
         }
       }
-    }
-
+  }
+  
+    // Set error message for the current field
     setErrorMessages((prev) => ({
       ...prev,
       [id]: error,
     }));
   };
 
+  useEffect(()=>{
+    const minTemp =  parseFloat(formData.minTemp);
+    const maxTemp =  parseFloat(formData.maxTemp);
+    // Cross-validate minTemp and maxTemp
+    if (minTemp !== "" && maxTemp !== "") {
+      if (minTemp >= maxTemp) {
+        // error = errors.maxTempLowerThanMinTemp;
+        // Update error state for maxTemp when cross-validation fails
+        setErrorMessages((prev) => ({
+          ...prev,
+          maxTemp: errors.maxTempLowerThanMinTemp,
+        }));
+      } else {
+        // Clear error for maxTemp if cross-validation passes
+        setErrorMessages((prev) => ({
+          ...prev,
+          maxTemp: "", // Clear the error message for maxTemp
+        }));
+      }
+    }    
+  },[formData])
+  
+  
+  
+
   const handleChange = (e) => {
     const { id, value } = e.target;
-
-    setFormData((prev) => ({
-      ...prev,
-      [id]: value,
-    }));
-
+  
     validateField(id, value);
+    
+    // Check if the change is from the radio button groups
+    if (id === "childSafetyYes" || id === "childSafetyNo") {
+      setFormData((prev) => ({
+        ...prev,
+        childSafety: value,
+      }));
+    } else if (id === "applyAlgorithmYes" || id === "applyAlgorithmNo") {
+      setFormData((prev) => ({
+        ...prev,
+        applyAlgorithm: value,
+      }));
+    } else {
+      setFormData((prev) => ({
+        ...prev,
+        [id]: value,
+      }));
+    }
 
+      // Re-validate the related temperature field
+  if (id === "minTemp" && formData.maxTemp) {
+    validateField("maxTemp", formData.maxTemp);
+  }
+  if (id === "maxTemp" && formData.minTemp) {
+    validateField("minTemp", formData.minTemp);
+  }
+  
     const allFieldsFilled = Object.values({
       ...formData,
       [id]: value,
     }).every((field) => field !== "");
-
+  
     if (allFieldsFilled) {
       setErrorMessages({});
       setGeneralErrorMessage(""); // Clear general error message if all fields are filled
     }
   };
+  
+  
 
   const handleSubmit = () => {
     setFormSubmitted(true);

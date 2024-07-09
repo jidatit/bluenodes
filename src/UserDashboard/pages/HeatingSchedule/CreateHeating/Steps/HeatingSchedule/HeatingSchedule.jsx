@@ -1,7 +1,7 @@
 /* eslint-disable no-empty */
   /* eslint-disable no-unused-vars */
   /* eslint-disable react/prop-types */
-  import { useCallback, useEffect, useState } from 'react';
+  import { useCallback, useEffect, useRef, useState } from 'react';
   import GridLayout from 'react-grid-layout';
   import 'react-grid-layout/css/styles.css';
   import 'react-resizable/css/styles.css';
@@ -24,7 +24,7 @@ import { Tooltip } from 'flowbite-react';
       Sunday: []
     };
 
-    const rowHeight = 70; // Each row represents 70 pixels
+    const rowHeight = 20; // Each row represents 20 pixels
 
     // const [layouts, setLayouts] = useState(initialLayouts);
     const [layouts, setLayouts] = useState(finalScheduleData && Object.keys(finalScheduleData).length > 0 ? finalScheduleData : initialLayouts);
@@ -34,7 +34,8 @@ import { Tooltip } from 'flowbite-react';
     const [checked, setChecked] = useState(false);
     const [isResizingOrDragging, setIsResizingOrDragging] = useState(false);
     const [copyTargetDays, setCopyTargetDays] = useState([]);
-    
+    const [resizingBox, setResizingBox] = useState(null); // State to track which box is currently being resized
+    const inputRefs = useRef({});
 
     const adjustLayoutForOverlap = (layout,old,newResize) => {
 
@@ -56,14 +57,14 @@ import { Tooltip } from 'flowbite-react';
               const regex = /^box-(\w+)-\d+$/;
               const match = str.match(regex);
 
-              if (match) {
-                const day = match[1]; // Extract the day from the first capturing group
-                const nextBoxId = currentBox.i;
+              // if (match) {
+              //   const day = match[1]; // Extract the day from the first capturing group
+              //   const nextBoxId = currentBox.i;
                 
-                setTimeout(() => {
-                  handleDeleteBox(day, nextBoxId);
-                }, 500);
-              }
+              //   setTimeout(() => {
+              //     handleDeleteBox(day, nextBoxId);
+              //   }, 500);
+              // }
               
             }
             else {
@@ -90,14 +91,14 @@ import { Tooltip } from 'flowbite-react';
                 const regex = /^box-(\w+)-\d+$/;
                 const match = str.match(regex);
 
-                if (match) {
-                  const day = match[1]; // Extract the day from the first capturing group
-                  const nextBoxId = nextBox.i;
+                // if (match) {
+                //   const day = match[1]; // Extract the day from the first capturing group
+                //   const nextBoxId = nextBox.i;
                   
-                  setTimeout(() => {
-                    handleDeleteBox(day, nextBoxId);
-                  }, 500);
-                }
+                //   setTimeout(() => {
+                //     handleDeleteBox(day, nextBoxId);
+                //   }, 500);
+                // }
                 
               }
               else {
@@ -113,16 +114,11 @@ import { Tooltip } from 'flowbite-react';
   };
 
   const handleContainerClick = (event) => {
-    if (isResizingOrDragging) {
-      // Ignore the click if a resize or drag event is in progress
-      return;
-    }
-    else if (event.target.closest('.box')) {
-      // If the click happened inside a box, do nothing
-      return;
-    }
 
-    else if(Object.keys(editableBoxes).length>0){
+    let va = Object.keys(editableBoxes).length>0
+
+    if(Object.keys(editableBoxes).length>0 || (Object.keys(editableBoxes).length>0 && isResizingOrDragging)){
+
       const boxId = Object.keys(editableBoxes)[0]
       const str = boxId;
       const regex = /^box-(\w+)-\d+$/;
@@ -132,6 +128,7 @@ import { Tooltip } from 'flowbite-react';
         const day = match[1]; // Extract the day from the first capturing group
 
         const inputValue = temperatureInputs[boxId]
+
         // Check if input is a number and within the range 5 to 30
         if (!isNaN(inputValue) && inputValue >= 5 && inputValue <= 30) {
           setLayouts((prevLayouts) => ({
@@ -144,11 +141,25 @@ import { Tooltip } from 'flowbite-react';
         }
 
         else {
-          alert('Please enter a number between 5 and 30.');
+          if (event.target.closest('.box')){
+          }
+          else {
+            alert('Please enter a number between 5 and 30.');
+          }
         }
 
       }
       return
+    }
+
+    else if (isResizingOrDragging) {
+      // Ignore the click if a resize or drag event is in progress
+      return;
+    }
+
+    else if (event.target.closest('.box')) {
+      // If the click happened inside a box, do nothing
+      return;
     }
 
     const container = event.currentTarget;
@@ -156,15 +167,30 @@ import { Tooltip } from 'flowbite-react';
     const xPosition = event.clientX - rect.left;
     const yPosition = (event.clientY - rect.top + container.scrollTop) / (rowHeight + 10);
     const rowIndex = Math.floor(yPosition);
-    if (rowIndex >= 24) return; // Ignore clicks below the 24th row
+    if (rowIndex >= 24*4) return; // Ignore clicks below the 24th row
     const dayIndex = Math.floor(xPosition / (rect.width / daysOfWeek.length));
     const day = daysOfWeek[dayIndex];
     const newBoxId = generateNewBoxId(day, layouts);
-    const newBoxLayout = { i: newBoxId, x: 0, y: rowIndex, w: 1, h: 1, minW: 1, maxW: 2, minH: 1, maxH: 24, temperature: null };
+    let newBoxLayout
+    if(rowIndex>92){
+      newBoxLayout = { i: newBoxId, x: 0, y: rowIndex-(4-(96-rowIndex)), w: 1, h: 4, minW: 1, maxW: 2, minH: 4, maxH: 24*4, temperature: null };
+    }
+    else{
+      newBoxLayout = { i: newBoxId, x: 0, y: rowIndex-1, w: 1, h: 4, minW: 1, maxW: 2, minH: 4, maxH: 24*4, temperature: null };
+    }
+    
     setLayouts((prevLayouts) => ({
       ...prevLayouts,
       [day]: [...prevLayouts[day], newBoxLayout]
     }));
+
+    // Focus the input after adding the box
+    setTimeout(() => {
+      if (inputRefs.current[newBoxId]) {
+        inputRefs.current[newBoxId].focus();
+      }
+    }, 0);
+
     setEditableBoxes((prevEditable) => ({
       // ...prevEditable,
       [newBoxId]: true // Enter editing mode on click
@@ -174,6 +200,7 @@ import { Tooltip } from 'flowbite-react';
       ...prevInputs,
       [newBoxId]: '' // Initialize temperature input for the new box
     }));
+
   };
 
 
@@ -195,7 +222,17 @@ import { Tooltip } from 'flowbite-react';
     };
     
     const handleBoxClick = (e,boxId, temperature) => {
-      if(e.target.tagName.toLowerCase() !== 'svg' && e.target.tagName.toLowerCase() !== 'path'){
+      if(isResizingOrDragging){
+      }
+      else if(e.target.tagName.toLowerCase() !== 'svg' && e.target.tagName.toLowerCase() !== 'path'){
+
+        // Focus the input after adding the box
+        setTimeout(() => {
+          if (inputRefs.current[boxId]) {
+            inputRefs.current[boxId].focus();
+          }
+        }, 0);
+
         setEditableBoxes((prevEditable) => ({
           // ...prevEditable,
           [boxId]: true // Enter editing mode on click
@@ -208,7 +245,6 @@ import { Tooltip } from 'flowbite-react';
       }));
     };
     
-
     const handleTemperatureKeyPress = (event, boxId, day) => {
       if (event.key === 'Enter') {
         event.preventDefault();
@@ -349,20 +385,33 @@ import { Tooltip } from 'flowbite-react';
       }
     };
 
-    const handleCopySubmit = (event) => {
-      event.preventDefault();
-      if (copyTargetDays.length > 0 && showDropdown) {
-        // Copy layout to each selected day
-        copyTargetDays.forEach(targetDay => {
-          setLayouts(prevLayouts => ({
-            ...prevLayouts,
-            [targetDay]: [...prevLayouts[showDropdown]]
-          }));
-        });
-      }
-      setShowDropdown(null);
-      setCopyTargetDays([]);
-    };
+      // unique id for copy
+      const generateCopyId = (oldId, newDay) => {
+        const idParts = oldId.split('-');
+        const newId = `${newDay}-${idParts[idParts.length - 1]}`;
+        return newId;
+      };
+        
+
+      const handleCopySubmit = (event) => {
+        event.preventDefault();
+        if (copyTargetDays.length > 0 && showDropdown) {
+          setLayouts(prevLayouts => {
+            const newLayouts = { ...prevLayouts };
+            copyTargetDays.forEach(targetDay => {
+              const copiedBoxes = prevLayouts[showDropdown].map(box => ({
+                ...box,
+                i: generateCopyId(box.i, targetDay)
+              }));
+      
+              newLayouts[targetDay] = [...newLayouts[targetDay], ...copiedBoxes];
+            });
+            return newLayouts;
+          });
+        }
+        setShowDropdown(null);
+        setCopyTargetDays([]);
+      };
 
     const handleCheck = useCallback(() => {
       setChecked(true);
@@ -370,14 +419,14 @@ import { Tooltip } from 'flowbite-react';
       Object.keys(layouts).forEach((day) => {
         const layout = layouts[day];
         const emptySlots = [];
-        for (let y = 0; y < 24;y++) { // Loop through each y value up to 24
+        for (let y = 0; y < 24*4;y++) { // Loop through each y value up to 24
           const slot = layout.find((box) => box.y === y);
-          if(slot){
+          if(slot){ 
             y=y+slot.h-1
           }
           if (!slot) {
             const nextBox = layout.find((box) => box.y > y);
-            const height = nextBox ? nextBox.y - y : 24 - y; // Calculate height up to next box or end of day
+            const height = nextBox ? nextBox.y - y : 24*4 - y; // Calculate height up to next box or end of day
             emptySlots.push({
               i: `empty-${day}-${y}`,
               x: 0,
@@ -387,7 +436,7 @@ import { Tooltip } from 'flowbite-react';
               minW: 1,
               maxW: 2,
               minH: 1,
-              maxH: 24,
+              maxH: 24*4,
               temperature: false
             });
             y = nextBox ? nextBox.y-1 : 25;
@@ -410,11 +459,15 @@ import { Tooltip } from 'flowbite-react';
         const hours = y;
         return `${hours.toString().padStart(2, '0')}:00`;
       };
-      const timeLabels = Array.from({ length: 24 }, (_, index) => {
-        const hours = index;
+      const timeLabels = Array.from({ length: 24 * 4 }, (_, index) => {
+        const totalMinutes = index * 15;
+        const hours = Math.floor(totalMinutes / 60);
+        const minutes = totalMinutes % 60;
+        const isFullHour = minutes === 0; // Check if it's a complete hour
+        
         return (
           <div key={index} style={{ height: `${rowHeight}px`, margin: '10px 0', display: 'flex', alignItems: 'flex-start', justifyContent: 'flex-start' }}>
-            {`${hours.toString().padStart(2, '0')}:00`}
+            {isFullHour ? `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}` : ''}
           </div>
         );
       });
@@ -506,8 +559,8 @@ import { Tooltip } from 'flowbite-react';
               {timeLabels}
             </div>
             <div style={{ display: 'flex', justifyContent: 'flex-start', gap:'12px', width: '100%', position: 'relative', zIndex:'10' }} onClick={handleContainerClick} className='custom'>
-              <div className={`  absolute top-[22px] left-0 bottom-0 right-0 w-full h-full flex flex-col gap-[78px] z-10`}>
-                {Array.from({ length: 24 }).map((_, index) => (
+              <div className={`  absolute top-[22px] left-0 bottom-0 right-0 w-full h-full flex flex-col gap-[28px] z-10`}>
+                {Array.from({ length: 24*4 }).map((_, index) => (
                   <div key={index} className='w-full border-t-2 border-[#E8E8E8] border-dotted z-10'></div>
                 ))}
               </div>
@@ -527,11 +580,12 @@ import { Tooltip } from 'flowbite-react';
                     allowOverlap={true}
                     // draggableHandle=".box-drag"
                     draggableCancel=".box-resize-handle"
-                    onResizeStart={() => setIsResizingOrDragging(true)}
-                    onResizeStop={(layout,oldItem,newItem) => {  
-                      if (newItem.y + newItem.h > 24) {
-                        newItem.h = 24 - newItem.y; // Adjust height to not exceed 24 units
-                      }                  
+                    onResizeStart={(layout,oldLayout,newLayout) => {
+                      setResizingBox(newLayout.i);
+                      setIsResizingOrDragging(true)
+                    }}
+                    onResizeStop={(layout,oldItem,newItem) => { 
+                      setResizingBox(null);                
                       const adjustedLayout = adjustLayoutForOverlap(layout,oldItem,newItem);
                       setLayouts((prevLayouts) => {
                         const layout = prevLayouts[day];
@@ -547,7 +601,7 @@ import { Tooltip } from 'flowbite-react';
                         
                         setIsResizingOrDragging(false);
                       }, 500);
-                    }}                 
+                    }}                
                   >
                     {layouts[day].map((box) => (
                       <div
@@ -564,6 +618,7 @@ import { Tooltip } from 'flowbite-react';
                         color: handleTextColour(box.temperature),
                         background: box.temperature === false ? 'linear-gradient(135deg, rgba(255, 0, 0, 0.1) 25%, transparent 25%, transparent 50%, rgba(255, 0, 0, 0.1) 50%, rgba(255, 0, 0, 0.1) 75%, transparent 75%, transparent)' : hoveredBoxes[`${day}-${box.i}`]===true ? handleHoverColour(box.temperature) : handleTempColour(box.temperature),
                         backgroundSize: box.temperature === false ? '10px 10px':'',
+                        zIndex:box===resizingBox?100:0
                       }}
                       onMouseEnter={() => handleMouseEnter(box.i, day)}
                       onMouseLeave={() => handleMouseLeave(box.i, day)}
@@ -576,6 +631,7 @@ import { Tooltip } from 'flowbite-react';
                           ) : (
                             <input
                               type="text"
+                              ref={(el) => (inputRefs.current[box.i] = el)}
                               value={temperatureInputs[box.i] || ''}
                               onChange={(e) => handleTemperatureChange(e, box.i)}
                               onKeyDown={(e) => handleTemperatureKeyPress(e, box.i, day)}

@@ -1,4 +1,5 @@
 export const NAVIGATION_PATH = {
-  userdashboard: '/',
-  heatingprograms:'/dashboard/heating-programs'
+  statuspage: '/',
+  heatingprograms:'/dashboard/heating-programs',
+  operationalOverview:'/dashboard/operational-overview'
 };
