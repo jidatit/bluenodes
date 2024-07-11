@@ -413,42 +413,43 @@ import { Tooltip } from 'flowbite-react';
         setCopyTargetDays([]);
       };
 
-    const handleCheck = useCallback(() => {
-      setChecked(true);
-      // Generate boxes for empty time slots
-      Object.keys(layouts).forEach((day) => {
-        const layout = layouts[day];
-        const emptySlots = [];
-        for (let y = 0; y < 24*4;y++) { // Loop through each y value up to 24
-          const slot = layout.find((box) => box.y === y);
-          if(slot){ 
-            y=y+slot.h-1
+      const handleCheck = useCallback(() => {
+        setChecked(true);
+        // Generate boxes for empty time slots
+        Object.keys(layouts).forEach((day) => {
+          const layout = layouts[day];
+          const emptySlots = [];
+          for (let y = 0; y < 24*4;y++) { // Loop through each y value up to 24
+            console.log("y",y)
+            const slot = layout.find((box) => box.y === y);
+            if(slot){
+              y=y+slot.h-1
+            }
+            if (!slot) {
+              const nextBox = layout.find((box) => box.y > y);
+              const height = nextBox ? nextBox.y - y : 24*4 - y; // Calculate height up to next box or end of day
+              emptySlots.push({
+                i: `empty-${day}-${y}`,
+                x: 0,
+                y: y,
+                w: 1,
+                h: height, // Set height to calculated value
+                minW: 1,
+                maxW: 2,
+                minH: 1,
+                maxH: 24*4,
+                temperature: false
+              });
+              y = nextBox ? nextBox.y-1 : 97;
+            }
           }
-          if (!slot) {
-            const nextBox = layout.find((box) => box.y > y);
-            const height = nextBox ? nextBox.y - y : 24*4 - y; // Calculate height up to next box or end of day
-            emptySlots.push({
-              i: `empty-${day}-${y}`,
-              x: 0,
-              y: y,
-              w: 1,
-              h: height, // Set height to calculated value
-              minW: 1,
-              maxW: 2,
-              minH: 1,
-              maxH: 24*4,
-              temperature: false
-            });
-            y = nextBox ? nextBox.y-1 : 25;
-          }
-        }
-        setLayouts((prevLayouts) => ({
-          ...prevLayouts,
-          [day]: [...layout, ...emptySlots]
-        }));
-        onUpdateLayouts(layouts)
+          setLayouts((prevLayouts) => ({
+            ...prevLayouts,
+            [day]: [...layout, ...emptySlots]
+          }));
+          onUpdateLayouts(layouts)
+        });
       });
-    });
 
       // Set the handleCheck function in the ref passed from the parent
       useEffect(() => {
@@ -479,7 +480,7 @@ import { Tooltip } from 'flowbite-react';
         let alertNeeded = false;
         Object.keys(layouts).forEach(day => {
           const dataArray = layouts[day];
-          if (dataArray.length > 2) {
+          if (dataArray.length > 3) {
             // console.warn(`Warning: ${day} has more than 2 items.`);
             alertNeeded = true;
           }
@@ -585,6 +586,9 @@ import { Tooltip } from 'flowbite-react';
                       setIsResizingOrDragging(true)
                     }}
                     onResizeStop={(layout,oldItem,newItem) => { 
+                      if (newItem.y + newItem.h > 96) {
+                        newItem.h = 96 - newItem.y; // Adjust height to not exceed 24 units
+                      }  
                       setResizingBox(null);                
                       const adjustedLayout = adjustLayoutForOverlap(layout,oldItem,newItem);
                       setLayouts((prevLayouts) => {
@@ -601,7 +605,7 @@ import { Tooltip } from 'flowbite-react';
                         
                         setIsResizingOrDragging(false);
                       }, 500);
-                    }}                
+                    }}              
                   >
                     {layouts[day].map((box) => (
                       <div

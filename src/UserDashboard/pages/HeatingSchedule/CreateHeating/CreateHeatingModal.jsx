@@ -138,9 +138,6 @@ export function CreateHeatingModal({ openModal, handleOpenModal, onCreate }) {
       }
     }    
   },[formData])
-  
-  
-  
 
   const handleChange = (e) => {
     const { id, value } = e.target;
@@ -237,8 +234,6 @@ export function CreateHeatingModal({ openModal, handleOpenModal, onCreate }) {
   const handleAssignmentRef = useRef(null); // Ref to hold handleCheck function
   const layoutsRef = useRef(layouts); // Ref to hold the latest layouts value
 
-  
-
   // Function to handle layout updates
   const handleLayoutUpdate = (updatedLayouts) => {
     setLayouts(updatedLayouts);
@@ -274,7 +269,6 @@ export function CreateHeatingModal({ openModal, handleOpenModal, onCreate }) {
       }
     }
   };
-  
 
   const [combinedData, setCombinedData] = useState({
     formData: {
@@ -363,9 +357,6 @@ export function CreateHeatingModal({ openModal, handleOpenModal, onCreate }) {
     resetModalState();
     handleOpenModal();
   };
-
-  
-  
 
   return (
     <>

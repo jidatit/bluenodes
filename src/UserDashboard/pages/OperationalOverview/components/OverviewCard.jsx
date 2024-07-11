@@ -3,16 +3,20 @@
 import { useState } from 'react';
 import { FaRegCopy, FaEdit } from "react-icons/fa";
 import { RiDeleteBin6Line } from "react-icons/ri";
-import { Button, Modal, Tooltip, Accordion, Progress } from "flowbite-react";
+import { Button, Modal, Tooltip, Accordion, Progress, List } from "flowbite-react";
 import { MdNotificationsActive } from "react-icons/md";
 import HeatingScheduleTable from '../../HeatingSchedule/components/HeatingScheduleTable';
 import bimg from '../../../../assets/images/Image.png'
 import TemperatureSchedule from './TemperatureSchedule';
+import { FaCircleExclamation } from 'react-icons/fa6';
+import { errorMessages as errors } from "../../../../globals/errorMessages"; // Import error messages
 
 const OverviewCard = ({ formData }) => {
     // console.log("static", formData)
     const [openDeleteModal, setOpenDeleteModal] = useState(false);
     const [openAlertDeleteModal, setOpenAlertDeleteModal] = useState(false);
+    const [buildError, setbuildError] = useState(true);
+    
 
     const handleDelete = () => {
         setOpenDeleteModal(false);
@@ -31,7 +35,30 @@ const OverviewCard = ({ formData }) => {
                 <div className=' w-full h-full'>
                   <div className='w-full flex flex-row justify-start gap-[10px] items-end text-gray-900'>
                       <div className='w-[60%] flex flex-col justify-center items-start gap-2'>
+                        <div className=' flex items-center gap-1'>
                           <p className='text-[16px] font-[700]'>Building A</p>
+                          {buildError && (
+                            <Tooltip
+                                className={`px-3 py-1.5 text-center text-gray-900 max-w-[356px]`}
+                                // content={`Window: ${target.temp}`}
+                                content={
+                                    <div className=' flex flex-col items-start justify-start'>
+                                        <h3 className=' text-lg font-semibold'>Errors</h3>
+                                        <div className=' text-gray-900 text-sm text-start p-1'>
+                                            <List>
+                                                <List.Item className=' flex items-start gap-1 justify-start'><span className=' text-base'>&#8226;</span>{errors.maxTempInvalid}</List.Item>
+                                                <List.Item className=' flex items-start gap-1 justify-start'><span className=' text-base'>&#8226;</span>{errors.maxTempInvalid}</List.Item>
+                                                <List.Item className=' flex items-start gap-1 justify-start'><span className=' text-base'>&#8226;</span>{errors.maxTempInvalid}</List.Item>
+                                            </List>
+                                        </div>
+                                    </div>
+                                }
+                                style="light"
+                            >
+                                <FaCircleExclamation className=' text-red-700'/>
+                            </Tooltip>
+                          )}
+                        </div>
                           <p className='text-[12px] font-[400] text-gray-500'>Devices Online</p>
                           <p className='text-[14px] font-[400]'>123/123</p>
                       </div>

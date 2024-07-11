@@ -3,7 +3,7 @@ import GridLayout from 'react-grid-layout';
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 
-function HeatingScheduleTable() {
+function HeatingScheduleTable(props) {
     const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
     const rowHeight = 20; // Each row represents 70 pixels
 
@@ -82,8 +82,11 @@ function HeatingScheduleTable() {
     }
 
     return (
-        <div className="flex flex-col gap-4 w-full px-2">
-            <h3 className="text-[16px] text-gray-500 font-semibold">Heating Schedule</h3>
+      <div className={`flex flex-col gap-4 ${props.noHeading ? 'w-[98%]' : 'w-full'} px-2`}>
+      {!props.noHeading && (
+        <h3 className="text-[16px] text-gray-500 font-semibold">Heating Schedule</h3>
+      )}
+            
             <div className=''>
                 <div style={{ display: 'flex', justifyContent: 'flex-start', gap: '12px', marginLeft: '60px', alignItems: 'center', marginBottom: '10px', zIndex: '1000' }}>
                     {daysOfWeek.map((day) => (

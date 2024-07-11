@@ -8,6 +8,6 @@ export const errorMessages = {
   successfulCreation:"Program created successfully.",
   FailedCreation:"Program created failed.",
   batteryLifeAlert:"Alert battery life",
-  batteryLifeAlertMessage:"When there are more than 2 different schedules a day, it is not optimal for the battery.",
+  batteryLifeAlertMessage:"When there are more than 3 different schedules a day, it is not optimal for the battery.",
   noRoomSelected:"No room has been selected"
 };
