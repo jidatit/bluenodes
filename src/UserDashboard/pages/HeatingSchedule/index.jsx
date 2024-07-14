@@ -393,6 +393,31 @@ const handleCreateHeatingProgram = (combinedData) => {
   // console.log('Combined Data:', combinedData);
 };
 
+const handleRoomUpdate = (data) => {
+  if (data) {
+    // Assuming the response status is set here based on an API call or some logic
+    if (response === 200) {
+      setToastMessage(errorMessages.roomAssignSuccessfull);
+      setIsSuccess(true);
+    } else {
+      setToastMessage(errorMessages.roomAssignFailed);
+      setIsSuccess(false);
+    }
+  } else {
+    setToastMessage(errorMessages.roomAssignFailed);
+    setIsSuccess(false);
+  }
+  setShowToast(true);
+
+      // Hide the toast after 2 seconds
+      setTimeout(() => {
+        setShowToast(false);
+      }, 4000);
+
+  // Handle combinedData here
+  // console.log('Combined Data:', combinedData);
+};
+
   return (
     <div className=" flex flex-col gap-6">
       <h2 className=" text-[24px] text-black">Heating programs management</h2>
@@ -423,7 +448,7 @@ const handleCreateHeatingProgram = (combinedData) => {
         </div>
       </div>
       {/* here  */}
-      {dummyData && (<HeatingProgramEntity formData={dummyData} />)}
+      {dummyData && (<HeatingProgramEntity formData={dummyData} onUpdateRooms={handleRoomUpdate} />)}
       <div><CreateHeatingModal openModal={openModal} handleOpenModal={handleOpenModal} onCreate={handleCreateHeatingProgram} /></div>
       {showToast && (
         <div className="fixed top-4 right-4 z-50 transition-transform duration-300 ease-in-out transform translate-x-0" style={{ transition: 'transform 0.3s ease-in-out' }}>
