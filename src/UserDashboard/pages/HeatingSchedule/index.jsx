@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import { Button, Toast } from "flowbite-react"
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaFilter } from "react-icons/fa"
 import { GoPlus } from "react-icons/go"
 import { CreateHeatingModal } from "./CreateHeating/CreateHeatingModal";
@@ -8,6 +8,26 @@ import HeatingProgramEntity from "./components/HeatingProgramEntity";
 import { errorMessages } from "../../../globals/errorMessages";
 
 function HeatingSchedulePage() {
+
+  const token = localStorage.getItem('token');
+
+  //Adding use state React Hooks here
+  const [programList, setProgramList] = useState([])
+
+  // Get list of heating schedule
+  useEffect(()=>{
+    fetch('https://api-dev.blue-nodes.app/dev/smartheating/heatingschedule/list', {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+      setProgramList(data)
+    })
+    .catch(error => console.error('Error:', error));
+  },[])
 
   // dummyData.js
   const dummyData = {
@@ -448,7 +468,11 @@ const handleRoomUpdate = (data) => {
         </div>
       </div>
       {/* here  */}
-      {dummyData && (<HeatingProgramEntity formData={dummyData} onUpdateRooms={handleRoomUpdate} />)}
+      {programList.length>0 && 
+      programList.map((program,index)=>(
+        (<HeatingProgramEntity key={index} formData={dummyData} onUpdateRooms={handleRoomUpdate} program={program} />)
+      ))
+      }
       <div><CreateHeatingModal openModal={openModal} handleOpenModal={handleOpenModal} onCreate={handleCreateHeatingProgram} /></div>
       {showToast && (
         <div className="fixed top-4 right-4 z-50 transition-transform duration-300 ease-in-out transform translate-x-0" style={{ transition: 'transform 0.3s ease-in-out' }}>

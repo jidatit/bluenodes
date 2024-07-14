@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FaRegCopy, FaEdit } from "react-icons/fa";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { Button, Modal, Tooltip, Accordion } from "flowbite-react";
@@ -8,11 +8,31 @@ import { MdNotificationsActive } from "react-icons/md";
 import HeatingScheduleTable from './HeatingScheduleTable';
 import AssignRoomsModal from './AssignRoomsModal';
 
-const HeatingProgramEntity = ({ formData,onUpdateRooms }) => {
+const HeatingProgramEntity = ({ formData,onUpdateRooms,program }) => {
+
+    const token = localStorage.getItem('token');
+
     // console.log("static", formData)
     const [openDeleteModal, setOpenDeleteModal] = useState(false);
     const [openAlertDeleteModal, setOpenAlertDeleteModal] = useState(false);
     const [openAssignModal, setOpenAssignModal] = useState(false);
+    const [locationDetails, setLocationDetails] = useState(null)
+
+    // Get heating schedule details by id
+    useEffect(()=>{
+        fetch(`https://api-dev.blue-nodes.app/dev/smartheating/heatingschedule/${program.id}/details`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+          setLocationDetails(data)
+        })
+        .catch(error => console.error('Error:', error));
+      },[])
+    
 
     const handleAssign = () => {
       setOpenAssignModal(!openAssignModal)
@@ -31,6 +51,28 @@ const HeatingProgramEntity = ({ formData,onUpdateRooms }) => {
         }
       };
 
+    const getDate = () => {
+        // Input date string
+        const dateString = program.updatedAt;
+
+        // Parse the date string into a Date object
+        const date = new Date(dateString);
+
+        // Format the date in DD/MM/YYYY HH:MM:SS format
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+        const year = date.getFullYear();
+        let hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        const ampm = hours >= 12 ? 'PM' : 'AM';
+        hours = hours % 12;
+        hours = hours ? hours : 12; // the hour '0' should be '12'
+        const formattedHours = String(hours).padStart(2, '0');
+
+        // Create the formatted date string
+        return `${day}/${month}/${year} ${formattedHours}:${minutes} ${ampm}`;
+    }
+
     return (
         <>
             <div className='w-full relative flex flex-col bg-white rounded-[8px] px-4 py-4 justify-center items-center'>
@@ -47,25 +89,25 @@ const HeatingProgramEntity = ({ formData,onUpdateRooms }) => {
                 </div>
                 <div className='w-full flex flex-row justify-start gap-[10px] items-center text-gray-900'>
                     <div className='w-[25%] flex flex-col justify-center items-start'>
-                        <p className='text-[16px] font-[700]'>{formData.formData?.programName}</p>
-                        <p className='text-[12px] font-[400] text-gray-500'>Last updated: 01/01/2024 03:04PM</p>
+                        <p className='text-[16px] font-[700]'>{program?.templateName}</p>
+                        <p className='text-[12px] font-[400] text-gray-500'>Last updated: {getDate()}</p>
                     </div>
                     <div className='w-[15%] flex flex-col justify-center items-start'>
                         <p className='text-[12px] text-gray-500 font-[500]'>Child safety</p>
-                        <p className='text-[14px] font-[400]'>{formData.formData?.childSafety}</p>
+                        <p className='text-[14px] font-[400]'>{program?.allowDeviceOverride===true?"No":"Yes"}</p>
                     </div>
                     <div className='w-[15%] flex flex-col justify-center items-start'>
                         <p className='text-[12px] text-gray-500 font-[500]'>Minimum temperature</p>
-                        <p className='text-[14px] font-[400]'>{formData.formData?.minTemp}&deg;C</p>
+                        <p className='text-[14px] font-[400]'>{program?.deviceOverrideTemperatureMin}&deg;C</p>
                     </div>
                     <div className='w-[15%] flex flex-col justify-center items-start'>
                         <p className='text-[12px] text-gray-500 font-[500]'>Maximum temperature</p>
-                        <p className='text-[14px] font-[400]'>{formData.formData?.maxTemp}&deg;C</p>
+                        <p className='text-[14px] font-[400]'>{program?.deviceOverrideTemperatureMax}&deg;C</p>
                     </div>
-                    <div className='w-[15%] flex flex-col justify-center items-start'>
+                    {/* <div className='w-[15%] flex flex-col justify-center items-start'>
                         <p className='text-[12px] text-gray-500 font-[500]'>Apply algorithm</p>
                         <p className='text-[14px] font-[400]'>{formData.formData?.applyAlgorithm}</p>
-                    </div>
+                    </div> */}
                 </div>
                 <div className='w-full bg-[#a3a6ad] opacity-40 mt-3 mb-3 h-[1px]'></div>
                 <div className='w-full flex flex-row justify-start items-center'>
@@ -74,7 +116,7 @@ const HeatingProgramEntity = ({ formData,onUpdateRooms }) => {
                             <Accordion.Title className=' p-2 mb-1 flex-row-reverse items-center justify-end gap-3 border-none hover:bg-white focus:ring-none focus:ring-white bg-white focus:bg-white'>
                                 <p className="text-sm text-gray-900 font-bold">
                                     <span className={`text-xs font-normal py-0.5 px-2.5 ml-1 bg-gray-200 text-gray-900 rounded-md`}>
-                                        View details - {formData.heatingAssignmentData.buildings.reduce((acc, building) => acc + building.roomsAssigned, 0)} rooms
+                                        View details - {program?.assignedRooms} rooms
                                     </span>
                                 </p>
                             </Accordion.Title>
@@ -87,7 +129,7 @@ const HeatingProgramEntity = ({ formData,onUpdateRooms }) => {
                                         </div>
 
 
-                                        {formData.heatingAssignmentData.buildings.map((building) => (
+                                        {locationDetails?.assignedRooms?.map((building) => (
                                             <Accordion key={building.id} className='w-full border-none' collapseAll>
                                                 <Accordion.Panel>
                                                     <Accordion.Title className='p-2 mb-1 flex-row-reverse items-center justify-end gap-3 border-none hover:bg-white focus:ring-none focus:ring-white bg-white focus:bg-white'>
@@ -99,21 +141,21 @@ const HeatingProgramEntity = ({ formData,onUpdateRooms }) => {
                                                         </p>
                                                     </Accordion.Title>
                                                     <Accordion.Content className=' px-4 pt-0 pb-4 border-none'>
-                                                        {building.floors.map((floor, floorIndex) => (
+                                                        {building.children.map((floor, floorIndex) => (
                                                             <Accordion key={floor.id} className='w-full border-none' collapseAll>
                                                                 <Accordion.Panel>
                                                                     <Accordion.Title className='p-2 mb-1 flex-row-reverse items-center justify-end gap-3 border-none hover:bg-white focus:ring-none focus:ring-white bg-white focus:bg-white'>
                                                                         <p className="text-sm text-gray-900 font-bold">
                                                                             {floor.name}
                                                                             <span className={`text-xs font-normal py-0.5 px-2.5 ml-1 bg-indigo-100 rounded-md`}>
-                                                                                {floor.roomsAssigned} rooms
+                                                                                {floor.children.length} rooms
                                                                             </span>
                                                                         </p>
                                                                     </Accordion.Title>
                                                                     <Accordion.Content className=' pl-10 pt-2 pb-4 border-none'>
                                                                         <ul>
-                                                                            {floor.rooms.map((room) => (
-                                                                                room.assigned && (
+                                                                            {floor.children.map((room) => (
+                                                                                (
                                                                                     <li key={room.id} className='room-item mb-2'>
                                                                                         <p className='text-black text-sm font-semibold'>{room.name}</p>
                                                                                     </li>
@@ -132,7 +174,7 @@ const HeatingProgramEntity = ({ formData,onUpdateRooms }) => {
 
                                     </div>
                                     <div className='flex flex-col border-l-2 border-l-[#E5E7EB] pl-2 justify-center items-center w-[75%]'>
-                                        {formData && (<HeatingScheduleTable initialLayouts={formData.finalScheduleData} />)}
+                                        {locationDetails && (<HeatingScheduleTable props={formData.finalScheduleData} locationDetails={locationDetails} />)}
                                     </div>
                                 </div>
                             </Accordion.Content>
