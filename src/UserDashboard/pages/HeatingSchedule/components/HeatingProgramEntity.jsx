@@ -38,6 +38,17 @@ const HeatingProgramEntity = ({ formData,onUpdateRooms,program }) => {
       setOpenAssignModal(!openAssignModal)
     }
 
+    // Function to recursively count the rooms
+    const countRooms = (node) => {
+        if (node.type === 'raum') {
+        return 1;
+        }
+        if (node.children && node.children.length > 0) {
+        return node.children.reduce((sum, child) => sum + countRooms(child), 0);
+        }
+        return 0;
+    };
+
     const handleDelete = () => {
         setOpenDeleteModal(false);
         if (formData.heatingAssignmentData?.buildings.some(building => building.roomsAssigned !== 0)) {
@@ -116,7 +127,7 @@ const HeatingProgramEntity = ({ formData,onUpdateRooms,program }) => {
                             <Accordion.Title className=' p-2 mb-1 flex-row-reverse items-center justify-end gap-3 border-none hover:bg-white focus:ring-none focus:ring-white bg-white focus:bg-white'>
                                 <p className="text-sm text-gray-900 font-bold">
                                     <span className={`text-xs font-normal py-0.5 px-2.5 ml-1 bg-gray-200 text-gray-900 rounded-md`}>
-                                        View details - {program?.assignedRooms} rooms
+                                        View details - {program?.assignedRooms} {program?.assignedRooms>1?"rooms":"room"}
                                     </span>
                                 </p>
                             </Accordion.Title>
@@ -136,7 +147,7 @@ const HeatingProgramEntity = ({ formData,onUpdateRooms,program }) => {
                                                         <p className="text-sm text-gray-900 font-bold">
                                                             {building.name}
                                                             <span className={`text-xs font-normal py-0.5 px-2.5 ml-1 bg-indigo-100 rounded-md`}>
-                                                                {building.roomsAssigned} rooms
+                                                                {countRooms(building)} {countRooms(building)>1?"rooms":"room"}
                                                             </span>
                                                         </p>
                                                     </Accordion.Title>
@@ -148,7 +159,7 @@ const HeatingProgramEntity = ({ formData,onUpdateRooms,program }) => {
                                                                         <p className="text-sm text-gray-900 font-bold">
                                                                             {floor.name}
                                                                             <span className={`text-xs font-normal py-0.5 px-2.5 ml-1 bg-indigo-100 rounded-md`}>
-                                                                                {floor.children.length} rooms
+                                                                                {floor.children.length} {floor.children.length>1?"rooms":"room"}
                                                                             </span>
                                                                         </p>
                                                                     </Accordion.Title>

@@ -420,7 +420,6 @@ import { Tooltip } from 'flowbite-react';
           const layout = layouts[day];
           const emptySlots = [];
           for (let y = 0; y < 24*4;y++) { // Loop through each y value up to 24
-            console.log("y",y)
             const slot = layout.find((box) => box.y === y);
             if(slot){
               y=y+slot.h-1
