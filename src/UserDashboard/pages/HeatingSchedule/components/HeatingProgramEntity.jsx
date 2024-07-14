@@ -6,11 +6,17 @@ import { RiDeleteBin6Line } from "react-icons/ri";
 import { Button, Modal, Tooltip, Accordion } from "flowbite-react";
 import { MdNotificationsActive } from "react-icons/md";
 import HeatingScheduleTable from './HeatingScheduleTable';
+import AssignRoomsModal from './AssignRoomsModal';
 
-const HeatingProgramEntity = ({ formData }) => {
+const HeatingProgramEntity = ({ formData,onUpdateRooms }) => {
     // console.log("static", formData)
     const [openDeleteModal, setOpenDeleteModal] = useState(false);
     const [openAlertDeleteModal, setOpenAlertDeleteModal] = useState(false);
+    const [openAssignModal, setOpenAssignModal] = useState(false);
+
+    const handleAssign = () => {
+      setOpenAssignModal(!openAssignModal)
+    }
 
     const handleDelete = () => {
         setOpenDeleteModal(false);
@@ -18,6 +24,12 @@ const HeatingProgramEntity = ({ formData }) => {
             setOpenAlertDeleteModal(true);
         }
     };
+
+    const handleUpdateRoomsAssigned = (data) => {
+        if (data) {
+            onUpdateRooms(data)
+        }
+      };
 
     return (
         <>
@@ -71,7 +83,7 @@ const HeatingProgramEntity = ({ formData }) => {
                                     <div className='flex flex-col justify-start items-start w-[25%]'>
                                         <div className='flex w-full pr-[10px] mt-[0px] mb-[10px] flex-row justify-between items-center'>
                                             <h2 className='text-gray-500 font-[600]'>Assigned</h2>
-                                            <Button className='bg-[#0BAAC9] text-white py-2 px-3 [&>*]:p-0'>Assign rooms</Button>
+                                            <Button onClick={handleAssign} className='bg-[#0BAAC9] text-white py-2 px-3 [&>*]:p-0'>Assign rooms</Button>
                                         </div>
 
 
@@ -129,6 +141,7 @@ const HeatingProgramEntity = ({ formData }) => {
                 </div>
                 <DeleteModal openDeleteModal={openDeleteModal} setOpenDeleteModal={setOpenDeleteModal} handleDelete={handleDelete} />
                 <AlertDeleteModal openAlertDeleteModal={openAlertDeleteModal} setOpenAlertDeleteModal={setOpenAlertDeleteModal} />
+                <AssignRoomsModal openAssignModal={openAssignModal} handleAssign={handleAssign} onUpdate={handleUpdateRoomsAssigned} />
             </div>
         </>
     )
