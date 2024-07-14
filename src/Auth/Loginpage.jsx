@@ -6,8 +6,22 @@ const Loginpage = () => {
     const [password, setPassword] = useState('');
 
     const handleLogin = async () => {
-      console.log(email,password)
+        fetch('https://api-dev.blue-nodes.app/dev/auth/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ email: email , password: password })
+        })
+        .then(response => response.json())
+        .then(data => {
+            const token = data.access_token;
+            // Save the token (e.g., local storage)
+            localStorage.setItem('token', token);
+        })
+        .catch(error => console.error('Error:', error));
     };
+
     return (
         <>
             <div className='min-h-screen flex flex-col justify-center items-center w-full'>
