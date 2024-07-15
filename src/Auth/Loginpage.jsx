@@ -18,6 +18,7 @@ const Loginpage = () => {
             const token = data.access_token;
             // Save the token (e.g., local storage)
             localStorage.setItem('token', token);
+            console.log("success")
         })
         .catch(error => console.error('Error:', error));
     };

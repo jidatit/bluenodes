@@ -13,4 +13,8 @@ export const errorMessages = {
   roomSelectionMust:"At least 1 room has to be selected.",
   roomAssignSuccessfull:"Rooms assigned successfully.",
   roomAssignFailed:"Rooms assigned failed.",
+  cloneSuccessfull:"Program cloned successfully.",
+  cloneFailed:"Failed to clone program.",
+  editSuccessfull:"Program edited successfully.",
+  editFailed:"Failed to edit program.",
 };

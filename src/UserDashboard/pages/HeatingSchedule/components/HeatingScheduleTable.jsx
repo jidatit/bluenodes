@@ -5,7 +5,7 @@ import 'react-resizable/css/styles.css';
 
 function HeatingScheduleTable({locationDetails,props}) {
     const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-    const rowHeight = 20; // Each row represents 20 pixels
+    const rowHeight = 7.3; // Each row represents 20 pixels
 
     // Helper function to convert time to units
     const convertTimeToUnits = (time) => {
@@ -220,7 +220,7 @@ function HeatingScheduleTable({locationDetails,props}) {
                         {timeLabels}
                     </div>
                     <div style={{ display: 'flex', justifyContent: 'flex-start', gap: '12px', width: '100%', position: 'relative', zIndex: '10' }}>
-                        <div className={`  absolute top-[18px] left-0 bottom-0 right-0 w-full h-full flex flex-col gap-[22px] z-10`}>
+                        <div className={`  absolute top-[18px] left-0 bottom-0 right-0 w-full h-full flex flex-col gap-[9px] z-10`}>
                             {Array.from({ length: 24*4 }).map((_, index) => (
                                 <div key={index} className='w-full border-t-2 border-[#E8E8E8] border-dotted z-10'></div>
                             ))}
@@ -232,7 +232,7 @@ function HeatingScheduleTable({locationDetails,props}) {
                                     compactType={null}
                                     layout={initialLayouts[day]}
                                     cols={1}
-                                    rowHeight={14}
+                                    rowHeight={1}
                                     width={150}
                                     isDraggable={false}
                                     isResizable={false}
