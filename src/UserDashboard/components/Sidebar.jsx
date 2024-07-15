@@ -1,8 +1,8 @@
 /* eslint-disable react/prop-types */
 import classNames from "classnames";
-import { Dropdown, Sidebar} from "flowbite-react";
+import { Dropdown, Sidebar } from "flowbite-react";
 import { useEffect, useState } from "react";
-import {HiHome} from "react-icons/hi";
+import { HiHome } from "react-icons/hi";
 import logoIcon from "../../assets/logos/Logo-sm.png"
 import logoText from "../../assets/logos/logo-text.png"
 import { useSidebarContext } from "../../context/SidebarContext";
@@ -21,7 +21,7 @@ const user = {
 };
 
 const ExampleSidebar = () => {
-  const { isOpenOnSmallScreens: isSidebarOpenOnSmallScreens, isCollapsed,setIsCollapsed,isHovered,handleMouseEnter,handleMouseLeave,toggleCollapsedState } = useSidebarContext();
+  const { isOpenOnSmallScreens: isSidebarOpenOnSmallScreens, isCollapsed, setIsCollapsed, isHovered, handleMouseEnter, handleMouseLeave, toggleCollapsedState } = useSidebarContext();
 
   const [currentPage, setCurrentPage] = useState("");
   const location = useLocation();
@@ -53,7 +53,7 @@ const ExampleSidebar = () => {
               className={classNames(
                 "flex items-center mb-6 ",
                 {
-                  "justify-center": isCollapsed , // Hide button when sidebar is collapsed
+                  "justify-center": isCollapsed, // Hide button when sidebar is collapsed
                   "!justify-between": (isHovered && isCollapsed) || !isCollapsed, // Hide button when sidebar is collapsed
                 }
               )}
@@ -67,8 +67,8 @@ const ExampleSidebar = () => {
                   onClick={toggleCollapsedState}
                 />
                 <img
-                 src={logoText}
-                 className={classNames(
+                  src={logoText}
+                  className={classNames(
                     {
                       "hidden ": isCollapsed, // Hide button when sidebar is collapsed
                       "!block ": isHovered && isCollapsed, // Hide button when sidebar is collapsed
@@ -89,9 +89,8 @@ const ExampleSidebar = () => {
               >
                 <span className="sr-only">Toggle collapsed state</span>
                 <svg
-                  className={`w-6 h-6 text-gray-800 dark:text-white transform transition-transform duration-300 ${
-                    isCollapsed || (isSmallScreen() && !isSidebarOpenOnSmallScreens) ? 'rotate-0' : 'rotate-180'
-                  }`}
+                  className={`w-6 h-6 text-gray-800 dark:text-white transform transition-transform duration-300 ${isCollapsed || (isSmallScreen() && !isSidebarOpenOnSmallScreens) ? 'rotate-0' : 'rotate-180'
+                    }`}
                   aria-hidden="true"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
@@ -116,7 +115,7 @@ const ExampleSidebar = () => {
                   as={NavLink}
                   to={NAVIGATION_PATH.statuspage}
                   icon={HiHome}
-                  className={ NAVIGATION_PATH.statuspage === currentPage ? "bg-gray-100 dark:bg-gray-700" : ""}
+                  className={NAVIGATION_PATH.statuspage === currentPage ? "bg-gray-100 dark:bg-gray-700" : ""}
                 >
                   Status Page
                 </Sidebar.Item>
@@ -133,13 +132,15 @@ const ExampleSidebar = () => {
                   as={NavLink}
                   to={NAVIGATION_PATH.heatingprograms}
                   icon={FaBuilding}
-                  className={ NAVIGATION_PATH.heatingprograms === currentPage ? "bg-gray-100 dark:bg-gray-700" : ""}
+                  className={NAVIGATION_PATH.heatingprograms === currentPage ? "bg-gray-100 dark:bg-gray-700" : ""}
                 >
                   Heating Schedule
                 </Sidebar.Item>
                 <Sidebar.Item
+                  as={NavLink}
+                  to={NAVIGATION_PATH.deviceManagement}
                   icon={HiMiniCog6Tooth}
-                  className={"/kanban" === currentPage ? "bg-gray-100 dark:bg-gray-700" : ""}
+                  className={NAVIGATION_PATH.deviceManagement === currentPage ? "bg-gray-100 dark:bg-gray-700" : ""}
                 >
                   Device management
                 </Sidebar.Item>
@@ -195,7 +196,7 @@ const OptionsDropdown = () => {
         <span className="inline-flex cursor-pointer justify-center rounded p-1 text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:hover:bg-gray-700 dark:hover:text-white">
           <span className="sr-only">Current User</span>
           <svg className="w-5 h-5 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-            <path stroke="currentColor" strokeLinecap="round" strokeWidth="4" d="M6 12h.01m6 0h.01m5.99 0h.01"/>
+            <path stroke="currentColor" strokeLinecap="round" strokeWidth="4" d="M6 12h.01m6 0h.01m5.99 0h.01" />
           </svg>
         </span>
       }
