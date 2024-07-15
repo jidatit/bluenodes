@@ -12,6 +12,9 @@ import BatteryHigh from '../../../../assets/battery-icons/battery-76.png';
 import BatteryMedium from '../../../../assets/battery-icons/battery-51.png';
 import BatteryLow from '../../../../assets/battery-icons/battery-26.png';
 import BatteryEmpty from '../../../../assets/battery-icons/battery-0.png';
+import { FaChevronDown } from "react-icons/fa";
+import { FaChevronUp } from "react-icons/fa";
+
 
 const getBatteryImage = (battery_level) => {
   const level = parseInt(battery_level);
@@ -35,6 +38,7 @@ const OfflineTable = ({ tableData }) => {
   const [filteredData, setFilteredData] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [expandedRow, setExpandedRow] = useState(null);
+  const [accordianState, setAccordianState] = useState(false);
 
   const itemsPerPage = 10;
   const totalItems = filteredData && filteredData.length;
@@ -92,10 +96,18 @@ const OfflineTable = ({ tableData }) => {
 
   const handleRowClick = (index) => {
     setExpandedRow(expandedRow === index ? null : index);
+    if (accordianState === false) {
+      setAccordianState(true);
+    } else {
+      setAccordianState(false);
+    }
   };
 
   return (
     <div className="flex flex-col gap-4 w-full">
+      <div className="flex flex-col justify-center items-start w-full">
+        <h1 className="font-[500] text-lg text-gray-900">Devices Offline</h1>
+      </div>
       <div className="relative w-full overflow-x-auto bg-white shadow-md sm:rounded-lg">
         <div className="flex flex-column my-2 bg-transparent mx-2 sm:flex-row flex-wrap space-y-4 sm:space-y-0 items-center justify-between">
           {/* Filter buttons */}
@@ -156,6 +168,7 @@ const OfflineTable = ({ tableData }) => {
         <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
           <thead className="text-xs font-semibold text-gray-500 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
             <tr className="uppercase">
+              <th></th>
               <th scope="col" className="p-4">
                 device id
               </th>
@@ -189,6 +202,7 @@ const OfflineTable = ({ tableData }) => {
                       className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 cursor-pointer"
                       onClick={() => handleRowClick(index)}
                     >
+                      <td> { accordianState === false ? <FaChevronDown /> : <FaChevronUp/>  }   </td>
                       <td className="px-4 py-4 truncate">{item.device_id}</td>
                       <td className="px-4 py-4 truncate">{item.type}</td>
                       <td className="px-4 py-4">
@@ -210,9 +224,8 @@ const OfflineTable = ({ tableData }) => {
                       </td>
                       <td className="px-4 py-4 truncate">
                         <div
-                          className={`py-0.5 px-2.5 rounded-md flex items-center justify-center gap-1 w-fit ${
-                            item.status === 'online' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-900'
-                          } text-[10px]`}
+                          className={`py-0.5 px-2.5 rounded-md flex items-center justify-center gap-1 w-fit ${item.status === 'online' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-900'
+                            } text-[10px]`}
                         >
                           {item.status === 'online' ? <FaRegCircleCheck /> : <AiOutlineExclamationCircle />}
                           <p className="text-xs font-medium">{item.status}</p>
@@ -281,9 +294,8 @@ const OfflineTable = ({ tableData }) => {
           <div className="flex justify-end border rounded-md border-gray-200 w-fit">
             <button
               onClick={() => handlePageChange(currentPage - 1)}
-              className={`inline-flex items-center px-4 py-2 text-sm font-medium rounded-sm ${
-                currentPage === 1 ? 'text-gray-300 cursor-not-allowed' : 'text-primary bg-[#CFF4FB] hover:bg-primary-300'
-              }`}
+              className={`inline-flex items-center px-4 py-2 text-sm font-medium rounded-sm ${currentPage === 1 ? 'text-gray-300 cursor-not-allowed' : 'text-primary bg-[#CFF4FB] hover:bg-primary-300'
+                }`}
               disabled={currentPage === 1}
             >
               <IoChevronBackOutline />
@@ -305,11 +317,10 @@ const OfflineTable = ({ tableData }) => {
               <button
                 key={startPage + index}
                 onClick={() => handlePageChange(startPage + index)}
-                className={`inline-flex items-center px-4 py-2 text-sm font-medium rounded-sm ${
-                  currentPage === startPage + index
+                className={`inline-flex items-center px-4 py-2 text-sm font-medium rounded-sm ${currentPage === startPage + index
                     ? 'text-primary bg-[#CFF4FB] hover:bg-primary-300'
                     : 'text-gray-500 bg-white hover:bg-gray-100'
-                }`}
+                  }`}
               >
                 {startPage + index}
               </button>
@@ -322,9 +333,8 @@ const OfflineTable = ({ tableData }) => {
             {endPage < totalPages && (
               <button
                 onClick={() => handlePageChange(totalPages)}
-                className={`inline-flex items-center px-4 py-2 text-sm font-medium rounded-sm ${
-                  currentPage === totalPages ? 'text-gray-300 cursor-not-allowed' : 'text-gray-500 bg-white hover:bg-gray-100'
-                }`}
+                className={`inline-flex items-center px-4 py-2 text-sm font-medium rounded-sm ${currentPage === totalPages ? 'text-gray-300 cursor-not-allowed' : 'text-gray-500 bg-white hover:bg-gray-100'
+                  }`}
                 disabled={currentPage === totalPages}
               >
                 {totalPages}
@@ -332,9 +342,8 @@ const OfflineTable = ({ tableData }) => {
             )}
             <button
               onClick={() => handlePageChange(currentPage + 1)}
-              className={`inline-flex items-center px-4 py-2 text-sm font-medium rounded-sm ${
-                currentPage === totalPages ? 'text-gray-300 cursor-not-allowed' : 'text-primary bg-[#CFF4FB] hover:bg-primary-300'
-              }`}
+              className={`inline-flex items-center px-4 py-2 text-sm font-medium rounded-sm ${currentPage === totalPages ? 'text-gray-300 cursor-not-allowed' : 'text-primary bg-[#CFF4FB] hover:bg-primary-300'
+                }`}
               disabled={currentPage === totalPages}
             >
               <IoChevronForwardOutline />
