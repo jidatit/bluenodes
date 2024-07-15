@@ -11,7 +11,7 @@
 import { IoArrowBackCircle, IoChevronBackCircleSharp } from 'react-icons/io5';
 import { Tooltip } from 'flowbite-react';
 
-  function HeatingSchedule({ onUpdateLayouts, setHandleCheckRef, handlePrev, finalScheduleData }) {
+  function HeatingSchedule({ onUpdateLayouts, setHandleCheckRef, handlePrev, finalScheduleData,clone }) {
     const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
     const initialLayouts = {
@@ -23,6 +23,16 @@ import { Tooltip } from 'flowbite-react';
       Saturday: [],
       Sunday: []
     };
+
+  //   const initialLayoutsPrevious = {
+  //     Monday: [{ w: 1, h: 24, x: 0, y: 0, i: 'box-Monday-1', minW: 1, maxW: 2, minH: 1, maxH: 24, moved: false, static: false, temperature: '20' }],
+  //     Tuesday: [{ w: 1, h: 24, x: 0, y: 0, i: 'box-Tuesday-1', minW: 1, maxW: 2, minH: 1, maxH: 24, moved: false, static: false, temperature: '22' }],
+  //     Wednesday: [{ w: 1, h: 24, x: 0, y: 0, i: 'box-Wednesday-1', minW: 1, maxW: 2, minH: 1, maxH: 24, moved: false, static: false, temperature: '21' }],
+  //     Thursday: [{ w: 1, h: 24, x: 0, y: 0, i: 'box-Thursday-1', minW: 1, maxW: 2, minH: 1, maxH: 24, moved: false, static: false, temperature: '19' }],
+  //     Friday: [{ w: 1, h: 24, x: 0, y: 0, i: 'box-Friday-1', minW: 1, maxW: 2, minH: 1, maxH: 24, moved: false, static: false, temperature: '18' }],
+  //     Saturday: [{ w: 1, h: 24, x: 0, y: 0, i: 'box-Saturday-1', minW: 1, maxW: 2, minH: 1, maxH: 24, moved: false, static: false, temperature: '23' }],
+  //     Sunday: [{ w: 1, h: 24, x: 0, y: 0, i: 'box-Sunday-1', minW: 1, maxW: 2, minH: 1, maxH: 24, moved: false, static: false, temperature: '20' }]
+  // };
 
     const rowHeight = 20; // Each row represents 20 pixels
 

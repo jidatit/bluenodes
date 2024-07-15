@@ -7,6 +7,7 @@ import { Button, Modal, Tooltip, Accordion } from "flowbite-react";
 import { MdNotificationsActive } from "react-icons/md";
 import HeatingScheduleTable from './HeatingScheduleTable';
 import AssignRoomsModal from './AssignRoomsModal';
+import { CloneHeatingModal } from '../CloneHeating/CloneHeatingModal';
 
 const HeatingProgramEntity = ({ formData,onUpdateRooms,program }) => {
 
@@ -33,6 +34,7 @@ const HeatingProgramEntity = ({ formData,onUpdateRooms,program }) => {
         .catch(error => console.error('Error:', error));
       },[])
     
+    const [openCloneModal, setOpenCloneModal] = useState(false);
 
     const handleAssign = () => {
       setOpenAssignModal(!openAssignModal)
@@ -48,6 +50,9 @@ const HeatingProgramEntity = ({ formData,onUpdateRooms,program }) => {
         }
         return 0;
     };
+    const handleCloneModal = () => {
+        setOpenCloneModal(!openCloneModal)
+      }
 
     const handleDelete = () => {
         setOpenDeleteModal(false);
@@ -83,13 +88,37 @@ const HeatingProgramEntity = ({ formData,onUpdateRooms,program }) => {
         // Create the formatted date string
         return `${day}/${month}/${year} ${formattedHours}:${minutes} ${ampm}`;
     }
+      const handleCloneHeatingProgram = (combinedData) => {
+        // if (combinedData) {
+        //   // Assuming the response status is set here based on an API call or some logic
+        //   if (response === 200) {
+        //     setToastMessage(errorMessages.successfulCreation);
+        //     setIsSuccess(true);
+        //   } else {
+        //     setToastMessage(errorMessages.FailedCreation);
+        //     setIsSuccess(false);
+        //   }
+        // } else {
+        //   setToastMessage(errorMessages.FailedCreation);
+        //   setIsSuccess(false);
+        // }
+        // setShowToast(true);
+      
+        //     // Hide the toast after 2 seconds
+        //     setTimeout(() => {
+        //       setShowToast(false);
+        //     }, 4000);
+      
+        // Handle combinedData here
+        console.log('Combined Data:', combinedData);
+      };
 
     return (
         <>
             <div className='w-full relative flex flex-col bg-white rounded-[8px] px-4 py-4 justify-center items-center'>
                 <div className='flex absolute top-4 right-3 flex-row justify-center items-center gap-3 text-gray-900'>
                     <Tooltip className='min-w-[130px]' content="Clone program" style="light" animation="duration-500">
-                        <FaRegCopy className='cursor-pointer transition-all ease-in-out delay-75 hover:text-[#5a5d65]' />
+                        <FaRegCopy onClick={handleCloneModal} className='cursor-pointer transition-all ease-in-out delay-75 hover:text-[#5a5d65]' />
                     </Tooltip>
                     <Tooltip className='min-w-[130px]' content="Edit program" style="light" animation="duration-500">
                         <FaEdit className='cursor-pointer transition-all ease-in-out delay-75 hover:text-[#5a5d65]' />
@@ -195,6 +224,7 @@ const HeatingProgramEntity = ({ formData,onUpdateRooms,program }) => {
                 <DeleteModal openDeleteModal={openDeleteModal} setOpenDeleteModal={setOpenDeleteModal} handleDelete={handleDelete} />
                 <AlertDeleteModal openAlertDeleteModal={openAlertDeleteModal} setOpenAlertDeleteModal={setOpenAlertDeleteModal} />
                 <AssignRoomsModal openAssignModal={openAssignModal} handleAssign={handleAssign} onUpdate={handleUpdateRoomsAssigned} />
+                <CloneHeatingModal openCloneModal={openCloneModal} handleCloneModal={handleCloneModal} onCreate={handleCloneHeatingProgram} />
             </div>
         </>
     )
