@@ -1,6 +1,6 @@
 import React from 'react'
 import DeviceManagementTable from './components/DeviceManagementTable'
-import { deviceData } from "../StatusPage/components/data/deviceData";
+import { deviceData } from "./components/data/deviceData";
 
 const index = () => {
     return (

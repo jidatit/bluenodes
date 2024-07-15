@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Accordion, Pagination, Select, Tooltip } from 'flowbite-react';
+import { Accordion, Pagination, Select, Tooltip, TextInput } from 'flowbite-react';
 import { IoChevronBackOutline, IoChevronForwardOutline } from 'react-icons/io5';
 import { MdOutlineAccessTimeFilled } from 'react-icons/md';
 import { FaCircleInfo, FaRegCircleCheck } from 'react-icons/fa6';
@@ -14,7 +14,9 @@ import BatteryLow from '../../../../assets/battery-icons/battery-26.png';
 import BatteryEmpty from '../../../../assets/battery-icons/battery-0.png';
 import { FaChevronDown } from "react-icons/fa";
 import { FaChevronUp } from "react-icons/fa";
-
+import { FaEdit } from "react-icons/fa";
+import { ImCancelCircle } from "react-icons/im";
+import { FaCheck } from "react-icons/fa6";
 
 const getBatteryImage = (battery_level) => {
   const level = parseInt(battery_level);
@@ -103,6 +105,37 @@ const OfflineTable = ({ tableData }) => {
     }
   };
 
+  const [editMode, setEditMode] = useState(false);
+  const [editingItemId, setEditingItemId] = useState(null);
+  const [editedName, setEditedName] = useState("");
+
+  const handleEditClick = (deviceId) => {
+    setEditingItemId(deviceId);
+    setEditedName(findDeviceName(deviceId));
+    setEditMode(true);
+  };
+
+  const handleSave = (deviceId) => {
+    console.log('Saving new name...', editedName + ` for device ${deviceId}`);
+    setEditMode(false);
+    setEditingItemId(null);
+  };
+
+  const handleCancel = () => {
+    setEditMode(false);
+    setEditingItemId(null);
+    setEditedName(findDeviceName(editingItemId));
+  };
+
+  const handleInputChange = (e) => {
+    setEditedName(e.target.value);
+  };
+
+  const findDeviceName = (deviceId) => {
+    const device = tableData.find(item => item.device_id === deviceId);
+    return device ? device.device_name : "";
+  };
+
   return (
     <div className="flex flex-col gap-4 w-full">
       <div className="flex flex-col justify-center items-start w-full">
@@ -173,6 +206,9 @@ const OfflineTable = ({ tableData }) => {
                 device id
               </th>
               <th scope="col" className="p-4">
+                device name
+              </th>
+              <th scope="col" className="p-4">
                 device type
               </th>
               <th scope="col" className="p-4">
@@ -200,10 +236,55 @@ const OfflineTable = ({ tableData }) => {
                   <React.Fragment key={index}>
                     <tr
                       className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 cursor-pointer"
-                      onClick={() => handleRowClick(index)}
+                    // onClick={() => handleRowClick(index)}
                     >
-                      <td> { accordianState === false ? <FaChevronDown /> : <FaChevronUp/>  }   </td>
+                      <td> {accordianState === false ? <FaChevronDown /> : <FaChevronUp />}   </td>
                       <td className="px-4 py-4 truncate">{item.device_id}</td>
+
+                      <td className="px-4 py-4 relative truncate">
+                        {editMode && editingItemId === item.device_id ? (
+                          <TextInput
+                            type="text"
+                            value={editedName}
+                            onChange={handleInputChange}
+                            className='w-[80%]'
+                          />
+                        ) : (
+                          <>
+                            {item.device_name && item.device_name.length > 10 ? (
+                              <>
+                                {item.device_name.slice(0, 10)} <span>...</span>
+                              </>
+                            ) : (
+                              <>
+                                {item.device_name}
+                              </>
+                            )}
+                          </>
+                        )}
+                        {editMode && editingItemId === item.device_id ? (
+                          <div className="absolute top-1/2 transform -translate-y-1/2 right-2 flex gap-[2px]">
+                            <button
+                              onClick={handleCancel}
+                              className="p-1 hover:bg-gray-300 hover:shadow-md hover:rounded-md text-red-700"
+                            >
+                              <ImCancelCircle className='w-4 h-4' />
+                            </button>
+                            <button
+                              onClick={() => handleSave(item.device_id)}
+                              className="p-1 hover:bg-gray-300 hover:shadow-md hover:rounded-md text-green-800"
+                            >
+                              <FaCheck className='w-4 h-4' />
+                            </button>
+                          </div>
+                        ) : (
+                          <FaEdit
+                            onClick={() => handleEditClick(item.device_id)}
+                            className='absolute p-[2px] hover:rounded-md hover:shadow-md hover:bg-gray-300 w-5 h-5 top-1/2 bottom-1/2 right-0 transform -translate-y-1/2'
+                          />
+                        )}
+                      </td>
+
                       <td className="px-4 py-4 truncate">{item.type}</td>
                       <td className="px-4 py-4">
                         Building {item.building} -<span> Floor {item.floor}</span>
@@ -239,6 +320,9 @@ const OfflineTable = ({ tableData }) => {
                           <div className="text-sm">
                             <p>
                               <strong>Device ID:</strong> {item.device_id}
+                            </p>
+                            <p>
+                              <strong>Device Name:</strong> {item.device_name}
                             </p>
                             <p>
                               <strong>Device Type:</strong> {item.type}
@@ -318,8 +402,8 @@ const OfflineTable = ({ tableData }) => {
                 key={startPage + index}
                 onClick={() => handlePageChange(startPage + index)}
                 className={`inline-flex items-center px-4 py-2 text-sm font-medium rounded-sm ${currentPage === startPage + index
-                    ? 'text-primary bg-[#CFF4FB] hover:bg-primary-300'
-                    : 'text-gray-500 bg-white hover:bg-gray-100'
+                  ? 'text-primary bg-[#CFF4FB] hover:bg-primary-300'
+                  : 'text-gray-500 bg-white hover:bg-gray-100'
                   }`}
               >
                 {startPage + index}
