@@ -268,20 +268,26 @@ const OfflineTable = ({ tableData }) => {
                               onClick={handleCancel}
                               className="p-1 hover:bg-gray-300 hover:shadow-md hover:rounded-md text-red-700"
                             >
-                              <ImCancelCircle className='w-4 h-4' />
+                              <Tooltip placement='left' content={"Cancel"} style="light" animation="duration-500">
+                                <ImCancelCircle className='w-4 h-4' />
+                              </Tooltip>
                             </button>
                             <button
                               onClick={() => handleSave(item.device_id)}
                               className="p-1 hover:bg-gray-300 hover:shadow-md hover:rounded-md text-green-800"
                             >
-                              <FaCheck className='w-4 h-4' />
+                              <Tooltip placement='left' content={"Save"} style="light" animation="duration-500">
+                                <FaCheck className='w-4 h-4' />
+                              </Tooltip>
                             </button>
                           </div>
                         ) : (
-                          <FaEdit
-                            onClick={() => handleEditClick(item.device_id)}
-                            className='absolute p-[2px] hover:rounded-md hover:shadow-md hover:bg-gray-300 w-5 h-5 top-1/2 bottom-1/2 right-0 transform -translate-y-1/2'
-                          />
+                          <Tooltip placement='left' content={"Edit Name"} style="light" animation="duration-500">
+                            <FaEdit
+                              onClick={() => handleEditClick(item.device_id)}
+                              className='absolute p-[2px] hover:rounded-md hover:shadow-md hover:bg-gray-300 w-5 h-5 top-1/2 bottom-1/2 right-0 transform -translate-y-1/2'
+                            />
+                          </Tooltip>
                         )}
                       </td>
 
