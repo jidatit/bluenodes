@@ -467,14 +467,14 @@ const handleEditProgram = (data) => {
   if (data) {
     // Assuming the response status is set here based on an API call or some logic
     if (response === 200) {
-      setToastMessage(errorMessages.cloneSuccessfull);
+      setToastMessage(errorMessages.editSuccessfull);
       setIsSuccess(true);
     } else {
-      setToastMessage(errorMessages.cloneFailed);
+      setToastMessage(errorMessages.editFailed);
       setIsSuccess(false);
     }
   } else {
-    setToastMessage(errorMessages.cloneFailed);
+    setToastMessage(errorMessages.editFailed);
     setIsSuccess(false);
   }
   setShowToast(true);

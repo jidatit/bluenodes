@@ -7,7 +7,6 @@ import { errorMessages as errors } from "../../../../globals/errorMessages"; // 
 import ProgressStepper from "../CreateHeating/components/ProgressStepper";
 import GeneralInformation from "../CreateHeating/Steps/GeneralInformation/GeneralInformation";
 import HeatingSchedule from "../CreateHeating/Steps/HeatingSchedule/HeatingSchedule";
-import ProgramAssignment from "../CreateHeating/Steps/ProgramAssignment/ProgramAssignment";
 
 export function EditHeatingModal({ openEditModal, handleEditModal, onEdit, program, locationDetails }) {
   
@@ -220,18 +219,11 @@ export function EditHeatingModal({ openEditModal, handleEditModal, onEdit, progr
     return true;
   };
 
-  // For getting data from heating program assignment
-  const [heatingAssignmentData, setHeatingAssignmentData] = useState({});
-  
-  const handleAssignmentData = (assignmentData) => {
-    setHeatingAssignmentData(assignmentData);
-  };
 
   const [layouts, setLayouts] = useState({}); // State to hold layouts
   const [finalScheduleData, setFinalScheduleData] = useState({});
   
   const handleCheckRef = useRef(null); // Ref to hold handleCheck function
-  const handleAssignmentRef = useRef(null); // Ref to hold handleCheck function
   const layoutsRef = useRef(layouts); // Ref to hold the latest layouts value
 
   // Function to handle layout updates
@@ -283,50 +275,23 @@ export function EditHeatingModal({ openEditModal, handleEditModal, onEdit, progr
   });
 
   useEffect(() => {
-    if (formData && heatingAssignmentData && finalScheduleData) {
+    if (formData && finalScheduleData) {
       setCombinedData({
         formData,
-        heatingAssignmentData,
         finalScheduleData,
       });
     }
     // console.log(combinedData);
-  }, [formData, heatingAssignmentData, finalScheduleData]);
+  }, [formData,finalScheduleData]);
 
   // const programAssignmentRef = useRef();
-  const [buttonText, setButtonText] = useState('Create');
 
   const handleCreate = () => {
-    if (buttonText === 'Create') {
-      if (handleAssignmentRef.current) {
-        handleAssignmentRef.current();
 
-        const anyRoomSelected = heatingAssignmentData.buildings.some(building =>
-          building.floors.some(floor =>
-            floor.rooms.some(room => room.assigned)
-          )
-        );
-
-        if (!anyRoomSelected) {
-          setButtonText('Confirm');
-        } else {
-          handleAssignmentData();
-          onEdit(combinedData);
-          handleEditModal();
-          resetModalState();
-          // Submit the form or perform other actions
-        }
-      } else {
-        console.error('handleAssignmentRef.current is not defined');
-      }
-    } else {
-      // Confirm button clicked
-      handleAssignmentData();
+      // Save button clicked
       onEdit(combinedData);
       handleEditModal();
-      setButtonText('Create');
       resetModalState();
-    }
   };
 
   const resetModalState = () => {
@@ -347,10 +312,8 @@ export function EditHeatingModal({ openEditModal, handleEditModal, onEdit, progr
     });
     setGeneralErrorMessage(null);
     setFormSubmitted(false);
-    setHeatingAssignmentData({});
     setLayouts({});
     setFinalScheduleData({});
-    setButtonText('Create');
   };
 
   const handleCloseModal = () => {
@@ -364,7 +327,7 @@ export function EditHeatingModal({ openEditModal, handleEditModal, onEdit, progr
         <Modal.Header className=" text-lg text-gray-900 [&>*]:font-semibold">Clone heating program</Modal.Header>
         <Modal.Body>
           <div className="flex flex-col items-center space-y-6">
-            <ProgressStepper currentStep={currentStep} />
+            <ProgressStepper currentStep={currentStep} editMode={true} />
             <div className="w-full">
               {currentStep === 1 && (
                 <div>
@@ -388,28 +351,17 @@ export function EditHeatingModal({ openEditModal, handleEditModal, onEdit, progr
                   />
                 </div>
               )}
-              {currentStep === 3 && (
-                <div>
-                  <ProgramAssignment
-                    formData={formData}
-                    setHandleAssignmentRef={(func) => handleAssignmentRef.current = func}
-                    assignmentData={handleAssignmentData}
-                    handlePrev={handlePrevious}
-                    heatingData={heatingAssignmentData}
-                  />
-                </div>
-              )}
             </div>
 
           </div>
         </Modal.Body>
         <Modal.Footer>
-          {currentStep < 3 ? (
+          {currentStep <2 ? (
             <Button className="bg-primary" onClick={handleNext}>
               Next
             </Button>
           ) : (
-            <Button className={` ${buttonText === 'Confirm' ? 'bg-green-400 focus:ring-green-400 focus:bg-green-400 hover:bg-green-400 enabled:hover:bg-green-400':'bg-primary'}`} onClick={handleCreate}>{buttonText}</Button>
+            <Button className={` bg-primary`} onClick={handleCreate}>Save</Button>
           )}
           <Button className="font-black" color="gray" onClick={handleCloseModal}>
             Cancel
