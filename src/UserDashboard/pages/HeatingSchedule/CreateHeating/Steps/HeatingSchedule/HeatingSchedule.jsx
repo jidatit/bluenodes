@@ -141,7 +141,7 @@ import { Tooltip } from 'flowbite-react';
           static: false,
           temperature: item.targetTemperature.toString()
           }))
-    } : {
+    } : { 
       Monday: [],
       Tuesday: [],
       Wednesday: [],
