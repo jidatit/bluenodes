@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Accordion, Pagination, Select, Tooltip, TextInput } from 'flowbite-react';
+import { Select, Tooltip, TextInput } from 'flowbite-react';
 import { IoChevronBackOutline, IoChevronForwardOutline } from 'react-icons/io5';
 import { MdOutlineAccessTimeFilled } from 'react-icons/md';
-import { FaCircleInfo, FaRegCircleCheck } from 'react-icons/fa6';
-import { RiErrorWarningFill } from 'react-icons/ri';
-import { IoIosWarning } from 'react-icons/io';
+import { FaRegCircleCheck } from 'react-icons/fa6';
 import { GiTireIronCross } from 'react-icons/gi';
 import { AiOutlineExclamationCircle } from 'react-icons/ai';
 import { BsFillCalendarDateFill } from "react-icons/bs";
@@ -26,6 +24,7 @@ import ErrorIcon from '../../../../assets/icons/bell.png';
 import OpenCloseWindowIcon from '../../../../assets/icons/Window.png'
 import LightIntensityIcon from '../../../../assets/icons/light.png';
 import MovementIcon from '../../../../assets/icons/movement.png';
+import { FaSearch } from "react-icons/fa";
 
 const getBatteryImage = (battery_level) => {
   const level = parseInt(battery_level);
@@ -182,7 +181,7 @@ const OfflineTable = ({ tableData }) => {
           {/* Search bar */}
           <div className="relative">
             <div className="absolute inset-y-0 left-0 rtl:inset-r-0 rtl:right-0 flex items-center ps-3 pointer-events-none">
-              {/* <FaSearch className="w-4 h-4 text-gray-500 dark:text-gray-400" /> */}
+              <FaSearch className="w-4 h-4 text-gray-500 dark:text-gray-400" />
             </div>
             <input
               type="text"
