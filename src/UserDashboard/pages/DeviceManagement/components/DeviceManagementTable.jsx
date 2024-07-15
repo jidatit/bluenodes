@@ -140,9 +140,6 @@ const OfflineTable = ({ tableData }) => {
 
   return (
     <div className="flex flex-col gap-4 w-full">
-      <div className="flex flex-col justify-center items-start w-full">
-        <h1 className="font-[500] text-lg text-gray-900">Devices Offline</h1>
-      </div>
       <div className="relative w-full overflow-x-auto bg-white shadow-md sm:rounded-lg">
         <div className="flex flex-column my-2 bg-transparent mx-2 sm:flex-row flex-wrap space-y-4 sm:space-y-0 items-center justify-between">
           {/* Filter buttons */}
