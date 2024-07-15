@@ -9,12 +9,12 @@ import GeneralInformation from "../CreateHeating/Steps/GeneralInformation/Genera
 import HeatingSchedule from "../CreateHeating/Steps/HeatingSchedule/HeatingSchedule";
 import ProgramAssignment from "../CreateHeating/Steps/ProgramAssignment/ProgramAssignment";
 
-export function CloneHeatingModal({ openCloneModal, handleCloneModal, onCreate, program, locationDetails }) {
+export function EditHeatingModal({ openEditModal, handleEditModal, onEdit, program, locationDetails }) {
   
   const [currentStep, setCurrentStep] = useState(1);
 
   const [formData, setFormData] = useState({
-    programName: program?.templateName + ' - Cloned' || "",
+    programName: program?.templateName || "",
     childSafety: program?.allowDeviceOverride===true?"No":"Yes" || "",
     minTemp: program?.deviceOverrideTemperatureMin + '°C'||"",
     maxTemp: program?.deviceOverrideTemperatureMax + '°C'||"",
@@ -311,8 +311,8 @@ export function CloneHeatingModal({ openCloneModal, handleCloneModal, onCreate, 
           setButtonText('Confirm');
         } else {
           handleAssignmentData();
-          onCreate(combinedData);
-          handleCloneModal();
+          onEdit(combinedData);
+          handleEditModal();
           resetModalState();
           // Submit the form or perform other actions
         }
@@ -322,8 +322,8 @@ export function CloneHeatingModal({ openCloneModal, handleCloneModal, onCreate, 
     } else {
       // Confirm button clicked
       handleAssignmentData();
-      onCreate(combinedData);
-      handleCloneModal();
+      onEdit(combinedData);
+      handleEditModal();
       setButtonText('Create');
       resetModalState();
     }
@@ -355,12 +355,12 @@ export function CloneHeatingModal({ openCloneModal, handleCloneModal, onCreate, 
 
   const handleCloseModal = () => {
     resetModalState();
-    handleCloneModal();
+    handleEditModal();
   };
 
   return (
     <>
-      <Modal theme={customTheme} size={currentStep === 2 ? "7xl" : "5xl"} dismissible show={openCloneModal} onClose={handleCloseModal}>
+      <Modal theme={customTheme} size={currentStep === 2 ? "7xl" : "5xl"} dismissible show={openEditModal} onClose={handleCloseModal}>
         <Modal.Header className=" text-lg text-gray-900 [&>*]:font-semibold">Clone heating program</Modal.Header>
         <Modal.Body>
           <div className="flex flex-col items-center space-y-6">

@@ -3,138 +3,33 @@ import GridLayout from 'react-grid-layout';
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 
-function HeatingScheduleTable({locationDetails,props}) {
+function HeatingScheduleTableStatic(props) {
     const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-    const rowHeight = 7.3; // Each row represents 20 pixels
-
-    // Helper function to convert time to units
-    const convertTimeToUnits = (time) => {
-      const [hours, minutes, seconds] = time.split(':').map(Number);
-      // Map 23:59 to 96
-      if (hours === 23 && minutes === 59) {
-        return 96;
-      }
-      return (hours * 4) + (minutes / 15);
-    };
-
-    // Convert the times in the data
-    locationDetails = locationDetails.days.map(item => ({
-      ...item,
-      from: convertTimeToUnits(item.from),
-      to: convertTimeToUnits(item.to)
-    }));
-
-    // Group data by day
-    let groupedData = locationDetails?.reduce((acc, obj) => {
-      // If the day key doesn't exist, create it
-      if (!acc[obj.day]) {
-        acc[obj.day] = [];
-      }
-      // Push the object into the array for that day
-      acc[obj.day].push(obj);
-      return acc;
-    }, {});
+    const rowHeight = 20; // Each row represents 70 pixels
 
     // Dummy data for initial layouts
     const initialLayouts = {
-      Monday: groupedData[1].map((item, index) => ({
-        w: 1,
-        h: item.to-item.from,
-        x: 0,
-        y: item.from,
-        i: `box-Monday-${index + 1}`,
-        minW: 1,
-        maxW: 2,
-        minH: 1,
-        maxH: 24,
-        moved: false,
-        static: false,
-        temperature: item.targetTemperature.toString()
-        })),
-        Tuesday: groupedData[2].map((item, index) => ({
-          w: 1,
-          h: item.to-item.from,
-          x: 0,
-          y: item.from,
-          i: `box-Tuesday-${index + 1}`,
-          minW: 1,
-          maxW: 2,
-          minH: 1,
-          maxH: 24,
-          moved: false,
-          static: false,
-          temperature: item.targetTemperature.toString()
-          })),
-        Wednesday: groupedData[3].map((item, index) => ({
-          w: 1,
-          h: item.to-item.from,
-          x: 0,
-          y: item.from,
-          i: `box-Wednesday-${index + 1}`,
-          minW: 1,
-          maxW: 2,
-          minH: 1,
-          maxH: 24,
-          moved: false,
-          static: false,
-          temperature: item.targetTemperature.toString()
-          })),
-        Thursday: groupedData[4].map((item, index) => ({
-          w: 1,
-          h: item.to-item.from,
-          x: 0,
-          y: item.from,
-          i: `box-Thursday-${index + 1}`,
-          minW: 1,
-          maxW: 2,
-          minH: 1,
-          maxH: 24,
-          moved: false,
-          static: false,
-          temperature: item.targetTemperature.toString()
-          })),
-        Friday: groupedData[5].map((item, index) => ({
-          w: 1,
-          h: item.to-item.from,
-          x: 0,
-          y: item.from,
-          i: `box-Friday-${index + 1}`,
-          minW: 1,
-          maxW: 2,
-          minH: 1,
-          maxH: 24,
-          moved: false,
-          static: false,
-          temperature: item.targetTemperature.toString()
-          })),
-        Saturday: groupedData[6].map((item, index) => ({
-          w: 1,
-          h: item.to-item.from,
-          x: 0,
-          y: item.from,
-          i: `box-Saturday-${index + 1}`,
-          minW: 1,
-          maxW: 2,
-          minH: 1,
-          maxH: 24,
-          moved: false,
-          static: false,
-          temperature: item.targetTemperature.toString()
-          })),
-        Sunday: groupedData[7].map((item, index) => ({
-          w: 1,
-          h: item.to-item.from,
-          x: 0,
-          y: item.from,
-          i: `box-Sunday-${index + 1}`,
-          minW: 1,
-          maxW: 2,
-          minH: 1,
-          maxH: 24,
-          moved: false,
-          static: false,
-          temperature: item.targetTemperature.toString()
-          }))
+        Monday: [
+            { w: 1, h: 24, x: 0, y: 0, i: 'box-Monday-1', minW: 1, maxW: 2, minH: 1, maxH: 24, moved: false, static: false, temperature: '20' }
+        ],
+        Tuesday: [
+            { w: 1, h: 24, x: 0, y: 0, i: 'box-Tuesday-1', minW: 1, maxW: 2, minH: 1, maxH: 24, moved: false, static: false, temperature: '22' }
+        ],
+        Wednesday: [
+            { w: 1, h: 24, x: 0, y: 0, i: 'box-Wednesday-1', minW: 1, maxW: 2, minH: 1, maxH: 24, moved: false, static: false, temperature: '21' }
+        ],
+        Thursday: [
+            { w: 1, h: 24, x: 0, y: 0, i: 'box-Thursday-1', minW: 1, maxW: 2, minH: 1, maxH: 24, moved: false, static: false, temperature: '19' }
+        ],
+        Friday: [
+            { w: 1, h: 24, x: 0, y: 0, i: 'box-Friday-1', minW: 1, maxW: 2, minH: 1, maxH: 24, moved: false, static: false, temperature: '18' }
+        ],
+        Saturday: [
+            { w: 1, h: 24, x: 0, y: 0, i: 'box-Saturday-1', minW: 1, maxW: 2, minH: 1, maxH: 24, moved: false, static: false, temperature: '23' }
+        ],
+        Sunday: [
+            { w: 1, h: 24, x: 0, y: 0, i: 'box-Sunday-1', minW: 1, maxW: 2, minH: 1, maxH: 24, moved: false, static: false, temperature: '20' }
+        ]
     };
 
   
@@ -186,22 +81,9 @@ function HeatingScheduleTable({locationDetails,props}) {
       }
     }
 
-    const timeLabels = Array.from({ length: 24 * 4 }, (_, index) => {
-      const totalMinutes = index * 15;
-      const hours = Math.floor(totalMinutes / 60);
-      const minutes = totalMinutes % 60;
-      const isFullHour = minutes === 0; // Check if it's a complete hour
-      
-      return (
-        <div key={index} style={{ height: `${rowHeight}px`, margin: '4px 0', display: 'flex', alignItems: 'flex-start', justifyContent: 'flex-start' }}>
-          {isFullHour ? `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}` : ''}
-        </div>
-      );
-    });
-
     return (
-      <div className={`flex flex-col gap-4 ${props?.noHeading ? 'w-[98%]' : 'w-full'} px-2`}>
-      {!props?.noHeading && (
+      <div className={`flex flex-col gap-4 ${props.noHeading ? 'w-[98%]' : 'w-full'} px-2`}>
+      {!props.noHeading && (
         <h3 className="text-[16px] text-gray-500 font-semibold">Heating Schedule</h3>
       )}
             
@@ -217,11 +99,15 @@ function HeatingScheduleTable({locationDetails,props}) {
                 </div>
                 <div style={{ display: 'flex', zIndex: '10' }}>
                     <div style={{ width: '60px' }}>
-                        {timeLabels}
+                        {Array.from({ length: 24 }).map((_, index) => (
+                            <div key={index} style={{ height: `${rowHeight}px`, margin: '4px 0', display: 'flex', alignItems: 'flex-start', justifyContent: 'flex-start' }}>
+                                {`${index.toString().padStart(2, '0')}:00`}
+                            </div>
+                        ))}
                     </div>
                     <div style={{ display: 'flex', justifyContent: 'flex-start', gap: '12px', width: '100%', position: 'relative', zIndex: '10' }}>
-                        <div className={`  absolute top-[18px] left-0 bottom-0 right-0 w-full h-full flex flex-col gap-[9px] z-10`}>
-                            {Array.from({ length: 24*4 }).map((_, index) => (
+                        <div className={`  absolute top-[18px] left-0 bottom-0 right-0 w-full h-full flex flex-col gap-[22px] z-10`}>
+                            {Array.from({ length: 24 }).map((_, index) => (
                                 <div key={index} className='w-full border-t-2 border-[#E8E8E8] border-dotted z-10'></div>
                             ))}
                         </div>
@@ -232,7 +118,7 @@ function HeatingScheduleTable({locationDetails,props}) {
                                     compactType={null}
                                     layout={initialLayouts[day]}
                                     cols={1}
-                                    rowHeight={1}
+                                    rowHeight={14}
                                     width={150}
                                     isDraggable={false}
                                     isResizable={false}
@@ -271,4 +157,4 @@ function HeatingScheduleTable({locationDetails,props}) {
     );
 }
 
-export default HeatingScheduleTable;
+export default HeatingScheduleTableStatic;

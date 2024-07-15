@@ -8,8 +8,9 @@ import { MdNotificationsActive } from "react-icons/md";
 import HeatingScheduleTable from './HeatingScheduleTable';
 import AssignRoomsModal from './AssignRoomsModal';
 import { CloneHeatingModal } from '../CloneHeating/CloneHeatingModal';
+import { EditHeatingModal } from '../EditHeating/EditHeatingModal';
 
-const HeatingProgramEntity = ({ formData,onUpdateRooms,program }) => {
+const HeatingProgramEntity = ({ formData,onUpdateRooms,onCloneProgram, onEditProgram,program }) => {
 
     const token = localStorage.getItem('token');
 
@@ -17,7 +18,46 @@ const HeatingProgramEntity = ({ formData,onUpdateRooms,program }) => {
     const [openDeleteModal, setOpenDeleteModal] = useState(false);
     const [openAlertDeleteModal, setOpenAlertDeleteModal] = useState(false);
     const [openAssignModal, setOpenAssignModal] = useState(false);
+    const [openCloneModal, setOpenCloneModal] = useState(false);
+    const [openEditModal, setOpenEditModal] = useState(false);
     const [locationDetails, setLocationDetails] = useState(null)
+
+    const handleAssign = () => {
+        setOpenAssignModal(!openAssignModal)
+      }
+
+      const handleCloneModal = () => {
+        setOpenCloneModal(!openCloneModal)
+      }
+
+      const handleEditModal = () => {
+        setOpenEditModal(!openEditModal)
+      }
+
+    const handleDelete = () => {
+        setOpenDeleteModal(false);
+        if (formData.heatingAssignmentData?.buildings.some(building => building.roomsAssigned !== 0)) {
+            setOpenAlertDeleteModal(true);
+        }
+    };
+
+    const handleUpdateRoomsAssigned = (data) => {
+        if (data) {
+            onUpdateRooms(data)
+        }
+      };
+
+      const handleCloneHeatingProgram = (data) => {
+        if (data) {
+            onCloneProgram(data)
+        }
+      };
+
+      const handleEditHeatingProgram = (data) => {
+        if (data) {
+            onEditProgram(data)
+        }
+      };
 
     // Get heating schedule details by id
     useEffect(()=>{
@@ -33,12 +73,6 @@ const HeatingProgramEntity = ({ formData,onUpdateRooms,program }) => {
         })
         .catch(error => console.error('Error:', error));
       },[])
-    
-    const [openCloneModal, setOpenCloneModal] = useState(false);
-
-    const handleAssign = () => {
-      setOpenAssignModal(!openAssignModal)
-    }
 
     // Function to recursively count the rooms
     const countRooms = (node) => {
@@ -50,22 +84,6 @@ const HeatingProgramEntity = ({ formData,onUpdateRooms,program }) => {
         }
         return 0;
     };
-    const handleCloneModal = () => {
-        setOpenCloneModal(!openCloneModal)
-      }
-
-    const handleDelete = () => {
-        setOpenDeleteModal(false);
-        if (formData.heatingAssignmentData?.buildings.some(building => building.roomsAssigned !== 0)) {
-            setOpenAlertDeleteModal(true);
-        }
-    };
-
-    const handleUpdateRoomsAssigned = (data) => {
-        if (data) {
-            onUpdateRooms(data)
-        }
-      };
 
     const getDate = () => {
         // Input date string
@@ -88,30 +106,6 @@ const HeatingProgramEntity = ({ formData,onUpdateRooms,program }) => {
         // Create the formatted date string
         return `${day}/${month}/${year} ${formattedHours}:${minutes} ${ampm}`;
     }
-      const handleCloneHeatingProgram = (combinedData) => {
-        // if (combinedData) {
-        //   // Assuming the response status is set here based on an API call or some logic
-        //   if (response === 200) {
-        //     setToastMessage(errorMessages.successfulCreation);
-        //     setIsSuccess(true);
-        //   } else {
-        //     setToastMessage(errorMessages.FailedCreation);
-        //     setIsSuccess(false);
-        //   }
-        // } else {
-        //   setToastMessage(errorMessages.FailedCreation);
-        //   setIsSuccess(false);
-        // }
-        // setShowToast(true);
-      
-        //     // Hide the toast after 2 seconds
-        //     setTimeout(() => {
-        //       setShowToast(false);
-        //     }, 4000);
-      
-        // Handle combinedData here
-        console.log('Combined Data:', combinedData);
-      };
 
     return (
         <>
@@ -121,7 +115,7 @@ const HeatingProgramEntity = ({ formData,onUpdateRooms,program }) => {
                         <FaRegCopy onClick={handleCloneModal} className='cursor-pointer transition-all ease-in-out delay-75 hover:text-[#5a5d65]' />
                     </Tooltip>
                     <Tooltip className='min-w-[130px]' content="Edit program" style="light" animation="duration-500">
-                        <FaEdit className='cursor-pointer transition-all ease-in-out delay-75 hover:text-[#5a5d65]' />
+                        <FaEdit onClick={handleEditModal} className='cursor-pointer transition-all ease-in-out delay-75 hover:text-[#5a5d65]' />
                     </Tooltip>
                     <Tooltip className='min-w-[130px]' content="Delete program" style="light" animation="duration-500">
                         <RiDeleteBin6Line onClick={() => setOpenDeleteModal(true)} className='cursor-pointer transition-all ease-in-out delay-75 hover:text-[#b44949]' />
@@ -224,7 +218,8 @@ const HeatingProgramEntity = ({ formData,onUpdateRooms,program }) => {
                 <DeleteModal openDeleteModal={openDeleteModal} setOpenDeleteModal={setOpenDeleteModal} handleDelete={handleDelete} />
                 <AlertDeleteModal openAlertDeleteModal={openAlertDeleteModal} setOpenAlertDeleteModal={setOpenAlertDeleteModal} />
                 <AssignRoomsModal openAssignModal={openAssignModal} handleAssign={handleAssign} onUpdate={handleUpdateRoomsAssigned} />
-                <CloneHeatingModal openCloneModal={openCloneModal} handleCloneModal={handleCloneModal} onCreate={handleCloneHeatingProgram} />
+                <CloneHeatingModal openCloneModal={openCloneModal} handleCloneModal={handleCloneModal} onCreate={handleCloneHeatingProgram} program={program} locationDetails={locationDetails} />
+                <EditHeatingModal openEditModal={openEditModal} handleEditModal={handleEditModal} onEdit={handleEditHeatingProgram} program={program} locationDetails={locationDetails} />
             </div>
         </>
     )
