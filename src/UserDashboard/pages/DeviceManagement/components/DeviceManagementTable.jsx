@@ -7,6 +7,7 @@ import { RiErrorWarningFill } from 'react-icons/ri';
 import { IoIosWarning } from 'react-icons/io';
 import { GiTireIronCross } from 'react-icons/gi';
 import { AiOutlineExclamationCircle } from 'react-icons/ai';
+import { BsFillCalendarDateFill } from "react-icons/bs";
 import BatteryFull from '../../../../assets/battery-icons/battery-100.png';
 import BatteryHigh from '../../../../assets/battery-icons/battery-76.png';
 import BatteryMedium from '../../../../assets/battery-icons/battery-51.png';
@@ -14,7 +15,14 @@ import BatteryLow from '../../../../assets/battery-icons/battery-26.png';
 import BatteryEmpty from '../../../../assets/battery-icons/battery-0.png';
 import { FaChevronDown } from "react-icons/fa";
 import { FaChevronUp } from "react-icons/fa";
-
+import ThermometerIcon from '../../../../assets/icons/thermometer-02.png';
+import HumidityIcon from '../../../../assets/icons/humidity.png';
+import ValvePositionIcon from '../../../../assets/icons/pipe.png';
+import ChildLockIcon from '../../../../assets/icons/user-key.png';
+import ErrorIcon from '../../../../assets/icons/bell.png';
+import OpenCloseWindowIcon from '../../../../assets/icons/Window.png'
+import LightIntensityIcon from '../../../../assets/icons/light.png';
+import MovementIcon from '../../../../assets/icons/movement.png';
 
 const getBatteryImage = (battery_level) => {
   const level = parseInt(battery_level);
@@ -38,7 +46,6 @@ const OfflineTable = ({ tableData }) => {
   const [filteredData, setFilteredData] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [expandedRow, setExpandedRow] = useState(null);
-  const [accordianState, setAccordianState] = useState(false);
 
   const itemsPerPage = 10;
   const totalItems = filteredData && filteredData.length;
@@ -96,12 +103,8 @@ const OfflineTable = ({ tableData }) => {
 
   const handleRowClick = (index) => {
     setExpandedRow(expandedRow === index ? null : index);
-    if (accordianState === false) {
-      setAccordianState(true);
-    } else {
-      setAccordianState(false);
-    }
   };
+
 
   return (
     <div className="flex flex-col gap-4 w-full">
@@ -200,9 +203,8 @@ const OfflineTable = ({ tableData }) => {
                   <React.Fragment key={index}>
                     <tr
                       className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 cursor-pointer"
-                      onClick={() => handleRowClick(index)}
                     >
-                      <td> { accordianState === false ? <FaChevronDown /> : <FaChevronUp/>  }   </td>
+                      <td onClick={() => handleRowClick(index)} > {expandedRow === index ? <FaChevronUp /> : <FaChevronDown />}  </td>
                       <td className="px-4 py-4 truncate">{item.device_id}</td>
                       <td className="px-4 py-4 truncate">{item.type}</td>
                       <td className="px-4 py-4">
@@ -233,38 +235,99 @@ const OfflineTable = ({ tableData }) => {
                       </td>
                     </tr>
                     {expandedRow === index && (
-                      <tr className="bg-gray-100 dark:bg-gray-700">
-                        <td colSpan="7" className="p-4">
-                          {/* Add the additional details you want to display here */}
-                          <div className="text-sm">
-                            <p>
-                              <strong>Device ID:</strong> {item.device_id}
-                            </p>
-                            <p>
-                              <strong>Device Type:</strong> {item.type}
-                            </p>
-                            <p>
-                              <strong>Building:</strong> {item.building}
-                            </p>
-                            <p>
-                              <strong>Floor:</strong> {item.floor}
-                            </p>
-                            <p>
-                              <strong>Room:</strong> {item.room}
-                            </p>
-                            <p>
-                              <strong>Date:</strong> {item.date}
-                            </p>
-                            <p>
-                              <strong>Time:</strong> {item.time}
-                            </p>
-                            <p>
-                              <strong>Battery Level:</strong> {item.battery_level}%
-                            </p>
-                            <p>
-                              <strong>Status:</strong> {item.status}
-                            </p>
-                          </div>
+                      <tr className="w-full bg-gray-100 dark:bg-gray-700">
+                        <td colSpan="8" className="w-full p-6">
+
+                          {item.type === 'Type A' &&
+                            <div className='flex flex-row justify-around items-start px-2 gap-24'>
+                              <div className='flex flex-col justify-start items-start gap-2'>
+                                <img src={ThermometerIcon} alt="Thermometer Icon" />
+                                <h2> Target Temprature </h2>
+                                <h1 className='text-black font-medium text-base'> Manual · 20°C </h1>
+                                <h2> Current Temprature </h2>
+                                <h1 className='text-black font-medium text-base'> 20 °C</h1>
+                              </div>
+                              <div className='flex flex-col justify-start items-start gap-2'>
+                                <img src={HumidityIcon} alt="Humidity Icon" />
+                                <h2> Current humidity </h2>
+                                <h1 className='text-black font-medium text-base'> 20 °C</h1>
+                              </div>
+                              <div className='flex flex-col justify-start items-start gap-2'>
+                                <img src={LightIntensityIcon} alt="Light Intensity Icon" />
+                                <h2> Light intensity </h2>
+                                <h1 className='text-black font-medium text-base'> 120 </h1>
+                              </div>
+                              <div className='flex flex-col justify-start items-start gap-2'>
+                                <img src={MovementIcon} alt="Movement Icon" />
+                                <h2> Movement detected </h2>
+                                <h1 className='text-black font-medium text-base'> 120 </h1>
+                              </div>
+                              <div className='flex flex-col justify-start items-start gap-2'>
+                                <img src={ErrorIcon} alt="Error Icon" />
+                                <h2> Error</h2>
+                                <h1 className='text-black font-medium text-base'> - </h1>
+                                <h2> Date/time of data packet </h2>
+                                <h1 className='text-black font-medium text-base'> - </h1>
+                              </div>
+                            </div>
+                          }
+
+                          {item.type === 'Type B' &&
+                            <div className='flex flex-row justify-around items-start px-2 gap-24'>
+                              <div className='flex flex-col justify-start items-start gap-2'>
+                                <img src={ThermometerIcon} alt="Thermometer Icon" />
+                                <h2> Target Temprature </h2>
+                                <h1 className='text-black font-medium text-base'> Manual · 20°C </h1>
+                                <h2> Current Temprature </h2>
+                                <h1 className='text-black font-medium text-base'> 20 °C</h1>
+                              </div>
+                              <div className='flex flex-col justify-start items-start gap-2'>
+                                <img src={HumidityIcon} alt="Humidity Icon" />
+                                <h2> Current humidity </h2>
+                                <h1 className='text-black font-medium text-base'> 20 °C</h1>
+                              </div>
+                              <div className='flex flex-col justify-start items-start gap-2'>
+                                <img src={ValvePositionIcon} alt="Valve Position Icon" />
+                                <h2> Valve position in % </h2>
+                                <h1 className='text-black font-medium text-base'> 20% </h1>
+                                <h2> Valve position in steps </h2>
+                                <h1 className='text-black font-medium text-base'> 123 </h1>
+                              </div>
+                              <div className='flex flex-col justify-start items-start gap-2'>
+                                <img src={ChildLockIcon} alt="Child Lock Icon" />
+                                <h2> Child lock</h2>
+                                <h1 className='text-black font-medium text-base'> Yes </h1>
+                              </div>
+                              <div className='flex flex-col justify-start items-start gap-2'>
+                                <img src={ErrorIcon} alt="Error Icon" />
+                                <h2> Error</h2>
+                                <h1 className='text-black font-medium text-base'> - </h1>
+                                <h2> Date/time of data packet </h2>
+                                <h1 className='text-black font-medium text-base'> - </h1>
+                              </div>
+                            </div>
+                          }
+
+                          {item.type === 'Type C' &&
+                            <div className='flex flex-row justify-start items-start px-5 gap-52'>
+                              <div className='flex flex-col justify-start items-start gap-2'>
+                                <img src={OpenCloseWindowIcon} alt="Open Close Window Icon" />
+                                <h2> Open/close </h2>
+                                <h1 className='text-black font-medium text-base'> Open </h1>
+                              </div>
+                              <div className='flex flex-col justify-start items-start gap-2'>
+                                <img src={ErrorIcon} alt="Error Icon" />
+                                <h2> Error </h2>
+                                <h1 className='text-black font-medium text-base'> - </h1>
+                              </div>
+                              <div className='flex flex-col justify-start items-start gap-2'>
+                                <BsFillCalendarDateFill className='text-2xl' />
+                                <h2> Date/time of data packet </h2>
+                                <h1 className='text-black font-medium text-base'> - </h1>
+                              </div>
+                            </div>
+                          }
+
                         </td>
                       </tr>
                     )}
@@ -318,8 +381,8 @@ const OfflineTable = ({ tableData }) => {
                 key={startPage + index}
                 onClick={() => handlePageChange(startPage + index)}
                 className={`inline-flex items-center px-4 py-2 text-sm font-medium rounded-sm ${currentPage === startPage + index
-                    ? 'text-primary bg-[#CFF4FB] hover:bg-primary-300'
-                    : 'text-gray-500 bg-white hover:bg-gray-100'
+                  ? 'text-primary bg-[#CFF4FB] hover:bg-primary-300'
+                  : 'text-gray-500 bg-white hover:bg-gray-100'
                   }`}
               >
                 {startPage + index}
