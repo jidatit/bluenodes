@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Accordion, Pagination, Select, Tooltip, TextInput } from 'flowbite-react';
+import { Select, Tooltip, TextInput } from 'flowbite-react';
 import { IoChevronBackOutline, IoChevronForwardOutline } from 'react-icons/io5';
 import { MdOutlineAccessTimeFilled } from 'react-icons/md';
-import { FaCircleInfo, FaRegCircleCheck } from 'react-icons/fa6';
-import { RiErrorWarningFill } from 'react-icons/ri';
-import { IoIosWarning } from 'react-icons/io';
+import { FaRegCircleCheck } from 'react-icons/fa6';
 import { GiTireIronCross } from 'react-icons/gi';
 import { AiOutlineExclamationCircle } from 'react-icons/ai';
+import { BsFillCalendarDateFill } from "react-icons/bs";
 import BatteryFull from '../../../../assets/battery-icons/battery-100.png';
 import BatteryHigh from '../../../../assets/battery-icons/battery-76.png';
 import BatteryMedium from '../../../../assets/battery-icons/battery-51.png';
@@ -17,6 +16,15 @@ import { FaChevronUp } from "react-icons/fa";
 import { FaEdit } from "react-icons/fa";
 import { ImCancelCircle } from "react-icons/im";
 import { FaCheck } from "react-icons/fa6";
+import ThermometerIcon from '../../../../assets/icons/thermometer-02.png';
+import HumidityIcon from '../../../../assets/icons/humidity.png';
+import ValvePositionIcon from '../../../../assets/icons/pipe.png';
+import ChildLockIcon from '../../../../assets/icons/user-key.png';
+import ErrorIcon from '../../../../assets/icons/bell.png';
+import OpenCloseWindowIcon from '../../../../assets/icons/Window.png'
+import LightIntensityIcon from '../../../../assets/icons/light.png';
+import MovementIcon from '../../../../assets/icons/movement.png';
+import { FaSearch } from "react-icons/fa";
 
 const getBatteryImage = (battery_level) => {
   const level = parseInt(battery_level);
@@ -40,7 +48,6 @@ const OfflineTable = ({ tableData }) => {
   const [filteredData, setFilteredData] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [expandedRow, setExpandedRow] = useState(null);
-  const [accordianState, setAccordianState] = useState(false);
 
   const itemsPerPage = 10;
   const totalItems = filteredData && filteredData.length;
@@ -98,11 +105,6 @@ const OfflineTable = ({ tableData }) => {
 
   const handleRowClick = (index) => {
     setExpandedRow(expandedRow === index ? null : index);
-    if (accordianState === false) {
-      setAccordianState(true);
-    } else {
-      setAccordianState(false);
-    }
   };
 
   const [editMode, setEditMode] = useState(false);
@@ -138,9 +140,6 @@ const OfflineTable = ({ tableData }) => {
 
   return (
     <div className="flex flex-col gap-4 w-full">
-      <div className="flex flex-col justify-center items-start w-full">
-        <h1 className="font-[500] text-lg text-gray-900">Devices Offline</h1>
-      </div>
       <div className="relative w-full overflow-x-auto bg-white shadow-md sm:rounded-lg">
         <div className="flex flex-column my-2 bg-transparent mx-2 sm:flex-row flex-wrap space-y-4 sm:space-y-0 items-center justify-between">
           {/* Filter buttons */}
@@ -179,7 +178,7 @@ const OfflineTable = ({ tableData }) => {
           {/* Search bar */}
           <div className="relative">
             <div className="absolute inset-y-0 left-0 rtl:inset-r-0 rtl:right-0 flex items-center ps-3 pointer-events-none">
-              {/* <FaSearch className="w-4 h-4 text-gray-500 dark:text-gray-400" /> */}
+              <FaSearch className="w-4 h-4 text-gray-500 dark:text-gray-400" />
             </div>
             <input
               type="text"
@@ -236,9 +235,8 @@ const OfflineTable = ({ tableData }) => {
                   <React.Fragment key={index}>
                     <tr
                       className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 cursor-pointer"
-                    // onClick={() => handleRowClick(index)}
                     >
-                      <td> {accordianState === false ? <FaChevronDown /> : <FaChevronUp />}   </td>
+                      <td onClick={() => handleRowClick(index)} > {expandedRow === index ? <FaChevronUp className='ml-2 w-6 h-6 p-1 rounded-full shadow-md' /> : <FaChevronDown className='ml-2 w-6 h-6 p-1 rounded-full shadow-md' />}  </td>
                       <td className="px-4 py-4 truncate">{item.device_id}</td>
 
                       <td className="px-4 py-4 relative truncate">
@@ -268,20 +266,26 @@ const OfflineTable = ({ tableData }) => {
                               onClick={handleCancel}
                               className="p-1 hover:bg-gray-300 hover:shadow-md hover:rounded-md text-red-700"
                             >
-                              <ImCancelCircle className='w-4 h-4' />
+                              <Tooltip placement='left' content={"Cancel"} style="light" animation="duration-500">
+                                <ImCancelCircle className='w-4 h-4' />
+                              </Tooltip>
                             </button>
                             <button
                               onClick={() => handleSave(item.device_id)}
                               className="p-1 hover:bg-gray-300 hover:shadow-md hover:rounded-md text-green-800"
                             >
-                              <FaCheck className='w-4 h-4' />
+                              <Tooltip placement='left' content={"Save"} style="light" animation="duration-500">
+                                <FaCheck className='w-4 h-4' />
+                              </Tooltip>
                             </button>
                           </div>
                         ) : (
-                          <FaEdit
-                            onClick={() => handleEditClick(item.device_id)}
-                            className='absolute p-[2px] hover:rounded-md hover:shadow-md hover:bg-gray-300 w-5 h-5 top-1/2 bottom-1/2 right-0 transform -translate-y-1/2'
-                          />
+                          <Tooltip placement='left' content={"Edit Name"} style="light" animation="duration-500">
+                            <FaEdit
+                              onClick={() => handleEditClick(item.device_id)}
+                              className='absolute p-[2px] hover:rounded-md hover:shadow-md hover:bg-gray-300 w-5 h-5 top-1/2 bottom-1/2 right-0 transform -translate-y-1/2'
+                            />
+                          </Tooltip>
                         )}
                       </td>
 
@@ -314,41 +318,99 @@ const OfflineTable = ({ tableData }) => {
                       </td>
                     </tr>
                     {expandedRow === index && (
-                      <tr className="bg-gray-100 dark:bg-gray-700">
-                        <td colSpan="7" className="p-4">
-                          {/* Add the additional details you want to display here */}
-                          <div className="text-sm">
-                            <p>
-                              <strong>Device ID:</strong> {item.device_id}
-                            </p>
-                            <p>
-                              <strong>Device Name:</strong> {item.device_name}
-                            </p>
-                            <p>
-                              <strong>Device Type:</strong> {item.type}
-                            </p>
-                            <p>
-                              <strong>Building:</strong> {item.building}
-                            </p>
-                            <p>
-                              <strong>Floor:</strong> {item.floor}
-                            </p>
-                            <p>
-                              <strong>Room:</strong> {item.room}
-                            </p>
-                            <p>
-                              <strong>Date:</strong> {item.date}
-                            </p>
-                            <p>
-                              <strong>Time:</strong> {item.time}
-                            </p>
-                            <p>
-                              <strong>Battery Level:</strong> {item.battery_level}%
-                            </p>
-                            <p>
-                              <strong>Status:</strong> {item.status}
-                            </p>
-                          </div>
+                      <tr className="w-full bg-gray-100 dark:bg-gray-700">
+                        <td colSpan="9" className="w-full p-6">
+
+                          {item.type === 'Type A' &&
+                            <div className='flex flex-row justify-around items-start px-2 gap-24'>
+                              <div className='flex flex-col justify-start items-start gap-2'>
+                                <img src={ThermometerIcon} alt="Thermometer Icon" />
+                                <h2> Target Temprature </h2>
+                                <h1 className='text-black font-medium text-base'> Manual · 20°C </h1>
+                                <h2> Current Temprature </h2>
+                                <h1 className='text-black font-medium text-base'> 20 °C</h1>
+                              </div>
+                              <div className='flex flex-col justify-start items-start gap-2'>
+                                <img src={HumidityIcon} alt="Humidity Icon" />
+                                <h2> Current humidity </h2>
+                                <h1 className='text-black font-medium text-base'> 20 °C</h1>
+                              </div>
+                              <div className='flex flex-col justify-start items-start gap-2'>
+                                <img src={LightIntensityIcon} alt="Light Intensity Icon" />
+                                <h2> Light intensity </h2>
+                                <h1 className='text-black font-medium text-base'> 120 </h1>
+                              </div>
+                              <div className='flex flex-col justify-start items-start gap-2'>
+                                <img src={MovementIcon} alt="Movement Icon" />
+                                <h2> Movement detected </h2>
+                                <h1 className='text-black font-medium text-base'> 120 </h1>
+                              </div>
+                              <div className='flex flex-col justify-start items-start gap-2'>
+                                <img src={ErrorIcon} alt="Error Icon" />
+                                <h2> Error</h2>
+                                <h1 className='text-black font-medium text-base'> - </h1>
+                                <h2> Date/time of data packet </h2>
+                                <h1 className='text-black font-medium text-base'> - </h1>
+                              </div>
+                            </div>
+                          }
+
+                          {item.type === 'Type B' &&
+                            <div className='flex flex-row justify-around items-start px-2 gap-24'>
+                              <div className='flex flex-col justify-start items-start gap-2'>
+                                <img src={ThermometerIcon} alt="Thermometer Icon" />
+                                <h2> Target Temprature </h2>
+                                <h1 className='text-black font-medium text-base'> Manual · 20°C </h1>
+                                <h2> Current Temprature </h2>
+                                <h1 className='text-black font-medium text-base'> 20 °C</h1>
+                              </div>
+                              <div className='flex flex-col justify-start items-start gap-2'>
+                                <img src={HumidityIcon} alt="Humidity Icon" />
+                                <h2> Current humidity </h2>
+                                <h1 className='text-black font-medium text-base'> 20 °C</h1>
+                              </div>
+                              <div className='flex flex-col justify-start items-start gap-2'>
+                                <img src={ValvePositionIcon} alt="Valve Position Icon" />
+                                <h2> Valve position in % </h2>
+                                <h1 className='text-black font-medium text-base'> 20% </h1>
+                                <h2> Valve position in steps </h2>
+                                <h1 className='text-black font-medium text-base'> 123 </h1>
+                              </div>
+                              <div className='flex flex-col justify-start items-start gap-2'>
+                                <img src={ChildLockIcon} alt="Child Lock Icon" />
+                                <h2> Child lock</h2>
+                                <h1 className='text-black font-medium text-base'> Yes </h1>
+                              </div>
+                              <div className='flex flex-col justify-start items-start gap-2'>
+                                <img src={ErrorIcon} alt="Error Icon" />
+                                <h2> Error</h2>
+                                <h1 className='text-black font-medium text-base'> - </h1>
+                                <h2> Date/time of data packet </h2>
+                                <h1 className='text-black font-medium text-base'> - </h1>
+                              </div>
+                            </div>
+                          }
+
+                          {item.type === 'Type C' &&
+                            <div className='flex flex-row justify-start items-start px-5 gap-52'>
+                              <div className='flex flex-col justify-start items-start gap-2'>
+                                <img src={OpenCloseWindowIcon} alt="Open Close Window Icon" />
+                                <h2> Open/close </h2>
+                                <h1 className='text-black font-medium text-base'> Open </h1>
+                              </div>
+                              <div className='flex flex-col justify-start items-start gap-2'>
+                                <img src={ErrorIcon} alt="Error Icon" />
+                                <h2> Error </h2>
+                                <h1 className='text-black font-medium text-base'> - </h1>
+                              </div>
+                              <div className='flex flex-col justify-start items-start gap-2'>
+                                <BsFillCalendarDateFill className='text-2xl' />
+                                <h2> Date/time of data packet </h2>
+                                <h1 className='text-black font-medium text-base'> - </h1>
+                              </div>
+                            </div>
+                          }
+
                         </td>
                       </tr>
                     )}
