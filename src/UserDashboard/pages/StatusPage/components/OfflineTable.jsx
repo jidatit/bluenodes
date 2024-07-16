@@ -72,8 +72,8 @@ const OfflineTable = ({tableData}) => {
             return (
                 eventDate >= startDate &&
                 eventDate <= currentDate &&
-                (item.room.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                    item.event_type.toLowerCase().includes(searchQuery.toLowerCase()))
+                (item.device_id.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                    item.type.toLowerCase().includes(searchQuery.toLowerCase()))
             );
         });
 
