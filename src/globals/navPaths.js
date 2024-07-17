@@ -1,6 +1,7 @@
 export const NAVIGATION_PATH = {
-  login:'/login',
+  login: '/login',
   statuspage: '/',
-  heatingprograms:'/dashboard/heating-programs',
-  operationalOverview:'/dashboard/operational-overview'
+  heatingprograms: '/dashboard/heating-programs',
+  operationalOverview: '/dashboard/operational-overview',
+  deviceManagement: '/dashboard/device-management'
 };

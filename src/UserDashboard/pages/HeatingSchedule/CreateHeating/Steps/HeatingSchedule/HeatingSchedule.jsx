@@ -8,13 +8,140 @@
   import { IoMdClose } from 'react-icons/io';
   import { FaCircleCheck } from 'react-icons/fa6';
   import { errorMessages } from '../../../../../../globals/errorMessages';
-import { IoArrowBackCircle, IoChevronBackCircleSharp } from 'react-icons/io5';
+import { IoArrowBackCircle } from 'react-icons/io5';
 import { Tooltip } from 'flowbite-react';
 
-  function HeatingSchedule({ onUpdateLayouts, setHandleCheckRef, handlePrev, finalScheduleData }) {
+  function HeatingSchedule({ onUpdateLayouts, setHandleCheckRef, handlePrev, finalScheduleData,clone, locationDetails }) {
     const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
-    const initialLayouts = {
+        // Helper function to convert time to units
+        const convertTimeToUnits = (time) => {
+          const [hours, minutes, seconds] = time.split(':').map(Number);
+          // Map 23:59 to 96
+          if (hours === 23 && minutes === 59) {
+            return 96;
+          }
+          return (hours * 4) + (minutes / 15);
+        };
+    
+        // Convert the times in the data
+        locationDetails = locationDetails?.days.map(item => ({
+          ...item,
+          from: convertTimeToUnits(item.from),
+          to: convertTimeToUnits(item.to)
+        }));
+    
+        // Group data by day
+        let groupedData = locationDetails?.reduce((acc, obj) => {
+          // If the day key doesn't exist, create it
+          if (!acc[obj.day]) {
+            acc[obj.day] = [];
+          }
+          // Push the object into the array for that day
+          acc[obj.day].push(obj);
+          return acc;
+        }, {});
+
+    const initialLayouts = clone && locationDetails ? {
+      Monday: groupedData[1].map((item, index) => ({
+        w: 1,
+        h: item.to-item.from,
+        x: 0,
+        y: item.from,
+        i: `box-Monday-${index + 1}`,
+        minW: 1,
+        maxW: 2,
+        minH: 1,
+        maxH: 24,
+        moved: false,
+        static: false,
+        temperature: item.targetTemperature.toString()
+        })),
+        Tuesday: groupedData[2].map((item, index) => ({
+          w: 1,
+          h: item.to-item.from,
+          x: 0,
+          y: item.from,
+          i: `box-Tuesday-${index + 1}`,
+          minW: 1,
+          maxW: 2,
+          minH: 1,
+          maxH: 24,
+          moved: false,
+          static: false,
+          temperature: item.targetTemperature.toString()
+          })),
+        Wednesday: groupedData[3].map((item, index) => ({
+          w: 1,
+          h: item.to-item.from,
+          x: 0,
+          y: item.from,
+          i: `box-Wednesday-${index + 1}`,
+          minW: 1,
+          maxW: 2,
+          minH: 1,
+          maxH: 24,
+          moved: false,
+          static: false,
+          temperature: item.targetTemperature.toString()
+          })),
+        Thursday: groupedData[4].map((item, index) => ({
+          w: 1,
+          h: item.to-item.from,
+          x: 0,
+          y: item.from,
+          i: `box-Thursday-${index + 1}`,
+          minW: 1,
+          maxW: 2,
+          minH: 1,
+          maxH: 24,
+          moved: false,
+          static: false,
+          temperature: item.targetTemperature.toString()
+          })),
+        Friday: groupedData[5].map((item, index) => ({
+          w: 1,
+          h: item.to-item.from,
+          x: 0,
+          y: item.from,
+          i: `box-Friday-${index + 1}`,
+          minW: 1,
+          maxW: 2,
+          minH: 1,
+          maxH: 24,
+          moved: false,
+          static: false,
+          temperature: item.targetTemperature.toString()
+          })),
+        Saturday: groupedData[6].map((item, index) => ({
+          w: 1,
+          h: item.to-item.from,
+          x: 0,
+          y: item.from,
+          i: `box-Saturday-${index + 1}`,
+          minW: 1,
+          maxW: 2,
+          minH: 1,
+          maxH: 24,
+          moved: false,
+          static: false,
+          temperature: item.targetTemperature.toString()
+          })),
+        Sunday: groupedData[7].map((item, index) => ({
+          w: 1,
+          h: item.to-item.from,
+          x: 0,
+          y: item.from,
+          i: `box-Sunday-${index + 1}`,
+          minW: 1,
+          maxW: 2,
+          minH: 1,
+          maxH: 24,
+          moved: false,
+          static: false,
+          temperature: item.targetTemperature.toString()
+          }))
+    } : { 
       Monday: [],
       Tuesday: [],
       Wednesday: [],

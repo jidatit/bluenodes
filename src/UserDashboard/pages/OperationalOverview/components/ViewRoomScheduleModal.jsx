@@ -6,6 +6,7 @@ import { IoInformationCircleOutline } from "react-icons/io5";
 import { useState } from "react";
 import HeatingScheduleTable from "../../HeatingSchedule/components/HeatingScheduleTable";
 import HeatingScheduleComparison from "./HeatingScheduleComparison";
+import HeatingScheduleTableStatic from "../../HeatingSchedule/components/HeatingScheduleTableStatic";
 
 export function ViewRoomScheduleModal({ openModal,handleOpenModal }) {
   const dummyData = {
@@ -460,7 +461,7 @@ export function ViewRoomScheduleModal({ openModal,handleOpenModal }) {
               </div>
               {!isChecked ? 
                 (<div className="max-h-[400px] overflow-y-auto overflow-x-hidden">
-                  <HeatingScheduleTable initialLayouts={dummyData.finalScheduleData} noHeading={true} />
+                  <HeatingScheduleTableStatic initialLayouts={dummyData.finalScheduleData} noHeading={true} />
                 </div>)
                 :
                 (<div className="max-h-[400px] overflow-y-auto overflow-x-hidden">

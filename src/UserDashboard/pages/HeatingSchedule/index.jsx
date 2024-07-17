@@ -438,6 +438,56 @@ const handleRoomUpdate = (data) => {
   // console.log('Combined Data:', combinedData);
 };
 
+const handleCloneProgram = (data) => {
+  if (data) {
+    // Assuming the response status is set here based on an API call or some logic
+    if (response === 200) {
+      setToastMessage(errorMessages.cloneSuccessfull);
+      setIsSuccess(true);
+    } else {
+      setToastMessage(errorMessages.cloneFailed);
+      setIsSuccess(false);
+    }
+  } else {
+    setToastMessage(errorMessages.cloneFailed);
+    setIsSuccess(false);
+  }
+  setShowToast(true);
+
+      // Hide the toast after 2 seconds
+      setTimeout(() => {
+        setShowToast(false);
+      }, 4000);
+
+  // Handle combinedData here
+  // console.log('Combined Data:', combinedData);
+};
+
+const handleEditProgram = (data) => {
+  if (data) {
+    // Assuming the response status is set here based on an API call or some logic
+    if (response === 200) {
+      setToastMessage(errorMessages.editSuccessfull);
+      setIsSuccess(true);
+    } else {
+      setToastMessage(errorMessages.editFailed);
+      setIsSuccess(false);
+    }
+  } else {
+    setToastMessage(errorMessages.editFailed);
+    setIsSuccess(false);
+  }
+  setShowToast(true);
+
+      // Hide the toast after 2 seconds
+      setTimeout(() => {
+        setShowToast(false);
+      }, 4000);
+
+  // Handle combinedData here
+  // console.log('Combined Data:', combinedData);
+};
+
   return (
     <div className=" flex flex-col gap-6">
       <h2 className=" text-[24px] text-black">Heating programs management</h2>
@@ -470,7 +520,7 @@ const handleRoomUpdate = (data) => {
       {/* here  */}
       {programList.length>0 && 
       programList.map((program,index)=>(
-        (<HeatingProgramEntity key={index} formData={dummyData} onUpdateRooms={handleRoomUpdate} program={program} />)
+        (<HeatingProgramEntity key={index} formData={dummyData} onUpdateRooms={handleRoomUpdate} onCloneProgram={handleCloneProgram} onEditProgram={handleEditProgram} program={program} />)
       ))
       }
       <div><CreateHeatingModal openModal={openModal} handleOpenModal={handleOpenModal} onCreate={handleCreateHeatingProgram} /></div>
