@@ -2,7 +2,7 @@
 // Parent Component
 import { Button, Modal } from "flowbite-react";
 import customTheme from "./ModalTheme";
-import { useEffect, useRef, useState } from "react";
+import { useDebugValue, useEffect, useRef, useState } from "react";
 import ProgressStepper from "./components/ProgressStepper";
 import { errorMessages as errors } from "../../../../globals/errorMessages"; // Import error messages
 import GeneralInformation from "./Steps/GeneralInformation/GeneralInformation";
@@ -10,6 +10,9 @@ import ProgramAssignment from "./Steps/ProgramAssignment/ProgramAssignment";
 import HeatingSchedule from "./Steps/HeatingSchedule/HeatingSchedule";
 
 export function CreateHeatingModal({ openModal, handleOpenModal, onCreate }) {
+
+  //Set token for bearer authorization
+  const token = localStorage.getItem('token');
   
   const [currentStep, setCurrentStep] = useState(1);
 
@@ -358,6 +361,55 @@ export function CreateHeatingModal({ openModal, handleOpenModal, onCreate }) {
     handleOpenModal();
   };
 
+  const [initialData, setInitialData] = useState({})
+
+  useEffect(()=>{
+    fetch(`https://api-dev.blue-nodes.app/dev/smartheating/locations?heatingScheduleDetails=true&roomTemperature=true&assignedPrograms=true&numberOfRooms=true`, {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+      const apiData = {
+        buildings: data.map((building) => {
+          // Calculate the total rooms in the building
+          const totalRooms = building.children.reduce((sum, floor) => sum + floor.children.length, 0);
+      
+          return {
+            id: building.id,
+            name: building.name,
+            roomsAssigned: building.assignedPrograms,
+            totalRooms: totalRooms,
+            floors: building.children.map((floor) => (
+              {
+                id: floor.id,
+                name: floor.name,
+                roomsAssigned: floor.assignedPrograms,
+                totalRooms: floor.children.length,
+                rooms: floor.children.map((room) => (
+                  {
+                    id: room.id,
+                    name: room.name,
+                    type: room.type,
+                    algorithmOn: false,
+                    programAssigned: room.assignedPrograms,
+                    currentTemperature: room.roomTemperature,
+                    assigned: room.assignedPrograms === 0 ? false : true
+                  }
+                ))
+              }
+            ))
+          };
+        })
+      };
+      
+    setInitialData(apiData)
+    })
+    .catch(error => console.error('Error:', error));
+  },[])
+
   return (
     <>
       <Modal theme={customTheme} size={currentStep === 2 ? "7xl" : "5xl"} dismissible show={openModal} onClose={handleCloseModal}>
@@ -394,6 +446,7 @@ export function CreateHeatingModal({ openModal, handleOpenModal, onCreate }) {
                     assignmentData={handleAssignmentData}
                     handlePrev={handlePrevious}
                     heatingData={heatingAssignmentData}
+                    initialData={initialData}
                   />
                 </div>
               )}
