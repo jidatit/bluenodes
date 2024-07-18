@@ -12,8 +12,6 @@ export function EditHeatingModal({ openEditModal, handleEditModal, onEdit, progr
 
   //Set token for bearer authorization
   const token = localStorage.getItem('token');
-
-  console.log(program)
   
   const [currentStep, setCurrentStep] = useState(1);
 

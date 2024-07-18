@@ -391,7 +391,6 @@ export function CreateHeatingModal({ openModal, handleOpenModal, onCreate }) {
             "days": convertScheduleData(combinedData.finalScheduleData)
           }
 
-          console.log(finalObj)
           handleOpenModal();
           resetModalState();
           // Submit the form or perform other actions
@@ -408,8 +407,7 @@ export function CreateHeatingModal({ openModal, handleOpenModal, onCreate }) {
           .then(data => {
             console.log(data)
           })
-          .catch(error => console.error('Error:', error));   
-          console.log(finalObj)       
+          .catch(error => console.error('Error:', error));        
         }
       } else {
         console.error('handleAssignmentRef.current is not defined');

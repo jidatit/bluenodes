@@ -109,6 +109,10 @@ import customTheme from '../CreateHeating/ModalTheme';
 // };
 
 function AssignRoomsModal({ openAssignModal,handleAssign, onUpdate,initialData, program }) {
+  
+  //Set token for bearer authorization
+  const token = localStorage.getItem('token');
+
   const [heatingData, setheatingData] = useState({});
   const [data, setData] = useState(heatingData && Object.keys(heatingData).length>0 ? heatingData:_.cloneDeep(initialData));
   const [filter, setFilter] = useState('All');
@@ -290,7 +294,42 @@ function AssignRoomsModal({ openAssignModal,handleAssign, onUpdate,initialData, 
         console.log(data)
         handleAssign()
         onUpdate(data)
-        // Submit the form or perform other actions
+
+        function getRoomIdsByProgram(data) {
+          const programName = program.templateName;
+          const roomIds = [];
+      
+          // Loop through each building
+          data.forEach(building => {
+              // Loop through each floor in the building
+              building.floors.forEach(floor => {
+                  // Loop through each room on the floor
+                  floor.rooms.forEach(room => {
+                      // Check if the programAssigned matches the programName
+                      if (room.programAssigned === programName) {
+                          roomIds.push(room.id);
+                      }
+                  });
+              });
+          });
+      
+          return roomIds;
+        }
+
+        // API call
+        fetch(`https://api-dev.blue-nodes.app/dev/smartheating/heatingschedule/${program.id}/assignrooms`, {
+              method: 'POST',
+              headers: {
+                  'Authorization': `Bearer ${token}`,
+                  'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({locations:getRoomIdsByProgram(data.buildings)})
+          })
+          .then(response => response.json())
+          .then(data => {
+            console.log(data)
+          })
+          .catch(error => console.error('Error:', error)); 
       }
     }, [data, setNoRoomsError, setError]); // Dependency array
 
@@ -304,7 +343,6 @@ function AssignRoomsModal({ openAssignModal,handleAssign, onUpdate,initialData, 
         setNoRoomsError(true)
       } else {
         setNoRoomsError(false);
-        // Submit the form or perform other actions
       }
     }),[data]
 

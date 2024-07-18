@@ -34,12 +34,51 @@ const HeatingProgramEntity = ({ formData,onUpdateRooms,onCloneProgram, onEditPro
         setOpenEditModal(!openEditModal)
       }
 
-    const handleDelete = () => {
+      const handleDelete = async () => {
         setOpenDeleteModal(false);
-        if (formData.heatingAssignmentData?.buildings.some(building => building.roomsAssigned !== 0)) {
+
+        const programName = program.templateName;
+
+        // Check if any room has a matching programAssigned
+        const hasMatchingProgram = initialData.buildings.some(building => 
+            building.floors.some(floor => 
+                floor.rooms.some(room => 
+                    room.programAssigned === programName
+                )
+            )
+        );
+
+        if (hasMatchingProgram) {
             setOpenAlertDeleteModal(true);
+            return; // Exit the function if there's a matching program
         }
-    };
+
+        // If no matching program, proceed to call the delete API
+        try {
+            const response = await fetch(`https://api-dev.blue-nodes.app/dev/smartheating/heatingschedule/${program.id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}` // Add auth token if needed
+                },
+            });
+
+            if (response.ok) {
+                // Handle successful delete
+                console.log('Delete successful');
+                // Perform any state updates or UI changes
+            } else {
+                // Handle errors
+                const errorData = await response.json();
+                console.error('Delete failed', errorData);
+            }
+        } catch (error) {
+            console.error('Network error', error);
+        }
+        
+      };
+    
+    
 
     const handleUpdateRoomsAssigned = (data) => {
         if (data) {
