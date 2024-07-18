@@ -9,106 +9,109 @@ import _ from 'lodash';
 import { IoArrowBackCircle } from 'react-icons/io5';
 import customTheme from '../CreateHeating/ModalTheme';
 
-const initialData = {
-  buildings: [
-    {
-      id: 'building-a',
-      name: 'Building A',
-      roomsAssigned: 3,
-      totalRooms: 15,
-      floors: [
-        {
-          id: 'floor-1',
-          name: 'Floor 1',
-          roomsAssigned: 1,
-          totalRooms: 5,
-          rooms: [
-            { id: 'room-123', name: 'Room 123', type: 'Room type name', algorithmOn: false, programAssigned: null, currentTemperature: '20°C',assigned: false },
-            { id: 'room-234', name: 'Room 234', type: 'Room type name', algorithmOn: false, programAssigned: null, currentTemperature: '20°C',assigned: false },
-            { id: 'room-345', name: 'Room 345', type: 'Room type name', algorithmOn: false, programAssigned: null, currentTemperature: '20°C',assigned: false },
-            { id: 'room-456', name: 'Room 456', type: 'Room type name', algorithmOn: false, programAssigned: null, currentTemperature: '20°C',assigned: false },
-            { id: 'room-567', name: 'Room 567', type: 'Room type name', algorithmOn: true, programAssigned: 'Program 1', currentTemperature: '20°C',assigned: false }
-          ]
-        },
-        {
-          id: 'floor-2',
-          name: 'Floor 2',
-          roomsAssigned: 1,
-          totalRooms: 5,
-          rooms: [
-            { id: 'room-1231', name: 'Room 123', type: 'Room type name', algorithmOn: false, programAssigned: null, currentTemperature: '20°C',assigned: false },
-            { id: 'room-2341', name: 'Room 234', type: 'Room type name', algorithmOn: false, programAssigned: null, currentTemperature: '20°C',assigned: false },
-            { id: 'room-3451', name: 'Room 345', type: 'Room type name', algorithmOn: false, programAssigned: null, currentTemperature: '20°C',assigned: false },
-            { id: 'room-4561', name: 'Room 456', type: 'Room type name', algorithmOn: false, programAssigned: null, currentTemperature: '20°C',assigned: false },
-            { id: 'room-5671', name: 'Room 567', type: 'Room type name', algorithmOn: true, programAssigned: 'Program 1', currentTemperature: '20°C',assigned: false }
-          ]
-        },
-        {
-          id: 'floor-3',
-          name: 'Floor 3',
-          roomsAssigned: 1,
-          totalRooms: 5,
-          rooms: [
-            { id: 'room-1232', name: 'Room 123', type: 'Room type name', algorithmOn: false, programAssigned: null, currentTemperature: '20°C',assigned: false },
-            { id: 'room-2342', name: 'Room 234', type: 'Room type name', algorithmOn: false, programAssigned: null, currentTemperature: '20°C',assigned: false },
-            { id: 'room-3452', name: 'Room 345', type: 'Room type name', algorithmOn: false, programAssigned: null, currentTemperature: '20°C',assigned: false },
-            { id: 'room-4562', name: 'Room 456', type: 'Room type name', algorithmOn: false, programAssigned: null, currentTemperature: '20°C',assigned: false },
-            { id: 'room-5672', name: 'Room 567', type: 'Room type name', algorithmOn: true, programAssigned: 'Program 1', currentTemperature: '20°C',assigned: false }
-          ]
-        }
-      ]
-    },
-    {
-      id: 'building-b',
-      name: 'Building B',
-      roomsAssigned: 2,
-      totalRooms: 15,
-      floors: [
-        {
-          id: 'floor-1b',
-          name: 'Floor 1',
-          roomsAssigned: 1,
-          totalRooms: 5,
-          rooms: [
-            { id: 'room-11', name: 'Room 123', type: 'Room type name', algorithmOn: false, programAssigned: null, currentTemperature: '20°C',assigned: false },
-            { id: 'room-21', name: 'Room 234', type: 'Room type name', algorithmOn: false, programAssigned: null, currentTemperature: '20°C',assigned: false },
-            { id: 'room-31', name: 'Room 345', type: 'Room type name', algorithmOn: false, programAssigned: null, currentTemperature: '20°C',assigned: false },
-            { id: 'room-41', name: 'Room 456', type: 'Room type name', algorithmOn: false, programAssigned: null, currentTemperature: '20°C',assigned: false },
-            { id: 'room-51', name: 'Room 567', type: 'Room type name', algorithmOn: true, programAssigned: 'Program 1', currentTemperature: '20°C',assigned: false }
-          ]
-        },
-        {
-          id: 'floor-2b',
-          name: 'Floor 2',
-          roomsAssigned: 1,
-          totalRooms: 5,
-          rooms: [
-            { id: 'room-12', name: 'Room 123', type: 'Room type name', algorithmOn: false, programAssigned: null, currentTemperature: '20°C',assigned: false },
-            { id: 'room-22', name: 'Room 234', type: 'Room type name', algorithmOn: false, programAssigned: null, currentTemperature: '20°C',assigned: false },
-            { id: 'room-32', name: 'Room 345', type: 'Room type name', algorithmOn: false, programAssigned: null, currentTemperature: '20°C',assigned: false },
-            { id: 'room-42', name: 'Room 456', type: 'Room type name', algorithmOn: false, programAssigned: null, currentTemperature: '20°C',assigned: false },
-            { id: 'room-52', name: 'Room 567', type: 'Room type name', algorithmOn: true, programAssigned: 'Program 1', currentTemperature: '20°C',assigned: false }
-          ]
-        },
-        {
-          id: 'floor-3b',
-          name: 'Floor 3',
-          roomsAssigned: 0,
-          totalRooms: 5,
-          rooms: [
-            { id: 'room-13', name: 'Room 123', type: 'Room type name', algorithmOn: false, programAssigned: null, currentTemperature: '20°C',assigned: false },
-            { id: 'room-23', name: 'Room 234', type: 'Room type name', algorithmOn: false, programAssigned: null, currentTemperature: '20°C',assigned: false },
-            { id: 'room-33', name: 'Room 345', type: 'Room type name', algorithmOn: false, programAssigned: null, currentTemperature: '20°C',assigned: false },
-            { id: 'room-43', name: 'Room 456', type: 'Room type name', algorithmOn: false, programAssigned: null, currentTemperature: '20°C',assigned: false },
-            { id: 'room-53', name: 'Room 567', type: 'Room type name', algorithmOn: false, programAssigned: null, currentTemperature: '20°C',assigned: false }
-          ]
-        }
-      ]
-    },
-  ]
-};
+// const initialData = {
+//   buildings: [
+//     {
+//       id: 'building-a',
+//       name: 'Building A',
+//       roomsAssigned: 3,
+//       totalRooms: 15,
+//       floors: [
+//         {
+//           id: 'floor-1',
+//           name: 'Floor 1',
+//           roomsAssigned: 1,
+//           totalRooms: 5,
+//           rooms: [
+//             { id: 'room-123', name: 'Room 123', type: 'Room type name', algorithmOn: false, programAssigned: null, currentTemperature: '20°C',assigned: false },
+//             { id: 'room-234', name: 'Room 234', type: 'Room type name', algorithmOn: false, programAssigned: null, currentTemperature: '20°C',assigned: false },
+//             { id: 'room-345', name: 'Room 345', type: 'Room type name', algorithmOn: false, programAssigned: null, currentTemperature: '20°C',assigned: false },
+//             { id: 'room-456', name: 'Room 456', type: 'Room type name', algorithmOn: false, programAssigned: null, currentTemperature: '20°C',assigned: false },
+//             { id: 'room-567', name: 'Room 567', type: 'Room type name', algorithmOn: true, programAssigned: 'Program 1', currentTemperature: '20°C',assigned: false }
+//           ]
+//         },
+//         {
+//           id: 'floor-2',
+//           name: 'Floor 2',
+//           roomsAssigned: 1,
+//           totalRooms: 5,
+//           rooms: [
+//             { id: 'room-1231', name: 'Room 123', type: 'Room type name', algorithmOn: false, programAssigned: null, currentTemperature: '20°C',assigned: false },
+//             { id: 'room-2341', name: 'Room 234', type: 'Room type name', algorithmOn: false, programAssigned: null, currentTemperature: '20°C',assigned: false },
+//             { id: 'room-3451', name: 'Room 345', type: 'Room type name', algorithmOn: false, programAssigned: null, currentTemperature: '20°C',assigned: false },
+//             { id: 'room-4561', name: 'Room 456', type: 'Room type name', algorithmOn: false, programAssigned: null, currentTemperature: '20°C',assigned: false },
+//             { id: 'room-5671', name: 'Room 567', type: 'Room type name', algorithmOn: true, programAssigned: 'Program 1', currentTemperature: '20°C',assigned: false }
+//           ]
+//         },
+//         {
+//           id: 'floor-3',
+//           name: 'Floor 3',
+//           roomsAssigned: 1,
+//           totalRooms: 5,
+//           rooms: [
+//             { id: 'room-1232', name: 'Room 123', type: 'Room type name', algorithmOn: false, programAssigned: null, currentTemperature: '20°C',assigned: false },
+//             { id: 'room-2342', name: 'Room 234', type: 'Room type name', algorithmOn: false, programAssigned: null, currentTemperature: '20°C',assigned: false },
+//             { id: 'room-3452', name: 'Room 345', type: 'Room type name', algorithmOn: false, programAssigned: null, currentTemperature: '20°C',assigned: false },
+//             { id: 'room-4562', name: 'Room 456', type: 'Room type name', algorithmOn: false, programAssigned: null, currentTemperature: '20°C',assigned: false },
+//             { id: 'room-5672', name: 'Room 567', type: 'Room type name', algorithmOn: true, programAssigned: 'Program 1', currentTemperature: '20°C',assigned: false }
+//           ]
+//         }
+//       ]
+//     },
+//     {
+//       id: 'building-b',
+//       name: 'Building B',
+//       roomsAssigned: 2,
+//       totalRooms: 15,
+//       floors: [
+//         {
+//           id: 'floor-1b',
+//           name: 'Floor 1',
+//           roomsAssigned: 1,
+//           totalRooms: 5,
+//           rooms: [
+//             { id: 'room-11', name: 'Room 123', type: 'Room type name', algorithmOn: false, programAssigned: null, currentTemperature: '20°C',assigned: false },
+//             { id: 'room-21', name: 'Room 234', type: 'Room type name', algorithmOn: false, programAssigned: null, currentTemperature: '20°C',assigned: false },
+//             { id: 'room-31', name: 'Room 345', type: 'Room type name', algorithmOn: false, programAssigned: null, currentTemperature: '20°C',assigned: false },
+//             { id: 'room-41', name: 'Room 456', type: 'Room type name', algorithmOn: false, programAssigned: null, currentTemperature: '20°C',assigned: false },
+//             { id: 'room-51', name: 'Room 567', type: 'Room type name', algorithmOn: true, programAssigned: 'Program 1', currentTemperature: '20°C',assigned: false }
+//           ]
+//         },
+//         {
+//           id: 'floor-2b',
+//           name: 'Floor 2',
+//           roomsAssigned: 1,
+//           totalRooms: 5,
+//           rooms: [
+//             { id: 'room-12', name: 'Room 123', type: 'Room type name', algorithmOn: false, programAssigned: null, currentTemperature: '20°C',assigned: false },
+//             { id: 'room-22', name: 'Room 234', type: 'Room type name', algorithmOn: false, programAssigned: null, currentTemperature: '20°C',assigned: false },
+//             { id: 'room-32', name: 'Room 345', type: 'Room type name', algorithmOn: false, programAssigned: null, currentTemperature: '20°C',assigned: false },
+//             { id: 'room-42', name: 'Room 456', type: 'Room type name', algorithmOn: false, programAssigned: null, currentTemperature: '20°C',assigned: false },
+//             { id: 'room-52', name: 'Room 567', type: 'Room type name', algorithmOn: true, programAssigned: 'Program 1', currentTemperature: '20°C',assigned: false }
+//           ]
+//         },
+//         {
+//           id: 'floor-3b',
+//           name: 'Floor 3',
+//           roomsAssigned: 0,
+//           totalRooms: 5,
+//           rooms: [
+//             { id: 'room-13', name: 'Room 123', type: 'Room type name', algorithmOn: false, programAssigned: null, currentTemperature: '20°C',assigned: false },
+//             { id: 'room-23', name: 'Room 234', type: 'Room type name', algorithmOn: false, programAssigned: null, currentTemperature: '20°C',assigned: false },
+//             { id: 'room-33', name: 'Room 345', type: 'Room type name', algorithmOn: false, programAssigned: null, currentTemperature: '20°C',assigned: false },
+//             { id: 'room-43', name: 'Room 456', type: 'Room type name', algorithmOn: false, programAssigned: null, currentTemperature: '20°C',assigned: false },
+//             { id: 'room-53', name: 'Room 567', type: 'Room type name', algorithmOn: false, programAssigned: null, currentTemperature: '20°C',assigned: false }
+//           ]
+//         }
+//       ]
+//     },
+//   ]
+// };
 
-function AssignRoomsModal({ openAssignModal,handleAssign, onUpdate }) {
+function AssignRoomsModal({ openAssignModal,handleAssign, onUpdate,initialData, program }) {
+  const [heatingData, setheatingData] = useState({});
+  const [data, setData] = useState(heatingData && Object.keys(heatingData).length>0 ? heatingData:_.cloneDeep(initialData));
+  const [filter, setFilter] = useState('All');
   const handleCloseModal = () => {
     handleAssign();
   };
@@ -121,20 +124,17 @@ function AssignRoomsModal({ openAssignModal,handleAssign, onUpdate }) {
     applyAlgorithm: "",
   });
 
-  const [heatingData, setheatingData] = useState({});
   
   const assignmentData = (assignmentData) => {
     setheatingData(assignmentData);
   };
 
-  const [data, setData] = useState(heatingData && Object.keys(heatingData).length>0 ? heatingData:_.cloneDeep(initialData));
-  const [filter, setFilter] = useState('All');
 
     // Function to create a mapping of room IDs to their default values
     const createDefaultValuesMap = () => {
       const defaultValuesMap = {};
       const newInitialData = _.cloneDeep(initialData)
-      newInitialData.buildings.forEach(building => {
+      newInitialData?.buildings?.forEach(building => {
         building.floors.forEach(floor => {
           floor.rooms.forEach(room => {
             defaultValuesMap[room.id] = {
@@ -159,9 +159,9 @@ function AssignRoomsModal({ openAssignModal,handleAssign, onUpdate }) {
       if (room.assigned) {
         // Reset the room to its default state using the default values map
         const defaultValues = defaultValuesMap[roomId];
-        room.programAssigned = defaultValues.programAssigned;
+        room.programAssigned = defaultValues.programAssigned=== program.templateName ? '':defaultValues.programAssigned;
         room.algorithmOn = defaultValues.algorithmOn;
-        room.assigned = defaultValues.assigned;
+        room.assigned = false;
         const sameFloor = floor.roomsAssigned
         const sameBuild = building.roomsAssigned
 
@@ -178,7 +178,7 @@ function AssignRoomsModal({ openAssignModal,handleAssign, onUpdate }) {
       }
        else if (!room.assigned && room.programAssigned!==null) {
         // Assign the room
-        room.programAssigned = formData.programName;
+        room.programAssigned = program.templateName;
         room.algorithmOn = formData.applyAlgorithm;
         room.assigned = true;
         const sameFloor = floor.roomsAssigned
@@ -316,7 +316,7 @@ function AssignRoomsModal({ openAssignModal,handleAssign, onUpdate }) {
   return (
     <>
       <Modal theme={customTheme}  size={"7xl"} dismissible show={openAssignModal} onClose={handleAssign}>
-        <Modal.Header className=" text-lg text-gray-900 [&>*]:font-semibold">Assign rooms - Program 1</Modal.Header>
+        <Modal.Header className=" text-lg text-gray-900 [&>*]:font-semibold">Assign rooms - {program?.templateName}</Modal.Header>
         <Modal.Body className="p-5 overflow-hidden  h-auto">
         <div className="flex flex-col gap-4 w-full">
       <div className="flex flex-col gap-0 w-full">

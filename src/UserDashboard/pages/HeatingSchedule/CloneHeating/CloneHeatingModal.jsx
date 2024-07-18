@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 // Parent Component
 import { Button, Modal } from "flowbite-react";
@@ -10,6 +11,8 @@ import HeatingSchedule from "../CreateHeating/Steps/HeatingSchedule/HeatingSched
 import ProgramAssignment from "../CreateHeating/Steps/ProgramAssignment/ProgramAssignment";
 
 export function CloneHeatingModal({ openCloneModal, handleCloneModal, onCreate, program, locationDetails }) {
+    //Set token for bearer authorization
+    const token = localStorage.getItem('token');
   
   const [currentStep, setCurrentStep] = useState(1);
 
@@ -358,6 +361,55 @@ export function CloneHeatingModal({ openCloneModal, handleCloneModal, onCreate, 
     handleCloneModal();
   };
 
+  const [initialData, setInitialData] = useState({})
+
+  useEffect(()=>{
+    fetch(`https://api-dev.blue-nodes.app/dev/smartheating/locations?heatingScheduleDetails=true&roomTemperature=true&assignedPrograms=true&numberOfRooms=true`, {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+      const apiData = {
+        buildings: data.map((building) => {
+          // Calculate the total rooms in the building
+          const totalRooms = building.children.reduce((sum, floor) => sum + floor.children.length, 0);
+      
+          return {
+            id: building.id,
+            name: building.name,
+            roomsAssigned: building.assignedPrograms,
+            totalRooms: totalRooms,
+            floors: building.children.map((floor) => (
+              {
+                id: floor.id,
+                name: floor.name,
+                roomsAssigned: floor.assignedPrograms,
+                totalRooms: floor.children.length,
+                rooms: floor.children.map((room) => (
+                  {
+                    id: room.id,
+                    name: room.name,
+                    type: room.type,
+                    algorithmOn: false,
+                    programAssigned:  room.heatingSchedule ? room.heatingSchedule.templateName : null,
+                    currentTemperature: room.roomTemperature,
+                    assigned: false
+                  }
+                ))
+              }
+            ))
+          };
+        })
+      };
+      
+    setInitialData(apiData)
+    })
+    .catch(error => console.error('Error:', error));
+  },[])
+
   return (
     <>
       <Modal theme={customTheme} size={currentStep === 2 ? "7xl" : "5xl"} dismissible show={openCloneModal} onClose={handleCloseModal}>
@@ -396,6 +448,7 @@ export function CloneHeatingModal({ openCloneModal, handleCloneModal, onCreate, 
                     assignmentData={handleAssignmentData}
                     handlePrev={handlePrevious}
                     heatingData={heatingAssignmentData}
+                    initialData={initialData}
                   />
                 </div>
               )}

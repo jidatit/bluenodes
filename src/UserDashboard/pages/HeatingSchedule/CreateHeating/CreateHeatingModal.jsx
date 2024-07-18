@@ -394,9 +394,9 @@ export function CreateHeatingModal({ openModal, handleOpenModal, onCreate }) {
                     name: room.name,
                     type: room.type,
                     algorithmOn: false,
-                    programAssigned: room.assignedPrograms,
+                    programAssigned:  room.heatingSchedule ? room.heatingSchedule.templateName : null,
                     currentTemperature: room.roomTemperature,
-                    assigned: room.assignedPrograms === 0 ? false : true
+                    assigned: false
                   }
                 ))
               }

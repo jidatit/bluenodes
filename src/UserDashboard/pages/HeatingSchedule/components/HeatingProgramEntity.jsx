@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
-import { useEffect, useState } from 'react';
+import { useDebugValue, useEffect, useRef, useState } from "react";
 import { FaRegCopy, FaEdit } from "react-icons/fa";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { Button, Modal, Tooltip, Accordion } from "flowbite-react";
@@ -106,6 +106,55 @@ const HeatingProgramEntity = ({ formData,onUpdateRooms,onCloneProgram, onEditPro
         // Create the formatted date string
         return `${day}/${month}/${year} ${formattedHours}:${minutes} ${ampm}`;
     }
+
+    const [initialData, setInitialData] = useState({})
+
+    useEffect(()=>{
+      fetch(`https://api-dev.blue-nodes.app/dev/smartheating/locations?heatingScheduleDetails=true&roomTemperature=true&assignedPrograms=true&numberOfRooms=true`, {
+          method: 'GET',
+          headers: {
+              'Authorization': `Bearer ${token}`
+          }
+      })
+      .then(response => response.json())
+      .then(data => {
+        const apiData = {
+          buildings: data.map((building) => {
+            // Calculate the total rooms in the building
+            const totalRooms = building.children.reduce((sum, floor) => sum + floor.children.length, 0);
+        
+            return {
+              id: building.id,
+              name: building.name,
+              roomsAssigned: building.assignedPrograms,
+              totalRooms: totalRooms,
+              floors: building.children.map((floor) => (
+                {
+                  id: floor.id,
+                  name: floor.name,
+                  roomsAssigned: floor.assignedPrograms,
+                  totalRooms: floor.children.length,
+                  rooms: floor.children.map((room) => (
+                    {
+                      id: room.id,
+                      name: room.name,
+                      type: room.type,
+                      algorithmOn: false,
+                      programAssigned:  room.heatingSchedule ? room.heatingSchedule.templateName : null,
+                      currentTemperature: room.roomTemperature,
+                      assigned: room.assignedPrograms !== 0 && room.heatingSchedule.id === program.id
+                    }
+                  ))
+                }
+              ))
+            };
+          })
+        };
+        
+      setInitialData(apiData)
+      })
+      .catch(error => console.error('Error:', error));
+    },[])
 
     return (
         <>
@@ -217,7 +266,7 @@ const HeatingProgramEntity = ({ formData,onUpdateRooms,onCloneProgram, onEditPro
                 </div>
                 <DeleteModal openDeleteModal={openDeleteModal} setOpenDeleteModal={setOpenDeleteModal} handleDelete={handleDelete} />
                 <AlertDeleteModal openAlertDeleteModal={openAlertDeleteModal} setOpenAlertDeleteModal={setOpenAlertDeleteModal} />
-                <AssignRoomsModal openAssignModal={openAssignModal} handleAssign={handleAssign} onUpdate={handleUpdateRoomsAssigned} />
+                {openAssignModal && (<AssignRoomsModal openAssignModal={openAssignModal} handleAssign={handleAssign} onUpdate={handleUpdateRoomsAssigned} initialData={initialData} program={program} />)}
                 <CloneHeatingModal openCloneModal={openCloneModal} handleCloneModal={handleCloneModal} onCreate={handleCloneHeatingProgram} program={program} locationDetails={locationDetails} />
                 <EditHeatingModal openEditModal={openEditModal} handleEditModal={handleEditModal} onEdit={handleEditHeatingProgram} program={program} locationDetails={locationDetails} />
             </div>
