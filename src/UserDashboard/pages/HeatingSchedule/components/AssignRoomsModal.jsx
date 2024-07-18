@@ -189,7 +189,7 @@ function AssignRoomsModal({ openAssignModal,handleAssign, onUpdate,initialData, 
         building.roomsAssigned = sameBuild;
       } else {
         // Assign the room
-        room.programAssigned = formData.programName;
+        room.programAssigned = program.templateName;
         room.algorithmOn = formData.applyAlgorithm;
         room.assigned = true;
   
