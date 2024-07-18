@@ -9,6 +9,11 @@ import GeneralInformation from "../CreateHeating/Steps/GeneralInformation/Genera
 import HeatingSchedule from "../CreateHeating/Steps/HeatingSchedule/HeatingSchedule";
 
 export function EditHeatingModal({ openEditModal, handleEditModal, onEdit, program, locationDetails }) {
+
+  //Set token for bearer authorization
+  const token = localStorage.getItem('token');
+
+  console.log(program)
   
   const [currentStep, setCurrentStep] = useState(1);
 
@@ -288,10 +293,75 @@ export function EditHeatingModal({ openEditModal, handleEditModal, onEdit, progr
 
   const handleCreate = () => {
 
-      // Save button clicked
-      onEdit(combinedData);
-      handleEditModal();
-      resetModalState();
+    // Convert schedule data into API format 
+    function convertScheduleData(data) {
+      const dayMapping = {
+          "Monday": 1,
+          "Tuesday": 2,
+          "Wednesday": 3,
+          "Thursday": 4,
+          "Friday": 5,
+          "Saturday": 6,
+          "Sunday": 7
+      };
+  
+      const result = { days: [] };
+  
+      const normalizeTime = (value) => {
+          const hours = Math.floor(value * 24 / 96);
+          const minutes = Math.floor((value * 24 * 60 / 96) % 60);
+          return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+      };
+  
+      for (const [dayName, entries] of Object.entries(data)) {
+          const day = dayMapping[dayName];
+          entries.forEach(entry => {
+              const from = normalizeTime(entry.y);
+              const to = normalizeTime(entry.y + entry.h);
+              const targetTemperature = parseInt(entry.temperature, 10);
+  
+              result.days.push({
+                  day,
+                  from,
+                  to,
+                  targetTemperature
+              });
+          });
+      }
+  
+      return result;
+    }
+
+    //Manipulating for API
+    const finalObj = {
+      "templateName": combinedData.formData.programName,
+      "allowDeviceOverride": combinedData.formData.childSafety==='No'?true:false,
+      "deviceOverrideTemperatureMin": parseInt(combinedData.formData.minTemp),
+      "deviceOverrideTemperatureMax": parseInt(combinedData.formData.maxTemp),
+      "days": convertScheduleData(combinedData.finalScheduleData)
+    }
+    console.log(combinedData.finalScheduleData)
+    console.log(JSON.stringify(finalObj))
+
+    // Put to API
+    fetch(`https://api-dev.blue-nodes.app/dev/smartheating/heatingschedule/${program.id}`, {
+              method: 'PUT',
+              headers: {
+                  'Authorization': `Bearer ${token}`
+              },
+              body: JSON.stringify(finalObj)
+          })
+          .then(response => response.json())
+          .then(data => {
+            console.log(data)
+          })
+          .catch(error => console.error('Error:', error));  
+    
+
+    // Save button clicked
+    onEdit(combinedData);
+    handleEditModal();
+    resetModalState();
   };
 
   const resetModalState = () => {
@@ -316,6 +386,9 @@ export function EditHeatingModal({ openEditModal, handleEditModal, onEdit, progr
     setFinalScheduleData({});
   };
 
+  useEffect(()=>{
+    console.log(finalScheduleData)
+  },[finalScheduleData])
   const handleCloseModal = () => {
     resetModalState();
     handleEditModal();
@@ -324,7 +397,7 @@ export function EditHeatingModal({ openEditModal, handleEditModal, onEdit, progr
   return (
     <>
       <Modal theme={customTheme} size={currentStep === 2 ? "7xl" : "5xl"} dismissible show={openEditModal} onClose={handleCloseModal}>
-        <Modal.Header className=" text-lg text-gray-900 [&>*]:font-semibold">Clone heating program</Modal.Header>
+        <Modal.Header className=" text-lg text-gray-900 [&>*]:font-semibold">Edit heating program</Modal.Header>
         <Modal.Body>
           <div className="flex flex-col items-center space-y-6">
             <ProgressStepper currentStep={currentStep} editMode={true} />
