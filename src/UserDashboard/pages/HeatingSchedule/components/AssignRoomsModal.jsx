@@ -109,7 +109,6 @@ import customTheme from '../CreateHeating/ModalTheme';
 // };
 
 function AssignRoomsModal({ openAssignModal,handleAssign, onUpdate,initialData, program }) {
-  console.log(initialData)
   
   //Set token for bearer authorization
   const token = localStorage.getItem('token');
@@ -160,6 +159,7 @@ function AssignRoomsModal({ openAssignModal,handleAssign, onUpdate,initialData, 
       const building = newData.buildings.find(b => b.id === buildingId);
       const floor = building.floors.find(f => f.id === floorId);
       const room = floor.rooms.find(r => r.id === roomId);
+      console.log(room.assigned)
   
       if (room.assigned) {
         // Reset the room to its default state using the default values map
@@ -170,9 +170,14 @@ function AssignRoomsModal({ openAssignModal,handleAssign, onUpdate,initialData, 
         const sameFloor = floor.roomsAssigned
         const sameBuild = building.roomsAssigned
 
-        if(defaultValues.programAssigned!==null){
-          floor.roomsAssigned = sameFloor;
-          building.roomsAssigned = sameBuild;
+        if(defaultValues.programAssigned){
+          if(defaultValues.programAssigned===program.templateName){
+            floor.roomsAssigned = sameFloor-1;
+            building.roomsAssigned = sameBuild-1;
+          }else {
+            floor.roomsAssigned = sameFloor;
+            building.roomsAssigned = sameBuild;
+          }
         }else {
           // Update room and floor assignments count
           floor.roomsAssigned -= 1;
@@ -182,16 +187,24 @@ function AssignRoomsModal({ openAssignModal,handleAssign, onUpdate,initialData, 
   
       }
        else if (!room.assigned && room.programAssigned!==null) {
+        const defaultValues = defaultValuesMap[roomId];
         // Assign the room
         room.programAssigned = program.templateName;
         room.algorithmOn = formData.applyAlgorithm;
         room.assigned = true;
         const sameFloor = floor.roomsAssigned
         const sameBuild = building.roomsAssigned
+
+        if(room.programAssigned === defaultValues.programAssigned){
+          // Update room and floor assignments count
+          floor.roomsAssigned = sameFloor+1;
+          building.roomsAssigned = sameBuild+1;
+        }else {
+          // Update room and floor assignments count
+          floor.roomsAssigned = sameFloor;
+          building.roomsAssigned = sameBuild;
+        }
   
-        // Update room and floor assignments count
-        floor.roomsAssigned = sameFloor;
-        building.roomsAssigned = sameBuild;
       } else {
         // Assign the room
         room.programAssigned = program.templateName;
@@ -292,9 +305,8 @@ function AssignRoomsModal({ openAssignModal,handleAssign, onUpdate,initialData, 
         setError(errorMessages.roomSelectionMust);
       } else {
         setError('');
-        console.log(data)
         handleAssign()
-        onUpdate(data)
+        // onUpdate(data)
 
         function getRoomIdsByProgram(data) {
           const programName = program.templateName;
@@ -329,6 +341,11 @@ function AssignRoomsModal({ openAssignModal,handleAssign, onUpdate,initialData, 
           .then(response => response.json())
           .then(data => {
             console.log(data)
+            if(data.statusCode===400){
+              onUpdate('Error')
+            } else {
+              onUpdate(data)
+            }
           })
           .catch(error => console.error('Error:', error)); 
       }

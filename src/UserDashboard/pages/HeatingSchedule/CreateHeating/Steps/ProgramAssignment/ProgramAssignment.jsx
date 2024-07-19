@@ -8,7 +8,7 @@ import { errorMessages } from '../../../../../../globals/errorMessages';
 import _ from 'lodash';
 import { IoArrowBackCircle } from 'react-icons/io5';
 
-const ProgramAssignment = ({ formData, assignmentData,setHandleAssignmentRef, handlePrev, heatingData, initialData }) => {
+const ProgramAssignment = ({ formData, assignmentData,setHandleAssignmentRef, handlePrev, heatingData, initialData, clone, program }) => {
   const [data, setData] = useState(heatingData && Object.keys(heatingData).length>0 ? heatingData:_.cloneDeep(initialData));
   const [filter, setFilter] = useState('All');
 
@@ -47,14 +47,19 @@ const ProgramAssignment = ({ formData, assignmentData,setHandleAssignmentRef, ha
         const sameFloor = floor.roomsAssigned
         const sameBuild = building.roomsAssigned
 
-        if(defaultValues.programAssigned!==null){
-          floor.roomsAssigned = sameFloor;
-          building.roomsAssigned = sameBuild;
-        }else {
+        if (defaultValues.programAssigned) {
+          if (defaultValues.programAssigned === formData.programName) {
+            // Update room and floor assignments count
+            floor.roomsAssigned -= 1;
+            building.roomsAssigned -= 1;
+          } else {
+            floor.roomsAssigned = sameFloor;
+            building.roomsAssigned = sameBuild;
+          }
+        } else {
           // Update room and floor assignments count
           floor.roomsAssigned -= 1;
           building.roomsAssigned -= 1;
-
         }
   
       }
@@ -65,6 +70,7 @@ const ProgramAssignment = ({ formData, assignmentData,setHandleAssignmentRef, ha
         room.assigned = true;
         const sameFloor = floor.roomsAssigned
         const sameBuild = building.roomsAssigned
+      
   
         // Update room and floor assignments count
         floor.roomsAssigned = sameFloor;
@@ -82,6 +88,25 @@ const ProgramAssignment = ({ formData, assignmentData,setHandleAssignmentRef, ha
   
       setData(newData);
     };
+
+    useEffect(() => {
+      const newData = _.cloneDeep(data);
+      console.log('again')
+  
+      newData.buildings.forEach(building => {
+        building.floors.forEach(floor => {
+          floor.rooms.forEach(room => {
+            if (clone === true && !room.assigned && room.programAssigned !== null && room.programAssigned === program.templateName) {
+              room.programAssigned = formData.programName;
+              room.algorithmOn = formData.applyAlgorithm;
+              room.assigned = true;
+            }
+          });
+        });
+      });
+  
+      setData(newData);
+    }, []);
 
     const handleSelectAllRooms = (buildingId, floorId, isSelected) => {
       const newData = _.cloneDeep(data);

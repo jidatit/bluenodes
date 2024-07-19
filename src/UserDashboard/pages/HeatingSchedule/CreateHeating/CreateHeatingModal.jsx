@@ -3,7 +3,7 @@
 // Parent Component
 import { Button, Modal } from "flowbite-react";
 import customTheme from "./ModalTheme";
-import { useDebugValue, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ProgressStepper from "./components/ProgressStepper";
 import { errorMessages as errors } from "../../../../globals/errorMessages"; // Import error messages
 import GeneralInformation from "./Steps/GeneralInformation/GeneralInformation";
@@ -315,7 +315,7 @@ export function CreateHeatingModal({ openModal, handleOpenModal, onCreate }) {
           setButtonText('Confirm');
         } else {
           handleAssignmentData();
-          onCreate(combinedData);
+          // onCreate(combinedData);
 
           // Get rooms IDs from the entire Data
           function getRoomIdsByProgram(data) {
@@ -407,6 +407,11 @@ export function CreateHeatingModal({ openModal, handleOpenModal, onCreate }) {
           .then(response => response.json())
           .then(data => {
             console.log(data)
+            if(data.statusCode===400){
+              onCreate('Error')
+            } else {
+              onCreate(combinedData)
+            }
           })
           .catch(error => console.error('Error:', error));        
         }
@@ -416,7 +421,7 @@ export function CreateHeatingModal({ openModal, handleOpenModal, onCreate }) {
     } else {
       // Confirm button clicked
       handleAssignmentData();
-      onCreate(combinedData);
+      // onCreate(combinedData);
       handleOpenModal();
       setButtonText('Create');
       resetModalState();
@@ -467,11 +472,20 @@ export function CreateHeatingModal({ openModal, handleOpenModal, onCreate }) {
         buildings: data.map((building) => {
           // Calculate the total rooms in the building
           const totalRooms = building.children.reduce((sum, floor) => sum + floor.children.length, 0);
+          const buildingAssignedRooms = building.children.reduce((sum, floor) => {
+            // Iterate over each room in the floor and sum the assignedPrograms values
+            const assignedProgramsSum = floor.children.reduce((floorSum, room) => {
+              return floorSum + (room.assignedPrograms || 0);
+            }, 0);
+            
+            return sum + assignedProgramsSum;
+          }, 0);
+          console.log(data,"fff")
       
           return {
             id: building.id,
             name: building.name,
-            roomsAssigned: building.assignedPrograms,
+            roomsAssigned: buildingAssignedRooms,
             totalRooms: totalRooms,
             floors: building.children.map((floor) => (
               {

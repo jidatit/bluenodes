@@ -16,10 +16,10 @@ export function EditHeatingModal({ openEditModal, handleEditModal, onEdit, progr
   const [currentStep, setCurrentStep] = useState(1);
 
   const [formData, setFormData] = useState({
-    programName: program?.templateName || "",
-    childSafety: program?.allowDeviceOverride===true?"No":"Yes" || "",
-    minTemp: program?.deviceOverrideTemperatureMin + '°C'||"",
-    maxTemp: program?.deviceOverrideTemperatureMax + '°C'||"",
+    programName: "",
+    childSafety: "",
+    minTemp: "",
+    maxTemp: "",
     applyAlgorithm: "",
   });
 
@@ -33,6 +33,18 @@ export function EditHeatingModal({ openEditModal, handleEditModal, onEdit, progr
 
   const [generalErrorMessage, setGeneralErrorMessage] = useState(null); // State for general error message
   const [formSubmitted, setFormSubmitted] = useState(false);
+
+  useEffect(() => {
+    if (openEditModal) {
+      setFormData({
+        programName: program?.templateName || "",
+        childSafety: program?.allowDeviceOverride===true?"No":"Yes" || "",
+        minTemp: program?.deviceOverrideTemperatureMin + '°C'||"",
+        maxTemp: program?.deviceOverrideTemperatureMax + '°C'||"",
+        applyAlgorithm: "",
+      });
+    }
+  }, [openEditModal, program]);
 
   useEffect(() => {
     if (formSubmitted) {
@@ -295,10 +307,6 @@ export function EditHeatingModal({ openEditModal, handleEditModal, onEdit, progr
           console.log('All layouts are empty. Please fill in the required information.');
         }
       }
-      if(combinedData) {
-        // console.log(combinedData)
-        onEdit(combinedData);
-      }
 
     // Convert schedule data into API format 
     function convertScheduleData(data) {
@@ -368,36 +376,41 @@ export function EditHeatingModal({ openEditModal, handleEditModal, onEdit, progr
           .then(response => response.json())
           .then(data => {
             console.log(data)
+            if(data.statusCode===400){
+              onEdit('Error')
+            } else {
+              onEdit(combinedData)
+            }
           })
           .catch(error => console.error('Error:', error));  
     
 
     // Save button clicked
-    onEdit(combinedData);
+    // onEdit(combinedData);
     handleEditModal();
     resetModalState();
   };
 
   const resetModalState = () => {
     setCurrentStep(1);
-    // setFormData({
-    //   programName: "",
-    //   childSafety: "",
-    //   minTemp: "",
-    //   maxTemp: "",
-    //   applyAlgorithm: "",
-    // });
-    // setErrorMessages({
-    //   programName: "",
-    //   childSafety: "",
-    //   minTemp: "",
-    //   maxTemp: "",
-    //   applyAlgorithm: "",
-    // });
-    // setGeneralErrorMessage(null);
-    // setFormSubmitted(false);
-    // setLayouts({});
-    // setFinalScheduleData({});
+    setFormData({
+      programName: "",
+      childSafety: "",
+      minTemp: "",
+      maxTemp: "",
+      applyAlgorithm: "",
+    });
+    setErrorMessages({
+      programName: "",
+      childSafety: "",
+      minTemp: "",
+      maxTemp: "",
+      applyAlgorithm: "",
+    });
+    setGeneralErrorMessage(null);
+    setFormSubmitted(false);
+    setLayouts({});
+    setFinalScheduleData({});
   };
 
   const handleCloseModal = () => {

@@ -1,3 +1,4 @@
+/* eslint-disable no-inner-declarations */
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 // Parent Component
@@ -17,10 +18,10 @@ export function CloneHeatingModal({ openCloneModal, handleCloneModal, onCreate, 
   const [currentStep, setCurrentStep] = useState(1);
 
   const [formData, setFormData] = useState({
-    programName: program?.templateName + ' - Cloned' || "",
-    childSafety: program?.allowDeviceOverride===true?"No":"Yes" || "",
-    minTemp: program?.deviceOverrideTemperatureMin + '°C'||"",
-    maxTemp: program?.deviceOverrideTemperatureMax + '°C'||"",
+    programName: "",
+    childSafety: "",
+    minTemp: "",
+    maxTemp: "",
     applyAlgorithm: "",
   });
 
@@ -34,6 +35,18 @@ export function CloneHeatingModal({ openCloneModal, handleCloneModal, onCreate, 
 
   const [generalErrorMessage, setGeneralErrorMessage] = useState(null); // State for general error message
   const [formSubmitted, setFormSubmitted] = useState(false);
+
+  useEffect(() => {
+    if (openCloneModal) {
+      setFormData({
+        programName: program?.templateName + ' - Cloned' || "",
+        childSafety: program?.allowDeviceOverride === true ? "No" : "Yes" || "",
+        minTemp: program?.deviceOverrideTemperatureMin + '°C' || "",
+        maxTemp: program?.deviceOverrideTemperatureMax + '°C' || "",
+        applyAlgorithm: "",
+      });
+    }
+  }, [openCloneModal, program]);
 
   useEffect(() => {
     if (formSubmitted) {
@@ -314,10 +327,106 @@ export function CloneHeatingModal({ openCloneModal, handleCloneModal, onCreate, 
           setButtonText('Confirm');
         } else {
           handleAssignmentData();
-          onCreate(combinedData);
+          // onCreate(combinedData);
+                    // Get rooms IDs from the entire Data
+                    function getRoomIdsByProgram(data) {
+                      const programName = combinedData.formData.programName;
+                      const roomIds = [];
+                  
+                      // Loop through each building
+                      data.forEach(building => {
+                          // Loop through each floor in the building
+                          building.floors.forEach(floor => {
+                              // Loop through each room on the floor
+                              floor.rooms.forEach(room => {
+                                  // Check if the programAssigned matches the programName
+                                  if (room.programAssigned === programName) {
+                                      roomIds.push(room.id);
+                                  }
+                              });
+                          });
+                      });
+                  
+                      return roomIds;
+                    }
+          
+                    // Convert schedule data into API format 
+                    function convertScheduleData(data) {
+                      const dayMapping = {
+                          "Monday": 1,
+                          "Tuesday": 2,
+                          "Wednesday": 3,
+                          "Thursday": 4,
+                          "Friday": 5,
+                          "Saturday": 6,
+                          "Sunday": 7
+                      };
+                  
+                      const result = { days: [] };
+                  
+                      const normalizeTime = (value) => {
+                          const hours = Math.floor(value * 24 / 96);
+                          const minutes = Math.floor((value * 24 * 60 / 96) % 60);
+                          return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+                      };
+                  
+                      for (const [dayName, entries] of Object.entries(data)) {
+                          const day = dayMapping[dayName];
+                          entries.forEach(entry => {
+                              const from = normalizeTime(entry.y);
+                              let to = normalizeTime(entry.y + entry.h);
+                              const targetTemperature = parseInt(entry.temperature, 10);
+          
+                              if(to==="24:00"){
+                                to="23:59"
+                              }
+                  
+                              result.days.push({
+                                  day,
+                                  from,
+                                  to,
+                                  targetTemperature
+                              });
+                          });
+                      }
+                  
+                      return result.days;
+                    }
+          
+                    //Manipulating for API
+                    const finalObj = {
+                      "templateName": combinedData.formData.programName,
+                      "allowDeviceOverride": combinedData.formData.childSafety==='No'?true:false,
+                      "deviceOverrideTemperatureMin": parseInt(combinedData.formData.minTemp),
+                      "deviceOverrideTemperatureMax": parseInt(combinedData.formData.maxTemp),
+                      "locations": getRoomIdsByProgram(combinedData.heatingAssignmentData.buildings),
+                      "days": convertScheduleData(combinedData.finalScheduleData)
+                    }
           handleCloneModal();
           resetModalState();
           // Submit the form or perform other actions
+          
+          fetch(`https://api-dev.blue-nodes.app/dev/smartheating/heatingschedule`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(finalObj)
+        })
+        .then(response => response.json())
+        .then(data => {
+          console.log(data)
+          if(data.statusCode===400){
+            onCreate('Error')
+          } else {
+            onCreate(combinedData)
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          onCreate('Error'); // Error occurred: Send 'Error'
+        }) 
         }
       } else {
         console.error('handleAssignmentRef.current is not defined');
@@ -325,7 +434,7 @@ export function CloneHeatingModal({ openCloneModal, handleCloneModal, onCreate, 
     } else {
       // Confirm button clicked
       handleAssignmentData();
-      onCreate(combinedData);
+      // onCreate(combinedData);
       handleCloneModal();
       setButtonText('Create');
       resetModalState();
@@ -334,25 +443,25 @@ export function CloneHeatingModal({ openCloneModal, handleCloneModal, onCreate, 
 
   const resetModalState = () => {
     setCurrentStep(1);
-    // setFormData({
-    //   programName: "",
-    //   childSafety: "",
-    //   minTemp: "",
-    //   maxTemp: "",
-    //   applyAlgorithm: "",
-    // });
-    // setErrorMessages({
-    //   programName: "",
-    //   childSafety: "",
-    //   minTemp: "",
-    //   maxTemp: "",
-    //   applyAlgorithm: "",
-    // });
-    // setGeneralErrorMessage(null);
-    // setFormSubmitted(false);
-    // setHeatingAssignmentData({});
-    // setLayouts({});
-    // setFinalScheduleData({});
+    setFormData({
+      programName: "",
+      childSafety: "",
+      minTemp: "",
+      maxTemp: "",
+      applyAlgorithm: "",
+    });
+    setErrorMessages({
+      programName: "",
+      childSafety: "",
+      minTemp: "",
+      maxTemp: "",
+      applyAlgorithm: "",
+    });
+    setGeneralErrorMessage(null);
+    setFormSubmitted(false);
+    setHeatingAssignmentData({});
+    setLayouts({});
+    setFinalScheduleData({});
     setButtonText('Create');
   };
 
@@ -376,11 +485,19 @@ export function CloneHeatingModal({ openCloneModal, handleCloneModal, onCreate, 
         buildings: data.map((building) => {
           // Calculate the total rooms in the building
           const totalRooms = building.children.reduce((sum, floor) => sum + floor.children.length, 0);
+          const buildingAssignedRooms = building.children.reduce((sum, floor) => {
+            // Iterate over each room in the floor and sum the assignedPrograms values
+            const assignedProgramsSum = floor.children.reduce((floorSum, room) => {
+              return floorSum + (room.assignedPrograms || 0);
+            }, 0);
+            
+            return sum + assignedProgramsSum;
+          }, 0);
       
           return {
             id: building.id,
             name: building.name,
-            roomsAssigned: building.assignedPrograms,
+            roomsAssigned: buildingAssignedRooms,
             totalRooms: totalRooms,
             floors: building.children.map((floor) => (
               {
@@ -449,6 +566,8 @@ export function CloneHeatingModal({ openCloneModal, handleCloneModal, onCreate, 
                     handlePrev={handlePrevious}
                     heatingData={heatingAssignmentData}
                     initialData={initialData}
+                    clone={true}
+                    program={program}
                   />
                 </div>
               )}

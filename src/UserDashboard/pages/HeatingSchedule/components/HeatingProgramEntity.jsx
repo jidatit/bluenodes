@@ -78,24 +78,30 @@ const HeatingProgramEntity = ({ formData,onUpdateRooms,onCloneProgram, onEditPro
         
       };
     
+    const [response, setResponse] = useState(false);
     
 
     const handleUpdateRoomsAssigned = (data) => {
         if (data) {
             onUpdateRooms(data)
         }
+        setResponse(!response)
       };
 
       const handleCloneHeatingProgram = (data) => {
         if (data) {
             onCloneProgram(data)
         }
+        setResponse(!response)
+
       };
 
       const handleEditHeatingProgram = (data) => {
         if (data) {
             onEditProgram(data)
         }
+        setResponse(!response)
+
       };
 
     // Get heating schedule details by id
@@ -111,7 +117,7 @@ const HeatingProgramEntity = ({ formData,onUpdateRooms,onCloneProgram, onEditPro
           setLocationDetails(data)
         })
         .catch(error => console.error('Error:', error));
-      },[])
+      },[response])
 
     // Function to recursively count the rooms
     const countRooms = (node) => {
@@ -194,7 +200,7 @@ const HeatingProgramEntity = ({ formData,onUpdateRooms,onCloneProgram, onEditPro
       setInitialData(apiData)
       })
       .catch(error => console.error('Error:', error));
-    },[])
+    },[response])
 
     // console.log(locationDetails)
     return (
@@ -298,7 +304,7 @@ const HeatingProgramEntity = ({ formData,onUpdateRooms,onCloneProgram, onEditPro
 
                                     </div>
                                     <div className='flex flex-col border-l-2 border-l-[#E5E7EB] pl-2 justify-center items-center w-[75%]'>
-                                        {locationDetails && (<HeatingScheduleTable props={formData.finalScheduleData} locationDetails={locationDetails} />)}
+                                        {locationDetails && (<HeatingScheduleTable locationDetails={locationDetails} />)}
                                     </div>
                                 </div>
                             </Accordion.Content>
