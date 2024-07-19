@@ -157,6 +157,7 @@ const HeatingProgramEntity = ({ formData,onUpdateRooms,onCloneProgram, onEditPro
       })
       .then(response => response.json())
       .then(data => {
+        // console.log(data,"from backend")
         const apiData = {
           buildings: data.map((building) => {
             // Calculate the total rooms in the building
@@ -195,6 +196,7 @@ const HeatingProgramEntity = ({ formData,onUpdateRooms,onCloneProgram, onEditPro
       .catch(error => console.error('Error:', error));
     },[])
 
+    // console.log(locationDetails)
     return (
         <>
             <div className='w-full relative flex flex-col bg-white rounded-[8px] px-4 py-4 justify-center items-center'>

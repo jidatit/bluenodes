@@ -247,22 +247,7 @@ export function EditHeatingModal({ openEditModal, handleEditModal, onEdit, progr
       if (handleSubmit()) {
         setCurrentStep((prev) => Math.min(prev + 1, 3));
       }
-    } else if (currentStep === 2) {
-      // Trigger the handleCheck function in the child component
-      if (handleCheckRef.current) {
-        handleCheckRef.current();
-      }
-
-      // Validate layouts for all days
-      const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-      const allNonEmpty = days.every(day => (day in layoutsRef.current) && layoutsRef.current[day].length > 0);
-      if (allNonEmpty) {
-        setFinalScheduleData(layoutsRef.current);
-        setCurrentStep((prev) => Math.min(prev + 1, 3));
-      } else {
-        console.log('All layouts are empty. Please fill in the required information.');
-      }
-    }
+    } 
   };
 
   const [combinedData, setCombinedData] = useState({
@@ -290,9 +275,34 @@ export function EditHeatingModal({ openEditModal, handleEditModal, onEdit, progr
   // const programAssignmentRef = useRef();
 
   const handleCreate = () => {
+    let scheduleDataTemp = {}
+
+      // Save button clicked
+      if (currentStep === 2) {
+        // Trigger the handleCheck function in the child component
+        if (handleCheckRef.current) {
+          handleCheckRef.current();
+        }
+  
+        // Validate layouts for all days
+        const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+        const allNonEmpty = days.every(day => (day in layoutsRef.current) && layoutsRef.current[day].length > 0);
+        if (allNonEmpty) {
+          setFinalScheduleData(layoutsRef.current);
+          scheduleDataTemp = layoutsRef.current ;
+          // setCurrentStep((prev) => Math.min(prev + 1, 3));
+        } else {
+          console.log('All layouts are empty. Please fill in the required information.');
+        }
+      }
+      if(combinedData) {
+        // console.log(combinedData)
+        onEdit(combinedData);
+      }
 
     // Convert schedule data into API format 
     function convertScheduleData(data) {
+      // console.log(data)
       const dayMapping = {
           "Monday": 1,
           "Tuesday": 2,
@@ -315,8 +325,12 @@ export function EditHeatingModal({ openEditModal, handleEditModal, onEdit, progr
           const day = dayMapping[dayName];
           entries.forEach(entry => {
               const from = normalizeTime(entry.y);
-              const to = normalizeTime(entry.y + entry.h);
+              let to = normalizeTime(entry.y + entry.h);
               const targetTemperature = parseInt(entry.temperature, 10);
+
+              if(to==="24:00"){
+                to="23:59"
+              }
   
               result.days.push({
                   day,
@@ -327,8 +341,9 @@ export function EditHeatingModal({ openEditModal, handleEditModal, onEdit, progr
           });
       }
   
-      return result;
+      return result.days;
     }
+
 
     //Manipulating for API
     const finalObj = {
@@ -336,7 +351,7 @@ export function EditHeatingModal({ openEditModal, handleEditModal, onEdit, progr
       "allowDeviceOverride": combinedData.formData.childSafety==='No'?true:false,
       "deviceOverrideTemperatureMin": parseInt(combinedData.formData.minTemp),
       "deviceOverrideTemperatureMax": parseInt(combinedData.formData.maxTemp),
-      "days": convertScheduleData(combinedData.finalScheduleData)
+      "days": convertScheduleData(scheduleDataTemp)
     }
     console.log(combinedData.finalScheduleData)
     console.log(JSON.stringify(finalObj))
@@ -345,7 +360,8 @@ export function EditHeatingModal({ openEditModal, handleEditModal, onEdit, progr
     fetch(`https://api-dev.blue-nodes.app/dev/smartheating/heatingschedule/${program.id}`, {
               method: 'PUT',
               headers: {
-                  'Authorization': `Bearer ${token}`
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
               },
               body: JSON.stringify(finalObj)
           })
@@ -364,29 +380,26 @@ export function EditHeatingModal({ openEditModal, handleEditModal, onEdit, progr
 
   const resetModalState = () => {
     setCurrentStep(1);
-    setFormData({
-      programName: "",
-      childSafety: "",
-      minTemp: "",
-      maxTemp: "",
-      applyAlgorithm: "",
-    });
-    setErrorMessages({
-      programName: "",
-      childSafety: "",
-      minTemp: "",
-      maxTemp: "",
-      applyAlgorithm: "",
-    });
-    setGeneralErrorMessage(null);
-    setFormSubmitted(false);
-    setLayouts({});
-    setFinalScheduleData({});
+    // setFormData({
+    //   programName: "",
+    //   childSafety: "",
+    //   minTemp: "",
+    //   maxTemp: "",
+    //   applyAlgorithm: "",
+    // });
+    // setErrorMessages({
+    //   programName: "",
+    //   childSafety: "",
+    //   minTemp: "",
+    //   maxTemp: "",
+    //   applyAlgorithm: "",
+    // });
+    // setGeneralErrorMessage(null);
+    // setFormSubmitted(false);
+    // setLayouts({});
+    // setFinalScheduleData({});
   };
 
-  useEffect(()=>{
-    console.log(finalScheduleData)
-  },[finalScheduleData])
   const handleCloseModal = () => {
     resetModalState();
     handleEditModal();
@@ -395,7 +408,7 @@ export function EditHeatingModal({ openEditModal, handleEditModal, onEdit, progr
   return (
     <>
       <Modal theme={customTheme} size={currentStep === 2 ? "7xl" : "5xl"} dismissible show={openEditModal} onClose={handleCloseModal}>
-        <Modal.Header className=" text-lg text-gray-900 [&>*]:font-semibold">Edit heating program</Modal.Header>
+        <Modal.Header className=" text-lg text-gray-900 [&>*]:font-semibold">Edit program - {program.templateName}</Modal.Header>
         <Modal.Body>
           <div className="flex flex-col items-center space-y-6">
             <ProgressStepper currentStep={currentStep} editMode={true} />

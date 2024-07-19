@@ -412,6 +412,7 @@ const handleCreateHeatingProgram = (combinedData) => {
   // Handle combinedData here
   // console.log('Combined Data:', combinedData);
 };
+console.log("abc1")
 
 const handleRoomUpdate = (data) => {
   if (data) {

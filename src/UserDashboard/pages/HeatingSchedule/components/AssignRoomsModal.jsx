@@ -109,6 +109,7 @@ import customTheme from '../CreateHeating/ModalTheme';
 // };
 
 function AssignRoomsModal({ openAssignModal,handleAssign, onUpdate,initialData, program }) {
+  console.log(initialData)
   
   //Set token for bearer authorization
   const token = localStorage.getItem('token');

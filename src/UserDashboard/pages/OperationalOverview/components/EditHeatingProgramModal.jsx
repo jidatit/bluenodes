@@ -44,8 +44,8 @@ const EditHeatingProgramModal = ({ openModal, handleOpenModal }) => {
 
     const handleConfirmReplace = () => {
         // handle the submit action here
-        console.log('Action:', selectedAction);
-        console.log('Selected Program:', selectedProgram);
+        // console.log('Action:', selectedAction);
+        // console.log('Selected Program:', selectedProgram);
         setShowConfirmModal(false);
         handleCloseModal();
     };

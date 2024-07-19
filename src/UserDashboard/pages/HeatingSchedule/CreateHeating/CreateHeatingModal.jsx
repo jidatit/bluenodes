@@ -1,3 +1,4 @@
+/* eslint-disable no-inner-declarations */
 /* eslint-disable react/prop-types */
 // Parent Component
 import { Button, Modal } from "flowbite-react";

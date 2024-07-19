@@ -334,25 +334,25 @@ export function CloneHeatingModal({ openCloneModal, handleCloneModal, onCreate, 
 
   const resetModalState = () => {
     setCurrentStep(1);
-    setFormData({
-      programName: "",
-      childSafety: "",
-      minTemp: "",
-      maxTemp: "",
-      applyAlgorithm: "",
-    });
-    setErrorMessages({
-      programName: "",
-      childSafety: "",
-      minTemp: "",
-      maxTemp: "",
-      applyAlgorithm: "",
-    });
-    setGeneralErrorMessage(null);
-    setFormSubmitted(false);
-    setHeatingAssignmentData({});
-    setLayouts({});
-    setFinalScheduleData({});
+    // setFormData({
+    //   programName: "",
+    //   childSafety: "",
+    //   minTemp: "",
+    //   maxTemp: "",
+    //   applyAlgorithm: "",
+    // });
+    // setErrorMessages({
+    //   programName: "",
+    //   childSafety: "",
+    //   minTemp: "",
+    //   maxTemp: "",
+    //   applyAlgorithm: "",
+    // });
+    // setGeneralErrorMessage(null);
+    // setFormSubmitted(false);
+    // setHeatingAssignmentData({});
+    // setLayouts({});
+    // setFinalScheduleData({});
     setButtonText('Create');
   };
 
