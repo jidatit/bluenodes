@@ -391,6 +391,7 @@ export function CreateHeatingModal({ openModal, handleOpenModal, onCreate }) {
             "locations": getRoomIdsByProgram(combinedData.heatingAssignmentData.buildings),
             "days": convertScheduleData(combinedData.finalScheduleData)
           }
+          // console.log(finalObj,"finalObj")
 
           handleOpenModal();
           resetModalState();
@@ -480,7 +481,6 @@ export function CreateHeatingModal({ openModal, handleOpenModal, onCreate }) {
             
             return sum + assignedProgramsSum;
           }, 0);
-          console.log(data,"fff")
       
           return {
             id: building.id,
