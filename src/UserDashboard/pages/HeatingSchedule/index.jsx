@@ -1,20 +1,19 @@
 /* eslint-disable no-unused-vars */
-import { Button, Toast } from "flowbite-react"
+import { Button, Toast } from "flowbite-react";
 import { useEffect, useState } from "react";
-import { FaFilter } from "react-icons/fa"
-import { GoPlus } from "react-icons/go"
+import { FaFilter } from "react-icons/fa";
+import { GoPlus } from "react-icons/go";
 import { CreateHeatingModal } from "./CreateHeating/CreateHeatingModal";
 import HeatingProgramEntity from "./components/HeatingProgramEntity";
 import { errorMessages } from "../../../globals/errorMessages";
 
 function HeatingSchedulePage() {
-
-  const token = localStorage.getItem('token');
+	const token = localStorage.getItem("token");
 
   //Adding use state React Hooks here
   const [programList, setProgramList] = useState([])
 
-  const [openModal, setOpenModal] = useState(false);
+	const [openModal, setOpenModal] = useState(false);
 
   const handleOpenModal = () => {
     setOpenModal(!openModal)
@@ -45,14 +44,14 @@ const handleCreateHeatingProgram = (combinedData) => {
   }
   setShowToast(true);
 
-      // Hide the toast after 2 seconds
-      setTimeout(() => {
-        setShowToast(false);
-      }, 4000);
+		// Hide the toast after 2 seconds
+		setTimeout(() => {
+			setShowToast(false);
+		}, 4000);
 
-  // Handle combinedData here
-  // console.log('Combined Data:', combinedData);
-};
+		// Handle combinedData here
+		// console.log('Combined Data:', combinedData);
+	};
 
 const handleRoomUpdate = (data) => {
   if (data) {
@@ -76,14 +75,14 @@ const handleRoomUpdate = (data) => {
   }
   setShowToast(true);
 
-      // Hide the toast after 2 seconds
-      setTimeout(() => {
-        setShowToast(false);
-      }, 4000);
+		// Hide the toast after 2 seconds
+		setTimeout(() => {
+			setShowToast(false);
+		}, 4000);
 
-  // Handle combinedData here
-  // console.log('Combined Data:', combinedData);
-};
+		// Handle combinedData here
+		// console.log('Combined Data:', combinedData);
+	};
 
 const handleCloneProgram = (data) => {
   console.log(data)
@@ -223,4 +222,4 @@ const handleEditProgram = (data) => {
   )
 }
 
-export default HeatingSchedulePage
+export default HeatingSchedulePage;
