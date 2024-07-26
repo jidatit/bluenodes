@@ -16,7 +16,7 @@ const ALayout = () => {
 
 	return !isAuthenticated ? (
 		<div className="w-full relative min-h-screen flex flex-col justify-center items-center bg-[#003049]">
-			<Link to="/">
+			{/* <Link to="/">
 				<button className="absolute text-white rounded-full bg-white/20 shadow-lg isolate backdrop-blur-3xl px-3 py-3 transition-all ease-in-out delay-100 hover:pr-[50px] hover:ring-2 left-[50px] top-[20px]">
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
@@ -33,7 +33,7 @@ const ALayout = () => {
 						/>
 					</svg>
 				</button>
-			</Link>
+			</Link> */}
 			<Outlet />
 		</div>
 	) : (

@@ -1,9 +1,6 @@
 /* eslint-disable no-unused-vars */
 import { Button, Toast } from "flowbite-react";
-import { Button, Toast } from "flowbite-react";
 import { useEffect, useState } from "react";
-import { FaFilter } from "react-icons/fa";
-import { GoPlus } from "react-icons/go";
 import { FaFilter } from "react-icons/fa";
 import { GoPlus } from "react-icons/go";
 import { CreateHeatingModal } from "./CreateHeating/CreateHeatingModal";
@@ -12,22 +9,21 @@ import { errorMessages } from "../../../globals/errorMessages";
 
 function HeatingSchedulePage() {
 	const token = localStorage.getItem("token");
-	const token = localStorage.getItem("token");
 
-	//Adding use state React Hooks here
+	// Adding use state React Hooks here
 	const [programList, setProgramList] = useState([]);
 	const [filteredPrograms, setFilteredPrograms] = useState([]);
 	const [searchQuery, setSearchQuery] = useState("");
 	const [selectedFilter, setSelectedFilter] = useState("Filter");
 	const [isDropdownOpen, setDropdownOpen] = useState(false); // Define state to manage dropdown visibility
-
-	const [openModal, setOpenModal] = useState(false);
 	const [openModal, setOpenModal] = useState(false);
 
 	const handleOpenModal = () => {
 		setOpenModal(!openModal);
 	};
+
 	const handleDropdownToggle = () => setDropdownOpen(!isDropdownOpen);
+
 	const handleFilterChange = (filter) => {
 		setSelectedFilter(filter);
 		setDropdownOpen(false);
@@ -48,10 +44,9 @@ function HeatingSchedulePage() {
 				);
 				break;
 			default:
-				filtered = filteredPrograms;
+				filtered = programList;
 		}
 
-		console.log("filtered", filtered);
 		setFilteredPrograms(filtered);
 	};
 
@@ -65,33 +60,21 @@ function HeatingSchedulePage() {
 			if (combinedData === "Error") {
 				setToastMessage(errorMessages.FailedCreation);
 				setIsSuccess(false);
-				setResponse(!response);
 			} else {
 				setToastMessage(errorMessages.successfulCreation);
 				setIsSuccess(true);
-				setResponse(!response);
 			}
 		} else {
 			setToastMessage(errorMessages.FailedCreation);
 			setIsSuccess(false);
-			setResponse(!response);
 		}
+		setResponse(!response);
 		setShowToast(true);
 
-		// Hide the toast after 2 seconds
+		// Hide the toast after 4 seconds
 		setTimeout(() => {
 			setShowToast(false);
 		}, 4000);
-		// Hide the toast after 2 seconds
-		setTimeout(() => {
-			setShowToast(false);
-		}, 4000);
-
-		// Handle combinedData here
-		// console.log('Combined Data:', combinedData);
-	};
-		// Handle combinedData here
-		// console.log('Combined Data:', combinedData);
 	};
 
 	const handleRoomUpdate = (data) => {
@@ -99,47 +82,40 @@ function HeatingSchedulePage() {
 			if (data === "Error") {
 				setToastMessage(errorMessages.roomAssignFailed);
 				setIsSuccess(false);
-				setResponse(!response);
 			} else {
 				setToastMessage(errorMessages.roomAssignSuccessfull);
 				setIsSuccess(true);
-				setResponse(!response);
 			}
 		} else {
 			setToastMessage(errorMessages.roomAssignFailed);
 			setIsSuccess(false);
-			setResponse(!response);
 		}
+		setResponse(!response);
 		setShowToast(true);
 
-		// Hide the toast after 2 seconds
+		// Hide the toast after 4 seconds
 		setTimeout(() => {
 			setShowToast(false);
 		}, 4000);
-
-		// Handle combinedData here
-		// console.log('Combined Data:', combinedData);
 	};
 
 	const handleCloneProgram = (data) => {
-		console.log(data);
 		if (data) {
 			if (data === "Error") {
 				setToastMessage(errorMessages.cloneFailed);
 				setIsSuccess(false);
-				setResponse(!response);
 			} else {
 				setToastMessage(errorMessages.cloneSuccessfull);
 				setIsSuccess(true);
-				setResponse(!response);
 			}
 		} else {
 			setToastMessage(errorMessages.cloneFailed);
 			setIsSuccess(false);
-			setResponse(!response);
 		}
+		setResponse(!response);
 		setShowToast(true);
 
+		// Hide the toast after 4 seconds
 		setTimeout(() => {
 			setShowToast(false);
 		}, 4000);
@@ -150,19 +126,18 @@ function HeatingSchedulePage() {
 			if (data === "Error") {
 				setToastMessage(errorMessages.editFailed);
 				setIsSuccess(false);
-				setResponse(!response);
 			} else {
 				setToastMessage(errorMessages.editSuccessfull);
 				setIsSuccess(true);
-				setResponse(!response);
 			}
 		} else {
 			setToastMessage(errorMessages.editFailed);
 			setIsSuccess(false);
-			setResponse(!response);
 		}
+		setResponse(!response);
 		setShowToast(true);
 
+		// Hide the toast after 4 seconds
 		setTimeout(() => {
 			setShowToast(false);
 		}, 4000);
@@ -185,6 +160,7 @@ function HeatingSchedulePage() {
 			})
 			.catch((error) => console.error("Error:", error));
 	}, [response]);
+
 	useEffect(() => {
 		if (searchQuery) {
 			const filtered = programList.filter((program) =>
@@ -195,6 +171,7 @@ function HeatingSchedulePage() {
 			setFilteredPrograms(programList);
 		}
 	}, [searchQuery, programList]);
+
 	const handleKeyDown = (e) => {
 		if (e.keyCode === 13) {
 			e.preventDefault(); // Prevent the default action of Enter key
@@ -255,7 +232,7 @@ function HeatingSchedulePage() {
 							<div className="left-10 absolute end-0 z-10 mt-4 w-56 divide-y divide-gray-100 rounded-md border border-gray-100 bg-white shadow-lg">
 								<ul className="list-none p-2">
 									<li
-										className="cursor-pointer lock rounded-lg px-4 py-2 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-700"
+										className="cursor-pointer block rounded-lg px-4 py-2 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-700"
 										onClick={() => handleFilterChange("Oldest to Newest")}
 									>
 										Oldest to Newest
@@ -288,7 +265,6 @@ function HeatingSchedulePage() {
 					</Button>
 				</div>
 			</div>
-			{/* here */}
 			{filteredPrograms.length > 0 &&
 				filteredPrograms.map((program, index) => (
 					<HeatingProgramEntity
