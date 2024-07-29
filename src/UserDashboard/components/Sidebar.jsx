@@ -13,6 +13,10 @@ import customTheme from "./sidebarTheme";
 import Avatar from "../../assets/dummy/Avatar.png"
 import { NavLink, useLocation } from "react-router-dom";
 import { NAVIGATION_PATH } from "../../globals/navPaths";
+import { IoLogOut } from "react-icons/io5";
+import { useAuth } from "../../AuthContext";
+import { Modal } from "flowbite-react";
+import { Button } from "flowbite-react";
 
 const user = {
   name: "Bonnie Green",
@@ -21,6 +25,7 @@ const user = {
 };
 
 const ExampleSidebar = () => {
+
   const { isOpenOnSmallScreens: isSidebarOpenOnSmallScreens, isCollapsed, setIsCollapsed, isHovered, handleMouseEnter, handleMouseLeave, toggleCollapsedState } = useSidebarContext();
 
   const [currentPage, setCurrentPage] = useState("");
@@ -188,23 +193,68 @@ const BottomMenu = ({ isCollapsed, isHovered }) => {
 };
 
 const OptionsDropdown = () => {
+  const { logout } = useAuth()
+  const [isSignoutModalOpen, setIsSignoutModalOpen] = useState(false);
+
+  const handleSignout = () => {
+    logout();
+  };
   return (
-    <Dropdown
-      arrowIcon={false}
-      inline
-      label={
-        <span className="inline-flex cursor-pointer justify-center rounded p-1 text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:hover:bg-gray-700 dark:hover:text-white">
-          <span className="sr-only">Current User</span>
-          <svg className="w-5 h-5 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-            <path stroke="currentColor" strokeLinecap="round" strokeWidth="4" d="M6 12h.01m6 0h.01m5.99 0h.01" />
-          </svg>
-        </span>
-      }
+    <>
+      <Dropdown
+        arrowIcon={false}
+        inline
+        label={
+          <span className="inline-flex cursor-pointer justify-center rounded p-1 text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:hover:bg-gray-700 dark:hover:text-white">
+            <span className="sr-only">Current User</span>
+            <svg className="w-5 h-5 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+              <path stroke="currentColor" strokeLinecap="round" strokeWidth="4" d="M6 12h.01m6 0h.01m5.99 0h.01" />
+            </svg>
+          </span>
+        }
+      >
+        <Dropdown.Item onClick={() => setIsSignoutModalOpen(true)} className="flex flex-row justify-center items-center gap-1">
+          <IoLogOut size={20} />
+          Sign out
+        </Dropdown.Item>
+
+      </Dropdown>
+      <ConfirmSignOutModal
+        isSignoutModalOpen={isSignoutModalOpen}
+        setIsSignoutModalOpen={setIsSignoutModalOpen}
+        handleSignout={handleSignout}
+      />
+    </>
+
+  );
+};
+
+const ConfirmSignOutModal = ({ isSignoutModalOpen, setIsSignoutModalOpen, handleSignout }) => {
+  return (
+    <Modal
+      show={isSignoutModalOpen}
+      size="lg"
+      onClose={() => setIsSignoutModalOpen(false)}
+      popup
     >
-      <Dropdown.Item>Option 1</Dropdown.Item>
-      <Dropdown.Item>Option 2</Dropdown.Item>
-      <Dropdown.Item>Option 3</Dropdown.Item>
-    </Dropdown>
+      <Modal.Header />
+      <Modal.Body>
+        <div className="text-center">
+          <IoLogOut size={30} className="text-[#9CA3AF] mx-auto mb-4" />
+          <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
+            Are you sure you want to sign out?
+          </h3>
+          <div className="flex justify-center gap-4">
+            <Button color="gray" onClick={() => setIsSignoutModalOpen(false)}>
+              Cancel
+            </Button>
+            <Button color="failure" onClick={handleSignout}>
+              Sign out
+            </Button>
+          </div>
+        </div>
+      </Modal.Body>
+    </Modal>
   );
 };
 

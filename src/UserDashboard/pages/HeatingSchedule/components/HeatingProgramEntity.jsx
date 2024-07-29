@@ -9,12 +9,15 @@ import HeatingScheduleTable from "./HeatingScheduleTable";
 import AssignRoomsModal from "./AssignRoomsModal";
 import { CloneHeatingModal } from "../CloneHeating/CloneHeatingModal";
 import { EditHeatingModal } from "../EditHeating/EditHeatingModal";
+import { errorMessages } from "../../../../globals/errorMessages";
+import { Toast } from "flowbite-react";
 
 const HeatingProgramEntity = ({
 	formData,
 	onUpdateRooms,
 	onCloneProgram,
 	onEditProgram,
+	onDeleteProgram,
 	program,
 }) => {
 	const token = localStorage.getItem("token");
@@ -38,6 +41,10 @@ const HeatingProgramEntity = ({
 	const handleEditModal = () => {
 		setOpenEditModal(!openEditModal);
 	};
+
+	const [showToast, setShowToast] = useState(false);
+	const [toastMessage, setToastMessage] = useState("");
+	const [isSuccess, setIsSuccess] = useState(true);
 
 	const handleDelete = async () => {
 		setOpenDeleteModal(false);
@@ -72,15 +79,24 @@ const HeatingProgramEntity = ({
 			if (response.ok) {
 				// Handle successful delete
 				console.log("Delete successful");
+				setIsSuccess(true);
+				setToastMessage(errorMessages.deleteSuccessfull)
 				// Perform any state updates or UI changes
 			} else {
 				// Handle errors
 				const errorData = await response.json();
 				console.error("Delete failed", errorData);
+				setIsSuccess(false);
+				setToastMessage(errorMessages.deleteFailed)
 			}
 		} catch (error) {
 			console.error("Network error", error);
 		}
+		onDeleteProgram()
+		setShowToast(true)
+		setTimeout(() => {
+			setShowToast(false);
+		}, 4000);
 	};
 
 	const [response, setResponse] = useState(false);
@@ -122,7 +138,7 @@ const HeatingProgramEntity = ({
 				setLocationDetails(data);
 			})
 			.catch((error) => console.error("Error:", error));
-	}, [response]);
+	}, [response, program]);
 
 	// Function to recursively count the rooms
 	const countRooms = (node) => {
@@ -211,7 +227,7 @@ const HeatingProgramEntity = ({
 				setInitialData(apiData);
 			})
 			.catch((error) => console.error("Error:", error));
-	}, [response]);
+	}, [response, openDeleteModal]);
 
 	// console.log(locationDetails)
 	return (
@@ -321,10 +337,10 @@ const HeatingProgramEntity = ({
 											>
 												<Accordion.Panel>
 													<Accordion.Title className="p-2 mb-1 flex-row-reverse items-center justify-end gap-3 border-none hover:bg-white focus:ring-none focus:ring-white bg-white focus:bg-white">
-														<p className="text-sm text-gray-900 font-bold">
+														<p className="text-[12px] text-gray-900 font-bold">
 															{building.name}
 															<span
-																className={`text-xs font-normal py-0.5 px-2.5 ml-1 bg-indigo-100 rounded-md`}
+																className={`text-[12px] py-0.5 px-2.5 ml-1 bg-[#E5EDFF] text-[#42389D] font-[500] rounded-md`}
 															>
 																{countRooms(building)}{" "}
 																{countRooms(building) > 1 ? "rooms" : "room"}
@@ -340,10 +356,10 @@ const HeatingProgramEntity = ({
 															>
 																<Accordion.Panel>
 																	<Accordion.Title className="p-2 mb-1 flex-row-reverse items-center justify-end gap-3 border-none hover:bg-white focus:ring-none focus:ring-white bg-white focus:bg-white">
-																		<p className="text-sm text-gray-900 font-bold">
+																		<p className="text-[12px] text-gray-900 font-bold">
 																			{floor.name}
 																			<span
-																				className={`text-xs font-normal py-0.5 px-2.5 ml-1 bg-indigo-100 rounded-md`}
+																				className={`text-[12px] py-0.5 px-2.5 ml-1 bg-[#E5EDFF] text-[#42389D] font-[500] rounded-md`}
 																			>
 																				{floor.children.length}{" "}
 																				{floor.children.length > 1
@@ -359,7 +375,7 @@ const HeatingProgramEntity = ({
 																					key={room.id}
 																					className="room-item mb-2"
 																				>
-																					<p className="text-black text-sm font-semibold">
+																					<p className="text-black text-[12px] font-semibold">
 																						{room.name}
 																					</p>
 																				</li>
@@ -417,6 +433,28 @@ const HeatingProgramEntity = ({
 					locationDetails={locationDetails}
 				/>
 			</div>
+
+			{showToast && (
+				<div
+					className="fixed top-4 right-4 z-50 transition-transform duration-300 ease-in-out transform translate-x-0"
+					style={{ transition: "transform 0.3s ease-in-out" }}
+				>
+					<Toast className="animate-slideIn">
+						{isSuccess ? (
+							<div className="text-cyan-600 dark:text-cyan-600 mr-2.5">
+								{/* Success SVG */}
+							</div>
+						) : (
+							<div className="text-red-600 dark:text-red-500 mr-2.5">
+								{/* Error SVG */}
+							</div>
+						)}
+						<div className="pl-4 text-sm font-normal border-l">
+							{toastMessage}
+						</div>
+					</Toast>
+				</div>
+			)}
 		</>
 	);
 };

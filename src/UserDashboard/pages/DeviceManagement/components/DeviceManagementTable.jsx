@@ -245,13 +245,14 @@ const OfflineTable = ({ tableData }) => {
                             type="text"
                             value={editedName}
                             onChange={handleInputChange}
-                            className='w-[80%]'
+                            className='w-[68%]'
+                            sizing="sm"
                           />
                         ) : (
                           <>
                             {item.device_name && item.device_name.length > 10 ? (
                               <>
-                                {item.device_name.slice(0, 10)} <span>...</span>
+                                {item.device_name.slice(0, 13)} <span>...</span>
                               </>
                             ) : (
                               <>

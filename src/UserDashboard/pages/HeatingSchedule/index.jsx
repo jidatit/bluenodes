@@ -6,6 +6,7 @@ import { GoPlus } from "react-icons/go";
 import { CreateHeatingModal } from "./CreateHeating/CreateHeatingModal";
 import HeatingProgramEntity from "./components/HeatingProgramEntity";
 import { errorMessages } from "../../../globals/errorMessages";
+import { Spinner } from "flowbite-react";
 
 function HeatingSchedulePage() {
 	const token = localStorage.getItem("token");
@@ -121,6 +122,10 @@ function HeatingSchedulePage() {
 		}, 4000);
 	};
 
+	const handleDeleteProgram = () => {
+		setResponse(!response)
+	}
+
 	const handleEditProgram = (data) => {
 		if (data) {
 			if (data === "Error") {
@@ -142,7 +147,7 @@ function HeatingSchedulePage() {
 			setShowToast(false);
 		}, 4000);
 	};
-
+	const [Loader, setLoader] = useState(true)
 	useEffect(() => {
 		fetch(
 			"https://api-dev.blue-nodes.app/dev/smartheating/heatingschedule/list",
@@ -157,8 +162,9 @@ function HeatingSchedulePage() {
 			.then((data) => {
 				setProgramList(data);
 				setFilteredPrograms(data);
+				setLoader(false)
 			})
-			.catch((error) => console.error("Error:", error));
+			.catch((error) => console.error("Error:", error)).finally(() => setLoader(false));
 	}, [response]);
 
 	useEffect(() => {
@@ -272,9 +278,15 @@ function HeatingSchedulePage() {
 						onUpdateRooms={handleRoomUpdate}
 						onCloneProgram={handleCloneProgram}
 						onEditProgram={handleEditProgram}
+						onDeleteProgram={handleDeleteProgram}
 						program={program}
 					/>
 				))}
+			{Loader && (
+				<div className="w-full flex flex-col justify-center items-center">
+					<Spinner aria-label="Extra large spinner example" size="xl" />
+				</div>
+			)}
 			<div>
 				<CreateHeatingModal
 					openModal={openModal}
