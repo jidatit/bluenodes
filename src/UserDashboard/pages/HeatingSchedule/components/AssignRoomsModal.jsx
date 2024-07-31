@@ -112,7 +112,7 @@ function AssignRoomsModal({ openAssignModal,handleAssign, onUpdate,initialData, 
   
   //Set token for bearer authorization
   const token = localStorage.getItem('token');
-
+  
   const [heatingData, setheatingData] = useState({});
   const [data, setData] = useState(heatingData && Object.keys(heatingData).length>0 ? heatingData:_.cloneDeep(initialData));
   const [filter, setFilter] = useState('All');
@@ -228,7 +228,7 @@ function AssignRoomsModal({ openAssignModal,handleAssign, onUpdate,initialData, 
       floor.rooms.forEach(room => {
         room.assigned = isSelected;
         if (isSelected) {
-          room.programAssigned = formData.programName;
+          room.programAssigned = program.templateName;
           room.algorithmOn = formData.applyAlgorithm;
           room.assigned = true;
         } else {

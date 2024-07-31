@@ -139,7 +139,7 @@ function HeatingSchedulePage() {
 			setToastMessage(errorMessages.editFailed);
 			setIsSuccess(false);
 		}
-		setResponse(!response);
+		// setResponse(!response);
 		setShowToast(true);
 
 		// Hide the toast after 4 seconds

@@ -216,12 +216,12 @@ function HeatingScheduleTable({locationDetails,props}) {
                     ))}
                 </div>
                 <div style={{ display: 'flex', zIndex: '10' }}>
-                    <div style={{ width: '60px' }}>
+                    <div style={{ width: '60px' }} className=' pt-1'>
                         {timeLabels}
                     </div>
                     <div style={{ display: 'flex', justifyContent: 'flex-start', gap: '12px', width: '100%', position: 'relative', zIndex: '10' }}>
-                        <div className={`  absolute top-[18px] left-0 bottom-0 right-0 w-full h-full flex flex-col gap-[9px] z-10`}>
-                            {Array.from({ length: 24*4 }).map((_, index) => (
+                        <div className={`  absolute top-[16px] left-0 bottom-0 right-0 w-full h-full flex flex-col gap-[9px] z-10`}>
+                            {Array.from({ length: 25*4 }).map((_, index) => (
                                 <div key={index} className='w-full border-t-2 border-[#E8E8E8] border-dotted z-10'></div>
                             ))}
                         </div>
@@ -232,7 +232,7 @@ function HeatingScheduleTable({locationDetails,props}) {
                                     compactType={null}
                                     layout={initialLayouts[day]}
                                     cols={1}
-                                    rowHeight={1}
+                                    rowHeight={1.5}
                                     width={150}
                                     isDraggable={false}
                                     isResizable={false}
@@ -240,7 +240,7 @@ function HeatingScheduleTable({locationDetails,props}) {
                                     {initialLayouts[day].map((box) => (
                                         <div
                                             key={box.i}
-                                            className={`box relative w-full !important rounded-md z-10 ${
+                                            className={`box relative w-full rounded-md z-10 ${
                                               box.temperature === false ? 'border border-red-500' : ''
                                             }`}
                                             style={{

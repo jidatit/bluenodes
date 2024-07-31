@@ -301,7 +301,6 @@ export function CreateHeatingModal({ openModal, handleOpenModal, onCreate }) {
   const [buttonText, setButtonText] = useState('Create');
 
   const handleCreate = () => {
-    if (buttonText === 'Create') {
       if (handleAssignmentRef.current) {
         handleAssignmentRef.current();
 
@@ -311,7 +310,7 @@ export function CreateHeatingModal({ openModal, handleOpenModal, onCreate }) {
           )
         );
 
-        if (!anyRoomSelected) {
+        if (!anyRoomSelected && buttonText === 'Create') {
           setButtonText('Confirm');
         } else {
           handleAssignmentData();
@@ -384,12 +383,15 @@ export function CreateHeatingModal({ openModal, handleOpenModal, onCreate }) {
 
           //Manipulating for API
           const finalObj = {
-            "templateName": combinedData.formData.programName,
-            "allowDeviceOverride": combinedData.formData.childSafety==='No'?true:false,
-            "deviceOverrideTemperatureMin": parseInt(combinedData.formData.minTemp),
-            "deviceOverrideTemperatureMax": parseInt(combinedData.formData.maxTemp),
-            "locations": getRoomIdsByProgram(combinedData.heatingAssignmentData.buildings),
-            "days": convertScheduleData(combinedData.finalScheduleData)
+            templateName: combinedData.formData.programName,
+            allowDeviceOverride: combinedData.formData.childSafety==='No'?true:false,
+            locations: getRoomIdsByProgram(combinedData.heatingAssignmentData.buildings),
+            days: convertScheduleData(combinedData.finalScheduleData)
+          };
+          
+          if (combinedData.formData.childSafety !== 'Yes') {
+            finalObj.deviceOverrideTemperatureMin = parseInt(combinedData.formData.minTemp);
+            finalObj.deviceOverrideTemperatureMax = parseInt(combinedData.formData.maxTemp);
           }
           // console.log(finalObj,"finalObj")
 
@@ -419,14 +421,6 @@ export function CreateHeatingModal({ openModal, handleOpenModal, onCreate }) {
       } else {
         console.error('handleAssignmentRef.current is not defined');
       }
-    } else {
-      // Confirm button clicked
-      handleAssignmentData();
-      // onCreate(combinedData);
-      handleOpenModal();
-      setButtonText('Create');
-      resetModalState();
-    }
   };
 
   const resetModalState = () => {

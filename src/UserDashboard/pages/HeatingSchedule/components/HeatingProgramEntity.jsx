@@ -227,7 +227,7 @@ const HeatingProgramEntity = ({
 				setInitialData(apiData);
 			})
 			.catch((error) => console.error("Error:", error));
-	}, [response, openDeleteModal]);
+	}, [response, openDeleteModal,handleAssign]);
 
 	// console.log(locationDetails)
 	return (
