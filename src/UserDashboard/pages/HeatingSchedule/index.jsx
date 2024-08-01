@@ -288,11 +288,13 @@ function HeatingSchedulePage() {
 				</div>
 			)}
 			<div>
-				<CreateHeatingModal
-					openModal={openModal}
-					handleOpenModal={handleOpenModal}
-					onCreate={handleCreateHeatingProgram}
-				/>
+				{openModal && (
+					<CreateHeatingModal
+						openModal={openModal}
+						handleOpenModal={handleOpenModal}
+						onCreate={handleCreateHeatingProgram}
+					/>
+				)}
 			</div>
 			{showToast && (
 				<div

@@ -32,6 +32,7 @@ const HeatingProgramEntity = ({
 
 	const handleAssign = () => {
 		setOpenAssignModal(!openAssignModal);
+		setResponse(!response)
 	};
 
 	const handleCloneModal = () => {
@@ -48,6 +49,7 @@ const HeatingProgramEntity = ({
 
 	const handleDelete = async () => {
 		setOpenDeleteModal(false);
+		setResponse(!response)
 
 		const programName = program.templateName;
 
@@ -227,7 +229,7 @@ const HeatingProgramEntity = ({
 				setInitialData(apiData);
 			})
 			.catch((error) => console.error("Error:", error));
-	}, [response, openDeleteModal,handleAssign]);
+	}, [response]);
 
 	// console.log(locationDetails)
 	return (
@@ -418,20 +420,24 @@ const HeatingProgramEntity = ({
 						program={program}
 					/>
 				)}
-				<CloneHeatingModal
-					openCloneModal={openCloneModal}
-					handleCloneModal={handleCloneModal}
-					onCreate={handleCloneHeatingProgram}
-					program={program}
-					locationDetails={locationDetails}
-				/>
-				<EditHeatingModal
-					openEditModal={openEditModal}
-					handleEditModal={handleEditModal}
-					onEdit={handleEditHeatingProgram}
-					program={program}
-					locationDetails={locationDetails}
-				/>
+				{openCloneModal && (
+					<CloneHeatingModal
+						openCloneModal={openCloneModal}
+						handleCloneModal={handleCloneModal}
+						onCreate={handleCloneHeatingProgram}
+						program={program}
+						locationDetails={locationDetails}
+					/>
+				)}
+				{openEditModal && (
+					<EditHeatingModal
+						openEditModal={openEditModal}
+						handleEditModal={handleEditModal}
+						onEdit={handleEditHeatingProgram}
+						program={program}
+						locationDetails={locationDetails}
+					/>
+				)}
 			</div>
 
 			{showToast && (
