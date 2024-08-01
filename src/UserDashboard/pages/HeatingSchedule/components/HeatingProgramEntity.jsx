@@ -29,10 +29,18 @@ const HeatingProgramEntity = ({
 	const [openCloneModal, setOpenCloneModal] = useState(false);
 	const [openEditModal, setOpenEditModal] = useState(false);
 	const [locationDetails, setLocationDetails] = useState(null);
+	const [isOpen, setIsOpen] = useState(false);
+
+	const handleToggle = () => {
+		setIsOpen(!isOpen);
+		if (!isOpen) {
+			console.log("fetching");
+		}
+	};
 
 	const handleAssign = () => {
 		setOpenAssignModal(!openAssignModal);
-		setResponse(!response)
+		setResponse(!response);
 	};
 
 	const handleCloneModal = () => {
@@ -49,7 +57,7 @@ const HeatingProgramEntity = ({
 
 	const handleDelete = async () => {
 		setOpenDeleteModal(false);
-		setResponse(!response)
+		setResponse(!response);
 
 		const programName = program.templateName;
 
@@ -82,20 +90,20 @@ const HeatingProgramEntity = ({
 				// Handle successful delete
 				console.log("Delete successful");
 				setIsSuccess(true);
-				setToastMessage(errorMessages.deleteSuccessfull)
+				setToastMessage(errorMessages.deleteSuccessfull);
 				// Perform any state updates or UI changes
 			} else {
 				// Handle errors
 				const errorData = await response.json();
 				console.error("Delete failed", errorData);
 				setIsSuccess(false);
-				setToastMessage(errorMessages.deleteFailed)
+				setToastMessage(errorMessages.deleteFailed);
 			}
 		} catch (error) {
 			console.error("Network error", error);
 		}
-		onDeleteProgram()
-		setShowToast(true)
+		onDeleteProgram();
+		setShowToast(true);
 		setTimeout(() => {
 			setShowToast(false);
 		}, 4000);
@@ -151,6 +159,20 @@ const HeatingProgramEntity = ({
 			return node.children.reduce((sum, child) => sum + countRooms(child), 0);
 		}
 		return 0;
+	};
+	const options = {
+		onOpen: (item) => {
+			console.log("accordion item has been shown");
+			console.log(item);
+		},
+		onClose: (item) => {
+			console.log("accordion item has been hidden");
+			console.log(item);
+		},
+		onToggle: (item) => {
+			console.log("accordion item has been toggled");
+			console.log(item);
+		},
 	};
 
 	const getDate = () => {
@@ -234,7 +256,7 @@ const HeatingProgramEntity = ({
 	// console.log(locationDetails)
 	return (
 		<>
-			<div className="w-full relative flex flex-col bg-white rounded-[8px] px-4 py-4 justify-center items-center">
+			<div className="w-full relative border-gray-200 border-[1px] flex flex-col bg-white rounded-[8px] px-4 py-4 justify-center items-center">
 				<div className="flex absolute top-4 right-3 flex-row justify-center items-center gap-3 text-gray-900">
 					<Tooltip
 						className="min-w-[130px]"
@@ -305,9 +327,10 @@ const HeatingProgramEntity = ({
                     </div> */}
 				</div>
 				<div className="w-full bg-[#a3a6ad] opacity-40 mt-3 mb-3 h-[1px]"></div>
+
 				<div className="w-full flex flex-row justify-start items-center">
 					<Accordion className="w-full border-none" collapseAll>
-						<Accordion.Panel className="">
+						<Accordion.Panel isOpen={isOpen} className="">
 							<Accordion.Title className=" p-2 mb-1 flex-row-reverse items-center justify-end gap-3 border-none hover:bg-white focus:ring-none focus:ring-white bg-white focus:bg-white">
 								<p className="text-sm text-gray-900 font-bold">
 									<span
@@ -318,6 +341,7 @@ const HeatingProgramEntity = ({
 									</span>
 								</p>
 							</Accordion.Title>
+
 							<Accordion.Content className="rounded-lg px-4 py-2 border-none">
 								<div className="flex flex-row justify-between gap-4 items-start w-full p-4">
 									<div className="flex flex-col justify-start items-start w-[25%]">
@@ -402,6 +426,7 @@ const HeatingProgramEntity = ({
 						</Accordion.Panel>
 					</Accordion>
 				</div>
+
 				<DeleteModal
 					openDeleteModal={openDeleteModal}
 					setOpenDeleteModal={setOpenDeleteModal}
