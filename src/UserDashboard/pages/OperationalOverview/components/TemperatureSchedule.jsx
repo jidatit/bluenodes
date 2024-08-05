@@ -78,19 +78,6 @@ const updatedTemperatureData = temperatureData.map(data => ({
   textcolor: handleTextColour(data.temp)
 }));
 
-// Dummy data representing manual changes
-const manualChanges = [
-  { time: '02:00', temp: 22 },
-  { time: '06:00', temp: 22 },
-  { time: '10:00', temp: 22 },
-  { time: '21:00', temp: 22 },
-  { time: '24:00', temp: 22 },
-];
-
-const targetTemp = [
-  { time: '16:00', temp: 20 }
-];
-
 // const parseTimeToPercentage = (timestamp) => {
 //   const date = new Date(timestamp);
 //   const hours1 = date.getUTCHours();
@@ -206,10 +193,10 @@ const TemperatureSchedule = ({ floorId }) => {
             </div>
 
           </div>
-          {/* <div className="flex items-center mb-2">
-        <span className="text-sm text-gray-500">Today 00:00</span>
-      </div> */}
           <div className='w-full relative px-4'>
+
+
+
             {/* Render dots for manual changes outside the h-4 container */}
             <div className=' w-full relative'>
               {room.manuallySetTemperatures && room.manuallySetTemperatures.length > 0 && room.manuallySetTemperatures.map((change, index) => (
@@ -235,6 +222,9 @@ const TemperatureSchedule = ({ floorId }) => {
                 </div>
               ))}
             </div>
+
+
+
             {/* marker  */}
             {room.heatingSchedule && room.heatingSchedule !== null && (
               <div
@@ -263,31 +253,38 @@ const TemperatureSchedule = ({ floorId }) => {
                 </Tooltip>
               </div>
             )}
+
+
+            {/* line  */}
             <div className="relative w-full h-1.5 rounded-full overflow-hidden bg-transparent">
-              {updatedTemperatureData.map((data, index) => (
+              {room.heatingSchedule?.currentDay && room.heatingSchedule.currentDay.map((element, index) => (
                 <div
                   key={index}
                   className={`absolute h-1.5 rounded-full`}
                   style={{
-                    backgroundColor: data.color,
-                    left: `${parseTimeToPercentage(data.startTime)}% `,
-                    width: `calc(${parseTimeToPercentage(data.endTime) - parseTimeToPercentage(data.startTime)}% - 0.275rem)`,
+                    backgroundColor: handleTempColour(element.targetTemperature),
+                    left: `${parseTimeToPercentage(element.from)}%`,
+                    width: `calc(${parseTimeToPercentage(element.to) - parseTimeToPercentage(element.from)}% - 0.275rem)`,
                     marginLeft: index === 0 ? '0' : '0.1rem',
-                    marginRight: index === updatedTemperatureData.length - 1 ? '0' : '0.45rem',
+                    marginRight: index === room.heatingSchedule.currentDay.length - 1 ? '0' : '0.45rem',
                   }}
                 />
               ))}
             </div>
+
+
+
+            {/* Render an additional div after the last index */}
             <div className=' w-full absolute left-0 right-0 px-3 flex gap-1' style={{ top: `-5px` }}>
-              {updatedTemperatureData.map((data, index) => (
-                <div key={`separator-parent-${index}`} style={{ width: `calc(${parseTimeToPercentage(data.endTime) - parseTimeToPercentage(data.startTime)}% - 0.275rem)` }} className=' flex justify-start '>
+              {room.heatingSchedule?.currentDay && room.heatingSchedule.currentDay.map((element, index) => (
+                <div key={`separator-parent-${index}`} style={{ width: `calc(${parseTimeToPercentage(element.to) - parseTimeToPercentage(element.from)}% - 0.275rem)` }} className=' flex justify-start '>
                   <div
                     key={`separator-${index}`}
                     className=" w-[2px] h-4 bg-gray-200"
                   />
                 </div>
               ))}
-              {/* Render an additional div after the last index */}
+
               <div
                 key={`separator-${updatedTemperatureData.length}`}
                 className="w-[2px] h-4 bg-gray-200"
@@ -296,18 +293,18 @@ const TemperatureSchedule = ({ floorId }) => {
 
             {/* Temperature labels */}
             <div className="flex justify-between mt-2 text-sm text-gray-500">
-              {updatedTemperatureData.map((data, index) => (
+              {room.heatingSchedule?.currentDay && room.heatingSchedule.currentDay.map((element, index) => (
                 <React.Fragment key={index}>
                   <span
                     style={{
-                      width: `calc(${parseTimeToPercentage(data.endTime) - parseTimeToPercentage(data.startTime)}%)`,
+                      width: `calc(${parseTimeToPercentage(element.to) - parseTimeToPercentage(element.from)}%)`,
                       marginLeft: index === 0 ? '-16px' : '0',
                     }}
                     key={`time-${index}`}
                   >
-                    {index === 0 ? "Today " : ""}{data.startTime}
+                    {index === 0 ? "Today " : ""}{element.from}
                   </span>
-                  {index === updatedTemperatureData.length - 1 && (
+                  {index === room.heatingSchedule?.currentDay.length - 1 && (
                     <span key={`time-${index + 1}`}>
                       {/* {data.endTime === '24:00' ? '00:00' : data.endTime} */}
                       23:59
@@ -319,9 +316,9 @@ const TemperatureSchedule = ({ floorId }) => {
 
 
             <div className="flex justify-between mt-[-10px] text-sm font-semibold">
-              {updatedTemperatureData.map((data, index) => (
-                <span style={{ width: `calc(${parseTimeToPercentage(data.endTime) - parseTimeToPercentage(data.startTime)}%)`, color: data.textcolor }} key={`temp-${index}`} className={`${data.labelColor} flex justify-center`}>
-                  {data.temp}°C
+              {room.heatingSchedule?.currentDay && room.heatingSchedule.currentDay.map((element, index) => (
+                <span style={{ width: `calc(${parseTimeToPercentage(element.to) - parseTimeToPercentage(element.from)}%)`, color: handleTextColour(element.targetTemperature) }} key={`temp-${index}`} className={`${handleTextColour(element.targetTemperature)} flex justify-center`}>
+                  {element.targetTemperature}°C
                 </span>
               ))}
             </div>
