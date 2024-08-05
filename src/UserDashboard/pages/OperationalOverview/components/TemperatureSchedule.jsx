@@ -98,7 +98,7 @@ const targetTemp = [
 //   const time = `${hours1.toString().padStart(2, '0')}:${minutes1.toString().padStart(2, '0')}`
 //   const [hours, minutes] = time.split(':').map(Number);
 //   const a = ((hours * 60 + minutes) / 1440) * 100;
-//   console.log(time, " --> ", a)
+//   console.log(timestamp,"-->",time, " --> ", a)
 //   return a
 // };
 
