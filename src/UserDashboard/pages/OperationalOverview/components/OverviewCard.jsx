@@ -32,7 +32,7 @@ const OverviewCard = ({ formData }) => {
 
 	return (
 		<>
-			<div className="w-full relative flex flex-col bg-white rounded-[8px] px-4 py-4 justify-center items-center">
+			<div className="w-full relative flex flex-col border-gray-200 border-[1px] bg-white rounded-[8px] px-4 py-4 justify-center items-center">
 				<div className="flex items-start gap-4 w-full">
 					<div className="w-[55px] h-[90px] rounded-md">
 						<img
@@ -46,7 +46,7 @@ const OverviewCard = ({ formData }) => {
 							<div className="w-[60%] flex flex-col justify-center items-start gap-2">
 								<div className="flex items-center gap-1">
 									<p className="text-[16px] font-[700]">{formData.name}</p>
-									{buildError && (
+									{/* {buildError && (
 										<Tooltip
 											className={`px-3 py-1.5 text-center text-gray-900 max-w-[356px]`}
 											// content={`Window: ${target.temp}`}
@@ -75,7 +75,7 @@ const OverviewCard = ({ formData }) => {
 										>
 											<FaCircleExclamation className="text-red-700" />
 										</Tooltip>
-									)}
+									)} */}
 								</div>
 								<p className="text-[12px] font-[400] text-gray-500">
 									Devices Online
@@ -127,7 +127,7 @@ const OverviewCard = ({ formData }) => {
 											</span>
 										</p>
 									</Accordion.Title>
-									<Accordion.Content className="rounded-lg p-4">
+									<Accordion.Content className="rounded-lg p-[16px]">
 										<div className="flex flex-row justify-between gap-4 items-start w-full">
 											<div className="flex flex-col justify-start items-start w-full">
 												<Accordion className="w-full border-none" collapseAll>
@@ -170,7 +170,7 @@ const OverviewCard = ({ formData }) => {
 															<Accordion.Content className="px-4 pt-0 pb-4 border-none">
 																<div className="w-full bg-[#a3a6ad] opacity-40 mt-3 mb-5 h-[1px]"></div>
 																<div className="px-7 flex flex-col gap-5 w-full">
-																	{/* <TemperatureSchedule floorId={child.id} /> */}
+																	<TemperatureSchedule floorId={child.id} />
 																</div>
 															</Accordion.Content>
 														</Accordion.Panel>
