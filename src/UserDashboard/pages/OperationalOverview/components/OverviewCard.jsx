@@ -112,7 +112,7 @@ const OverviewCard = ({ formData }) => {
                                               <Accordion.Content className=' px-4 pt-0 pb-4 border-none'>
                                                 <div className='w-full bg-[#a3a6ad] opacity-40 mt-3 mb-5 h-[1px]'></div>
                                                 <div className=' px-7 flex flex-col gap-5 w-full'>
-                                                  <TemperatureSchedule/>
+                                                  <TemperatureSchedule floorId={151}/>
                                                 </div>
                                               </Accordion.Content>
                                             </Accordion.Panel>
