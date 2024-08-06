@@ -70,7 +70,7 @@ const updatedTemperatureData = temperatureData.map(data => ({
 
 const parseTimeToPercentage = (timestamp) => {
   let date;
-  
+
   // Try to parse the timestamp directly
   try {
     date = new Date(timestamp);
@@ -78,7 +78,7 @@ const parseTimeToPercentage = (timestamp) => {
     // Fallback if parsing fails
     return null;
   }
-  
+
   // Check if the input is a time-only string
   if (!isNaN(date.getTime())) {
     // ISO 8601 timestamp or valid Date string
@@ -88,21 +88,21 @@ const parseTimeToPercentage = (timestamp) => {
     const totalMinutes = hours * 60 + minutes;
     const totalSeconds = totalMinutes * 60 + seconds;
     const percentage = (totalSeconds / 86400) * 100;
-    
+
     return percentage;
   } else {
     // Handle time-only string format (e.g., "23:59:00")
     const [timeString] = timestamp.split('T'); // Remove date part if present
     const [hours, minutes, seconds = '0'] = timeString.split(':').map(Number);
-    
+
     if (isNaN(hours) || isNaN(minutes)) {
       return null;
     }
-    
+
     const totalMinutes = hours * 60 + minutes;
     const totalSeconds = totalMinutes * 60 + seconds;
     const percentage = (totalSeconds / 86400) * 100;
-    
+
     return percentage;
   }
 };
@@ -182,7 +182,7 @@ const TemperatureSchedule = ({ floorId }) => {
               </Tooltip>
               <p className="text-sm text-primary">Program 1</p>
               <div className="flex items-center gap-4 text-sm">
-                <Button onClick={handleOpenModal} className='hover:!bg-transparent hover:opacity-80 border-none text-primary bg-transparent pr-2 py-0 [&>*]:p-0 focus:ring-transparent'>View Schedule</Button>
+                <Button disabled={room.heatingSchedule === null} onClick={handleOpenModal} className={`hover:!bg-transparent hover:opacity-80 border-none text-primary bg-transparent ${room.heatingSchedule !== null && room.heatingSchedule.id ? "text-primary" : "text-gray-500"} pr-2 py-0 [&>*]:p-0 focus:ring-transparent`}>View Schedule</Button>
                 <Tooltip
                   className={`px-2 py-1.5 text-center min-w-32 max-w-96`}
                   content={`Edit Schedule`}
@@ -324,7 +324,7 @@ const TemperatureSchedule = ({ floorId }) => {
             ) : (
               <p className="text-center text-gray-600">No heating schedule for this room</p>
             )}
-            <ViewRoomScheduleModal openModal={openModal} handleOpenModal={handleOpenModal} />
+            {room.heatingSchedule !== null && room.heatingSchedule.id && (<ViewRoomScheduleModal openModal={openModal} handleOpenModal={handleOpenModal} algo={room.algorithm} heatingScheduleId={room.heatingSchedule.id} />)}
             <EditHeatingProgramModal openModal={openEditModal} handleOpenModal={handleOpenEditModal} />
           </div>
         ))
