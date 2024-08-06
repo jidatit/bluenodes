@@ -48,7 +48,7 @@ export function ViewRoomScheduleModal({ openModal, handleOpenModal, algo, heatin
 			<Modal
 				theme={customTheme}
 				size={"7xl"}
-				dismissible
+				// dismissible
 				show={openModal}
 				onClose={handleCloseModal}
 			>

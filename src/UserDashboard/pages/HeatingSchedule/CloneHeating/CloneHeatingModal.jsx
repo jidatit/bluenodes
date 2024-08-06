@@ -473,7 +473,7 @@ export function CloneHeatingModal({ openCloneModal, handleCloneModal, onCreate, 
   const [initialData, setInitialData] = useState({})
 
   useEffect(()=>{
-    fetch(`https://api-dev.blue-nodes.app/dev/smartheating/locations?heatingScheduleDetails=true&roomTemperature=true&assignedPrograms=true&numberOfRooms=true`, {
+    fetch(`https://api-dev.blue-nodes.app/dev/smartheating/locations?heatingScheduleDetails=true&roomTemperature=true&assignedNumberOfRooms=true&numberOfRooms=true`, {
         method: 'GET',
         headers: {
             'Authorization': `Bearer ${token}`
@@ -486,14 +486,14 @@ export function CloneHeatingModal({ openCloneModal, handleCloneModal, onCreate, 
           // Calculate the total rooms in the building
           const totalRooms = building.children.reduce((sum, floor) => sum + floor.children.length, 0);
           const buildingAssignedRooms = building.children.reduce((sum, floor) => {
-            // Iterate over each room in the floor and sum the assignedPrograms values
-            const assignedProgramsSum = floor.children.reduce((floorSum, room) => {
-              return floorSum + (room.assignedPrograms || 0);
+            // Iterate over each room in the floor and sum the assignedNumberOfRooms values
+            const assignedNumberOfRoomsSum = floor.children.reduce((floorSum, room) => {
+              return floorSum + (room.assignedNumberOfRooms || 0);
             }, 0);
-            
-            return sum + assignedProgramsSum;
+
+            return sum + assignedNumberOfRoomsSum;
           }, 0);
-      
+
           return {
             id: building.id,
             name: building.name,
@@ -503,7 +503,7 @@ export function CloneHeatingModal({ openCloneModal, handleCloneModal, onCreate, 
               {
                 id: floor.id,
                 name: floor.name,
-                roomsAssigned: floor.assignedPrograms,
+                roomsAssigned: floor.assignedNumberOfRooms,
                 totalRooms: floor.children.length,
                 rooms: floor.children.map((room) => (
                   {

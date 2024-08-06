@@ -108,6 +108,7 @@ const parseTimeToPercentage = (timestamp) => {
 };
 
 const TemperatureSchedule = ({ floorId }) => {
+  console.log(floorId)
   const [type, setType] = useState('Resident');
   const [openModal, setOpenModal] = useState(false);
   const [openEditModal, setOpenEditModal] = useState(false);

@@ -429,14 +429,17 @@ const EditHeatingProgramModal = ({ openModal, handleOpenModal, room, fetchRoomDe
     const data = convertScheduleData(scheduleDataTemp);
 
     const requestBody = {
-      "templateName": formData.programName,
-      "allowDeviceOverride": formData.childSafety == "Yes" ? true : false,
-      "deviceOverrideTemperatureMin": formData.minTemp,
-      "deviceOverrideTemperatureMax": formData.maxTemp,
+      templateName: combinedData.formData.programName,
+      allowDeviceOverride: combinedData.formData.childSafety == "No" ? true : false,
       locations: [room.id],
       days: data
     };
 
+    if (combinedData.formData.childSafety !== 'Yes') {
+      requestBody.deviceOverrideTemperatureMin = parseInt(combinedData.formData.minTemp);
+      requestBody.deviceOverrideTemperatureMax = parseInt(combinedData.formData.maxTemp);
+    }
+console.log(requestBody)
     try {
       const resp = await fetch('https://api-dev.blue-nodes.app/dev/smartheating/heatingschedule', {
         method: 'POST',
