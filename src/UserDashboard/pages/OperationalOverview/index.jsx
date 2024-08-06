@@ -21,7 +21,6 @@ function OverviewPage() {
 			.then((response) => response.json())
 			.then((data) => {
 				setData(data);
-				console.log("data", data);
 				setLoader(false);
 			})
 			.catch((error) => console.error("Error:", error));
