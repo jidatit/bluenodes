@@ -45,13 +45,7 @@ const HeatingProgramEntity = ({
 		setResponse(!response);
 	};
 
-	const handleCloneModal = () => {
-		setOpenCloneModal(!openCloneModal);
-	};
-
-	const handleEditModal = () => {
-		setOpenEditModal(!openEditModal);
-	};
+	
 
 	const [showToast, setShowToast] = useState(false);
 	const [toastMessage, setToastMessage] = useState("");
@@ -132,6 +126,16 @@ const HeatingProgramEntity = ({
 			onEditProgram(data);
 		}
 		setResponse(!response);
+	};
+
+	const handleCloneModal = () => {
+		fetchDetails()
+		setOpenCloneModal(!openCloneModal);
+	};
+
+	const handleEditModal = () => {
+		fetchDetails()
+		setOpenEditModal(!openEditModal);
 	};
 
 	// Get heating schedule details by idc

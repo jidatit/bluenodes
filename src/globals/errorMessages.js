@@ -18,5 +18,7 @@ export const errorMessages = {
   editSuccessfull: "Program edited successfully.",
   editFailed: "Failed to edit program.",
   deleteFailed: "Failed to delete program.",
-  deleteSuccessfull: "Successfully deleted."
+  deleteSuccessfull: "Successfully deleted.",
+  heatingScheduleEditedSuccessfull:"Heating schedule edited successfully",
+  heatingScheduleEditedFailed:"Failed to edit heating schedule",
 };

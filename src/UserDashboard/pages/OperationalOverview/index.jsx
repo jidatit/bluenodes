@@ -8,7 +8,8 @@ function OverviewPage() {
 	const token = localStorage.getItem("token");
 	const [searchTerm, setSearchTerm] = useState("");
 	const [Loader, setLoader] = useState(true);
-	useEffect(() => {
+
+	const fetchAll = () => {
 		fetch(
 			`https://api-dev.blue-nodes.app/dev/smartheating/operationaloverview/list`,
 			{
@@ -24,6 +25,10 @@ function OverviewPage() {
 				setLoader(false);
 			})
 			.catch((error) => console.error("Error:", error));
+	}
+
+	useEffect(() => {
+		fetchAll()
 	}, []);
 
 	const filteredData = data.filter((item) =>

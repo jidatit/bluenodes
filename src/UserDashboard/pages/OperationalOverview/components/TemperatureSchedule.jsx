@@ -111,11 +111,20 @@ const TemperatureSchedule = ({ floorId }) => {
   const [type, setType] = useState('Resident');
   const [openModal, setOpenModal] = useState(false);
   const [openEditModal, setOpenEditModal] = useState(false);
+  const [selectedRoom, setSelectedRoom] = useState(null);
+  const [selectedRoomSchedId, setSelectedRoomSchedId] = useState(null);
   const token = localStorage.getItem('token');
   const [RoomsDetail, setRoomsDetail] = useState([]);
 
-  const handleOpenModal = () => setOpenModal(!openModal);
-  const handleOpenEditModal = () => setOpenEditModal(!openEditModal);
+  const handleOpenModal = (roomSchedId) => {
+    setSelectedRoomSchedId(roomSchedId);
+    setOpenModal(!openModal);
+  };
+
+  const handleOpenEditModal = (room) => {
+    setOpenEditModal(!openEditModal);
+    setSelectedRoom(room)
+  }
 
   const getFloorDetails = async (id) => {
     try {
@@ -182,14 +191,20 @@ const TemperatureSchedule = ({ floorId }) => {
               </Tooltip>
               <p className="text-sm text-primary">Program 1</p>
               <div className="flex items-center gap-4 text-sm">
-                <Button disabled={room.heatingSchedule === null} onClick={handleOpenModal} className={`hover:!bg-transparent hover:opacity-80 border-none text-primary bg-transparent ${room.heatingSchedule !== null && room.heatingSchedule.id ? "text-primary" : "text-gray-500"} pr-2 py-0 [&>*]:p-0 focus:ring-transparent`}>View Schedule</Button>
+                <Button
+                  disabled={room.heatingSchedule === null}
+                  onClick={() => handleOpenModal(room.heatingSchedule ? room.heatingSchedule.id : null)} // Pass the room ID here
+                  className={`hover:!bg-transparent hover:opacity-80 border-none text-primary bg-transparent ${room.heatingSchedule !== null && room.heatingSchedule.id ? "text-primary" : "text-gray-500"} pr-2 py-0 [&>*]:p-0 focus:ring-transparent`}
+                >
+                  View Schedule
+                </Button>
                 <Tooltip
                   className={`px-2 py-1.5 text-center min-w-32 max-w-96`}
                   content={`Edit Schedule`}
                   style="light"
                 >
                   <div>
-                    <svg onClick={handleOpenEditModal} className="cursor-pointer w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                    <svg onClick={() => handleOpenEditModal(room ? room : null)} className="cursor-pointer w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                       <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z" />
                     </svg>
                   </div>
@@ -225,7 +240,7 @@ const TemperatureSchedule = ({ floorId }) => {
                 </div>
               </div>
             ) : (
-              <p className="text-center text-gray-600">No manually set temperatures for this room</p>
+              <p className="text-center text-sm italic text-gray-600">No manually set temperatures for this room</p>
             )}
             {room.heatingSchedule && room.heatingSchedule.currentDay ? (
               <div className='w-full relative px-4'>
@@ -322,10 +337,21 @@ const TemperatureSchedule = ({ floorId }) => {
                 </div>
               </div>
             ) : (
-              <p className="text-center text-gray-600">No heating schedule for this room</p>
+              <p className="text-center text-sm italic text-gray-600">No heating schedule for this room</p>
             )}
-            {room.heatingSchedule !== null && room.heatingSchedule.id && (<ViewRoomScheduleModal openModal={openModal} handleOpenModal={handleOpenModal} algo={room.algorithm} heatingScheduleId={room.heatingSchedule.id} />)}
-            <EditHeatingProgramModal openModal={openEditModal} handleOpenModal={handleOpenEditModal} />
+            {room.heatingSchedule !== null && room.heatingSchedule.id && openModal && (
+              <ViewRoomScheduleModal
+                openModal={openModal}
+                handleOpenModal={handleOpenModal}
+                algo={room.algorithm}
+                heatingScheduleId={selectedRoomSchedId}
+              />
+            )}
+            <EditHeatingProgramModal
+              fetchRoomDetails={getFloorDetails}
+              openModal={openEditModal}
+              handleOpenModal={handleOpenEditModal}
+              room={selectedRoom} />
           </div>
         ))
       ) : (

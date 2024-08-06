@@ -20,6 +20,8 @@ export function ViewRoomScheduleModal({ openModal, handleOpenModal, algo, heatin
 	const handleCloseModal = () => {
 		handleOpenModal();
 	};
+	console.log(locationDetails)
+
 	useEffect(() => {
 		if (heatingScheduleId) {
 			fetch(

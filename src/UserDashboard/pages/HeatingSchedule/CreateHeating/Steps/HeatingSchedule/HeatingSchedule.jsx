@@ -13,7 +13,6 @@ import { Tooltip } from 'flowbite-react';
 
   function HeatingSchedule({ onUpdateLayouts, setHandleCheckRef, handlePrev, finalScheduleData,clone, locationDetails }) {
     const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-
         // Helper function to convert time to units
         const convertTimeToUnits = (time) => {
           const [hours, minutes, seconds] = time.split(':').map(Number);

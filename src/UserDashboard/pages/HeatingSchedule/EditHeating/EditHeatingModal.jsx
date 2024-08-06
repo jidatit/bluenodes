@@ -417,6 +417,8 @@ export function EditHeatingModal({ openEditModal, handleEditModal, onEdit, progr
     resetModalState();
     handleEditModal();
   };
+  console.log(locationDetails)
+
 
   return (
     <>
@@ -438,6 +440,7 @@ export function EditHeatingModal({ openEditModal, handleEditModal, onEdit, progr
               )}
               {currentStep === 2 && (
                 <div>
+                  {console.log("this",locationDetails)}
                   <HeatingSchedule
                     onUpdateLayouts={handleLayoutUpdate}
                     setHandleCheckRef={(func) => handleCheckRef.current = func}
