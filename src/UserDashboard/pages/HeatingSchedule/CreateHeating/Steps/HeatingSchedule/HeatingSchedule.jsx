@@ -11,7 +11,7 @@
 import { IoArrowBackCircle } from 'react-icons/io5';
 import { Tooltip } from 'flowbite-react';
 
-  function HeatingSchedule({ onUpdateLayouts, setHandleCheckRef, handlePrev, finalScheduleData,clone, locationDetails }) {
+  function HeatingSchedule({ onUpdateLayouts,onUpdateCheck, setHandleCheckRef, handlePrev, finalScheduleData,clone, locationDetails }) {
     const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
         // Helper function to convert time to units
         const convertTimeToUnits = (time) => {
@@ -552,20 +552,26 @@ import { Tooltip } from 'flowbite-react';
         setShowDropdown(null);
         setCopyTargetDays([]);
       };
-      
-      
+
       const handleCheck = useCallback(() => {
-        setChecked(true);
+        let newCheck = false
         // Generate boxes for empty time slots
         Object.keys(layouts).forEach((day) => {
           const layout = layouts[day];
+    // Check if there is any box that does not contain 'empty' in its 'i' property
+    if (layout.some((box) => box.i.includes('empty'))) {
+      newCheck = true;
+    }
           const emptySlots = [];
           for (let y = 0; y < 24*4;y++) { // Loop through each y value up to 24
             const slot = layout.find((box) => box.y === y);
             if(slot){
-              y=y+slot.h-1
+              y=y+slot.h-1;
             }
             if (!slot) {
+              setChecked(true)
+              newCheck = true
+              console.log(newCheck)
               const nextBox = layout.find((box) => box.y > y);
               const height = nextBox ? nextBox.y - y : 24*4 - y; // Calculate height up to next box or end of day
               emptySlots.push({
@@ -588,13 +594,14 @@ import { Tooltip } from 'flowbite-react';
             [day]: [...layout, ...emptySlots]
           }));
           onUpdateLayouts(layouts)
+          onUpdateCheck(newCheck)
         });
-      });
+      }, [layouts, setLayouts,checked, setChecked, onUpdateLayouts, onUpdateCheck]);
 
       // Set the handleCheck function in the ref passed from the parent
       useEffect(() => {
         setHandleCheckRef(handleCheck);
-      }, [handleCheck, setHandleCheckRef,layouts]);
+      }, [handleCheck, setHandleCheckRef]);
      
       const formatTime = (y) => {
         const hours = y;

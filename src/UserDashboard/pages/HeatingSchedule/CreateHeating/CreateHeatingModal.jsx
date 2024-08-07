@@ -232,16 +232,27 @@ export function CreateHeatingModal({ openModal, handleOpenModal, onCreate }) {
   };
 
   const [layouts, setLayouts] = useState({}); // State to hold layouts
+  const [checked, setChecked] = useState(null); // State to hold check
   const [finalScheduleData, setFinalScheduleData] = useState({});
 
   const handleCheckRef = useRef(null); // Ref to hold handleCheck function
   const handleAssignmentRef = useRef(null); // Ref to hold handleCheck function
   const layoutsRef = useRef(layouts); // Ref to hold the latest layouts value
+  const checkedRef = useRef(checked)
 
   // Function to handle layout updates
   const handleLayoutUpdate = (updatedLayouts) => {
     setLayouts(updatedLayouts);
     layoutsRef.current = updatedLayouts;
+  };
+
+   let newCheck = null
+  // Function to handle layout updates
+  const handleCheckUpdate = (updatedCheck) => {
+    setChecked(updatedCheck);
+    console.log(updatedCheck,"hhihi")
+    newCheck = updatedCheck
+    // checkedRef.current = updatedCheck;
   };
 
   const handlePrevious = () => {
@@ -262,15 +273,20 @@ export function CreateHeatingModal({ openModal, handleOpenModal, onCreate }) {
         handleCheckRef.current();
       }
 
-      // Validate layouts for all days
-      const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-      const allNonEmpty = days.every(day => (day in layoutsRef.current) && layoutsRef.current[day].length > 0);
-      if (allNonEmpty) {
-        setFinalScheduleData(layoutsRef.current);
-        setCurrentStep((prev) => Math.min(prev + 1, 3));
-      } else {
-        console.log('All layouts are empty. Please fill in the required information.');
-      }
+        console.log(newCheck, 'whennext');
+        if (newCheck !== null && !newCheck) {
+          setCurrentStep((prev) => Math.min(prev + 1, 3));
+          setFinalScheduleData(layoutsRef.current);
+        }
+      // // Validate layouts for all days
+      // const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+      // const allNonEmpty = days.every(day => (day in layoutsRef.current) && layoutsRef.current[day].length > 0);
+      // if (allNonEmpty) {
+      //   setFinalScheduleData(layoutsRef.current);
+      //   setCurrentStep((prev) => Math.min(prev + 1, 3));
+      // } else {
+      //   console.log('All layouts are empty. Please fill in the required information.');
+      // }
     }
   };
 
@@ -531,6 +547,7 @@ export function CreateHeatingModal({ openModal, handleOpenModal, onCreate }) {
                 <div>
                   <HeatingSchedule
                     onUpdateLayouts={handleLayoutUpdate}
+                    onUpdateCheck={handleCheckUpdate}
                     setHandleCheckRef={(func) => handleCheckRef.current = func}
                     handlePrev={handlePrevious}
                     finalScheduleData={finalScheduleData}
