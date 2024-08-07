@@ -14,7 +14,7 @@ export function CreateHeatingModal({ openModal, handleOpenModal, onCreate }) {
 
   //Set token for bearer authorization
   const token = localStorage.getItem('token');
-  
+
   const [currentStep, setCurrentStep] = useState(1);
 
   const [formData, setFormData] = useState({
@@ -78,17 +78,17 @@ export function CreateHeatingModal({ openModal, handleOpenModal, onCreate }) {
 
   const validateField = (id, value) => {
     let error = "";
-  
+
     if (value === "") {
       error = errors.missingSelectionOrInformation;
     } else {
       const minTemp = id === "minTemp" ? parseFloat(value) : parseFloat(formData.minTemp);
       const maxTemp = id === "maxTemp" ? parseFloat(value) : parseFloat(formData.maxTemp);
-  
+
       if (id === "minTemp") {
         if (isNaN(minTemp) || minTemp < 10 || minTemp > 29) {
           error = errors.minTempInvalid;
-        } else if ( maxTemp !== "" && minTemp >= maxTemp) {
+        } else if (maxTemp !== "" && minTemp >= maxTemp) {
           // Update error state for maxTemp immediately
           setErrorMessages((prev) => ({
             ...prev,
@@ -104,7 +104,7 @@ export function CreateHeatingModal({ openModal, handleOpenModal, onCreate }) {
         }
         console.log(errorMessages)
       }
-  
+
       if (id === "maxTemp") {
         if (isNaN(maxTemp) || maxTemp < 11 || maxTemp > 30) {
           error = errors.maxTempInvalid;
@@ -112,8 +112,8 @@ export function CreateHeatingModal({ openModal, handleOpenModal, onCreate }) {
           error = errors.maxTempLowerThanMinTemp;
         }
       }
-  }
-  
+    }
+
     // Set error message for the current field
     setErrorMessages((prev) => ({
       ...prev,
@@ -121,9 +121,9 @@ export function CreateHeatingModal({ openModal, handleOpenModal, onCreate }) {
     }));
   };
 
-  useEffect(()=>{
-    const minTemp =  parseFloat(formData.minTemp);
-    const maxTemp =  parseFloat(formData.maxTemp);
+  useEffect(() => {
+    const minTemp = parseFloat(formData.minTemp);
+    const maxTemp = parseFloat(formData.maxTemp);
     // Cross-validate minTemp and maxTemp
     if (minTemp !== "" && maxTemp !== "") {
       if (minTemp >= maxTemp) {
@@ -140,14 +140,14 @@ export function CreateHeatingModal({ openModal, handleOpenModal, onCreate }) {
           maxTemp: "", // Clear the error message for maxTemp
         }));
       }
-    }    
-  },[formData])
+    }
+  }, [formData])
 
   const handleChange = (e) => {
     const { id, value } = e.target;
-  
+
     validateField(id, value);
-    
+
     // Check if the change is from the radio button groups
     if (id === "childSafetyYes" || id === "childSafetyNo") {
       setFormData((prev) => ({
@@ -166,26 +166,26 @@ export function CreateHeatingModal({ openModal, handleOpenModal, onCreate }) {
       }));
     }
 
-      // Re-validate the related temperature field
-  if (id === "minTemp" && formData.maxTemp) {
-    validateField("maxTemp", formData.maxTemp);
-  }
-  if (id === "maxTemp" && formData.minTemp) {
-    validateField("minTemp", formData.minTemp);
-  }
-  
+    // Re-validate the related temperature field
+    if (id === "minTemp" && formData.maxTemp) {
+      validateField("maxTemp", formData.maxTemp);
+    }
+    if (id === "maxTemp" && formData.minTemp) {
+      validateField("minTemp", formData.minTemp);
+    }
+
     const allFieldsFilled = Object.values({
       ...formData,
       [id]: value,
     }).every((field) => field !== "");
-  
+
     if (allFieldsFilled) {
       setErrorMessages({});
       setGeneralErrorMessage(""); // Clear general error message if all fields are filled
     }
   };
-  
-  
+
+
 
   const handleSubmit = () => {
     setFormSubmitted(true);
@@ -226,14 +226,14 @@ export function CreateHeatingModal({ openModal, handleOpenModal, onCreate }) {
 
   // For getting data from heating program assignment
   const [heatingAssignmentData, setHeatingAssignmentData] = useState({});
-  
+
   const handleAssignmentData = (assignmentData) => {
     setHeatingAssignmentData(assignmentData);
   };
 
   const [layouts, setLayouts] = useState({}); // State to hold layouts
   const [finalScheduleData, setFinalScheduleData] = useState({});
-  
+
   const handleCheckRef = useRef(null); // Ref to hold handleCheck function
   const handleAssignmentRef = useRef(null); // Ref to hold handleCheck function
   const layoutsRef = useRef(layouts); // Ref to hold the latest layouts value
@@ -301,126 +301,126 @@ export function CreateHeatingModal({ openModal, handleOpenModal, onCreate }) {
   const [buttonText, setButtonText] = useState('Create');
 
   const handleCreate = () => {
-      if (handleAssignmentRef.current) {
-        handleAssignmentRef.current();
+    if (handleAssignmentRef.current) {
+      handleAssignmentRef.current();
 
-        const anyRoomSelected = heatingAssignmentData.buildings.some(building =>
-          building.floors.some(floor =>
-            floor.rooms.some(room => room.assigned)
-          )
-        );
+      const anyRoomSelected = heatingAssignmentData.buildings.some(building =>
+        building.floors.some(floor =>
+          floor.rooms.some(room => room.assigned)
+        )
+      );
 
-        if (!anyRoomSelected && buttonText === 'Create') {
-          setButtonText('Confirm');
-        } else {
-          handleAssignmentData();
-          // onCreate(combinedData);
+      if (!anyRoomSelected && buttonText === 'Create') {
+        setButtonText('Confirm');
+      } else {
+        handleAssignmentData();
+        // onCreate(combinedData);
 
-          // Get rooms IDs from the entire Data
-          function getRoomIdsByProgram(data) {
-            const programName = combinedData.formData.programName;
-            const roomIds = [];
-        
-            // Loop through each building
-            data.forEach(building => {
-                // Loop through each floor in the building
-                building.floors.forEach(floor => {
-                    // Loop through each room on the floor
-                    floor.rooms.forEach(room => {
-                        // Check if the programAssigned matches the programName
-                        if (room.programAssigned === programName) {
-                            roomIds.push(room.id);
-                        }
-                    });
-                });
+        // Get rooms IDs from the entire Data
+        function getRoomIdsByProgram(data) {
+          const programName = combinedData.formData.programName;
+          const roomIds = [];
+
+          // Loop through each building
+          data.forEach(building => {
+            // Loop through each floor in the building
+            building.floors.forEach(floor => {
+              // Loop through each room on the floor
+              floor.rooms.forEach(room => {
+                // Check if the programAssigned matches the programName
+                if (room.programAssigned === programName) {
+                  roomIds.push(room.id);
+                }
+              });
             });
-        
-            return roomIds;
-          }
+          });
 
-          // Convert schedule data into API format 
-          function convertScheduleData(data) {
-            const dayMapping = {
-                "Monday": 1,
-                "Tuesday": 2,
-                "Wednesday": 3,
-                "Thursday": 4,
-                "Friday": 5,
-                "Saturday": 6,
-                "Sunday": 7
-            };
-        
-            const result = { days: [] };
-        
-            const normalizeTime = (value) => {
-                const hours = Math.floor(value * 24 / 96);
-                const minutes = Math.floor((value * 24 * 60 / 96) % 60);
-                return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
-            };
-        
-            for (const [dayName, entries] of Object.entries(data)) {
-                const day = dayMapping[dayName];
-                entries.forEach(entry => {
-                    const from = normalizeTime(entry.y);
-                    let to = normalizeTime(entry.y + entry.h);
-                    const targetTemperature = parseInt(entry.temperature, 10);
+          return roomIds;
+        }
 
-                    if(to==="24:00"){
-                      to="23:59"
-                    }
-        
-                    result.days.push({
-                        day,
-                        from,
-                        to,
-                        targetTemperature
-                    });
-                });
-            }
-        
-            return result.days;
-          }
-
-          //Manipulating for API
-          const finalObj = {
-            templateName: combinedData.formData.programName,
-            allowDeviceOverride: combinedData.formData.childSafety==='No'?true:false,
-            locations: getRoomIdsByProgram(combinedData.heatingAssignmentData.buildings),
-            days: convertScheduleData(combinedData.finalScheduleData)
+        // Convert schedule data into API format 
+        function convertScheduleData(data) {
+          const dayMapping = {
+            "Monday": 1,
+            "Tuesday": 2,
+            "Wednesday": 3,
+            "Thursday": 4,
+            "Friday": 5,
+            "Saturday": 6,
+            "Sunday": 7
           };
-          
-          if (combinedData.formData.childSafety !== 'Yes') {
-            finalObj.deviceOverrideTemperatureMin = parseInt(combinedData.formData.minTemp);
-            finalObj.deviceOverrideTemperatureMax = parseInt(combinedData.formData.maxTemp);
+
+          const result = { days: [] };
+
+          const normalizeTime = (value) => {
+            const hours = Math.floor(value * 24 / 96);
+            const minutes = Math.floor((value * 24 * 60 / 96) % 60);
+            return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+          };
+
+          for (const [dayName, entries] of Object.entries(data)) {
+            const day = dayMapping[dayName];
+            entries.forEach(entry => {
+              const from = normalizeTime(entry.y);
+              let to = normalizeTime(entry.y + entry.h);
+              const targetTemperature = parseInt(entry.temperature, 10);
+
+              if (to === "24:00") {
+                to = "23:59"
+              }
+
+              result.days.push({
+                day,
+                from,
+                to,
+                targetTemperature
+              });
+            });
           }
-          // console.log(finalObj,"finalObj")
 
-          handleOpenModal();
-          resetModalState();
-          // Submit the form or perform other actions
+          return result.days;
+        }
 
-          fetch(`https://api-dev.blue-nodes.app/dev/smartheating/heatingschedule`, {
-              method: 'POST',
-              headers: {
-                  'Authorization': `Bearer ${token}`,
-                  'Content-Type': 'application/json'
-              },
-              body: JSON.stringify(finalObj)
-          })
+        //Manipulating for API
+        const finalObj = {
+          templateName: combinedData.formData.programName,
+          allowDeviceOverride: combinedData.formData.childSafety === 'No' ? true : false,
+          ...(anyRoomSelected && { locations: getRoomIdsByProgram(combinedData.heatingAssignmentData.buildings) }),
+          days: convertScheduleData(combinedData.finalScheduleData)
+        };
+
+        if (combinedData.formData.childSafety !== 'Yes') {
+          finalObj.deviceOverrideTemperatureMin = parseInt(combinedData.formData.minTemp);
+          finalObj.deviceOverrideTemperatureMax = parseInt(combinedData.formData.maxTemp);
+        }
+        // console.log(finalObj,"finalObj")
+
+        handleOpenModal();
+        resetModalState();
+        // Submit the form or perform other actions
+
+        fetch(`https://api-dev.blue-nodes.app/dev/smartheating/heatingschedule`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(finalObj)
+        })
           .then(response => response.json())
           .then(data => {
             console.log(data)
-            if(data.statusCode===400){
+            if (data.statusCode === 400) {
               onCreate('Error')
             } else {
               onCreate(combinedData)
             }
           })
-          .catch(error => console.error('Error:', error));        
-        }
-      } else {
-        console.error('handleAssignmentRef.current is not defined');
+          .catch(error => console.error('Error:', error));
       }
+    } else {
+      console.error('handleAssignmentRef.current is not defined');
+    }
   };
 
   const resetModalState = () => {
@@ -454,60 +454,60 @@ export function CreateHeatingModal({ openModal, handleOpenModal, onCreate }) {
 
   const [initialData, setInitialData] = useState({})
 
-  useEffect(()=>{
+  useEffect(() => {
     fetch(`https://api-dev.blue-nodes.app/dev/smartheating/locations?heatingScheduleDetails=true&roomTemperature=true&assignedNumberOfRooms=true&numberOfRooms=true`, {
-        method: 'GET',
-        headers: {
-            'Authorization': `Bearer ${token}`
-        }
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
     })
-    .then(response => response.json())
-    .then(data => {
-      const apiData = {
-        buildings: data.map((building) => {
-          // Calculate the total rooms in the building
-          const totalRooms = building.children.reduce((sum, floor) => sum + floor.children.length, 0);
-          const buildingAssignedRooms = building.children.reduce((sum, floor) => {
-            // Iterate over each room in the floor and sum the assignedNumberOfRooms values
-            const assignedNumberOfRoomsSum = floor.children.reduce((floorSum, room) => {
-              return floorSum + (room.assignedNumberOfRooms || 0);
+      .then(response => response.json())
+      .then(data => {
+        const apiData = {
+          buildings: data.map((building) => {
+            // Calculate the total rooms in the building
+            const totalRooms = building.children.reduce((sum, floor) => sum + floor.children.length, 0);
+            const buildingAssignedRooms = building.children.reduce((sum, floor) => {
+              // Iterate over each room in the floor and sum the assignedNumberOfRooms values
+              const assignedNumberOfRoomsSum = floor.children.reduce((floorSum, room) => {
+                return floorSum + (room.assignedNumberOfRooms || 0);
+              }, 0);
+
+              return sum + assignedNumberOfRoomsSum;
             }, 0);
 
-            return sum + assignedNumberOfRoomsSum;
-          }, 0);
+            return {
+              id: building.id,
+              name: building.name,
+              roomsAssigned: buildingAssignedRooms,
+              totalRooms: totalRooms,
+              floors: building.children.map((floor) => (
+                {
+                  id: floor.id,
+                  name: floor.name,
+                  roomsAssigned: floor.assignedNumberOfRooms,
+                  totalRooms: floor.children.length,
+                  rooms: floor.children.map((room) => (
+                    {
+                      id: room.id,
+                      name: room.name,
+                      type: room.type,
+                      algorithmOn: false,
+                      programAssigned: room.heatingSchedule ? room.heatingSchedule.templateName : null,
+                      currentTemperature: room.roomTemperature,
+                      assigned: false
+                    }
+                  ))
+                }
+              ))
+            };
+          })
+        };
 
-          return {
-            id: building.id,
-            name: building.name,
-            roomsAssigned: buildingAssignedRooms,
-            totalRooms: totalRooms,
-            floors: building.children.map((floor) => (
-              {
-                id: floor.id,
-                name: floor.name,
-                roomsAssigned: floor.assignedNumberOfRooms,
-                totalRooms: floor.children.length,
-                rooms: floor.children.map((room) => (
-                  {
-                    id: room.id,
-                    name: room.name,
-                    type: room.type,
-                    algorithmOn: false,
-                    programAssigned:  room.heatingSchedule ? room.heatingSchedule.templateName : null,
-                    currentTemperature: room.roomTemperature,
-                    assigned: false
-                  }
-                ))
-              }
-            ))
-          };
-        })
-      };
-      
-    setInitialData(apiData)
-    })
-    .catch(error => console.error('Error:', error));
-  },[])
+        setInitialData(apiData)
+      })
+      .catch(error => console.error('Error:', error));
+  }, [])
 
   return (
     <>
@@ -559,7 +559,7 @@ export function CreateHeatingModal({ openModal, handleOpenModal, onCreate }) {
               Next
             </Button>
           ) : (
-            <Button className={` ${buttonText === 'Confirm' ? 'bg-green-400 focus:ring-green-400 focus:bg-green-400 hover:bg-green-400 enabled:hover:bg-green-400':'bg-primary'}`} onClick={handleCreate}>{buttonText}</Button>
+            <Button className={` ${buttonText === 'Confirm' ? 'bg-green-400 focus:ring-green-400 focus:bg-green-400 hover:bg-green-400 enabled:hover:bg-green-400' : 'bg-primary'}`} onClick={handleCreate}>{buttonText}</Button>
           )}
           <Button className="font-black" color="gray" onClick={handleCloseModal}>
             Cancel
