@@ -52,23 +52,22 @@ const HeatingProgramEntity = ({
 	const [isSuccess, setIsSuccess] = useState(true);
 
 	const handleDelete = async () => {
-		setOpenDeleteModal(false);
-		setResponse(!response);
-
+		fetchDetails();
+	
 		const programName = program.templateName;
-
+	
 		// Check if any room has a matching programAssigned
 		const hasMatchingProgram = initialData.buildings.some((building) =>
 			building.floors.some((floor) =>
-				floor.rooms.some((room) => room.programAssigned === programName),
-			),
+				floor.rooms.some((room) => room.programAssigned === programName)
+			)
 		);
-
+	
 		if (hasMatchingProgram) {
 			setOpenAlertDeleteModal(true);
 			return; // Exit the function if there's a matching program
 		}
-
+	
 		// If no matching program, proceed to call the delete API
 		try {
 			const response = await fetch(
@@ -79,9 +78,9 @@ const HeatingProgramEntity = ({
 						"Content-Type": "application/json",
 						Authorization: `Bearer ${token}`, // Add auth token if needed
 					},
-				},
+				}
 			);
-
+	
 			if (response.ok) {
 				// Handle successful delete
 				console.log("Delete successful");
@@ -98,6 +97,7 @@ const HeatingProgramEntity = ({
 		} catch (error) {
 			console.error("Network error", error);
 		}
+		setOpenDeleteModal(false);
 		onDeleteProgram();
 		setShowToast(true);
 		setTimeout(() => {
@@ -295,7 +295,7 @@ const HeatingProgramEntity = ({
 						animation="duration-500"
 					>
 						<RiDeleteBin6Line
-							onClick={() => setOpenDeleteModal(true)}
+							onClick={() => {setOpenDeleteModal(true); fetchDetails()}}
 							className="cursor-pointer transition-all ease-in-out delay-75 hover:text-[#b44949]"
 						/>
 					</Tooltip>
