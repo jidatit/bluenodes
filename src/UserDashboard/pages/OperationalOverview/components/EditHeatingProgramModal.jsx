@@ -11,7 +11,7 @@ import GeneralInformation from "../../HeatingSchedule/CreateHeating/Steps/Genera
 import HeatingSchedule from "../../HeatingSchedule/CreateHeating/Steps/HeatingSchedule/HeatingSchedule";
 import { Toast } from "flowbite-react";
 
-const EditHeatingProgramModal = ({ openModal, handleOpenModal, room, fetchRoomDetails }) => {
+const EditHeatingProgramModal = ({ openModal, handleOpenModal, room, fetchFloorDetails }) => {
   // console.log(room)
   const [selectedAction, setSelectedAction] = useState('');
   const [selectedProgram, setSelectedProgram] = useState('');
@@ -408,8 +408,6 @@ const EditHeatingProgramModal = ({ openModal, handleOpenModal, room, fetchRoomDe
   const handleCreate = async () => {
     let scheduleDataTemp = {};
 
-    // Save button clicked
-    // Trigger the handleCheck function in the child component
     if (handleCheckRef.current) {
       handleCheckRef.current();
     }
@@ -439,7 +437,7 @@ const EditHeatingProgramModal = ({ openModal, handleOpenModal, room, fetchRoomDe
       requestBody.deviceOverrideTemperatureMin = parseInt(combinedData.formData.minTemp);
       requestBody.deviceOverrideTemperatureMax = parseInt(combinedData.formData.maxTemp);
     }
-console.log(requestBody)
+
     try {
       const resp = await fetch('https://api-dev.blue-nodes.app/dev/smartheating/heatingschedule', {
         method: 'POST',
@@ -462,7 +460,10 @@ console.log(requestBody)
         setIsSuccess(true);
         setToastMessage(errors.heatingScheduleEditedSuccessfull);
         setShowToast(true);
-        fetchRoomDetails(room.id)
+        if(room)
+        {
+          fetchFloorDetails(room.parentId)
+        }
         setTimeout(() => {
           setShowToast(false);
         }, 4000);

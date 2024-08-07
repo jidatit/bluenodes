@@ -349,7 +349,7 @@ const TemperatureSchedule = ({ floorId }) => {
               />
             )}
             <EditHeatingProgramModal
-              fetchRoomDetails={getFloorDetails}
+              fetchFloorDetails={getFloorDetails}
               openModal={openEditModal}
               handleOpenModal={handleOpenEditModal}
               room={selectedRoom} />
