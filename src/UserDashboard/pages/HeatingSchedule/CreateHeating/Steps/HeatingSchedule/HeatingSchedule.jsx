@@ -530,6 +530,20 @@ import { Tooltip } from 'flowbite-react';
                 i: generateCopyId(box.i, targetDay)
               }));
       
+              // Check if two boxes overlap
+              const boxesOverlap = (box1, box2) => {
+                return (
+                  box1.y < box2.y + box2.h && // box1 starts before box2 ends
+                  box1.y + box1.h > box2.y    // box1 ends after box2 starts
+                );
+              };
+      
+              // Filter out overlapping boxes
+              newLayouts[targetDay] = newLayouts[targetDay].filter(targetBox =>
+                !copiedBoxes.some(copiedBox => boxesOverlap(targetBox, copiedBox))
+              );
+      
+              // Add the copied boxes to the target day
               newLayouts[targetDay] = [...newLayouts[targetDay], ...copiedBoxes];
             });
             return newLayouts;
@@ -538,7 +552,8 @@ import { Tooltip } from 'flowbite-react';
         setShowDropdown(null);
         setCopyTargetDays([]);
       };
-
+      
+      
       const handleCheck = useCallback(() => {
         setChecked(true);
         // Generate boxes for empty time slots
