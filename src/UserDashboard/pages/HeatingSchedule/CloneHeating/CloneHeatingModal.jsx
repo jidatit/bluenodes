@@ -566,7 +566,7 @@ export function CloneHeatingModal({ openCloneModal, handleCloneModal, onCreate, 
                     handlePrev={handlePrevious}
                     heatingData={heatingAssignmentData}
                     initialData={initialData}
-                    clone={true}
+                    clone={false}
                     program={program}
                   />
                 </div>
