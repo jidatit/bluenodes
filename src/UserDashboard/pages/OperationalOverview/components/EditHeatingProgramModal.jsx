@@ -367,6 +367,14 @@ const EditHeatingProgramModal = ({
 		layoutsRef.current = updatedLayouts;
 	};
 
+	let newCheck = null
+  // Function to handle layout updates
+  const handleCheckUpdate = (updatedCheck) => {
+    // console.log(updatedCheck,"hhihi")
+    newCheck = updatedCheck
+    // checkedRef.current = updatedCheck;
+  };
+
 	const handlePrevious = () => {
 		if (currentStep === 2 || currentStep === 3) {
 			setCurrentStep((prev) => Math.max(prev - 1, 0));
@@ -460,93 +468,77 @@ const EditHeatingProgramModal = ({
 			handleCheckRef.current();
 		}
 
-		// Validate layouts for all days
-		const days = [
-			"Monday",
-			"Tuesday",
-			"Wednesday",
-			"Thursday",
-			"Friday",
-			"Saturday",
-			"Sunday",
-		];
-		const allNonEmpty = days.every(
-			(day) => day in layoutsRef.current && layoutsRef.current[day].length > 0,
-		);
-		if (allNonEmpty) {
+		if (newCheck !== null && !newCheck) {
 			setFinalScheduleData(layoutsRef.current);
-			scheduleDataTemp = layoutsRef.current;
-			// setCurrentStep((prev) => Math.min(prev + 1, 3));
-		} else {
-			console.log(
-				"All layouts are empty. Please fill in the required information.",
-			);
-			return; // Exit early if validation fails
-		}
+			scheduleDataTemp = layoutsRef.current ;
 
-		const data = convertScheduleData(scheduleDataTemp);
-
-		const requestBody = {
-			templateName: combinedData.formData.programName,
-			allowDeviceOverride:
-				combinedData.formData.childSafety == "No" ? true : false,
-			locations: [room.id],
-			days: data,
-		};
-
-		if (combinedData.formData.childSafety !== "Yes") {
-			requestBody.deviceOverrideTemperatureMin = parseInt(
-				combinedData.formData.minTemp,
-			);
-			requestBody.deviceOverrideTemperatureMax = parseInt(
-				combinedData.formData.maxTemp,
-			);
-		}
-
-		try {
-			const resp = await fetch(
-				"https://api-dev.blue-nodes.app/dev/smartheating/heatingschedule",
-				{
-					method: "POST",
-					headers: {
-						Authorization: `Bearer ${token}`,
-						"Content-Type": "application/json",
-					},
-					body: JSON.stringify(requestBody),
-				},
-			);
-
-			if (!resp.ok) {
-				const errorText = await resp.text(); // Get response text for error details
-				throw new Error(
-					`HTTP error! Status: ${resp.status}, Details: ${errorText}`,
+			const data = convertScheduleData(scheduleDataTemp);
+	
+			const requestBody = {
+				templateName: combinedData.formData.programName,
+				allowDeviceOverride:
+					combinedData.formData.childSafety == "No" ? true : false,
+				locations: [room.id],
+				days: data,
+			};
+	
+			if (combinedData.formData.childSafety !== "Yes") {
+				requestBody.deviceOverrideTemperatureMin = parseInt(
+					combinedData.formData.minTemp,
+				);
+				requestBody.deviceOverrideTemperatureMax = parseInt(
+					combinedData.formData.maxTemp,
 				);
 			}
-
-			const respData = await resp.json();
-			if (respData.active) {
-				handleOpenModal();
-				resetModalState();
-				setIsSuccess(true);
-				setToastMessage(errors.heatingScheduleEditedSuccessfull);
-				setShowToast(true);
-				if (room) {
-					fetchFloorDetails(room.parentId);
+	
+			try {
+				const resp = await fetch(
+					"https://api-dev.blue-nodes.app/dev/smartheating/heatingschedule",
+					{
+						method: "POST",
+						headers: {
+							Authorization: `Bearer ${token}`,
+							"Content-Type": "application/json",
+						},
+						body: JSON.stringify(requestBody),
+					},
+				);
+	
+				if (!resp.ok) {
+					const errorText = await resp.text(); // Get response text for error details
+					throw new Error(
+						`HTTP error! Status: ${resp.status}, Details: ${errorText}`,
+					);
 				}
-				setTimeout(() => {
-					setShowToast(false);
-				}, 4000);
-			} else {
-				setIsSuccess(false);
-				setToastMessage(errors.heatingScheduleEditedFailed);
-				setShowToast(true);
-				setTimeout(() => {
-					setShowToast(false);
-				}, 4000);
+	
+				const respData = await resp.json();
+				if (respData.active) {
+					handleOpenModal();
+					resetModalState();
+					setIsSuccess(true);
+					setToastMessage(errors.heatingScheduleEditedSuccessfull);
+					setShowToast(true);
+					if (room) {
+						fetchFloorDetails(room.parentId);
+					}
+					setTimeout(() => {
+						setShowToast(false);
+					}, 4000);
+				} else {
+					setIsSuccess(false);
+					setToastMessage(errors.heatingScheduleEditedFailed);
+					setShowToast(true);
+					setTimeout(() => {
+						setShowToast(false);
+					}, 4000);
+				}
+			} catch (error) {
+				console.error("Error during fetch operation:", error);
 			}
-		} catch (error) {
-			console.error("Error during fetch operation:", error);
 		}
+
+
+
 	};
 
 	const resetModalState = () => {
@@ -635,6 +627,7 @@ const EditHeatingProgramModal = ({
 													<div>
 														<HeatingSchedule
 															onUpdateLayouts={handleLayoutUpdate}
+															onUpdateCheck={handleCheckUpdate}
 															setHandleCheckRef={(func) =>
 																(handleCheckRef.current = func)
 															}

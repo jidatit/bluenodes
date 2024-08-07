@@ -247,6 +247,14 @@ export function EditHeatingModal({ openEditModal, handleEditModal, onEdit, progr
     layoutsRef.current = updatedLayouts;
   };
 
+  let newCheck = null
+  // Function to handle layout updates
+  const handleCheckUpdate = (updatedCheck) => {
+    // console.log(updatedCheck,"hhihi")
+    newCheck = updatedCheck
+    // checkedRef.current = updatedCheck;
+  };
+
   const handlePrevious = () => {
     if (currentStep === 2 || currentStep === 3) {
       setCurrentStep((prev) => Math.max(prev - 1, 0));
@@ -295,20 +303,11 @@ export function EditHeatingModal({ openEditModal, handleEditModal, onEdit, progr
         if (handleCheckRef.current) {
           handleCheckRef.current();
         }
-  
-        // Validate layouts for all days
-        const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-        const allNonEmpty = days.every(day => (day in layoutsRef.current) && layoutsRef.current[day].length > 0);
-        if (allNonEmpty) {
+        if (newCheck !== null && !newCheck) {
           setFinalScheduleData(layoutsRef.current);
           scheduleDataTemp = layoutsRef.current ;
-          // setCurrentStep((prev) => Math.min(prev + 1, 3));
-        } else {
-          console.log('All layouts are empty. Please fill in the required information.');
-        }
-      }
 
-    // Convert schedule data into API format 
+          // Convert schedule data into API format 
     function convertScheduleData(data) {
       // console.log(data)
       const dayMapping = {
@@ -389,6 +388,9 @@ export function EditHeatingModal({ openEditModal, handleEditModal, onEdit, progr
     // onEdit(combinedData);
     handleEditModal();
     resetModalState();
+        }
+      }
+
   };
 
   const resetModalState = () => {
@@ -443,6 +445,7 @@ export function EditHeatingModal({ openEditModal, handleEditModal, onEdit, progr
                   {console.log("this",locationDetails)}
                   <HeatingSchedule
                     onUpdateLayouts={handleLayoutUpdate}
+                    onUpdateCheck={handleCheckUpdate}
                     setHandleCheckRef={(func) => handleCheckRef.current = func}
                     handlePrev={handlePrevious}
                     finalScheduleData={finalScheduleData}

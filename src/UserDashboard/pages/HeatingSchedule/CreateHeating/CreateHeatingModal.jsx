@@ -232,13 +232,11 @@ export function CreateHeatingModal({ openModal, handleOpenModal, onCreate }) {
   };
 
   const [layouts, setLayouts] = useState({}); // State to hold layouts
-  const [checked, setChecked] = useState(null); // State to hold check
   const [finalScheduleData, setFinalScheduleData] = useState({});
 
   const handleCheckRef = useRef(null); // Ref to hold handleCheck function
   const handleAssignmentRef = useRef(null); // Ref to hold handleCheck function
   const layoutsRef = useRef(layouts); // Ref to hold the latest layouts value
-  const checkedRef = useRef(checked)
 
   // Function to handle layout updates
   const handleLayoutUpdate = (updatedLayouts) => {
@@ -249,8 +247,7 @@ export function CreateHeatingModal({ openModal, handleOpenModal, onCreate }) {
    let newCheck = null
   // Function to handle layout updates
   const handleCheckUpdate = (updatedCheck) => {
-    setChecked(updatedCheck);
-    console.log(updatedCheck,"hhihi")
+    // console.log(updatedCheck,"hhihi")
     newCheck = updatedCheck
     // checkedRef.current = updatedCheck;
   };
@@ -273,7 +270,7 @@ export function CreateHeatingModal({ openModal, handleOpenModal, onCreate }) {
         handleCheckRef.current();
       }
 
-        console.log(newCheck, 'whennext');
+        // console.log(newCheck, 'whennext');
         if (newCheck !== null && !newCheck) {
           setCurrentStep((prev) => Math.min(prev + 1, 3));
           setFinalScheduleData(layoutsRef.current);

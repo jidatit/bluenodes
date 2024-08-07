@@ -256,6 +256,14 @@ export function CloneHeatingModal({ openCloneModal, handleCloneModal, onCreate, 
     layoutsRef.current = updatedLayouts;
   };
 
+  let newCheck = null
+  // Function to handle layout updates
+  const handleCheckUpdate = (updatedCheck) => {
+    // console.log(updatedCheck,"hhihi")
+    newCheck = updatedCheck
+    // checkedRef.current = updatedCheck;
+  };
+
   const handlePrevious = () => {
     if (currentStep === 2 || currentStep === 3) {
       setCurrentStep((prev) => Math.max(prev - 1, 0));
@@ -274,15 +282,20 @@ export function CloneHeatingModal({ openCloneModal, handleCloneModal, onCreate, 
         handleCheckRef.current();
       }
 
-      // Validate layouts for all days
-      const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-      const allNonEmpty = days.every(day => (day in layoutsRef.current) && layoutsRef.current[day].length > 0);
-      if (allNonEmpty) {
-        setFinalScheduleData(layoutsRef.current);
-        setCurrentStep((prev) => Math.min(prev + 1, 3));
-      } else {
-        console.log('All layouts are empty. Please fill in the required information.');
-      }
+        // console.log(newCheck, 'whennext');
+        if (newCheck !== null && !newCheck) {
+          setCurrentStep((prev) => Math.min(prev + 1, 3));
+          setFinalScheduleData(layoutsRef.current);
+        }
+      // // Validate layouts for all days
+      // const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+      // const allNonEmpty = days.every(day => (day in layoutsRef.current) && layoutsRef.current[day].length > 0);
+      // if (allNonEmpty) {
+      //   setFinalScheduleData(layoutsRef.current);
+      //   setCurrentStep((prev) => Math.min(prev + 1, 3));
+      // } else {
+      //   console.log('All layouts are empty. Please fill in the required information.');
+      // }
     }
   };
 
@@ -551,6 +564,7 @@ export function CloneHeatingModal({ openCloneModal, handleCloneModal, onCreate, 
                 <div>
                   <HeatingSchedule
                     onUpdateLayouts={handleLayoutUpdate}
+                    onUpdateCheck={handleCheckUpdate}
                     setHandleCheckRef={(func) => handleCheckRef.current = func}
                     handlePrev={handlePrevious}
                     finalScheduleData={finalScheduleData}

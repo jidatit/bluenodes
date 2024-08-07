@@ -353,10 +353,10 @@ import { Tooltip } from 'flowbite-react';
         event.preventDefault();
 
         const inputValue = temperatureInputs[boxId]
-        // Check if input is a number and within the range 5 to 30
-        if (!isNaN(inputValue) && inputValue >= 5 && inputValue <= 30) {
+        // Check if input is a number and within the range 10 to 30
+        if (!isNaN(inputValue) && inputValue >= 10 && inputValue <= 30) {
         }else {
-          alert('Please enter a number between 5 and 30.');
+          alert('Please enter a number between 10 and 30.');
           return
         }
 

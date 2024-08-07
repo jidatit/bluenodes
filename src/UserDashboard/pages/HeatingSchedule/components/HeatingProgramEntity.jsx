@@ -126,6 +126,7 @@ const HeatingProgramEntity = ({
 			onEditProgram(data);
 		}
 		setResponse(!response);
+		fetchDetails();
 	};
 
 	const handleCloneModal = () => {
@@ -134,30 +135,50 @@ const HeatingProgramEntity = ({
 	};
 
 	const handleEditModal = () => {
-		fetchDetails()
+		fetchDetails();
 		setOpenEditModal(!openEditModal);
 	};
 
 	// Get heating schedule details by idc
-	const fetchDetails = () => {
-		if (fetched) return;
-		fetch(
-			`https://api-dev.blue-nodes.app/dev/smartheating/heatingschedule/${program.id}/details`,
-			{
-				method: "GET",
-				headers: {
-					Authorization: `Bearer ${token}`,
-				},
-			},
-		)
-			.then((response) => response.json())
-			.then((data) => {
-				setLocationDetails(data);
-				setLoader(false);
-				setfetched(true);
-			})
-			.catch((error) => console.error("Error:", error));
-	};
+	// const fetchDetails = () => {
+	// 	if (fetched) return;
+	// 	fetch(
+	// 		`https://api-dev.blue-nodes.app/dev/smartheating/heatingschedule/${program.id}/details`,
+	// 		{
+	// 			method: "GET",
+	// 			headers: {
+	// 				Authorization: `Bearer ${token}`,
+	// 			},
+	// 		},
+	// 	)
+	// 		.then((response) => response.json())
+	// 		.then((data) => {
+	// 			setLocationDetails(data);
+	// 			setLoader(false);
+	// 			setfetched(true);
+	// 		})
+	// 		.catch((error) => console.error("Error:", error));
+	// };
+
+	const fetchDetails = async () => {
+    try {
+        const response = await fetch(
+            `https://api-dev.blue-nodes.app/dev/smartheating/heatingschedule/${program.id}/details`,
+            {
+                method: "GET",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            }
+        );
+        const data = await response.json();
+        setLocationDetails(data); // Update the state with the fetched data
+        setLoader(false);
+        setfetched(true); // Ensure fetched is set to true only after data is fetched
+    } catch (error) {
+        console.error("Error:", error);
+    }
+};
 	// Function to recursively count the rooms
 	const countRooms = (node) => {
 		if (node.type === "raum") {
