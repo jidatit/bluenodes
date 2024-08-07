@@ -163,172 +163,149 @@ import { Tooltip } from 'flowbite-react';
     const [resizingBox, setResizingBox] = useState(null); // State to track which box is currently being resized
     const inputRefs = useRef({});
 
-    const adjustLayoutForOverlap = (layout,old,newResize) => {
+    const adjustLayoutForOverlap = (layout, old, newResize) => {
+      // Check if two boxes overlap
+      const boxesOverlap = (box1, box2) => {
+        return (
+          box1.i !== box2.i && // Ensure the boxes are not the same
+          box1.y < box2.y + box2.h && // box1 starts before box2 ends
+          box1.y + box1.h > box2.y    // box1 ends after box2 starts
+        );
+      };
+    
+      // Iterate over the layout and handle overlaps
+      return layout.map(box => {
+        if (boxesOverlap(box, newResize)) {
+          const overlapTop = newResize.y - box.y;
+          const overlapBottom = box.y + box.h - (newResize.y + newResize.h);
+    
+          if (overlapTop > 0 && overlapBottom > 0) {
+            // Box is partially overlapped, adjust height
+            if (overlapTop >= overlapBottom) {
+              // Adjust height from the top
+              return {
+                ...box,
+                h: overlapTop
+              };
+            } else {
+              // Adjust height from the bottom
+              return {
+                ...box,
+                y: newResize.y + newResize.h,
+                h: overlapBottom
+              };
+            }
+          } else if (overlapTop > 0) {
+            // Box overlaps from the bottom only, adjust height
+            return {
+              ...box,
+              h: overlapTop
+            };
+          } else if (overlapBottom > 0) {
+            // Box overlaps from the top only, adjust height and position
+            return {
+              ...box,
+              y: newResize.y + newResize.h,
+              h: overlapBottom
+            };
+          } else {
+            // Box is completely overlapped, remove it
+            return null;
+          }
+        } else {
+          // No overlap, keep the box as is
+          return box;
+        }
+      }).filter(Boolean); // Filter out null values (boxes to be removed)
+    };
+    
+    const handleContainerClick = (event) => {
 
-      let sortedLayout = [...layout].sort((a, b) => b.y - a.y);
+      if(Object.keys(editableBoxes).length>0 || (Object.keys(editableBoxes).length>0 && isResizingOrDragging)){
 
-      if(old!==null && old.y!==newResize.y){
-        // Sort layout by y position in descending order for upwards check
-      sortedLayout = [...layout].sort((a, b) => b.y - a.y);
+        const boxId = Object.keys(editableBoxes)[0]
+        const str = boxId;
+        const regex = /^box-(\w+)-\d+$/;
+        const match = str.match(regex);
 
-      // Handle overlap upwards
-      for (let i = 0; i < sortedLayout.length - 1; i++) {
-        const currentBox = sortedLayout[i];
-        const nextBox = sortedLayout[i + 1];
-        if ((nextBox.y + nextBox.h) > newResize.y) {
-            const overlap = nextBox.y + nextBox.h - newResize.y;
-            // Adjust the next box's y position to be just above the current box
-            if(nextBox.h-overlap <= 0){
-              const str = nextBox.i;
-              const regex = /^box-(\w+)-\d+$/;
-              const match = str.match(regex);
+        if (match) {
+          const day = match[1]; // Extract the day from the first capturing group
 
-              // if (match) {
-              //   const day = match[1]; // Extract the day from the first capturing group
-              //   const nextBoxId = currentBox.i;
-                
-              //   setTimeout(() => {
-              //     handleDeleteBox(day, nextBoxId);
-              //   }, 500);
-              // }
-              
+          const inputValue = temperatureInputs[boxId]
+
+          // Check if input is a number and within the range 5 to 30
+          if (!isNaN(inputValue) && inputValue >= 5 && inputValue <= 30) {
+            setLayouts((prevLayouts) => ({
+              ...prevLayouts,
+              [day]: prevLayouts[day].map((box) =>
+                box.i === boxId ? { ...box, temperature: temperatureInputs[boxId] } : box
+              )
+            }));
+            setEditableBoxes({})
+          }
+
+          else {
+            if (event.target.closest('.box')){
             }
             else {
-              nextBox.h = Math.max(nextBox.h - overlap, 1);
+              alert('Please enter a number between 5 and 30.');
             }
-        }
-      }
-      }
-
-      else if(old!==null && old.y===newResize.y){
-        // Sort layout by y position in ascending order for downwards check
-      sortedLayout = [...layout].sort((a, b) => a.y - b.y);
-
-      // Handle overlap downwards
-      for (let i = 0; i < sortedLayout.length - 1; i++) {
-          const currentBox = sortedLayout[i];
-          const nextBox = sortedLayout[i + 1];
-          if (currentBox.y + currentBox.h > nextBox.y) {
-              const overlap = currentBox.y + currentBox.h - nextBox.y;
-              // Adjust the next box's y position to be just below the current box
-              nextBox.y = currentBox.y + currentBox.h;
-              if(nextBox.h-overlap <= 0){
-                const str = nextBox.i;
-                const regex = /^box-(\w+)-\d+$/;
-                const match = str.match(regex);
-
-                // if (match) {
-                //   const day = match[1]; // Extract the day from the first capturing group
-                //   const nextBoxId = nextBox.i;
-                  
-                //   setTimeout(() => {
-                //     handleDeleteBox(day, nextBoxId);
-                //   }, 500);
-                // }
-                
-              }
-              else {
-                nextBox.h = Math.max(nextBox.h - overlap, 1);
-              }
           }
-      }
+
+        }
+        return
       }
 
+      else if (isResizingOrDragging) {
+        // Ignore the click if a resize or drag event is in progress
+        return;
+      }
+
+      else if (event.target.closest('.box')) {
+        // If the click happened inside a box, do nothing
+        return;
+      }
+
+      const container = event.currentTarget;
+      const rect = container.getBoundingClientRect();
+      const xPosition = event.clientX - rect.left;
+      const yPosition = (event.clientY - rect.top + container.scrollTop) / (rowHeight + 10);
+      const rowIndex = Math.floor(yPosition);
+      if (rowIndex >= 24*4) return; // Ignore clicks below the 24th row
+      const dayIndex = Math.floor(xPosition / (rect.width / daysOfWeek.length));
+      const day = daysOfWeek[dayIndex];
+      const newBoxId = generateNewBoxId(day, layouts);
+      let newBoxLayout
+      if(rowIndex>92){
+        newBoxLayout = { i: newBoxId, x: 0, y: rowIndex-(4-(96-rowIndex)), w: 1, h: 4, minW: 1, maxW: 2, minH: 4, maxH: 24*4, temperature: null };
+      }
+      else{
+        newBoxLayout = { i: newBoxId, x: 0, y: rowIndex-1, w: 1, h: 4, minW: 1, maxW: 2, minH: 4, maxH: 24*4, temperature: null };
+      }
       
+      setLayouts((prevLayouts) => ({
+        ...prevLayouts,
+        [day]: [...prevLayouts[day], newBoxLayout]
+      }));
 
-      return sortedLayout;
-  };
-
-  const handleContainerClick = (event) => {
-
-    let va = Object.keys(editableBoxes).length>0
-
-    if(Object.keys(editableBoxes).length>0 || (Object.keys(editableBoxes).length>0 && isResizingOrDragging)){
-
-      const boxId = Object.keys(editableBoxes)[0]
-      const str = boxId;
-      const regex = /^box-(\w+)-\d+$/;
-      const match = str.match(regex);
-
-      if (match) {
-        const day = match[1]; // Extract the day from the first capturing group
-
-        const inputValue = temperatureInputs[boxId]
-
-        // Check if input is a number and within the range 5 to 30
-        if (!isNaN(inputValue) && inputValue >= 5 && inputValue <= 30) {
-          setLayouts((prevLayouts) => ({
-            ...prevLayouts,
-            [day]: prevLayouts[day].map((box) =>
-              box.i === boxId ? { ...box, temperature: temperatureInputs[boxId] } : box
-            )
-          }));
-          setEditableBoxes({})
+      // Focus the input after adding the box
+      setTimeout(() => {
+        if (inputRefs.current[newBoxId]) {
+          inputRefs.current[newBoxId].focus();
         }
+      }, 0);
 
-        else {
-          if (event.target.closest('.box')){
-          }
-          else {
-            alert('Please enter a number between 5 and 30.');
-          }
-        }
+      setEditableBoxes((prevEditable) => ({
+        // ...prevEditable,
+        [newBoxId]: true // Enter editing mode on click
+      }));
 
-      }
-      return
-    }
+      setTemperatureInputs((prevInputs) => ({
+        ...prevInputs,
+        [newBoxId]: '' // Initialize temperature input for the new box
+      }));
 
-    else if (isResizingOrDragging) {
-      // Ignore the click if a resize or drag event is in progress
-      return;
-    }
-
-    else if (event.target.closest('.box')) {
-      // If the click happened inside a box, do nothing
-      return;
-    }
-
-    const container = event.currentTarget;
-    const rect = container.getBoundingClientRect();
-    const xPosition = event.clientX - rect.left;
-    const yPosition = (event.clientY - rect.top + container.scrollTop) / (rowHeight + 10);
-    const rowIndex = Math.floor(yPosition);
-    if (rowIndex >= 24*4) return; // Ignore clicks below the 24th row
-    const dayIndex = Math.floor(xPosition / (rect.width / daysOfWeek.length));
-    const day = daysOfWeek[dayIndex];
-    const newBoxId = generateNewBoxId(day, layouts);
-    let newBoxLayout
-    if(rowIndex>92){
-      newBoxLayout = { i: newBoxId, x: 0, y: rowIndex-(4-(96-rowIndex)), w: 1, h: 4, minW: 1, maxW: 2, minH: 4, maxH: 24*4, temperature: null };
-    }
-    else{
-      newBoxLayout = { i: newBoxId, x: 0, y: rowIndex-1, w: 1, h: 4, minW: 1, maxW: 2, minH: 4, maxH: 24*4, temperature: null };
-    }
-    
-    setLayouts((prevLayouts) => ({
-      ...prevLayouts,
-      [day]: [...prevLayouts[day], newBoxLayout]
-    }));
-
-    // Focus the input after adding the box
-    setTimeout(() => {
-      if (inputRefs.current[newBoxId]) {
-        inputRefs.current[newBoxId].focus();
-      }
-    }, 0);
-
-    setEditableBoxes((prevEditable) => ({
-      // ...prevEditable,
-      [newBoxId]: true // Enter editing mode on click
-    }));
-
-    setTemperatureInputs((prevInputs) => ({
-      ...prevInputs,
-      [newBoxId]: '' // Initialize temperature input for the new box
-    }));
-
-  };
-
+    };
 
     const generateNewBoxId = (day, layouts) => {
       const dayLayouts = layouts[day];
