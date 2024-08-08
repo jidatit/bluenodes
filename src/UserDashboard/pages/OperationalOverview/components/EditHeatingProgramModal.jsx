@@ -3,22 +3,21 @@ import { useEffect, useRef, useState } from "react";
 import { Button, Modal, Radio, Label, Select, Tooltip } from "flowbite-react";
 import { IoInformationCircleOutline } from "react-icons/io5";
 import customTheme from "../../HeatingSchedule/CreateHeating/ModalTheme";
-import HeatingScheduleTableStatic from "../../HeatingSchedule/components/HeatingScheduleTableStatic";
-import { EditRoomHeatingSchedule } from "./EditRoomHeatingSchedule";
 import { errorMessages as errors } from "../../../../globals/errorMessages"; // Import error messages
 import ProgressStepper from "../../HeatingSchedule/CreateHeating/components/ProgressStepper";
 import GeneralInformation from "../../HeatingSchedule/CreateHeating/Steps/GeneralInformation/GeneralInformation";
 import HeatingSchedule from "../../HeatingSchedule/CreateHeating/Steps/HeatingSchedule/HeatingSchedule";
 import { Toast } from "flowbite-react";
 import HeatingScheduleTable from "../../HeatingSchedule/components/HeatingScheduleTable";
+import { Dropdown } from "flowbite-react";
 
 const EditHeatingProgramModal = ({
 	openModal,
 	handleOpenModal,
 	room,
 	fetchFloorDetails,
+	updateReplaced,
 }) => {
-	// console.log(room)
 	const [selectedAction, setSelectedAction] = useState("");
 	const [selectedProgram, setSelectedProgram] = useState("");
 	const [showError, setShowError] = useState(false);
@@ -51,6 +50,8 @@ const EditHeatingProgramModal = ({
 			setShowConfirmModal(true);
 		}
 	};
+	const [updatedR, setupdatedR] = useState(false);
+	let replaced = null;
 
 	const handleConfirmReplace = () => {
 		const roomId = room.id;
@@ -85,18 +86,33 @@ const EditHeatingProgramModal = ({
 					.then((response) => response.json())
 					.then((data) => {
 						console.log(data);
+						// setupdatedR(true);
 						setToastMessage(errors.ProgramReplacedSuccessfully);
+						updateReplaced();
+						setShowToast(true);
 					})
 					.catch((error) => setToastMessage(errors.ProgramReplacedFailed));
 
 				setShowConfirmModal(false);
-				handleCloseModal();
+
+				// Corrected prop name usage
 			})
 			.catch((error) => {
 				console.error("Error fetching existing locations:", error);
 				setToastMessage(errors.ProgramReplacedFailed);
 			});
+
+		setIsSuccess(true);
+		handleCloseModal();
+		setTimeout(() => {
+			setShowToast(false);
+		}, 4000);
 	};
+	// if (updatedR !== null && updatedR) {
+	// 	replaced = true;
+	// 	// updateReplaced(replaced);
+	// 	console.log("replaced update child", replaced);
+	// }
 
 	const handleCancelReplace = () => {
 		setShowConfirmModal(false);
@@ -367,13 +383,13 @@ const EditHeatingProgramModal = ({
 		layoutsRef.current = updatedLayouts;
 	};
 
-	let newCheck = null
-  // Function to handle layout updates
-  const handleCheckUpdate = (updatedCheck) => {
-    // console.log(updatedCheck,"hhihi")
-    newCheck = updatedCheck
-    // checkedRef.current = updatedCheck;
-  };
+	let newCheck = null;
+	// Function to handle layout updates
+	const handleCheckUpdate = (updatedCheck) => {
+		// console.log(updatedCheck,"hhihi")
+		newCheck = updatedCheck;
+		// checkedRef.current = updatedCheck;
+	};
 
 	const handlePrevious = () => {
 		if (currentStep === 2 || currentStep === 3) {
@@ -470,10 +486,10 @@ const EditHeatingProgramModal = ({
 
 		if (newCheck !== null && !newCheck) {
 			setFinalScheduleData(layoutsRef.current);
-			scheduleDataTemp = layoutsRef.current ;
+			scheduleDataTemp = layoutsRef.current;
 
 			const data = convertScheduleData(scheduleDataTemp);
-	
+
 			const requestBody = {
 				templateName: combinedData.formData.programName,
 				allowDeviceOverride:
@@ -481,7 +497,7 @@ const EditHeatingProgramModal = ({
 				locations: [room.id],
 				days: data,
 			};
-	
+
 			if (combinedData.formData.childSafety !== "Yes") {
 				requestBody.deviceOverrideTemperatureMin = parseInt(
 					combinedData.formData.minTemp,
@@ -490,7 +506,7 @@ const EditHeatingProgramModal = ({
 					combinedData.formData.maxTemp,
 				);
 			}
-	
+
 			try {
 				const resp = await fetch(
 					"https://api-dev.blue-nodes.app/dev/smartheating/heatingschedule",
@@ -503,14 +519,14 @@ const EditHeatingProgramModal = ({
 						body: JSON.stringify(requestBody),
 					},
 				);
-	
+
 				if (!resp.ok) {
 					const errorText = await resp.text(); // Get response text for error details
 					throw new Error(
 						`HTTP error! Status: ${resp.status}, Details: ${errorText}`,
 					);
 				}
-	
+
 				const respData = await resp.json();
 				if (respData.active) {
 					handleOpenModal();
@@ -536,9 +552,6 @@ const EditHeatingProgramModal = ({
 				console.error("Error during fetch operation:", error);
 			}
 		}
-
-
-
 	};
 
 	const resetModalState = () => {
@@ -647,8 +660,7 @@ const EditHeatingProgramModal = ({
 												selectedProgram={selectedProgram}
 												handleProgramChange={handleProgramChange}
 												showError={showError}
-												finalScheduleData={finalScheduleData}
-												locationDetails={locationDetails}
+												room={room}
 											/>
 										)
 									)}
@@ -723,8 +735,7 @@ const ReplaceProgram = ({
 	selectedProgram,
 	handleProgramChange,
 	showError,
-	finalScheduleData,
-	locationDetails,
+	room,
 }) => {
 	const [data, setData] = useState([]);
 	const token = localStorage.getItem("token");
@@ -755,29 +766,40 @@ const ReplaceProgram = ({
 	return (
 		<div className="w-full flex flex-col md:flex-row justify-start items-start md:items-center gap-4">
 			<div className="flex flex-col justify-start items-start w-full md:w-1/3">
-				<Label
+				<label
 					htmlFor="program"
 					value="Program"
 					className={`mb-2 text-sm font-semibold ${
 						showError ? "text-red-500" : "text-gray-700"
 					}`}
-				/>
-				<Select
+				>
+					{" "}
+					Headliner{" "}
+				</label>
+				<select
 					id="program"
 					required
-					className={`w-full ${
-						showError ? "border-red-500 bg-red-100 text-red-700" : ""
-					}`}
+					className={` mt-1.5 w-full rounded-lg border-gray-300 text-gray-700 sm:text-sm`}
 					value={selectedProgram}
 					onChange={handleProgramChange}
 				>
-					<option value="">Select a program</option>
+					<option value="">Please select Program</option>
 					{data.map((program) => (
-						<option key={program.id} value={program.id}>
+						<option
+							className={`block rounded-lg px-4 py-2 text-sm ${
+								program.id === room.heatingSchedule.id
+									? "bg-gray-100 text-gray-400 cursor-not-allowed"
+									: "hover:bg-blue-100 hover:text-blue-700"
+							}`}
+							key={program.id}
+							value={program.id}
+							disabled={program.id === room.heatingSchedule.id}
+						>
 							{program.templateName}
 						</option>
 					))}
-				</Select>
+				</select>
+
 				{showError && (
 					<p className="text-red-500 text-sm mt-1">
 						A program has to be selected
@@ -939,9 +961,6 @@ const ViewTableComponent = ({ selectedProgram }) => {
 					</div>
 				</div>
 				<div className="w-[75%] border-l flex flex-col gap-4 border-gray-200 pl-4">
-					<h3 className="text-[16px] text-gray-500 font-semibold">
-						Heating Schedule
-					</h3>
 					<div className="max-h-[400px] overflow-y-auto overflow-x-hidden">
 						{console.log("temp", temperatureDetails)}
 						{temperatureDetails && (

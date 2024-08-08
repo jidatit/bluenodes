@@ -144,26 +144,47 @@ const TemperatureSchedule = ({ floorId }) => {
 			return null;
 		}
 	};
+	// const [shouldFetch, setShouldFetch] = useState(false);
+	let check = null;
+	const updateReplacedF = (update) => {
+		// check = update;
+		console.log("abcd");
+		getFloorDetails(floorId);
+		fetchHeatingScheduleForRoom();
+		fetchSchedules();
+	};
 
+	// const UpdateReplaced = (update) => {
+	// 	if (update === true) {
+	// 		setShouldFetch(true);
+	// 	}
+	// };
+
+	const fetchSchedules = async () => {
+		if (RoomsDetail.length > 0) {
+			const updatedRooms = await Promise.all(
+				RoomsDetail.map(async (room) => {
+					if (room.heatingSchedule) {
+						const schedule = await fetchHeatingScheduleForRoom(
+							room.heatingSchedule.id,
+						);
+						return { ...room, schedule };
+					}
+					return room;
+				}),
+			);
+			setscheduleDetails(updatedRooms);
+			console.log("sched", scheduleDetails);
+		}
+	};
+
+	// useEffect(() => {
+	// 	if (shouldFetch) {
+	// 		fetchSchedules();
+	// 		setShouldFetch(false);
+	// 	}
+	// }, [shouldFetch]);
 	useEffect(() => {
-		const fetchSchedules = async () => {
-			if (RoomsDetail.length > 0) {
-				const updatedRooms = await Promise.all(
-					RoomsDetail.map(async (room) => {
-						if (room.heatingSchedule) {
-							const schedule = await fetchHeatingScheduleForRoom(
-								room.heatingSchedule.id,
-							);
-							return { ...room, schedule };
-						}
-						return room;
-					}),
-				);
-				setscheduleDetails(updatedRooms);
-				console.log("sched", scheduleDetails);
-			}
-		};
-
 		fetchSchedules();
 	}, [RoomsDetail]);
 
@@ -184,6 +205,13 @@ const TemperatureSchedule = ({ floorId }) => {
 			console.log(error);
 		}
 	};
+	// const handleUpdateReplaced = () => {
+	// 	if (check !== null && check) {
+	// 		console.log("rpelcaed update parent useffec", check);
+	// 		getFloorDetails();
+	// 		fetchSchedules();
+	// 	}
+	// };
 
 	useEffect(() => {
 		if (floorId) {
@@ -191,6 +219,14 @@ const TemperatureSchedule = ({ floorId }) => {
 		}
 	}, [floorId]);
 	console.log("room", RoomsDetail);
+
+	if (check !== null && check) {
+		console.log("rpelcaed update parent useffec", check);
+		getFloorDetails();
+		fetchSchedules();
+	}
+	console.log("check paren", check);
+
 	return (
 		<>
 			{RoomsDetail && RoomsDetail.length > 0 ? (
@@ -487,6 +523,7 @@ const TemperatureSchedule = ({ floorId }) => {
 							openModal={openEditModal}
 							handleOpenModal={handleOpenEditModal}
 							room={selectedRoom}
+							updateReplaced={updateReplacedF}
 						/>
 					</div>
 				))
