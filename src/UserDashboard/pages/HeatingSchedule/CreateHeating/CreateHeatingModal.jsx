@@ -244,7 +244,7 @@ export function CreateHeatingModal({ openModal, handleOpenModal, onCreate }) {
     layoutsRef.current = updatedLayouts;
   };
 
-   let newCheck = null
+  let newCheck = null
   // Function to handle layout updates
   const handleCheckUpdate = (updatedCheck) => {
     // console.log(updatedCheck,"hhihi")
@@ -270,11 +270,11 @@ export function CreateHeatingModal({ openModal, handleOpenModal, onCreate }) {
         handleCheckRef.current();
       }
 
-        // console.log(newCheck, 'whennext');
-        if (newCheck !== null && !newCheck) {
-          setCurrentStep((prev) => Math.min(prev + 1, 3));
-          setFinalScheduleData(layoutsRef.current);
-        }
+      // console.log(newCheck, 'whennext');
+      if (newCheck !== null && !newCheck) {
+        setCurrentStep((prev) => Math.min(prev + 1, 3));
+        setFinalScheduleData(layoutsRef.current);
+      }
       // // Validate layouts for all days
       // const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
       // const allNonEmpty = days.every(day => (day in layoutsRef.current) && layoutsRef.current[day].length > 0);
@@ -408,8 +408,7 @@ export function CreateHeatingModal({ openModal, handleOpenModal, onCreate }) {
         }
         // console.log(finalObj,"finalObj")
 
-        handleOpenModal();
-        resetModalState();
+
         // Submit the form or perform other actions
 
         fetch(`https://api-dev.blue-nodes.app/dev/smartheating/heatingschedule`, {
@@ -427,6 +426,8 @@ export function CreateHeatingModal({ openModal, handleOpenModal, onCreate }) {
               onCreate('Error')
             } else {
               onCreate(combinedData)
+              handleOpenModal();
+              resetModalState();
             }
           })
           .catch(error => console.error('Error:', error));

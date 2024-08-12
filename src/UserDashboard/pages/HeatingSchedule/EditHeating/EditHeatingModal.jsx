@@ -12,7 +12,7 @@ export function EditHeatingModal({ openEditModal, handleEditModal, onEdit, progr
 
   //Set token for bearer authorization
   const token = localStorage.getItem('token');
-  
+
   const [currentStep, setCurrentStep] = useState(1);
 
   const [formData, setFormData] = useState({
@@ -38,9 +38,9 @@ export function EditHeatingModal({ openEditModal, handleEditModal, onEdit, progr
     if (openEditModal) {
       setFormData({
         programName: program?.templateName || "",
-        childSafety: program?.allowDeviceOverride===true?"No":"Yes" || "",
-        minTemp: program?.deviceOverrideTemperatureMin + '°C'||"",
-        maxTemp: program?.deviceOverrideTemperatureMax + '°C'||"",
+        childSafety: program?.allowDeviceOverride === true ? "No" : "Yes" || "",
+        minTemp: program?.deviceOverrideTemperatureMin + '°C' || "",
+        maxTemp: program?.deviceOverrideTemperatureMax + '°C' || "",
         applyAlgorithm: "",
       });
     }
@@ -88,17 +88,17 @@ export function EditHeatingModal({ openEditModal, handleEditModal, onEdit, progr
 
   const validateField = (id, value) => {
     let error = "";
-  
+
     if (value === "") {
       error = errors.missingSelectionOrInformation;
     } else {
       const minTemp = id === "minTemp" ? parseFloat(value) : parseFloat(formData.minTemp);
       const maxTemp = id === "maxTemp" ? parseFloat(value) : parseFloat(formData.maxTemp);
-  
+
       if (id === "minTemp") {
         if (isNaN(minTemp) || minTemp < 10 || minTemp > 29) {
           error = errors.minTempInvalid;
-        } else if ( maxTemp !== "" && minTemp >= maxTemp) {
+        } else if (maxTemp !== "" && minTemp >= maxTemp) {
           // Update error state for maxTemp immediately
           setErrorMessages((prev) => ({
             ...prev,
@@ -114,7 +114,7 @@ export function EditHeatingModal({ openEditModal, handleEditModal, onEdit, progr
         }
         console.log(errorMessages)
       }
-  
+
       if (id === "maxTemp") {
         if (isNaN(maxTemp) || maxTemp < 11 || maxTemp > 30) {
           error = errors.maxTempInvalid;
@@ -122,8 +122,8 @@ export function EditHeatingModal({ openEditModal, handleEditModal, onEdit, progr
           error = errors.maxTempLowerThanMinTemp;
         }
       }
-  }
-  
+    }
+
     // Set error message for the current field
     setErrorMessages((prev) => ({
       ...prev,
@@ -131,9 +131,9 @@ export function EditHeatingModal({ openEditModal, handleEditModal, onEdit, progr
     }));
   };
 
-  useEffect(()=>{
-    const minTemp =  parseFloat(formData.minTemp);
-    const maxTemp =  parseFloat(formData.maxTemp);
+  useEffect(() => {
+    const minTemp = parseFloat(formData.minTemp);
+    const maxTemp = parseFloat(formData.maxTemp);
     // Cross-validate minTemp and maxTemp
     if (minTemp !== "" && maxTemp !== "") {
       if (minTemp >= maxTemp) {
@@ -150,14 +150,14 @@ export function EditHeatingModal({ openEditModal, handleEditModal, onEdit, progr
           maxTemp: "", // Clear the error message for maxTemp
         }));
       }
-    }    
-  },[formData])
+    }
+  }, [formData])
 
   const handleChange = (e) => {
     const { id, value } = e.target;
-  
+
     validateField(id, value);
-    
+
     // Check if the change is from the radio button groups
     if (id === "childSafetyYes" || id === "childSafetyNo") {
       setFormData((prev) => ({
@@ -176,26 +176,26 @@ export function EditHeatingModal({ openEditModal, handleEditModal, onEdit, progr
       }));
     }
 
-      // Re-validate the related temperature field
-  if (id === "minTemp" && formData.maxTemp) {
-    validateField("maxTemp", formData.maxTemp);
-  }
-  if (id === "maxTemp" && formData.minTemp) {
-    validateField("minTemp", formData.minTemp);
-  }
-  
+    // Re-validate the related temperature field
+    if (id === "minTemp" && formData.maxTemp) {
+      validateField("maxTemp", formData.maxTemp);
+    }
+    if (id === "maxTemp" && formData.minTemp) {
+      validateField("minTemp", formData.minTemp);
+    }
+
     const allFieldsFilled = Object.values({
       ...formData,
       [id]: value,
     }).every((field) => field !== "");
-  
+
     if (allFieldsFilled) {
       setErrorMessages({});
       setGeneralErrorMessage(""); // Clear general error message if all fields are filled
     }
   };
-  
-  
+
+
 
   const handleSubmit = () => {
     setFormSubmitted(true);
@@ -237,7 +237,7 @@ export function EditHeatingModal({ openEditModal, handleEditModal, onEdit, progr
 
   const [layouts, setLayouts] = useState({}); // State to hold layouts
   const [finalScheduleData, setFinalScheduleData] = useState({});
-  
+
   const handleCheckRef = useRef(null); // Ref to hold handleCheck function
   const layoutsRef = useRef(layouts); // Ref to hold the latest layouts value
 
@@ -267,7 +267,7 @@ export function EditHeatingModal({ openEditModal, handleEditModal, onEdit, progr
       if (handleSubmit()) {
         setCurrentStep((prev) => Math.min(prev + 1, 3));
       }
-    } 
+    }
   };
 
   const [combinedData, setCombinedData] = useState({
@@ -290,106 +290,107 @@ export function EditHeatingModal({ openEditModal, handleEditModal, onEdit, progr
       });
     }
     // console.log(combinedData);
-  }, [formData,finalScheduleData]);
+  }, [formData, finalScheduleData]);
 
   // const programAssignmentRef = useRef();
 
   const handleCreate = () => {
     let scheduleDataTemp = {}
 
-      // Save button clicked
-      if (currentStep === 2) {
-        // Trigger the handleCheck function in the child component
-        if (handleCheckRef.current) {
-          handleCheckRef.current();
-        }
-        if (newCheck !== null && !newCheck) {
-          setFinalScheduleData(layoutsRef.current);
-          scheduleDataTemp = layoutsRef.current ;
+    // Save button clicked
+    if (currentStep === 2) {
+      // Trigger the handleCheck function in the child component
+      if (handleCheckRef.current) {
+        handleCheckRef.current();
+      }
+      if (newCheck !== null && !newCheck) {
+        setFinalScheduleData(layoutsRef.current);
+        scheduleDataTemp = layoutsRef.current;
 
-          // Convert schedule data into API format 
-    function convertScheduleData(data) {
-      // console.log(data)
-      const dayMapping = {
-          "Monday": 1,
-          "Tuesday": 2,
-          "Wednesday": 3,
-          "Thursday": 4,
-          "Friday": 5,
-          "Saturday": 6,
-          "Sunday": 7
-      };
-  
-      const result = { days: [] };
-  
-      const normalizeTime = (value) => {
-          const hours = Math.floor(value * 24 / 96);
-          const minutes = Math.floor((value * 24 * 60 / 96) % 60);
-          return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
-      };
-  
-      for (const [dayName, entries] of Object.entries(data)) {
-          const day = dayMapping[dayName];
-          entries.forEach(entry => {
+        // Convert schedule data into API format 
+        function convertScheduleData(data) {
+          // console.log(data)
+          const dayMapping = {
+            "Monday": 1,
+            "Tuesday": 2,
+            "Wednesday": 3,
+            "Thursday": 4,
+            "Friday": 5,
+            "Saturday": 6,
+            "Sunday": 7
+          };
+
+          const result = { days: [] };
+
+          const normalizeTime = (value) => {
+            const hours = Math.floor(value * 24 / 96);
+            const minutes = Math.floor((value * 24 * 60 / 96) % 60);
+            return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+          };
+
+          for (const [dayName, entries] of Object.entries(data)) {
+            const day = dayMapping[dayName];
+            entries.forEach(entry => {
               const from = normalizeTime(entry.y);
               let to = normalizeTime(entry.y + entry.h);
               const targetTemperature = parseInt(entry.temperature, 10);
 
-              if(to==="24:00"){
-                to="23:59"
+              if (to === "24:00") {
+                to = "23:59"
               }
-  
+
               result.days.push({
-                  day,
-                  from,
-                  to,
-                  targetTemperature
+                day,
+                from,
+                to,
+                targetTemperature
               });
-          });
-      }
-  
-      return result.days;
-    }
+            });
+          }
+
+          return result.days;
+        }
 
 
-    //Manipulating for API
-    const finalObj = {
-      "templateName": combinedData.formData.programName,
-      "allowDeviceOverride": combinedData.formData.childSafety==='No'?true:false,
-      "deviceOverrideTemperatureMin": parseInt(combinedData.formData.minTemp),
-      "deviceOverrideTemperatureMax": parseInt(combinedData.formData.maxTemp),
-      "days": convertScheduleData(scheduleDataTemp)
-    }
-    console.log(combinedData.finalScheduleData)
-    console.log(JSON.stringify(finalObj))
+        //Manipulating for API
+        const finalObj = {
+          "templateName": combinedData.formData.programName,
+          "allowDeviceOverride": combinedData.formData.childSafety === 'No' ? true : false,
+          "deviceOverrideTemperatureMin": parseInt(combinedData.formData.minTemp),
+          "deviceOverrideTemperatureMax": parseInt(combinedData.formData.maxTemp),
+          "days": convertScheduleData(scheduleDataTemp)
+        }
+        console.log(combinedData.finalScheduleData)
+        console.log(JSON.stringify(finalObj))
 
-    // Put to API
-    fetch(`https://api-dev.blue-nodes.app/dev/smartheating/heatingschedule/${program.id}`, {
-              method: 'PUT',
-              headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json'
-              },
-              body: JSON.stringify(finalObj)
-          })
+        // Put to API
+        fetch(`https://api-dev.blue-nodes.app/dev/smartheating/heatingschedule/${program.id}`, {
+          method: 'PUT',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(finalObj)
+        })
           .then(response => response.json())
           .then(data => {
             console.log(data)
-            if(data.statusCode===400){
+            if (data.statusCode === 400) {
               onEdit('Error')
             } else {
               onEdit(combinedData)
+              handleEditModal();
+              resetModalState();
             }
           })
-          .catch(error => console.error('Error:', error));  
-    
+          .catch(error => console.error('Error:', error));
 
-    // Save button clicked
-    // onEdit(combinedData);
-    handleEditModal();
-    resetModalState();
-        }
+
+        // Save button clicked
+        // onEdit(combinedData);
+
       }
+    }
 
   };
 
@@ -442,7 +443,7 @@ export function EditHeatingModal({ openEditModal, handleEditModal, onEdit, progr
               )}
               {currentStep === 2 && (
                 <div>
-                  {console.log("this",locationDetails)}
+                  {console.log("this", locationDetails)}
                   <HeatingSchedule
                     onUpdateLayouts={handleLayoutUpdate}
                     onUpdateCheck={handleCheckUpdate}
@@ -459,7 +460,7 @@ export function EditHeatingModal({ openEditModal, handleEditModal, onEdit, progr
           </div>
         </Modal.Body>
         <Modal.Footer>
-          {currentStep <2 ? (
+          {currentStep < 2 ? (
             <Button className="bg-primary" onClick={handleNext}>
               Next
             </Button>

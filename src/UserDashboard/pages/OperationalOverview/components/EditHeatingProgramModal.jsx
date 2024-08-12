@@ -87,6 +87,7 @@ const EditHeatingProgramModal = ({
 					.then((data) => {
 						console.log(data);
 						// setupdatedR(true);
+						handleCloseModal();
 						setToastMessage(errors.ProgramReplacedSuccessfully);
 						updateReplaced();
 						setShowToast(true);
