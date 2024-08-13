@@ -608,7 +608,7 @@ const EditHeatingProgramModal = ({
 						<Modal.Body className="p-5 overflow-y-auto h-auto">
 							<div className="w-full flex flex-col justify-center items-start">
 								<p>Edit room</p>
-								<p className="font-semibold mt-3">Select action</p>
+								<p className="font-semibold mt-3 ">Select action</p>
 								<div className="w-full flex mt-2 gap-4 flex-row justify-start items-center">
 									<div onClick={() => handleActionChange("edit-room")} className="flex cursor-pointer flex-row justify-center items-center gap-2">
 										<Radio
@@ -616,9 +616,10 @@ const EditHeatingProgramModal = ({
 											name="action"
 											value="edit-room"
 											checked={selectedAction === "edit-room"}
+											className=" cursor-pointer"
 										// onChange={handleActionChange}
 										/>
-										<Label htmlFor="edit-room">
+										<Label className=" cursor-pointer" htmlFor="edit-room">
 											Edit room heating schedule
 										</Label>
 									</div>
@@ -628,9 +629,10 @@ const EditHeatingProgramModal = ({
 											name="action"
 											value="replace-room"
 											checked={selectedAction === "replace-room"}
+											className=" cursor-pointer"
 										// onChange={handleActionChange}
 										/>
-										<Label htmlFor="replace-room">Replace program</Label>
+										<Label className=" cursor-pointer" htmlFor="replace-room">Replace program</Label>
 									</div>
 								</div>
 
