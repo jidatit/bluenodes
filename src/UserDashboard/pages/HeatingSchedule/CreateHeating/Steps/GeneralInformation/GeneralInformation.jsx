@@ -4,6 +4,7 @@ import { FaCircleCheck } from "react-icons/fa6";
 import { IoInformationCircleOutline } from "react-icons/io5";
 
 function GeneralInformation({ formData, handleChange, errorMessages, generalErrorMessage }) {
+
   return (
     <div className="flex flex-col gap-4 w-full">
       <h3 className="text-[16px] text-gray-500 font-semibold">General information</h3>

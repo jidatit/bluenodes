@@ -10,6 +10,7 @@ import HeatingSchedule from "../../HeatingSchedule/CreateHeating/Steps/HeatingSc
 import { Toast } from "flowbite-react";
 import HeatingScheduleTable from "../../HeatingSchedule/components/HeatingScheduleTable";
 import { Dropdown } from "flowbite-react";
+import { useHeatingSchedule } from "../../../../hooks/HeatingScheduleContext";
 
 const EditHeatingProgramModal = ({
 	openModal,
@@ -23,14 +24,15 @@ const EditHeatingProgramModal = ({
 	const [showError, setShowError] = useState(false);
 	const [showConfirmModal, setShowConfirmModal] = useState(false);
 	const [data, setData] = useState([]);
+	const { createdHeatingScheduleNames } = useHeatingSchedule()
 
 	const handleCloseModal = () => {
 		handleOpenModal();
 		resetModalState();
 	};
 
-	const handleActionChange = (event) => {
-		setSelectedAction(event.target.value);
+	const handleActionChange = (value) => {
+		setSelectedAction(value);
 	};
 
 	const handleProgramChange = (event) => {
@@ -217,6 +219,13 @@ const EditHeatingProgramModal = ({
 				newErrors.maxTemp = errors.maxTempLowerThanMinTemp;
 			}
 
+			const programName = formData.programName
+			createdHeatingScheduleNames && createdHeatingScheduleNames.map((name, index) => {
+				if (programName == name) {
+					newErrors.programName = errors.ProgramWithNameAlreadyCreated
+				}
+			})
+
 			if (Object.keys(newErrors).length > 0 || !allFieldsFilled) {
 				setErrorMessages(newErrors);
 			} else {
@@ -348,7 +357,12 @@ const EditHeatingProgramModal = ({
 				allFieldsFilled = false; // Set flag to false if any field is empty
 			}
 		});
-
+		const programName = formData.programName
+		createdHeatingScheduleNames && createdHeatingScheduleNames.map((name, index) => {
+			if (programName == name) {
+				newErrors.programName = errors.ProgramWithNameAlreadyCreated
+			}
+		})
 		// Validate temperature fields
 		const minTemp = parseFloat(formData.minTemp);
 		const maxTemp = parseFloat(formData.maxTemp);
@@ -367,9 +381,10 @@ const EditHeatingProgramModal = ({
 			setErrorMessages(newErrors);
 			return false;
 		}
-
+		else {
+			return true;
+		}
 		// console.log(formData);
-		return true;
 	};
 
 	const [layouts, setLayouts] = useState({}); // State to hold layouts
@@ -595,25 +610,25 @@ const EditHeatingProgramModal = ({
 								<p>Edit room</p>
 								<p className="font-semibold mt-3">Select action</p>
 								<div className="w-full flex mt-2 gap-4 flex-row justify-start items-center">
-									<div className="flex flex-row justify-center items-center gap-2">
+									<div onClick={() => handleActionChange("edit-room")} className="flex cursor-pointer flex-row justify-center items-center gap-2">
 										<Radio
 											id="edit-room"
 											name="action"
 											value="edit-room"
 											checked={selectedAction === "edit-room"}
-											onChange={handleActionChange}
+										// onChange={handleActionChange}
 										/>
 										<Label htmlFor="edit-room">
 											Edit room heating schedule
 										</Label>
 									</div>
-									<div className="flex flex-row justify-center items-center gap-2">
+									<div onClick={() => handleActionChange("replace-room")} className="flex cursor-pointer flex-row justify-center items-center gap-2">
 										<Radio
 											id="replace-room"
 											name="action"
 											value="replace-room"
 											checked={selectedAction === "replace-room"}
-											onChange={handleActionChange}
+										// onChange={handleActionChange}
 										/>
 										<Label htmlFor="replace-room">Replace program</Label>
 									</div>
@@ -770,9 +785,8 @@ const ReplaceProgram = ({
 				<label
 					htmlFor="program"
 					value="Program"
-					className={`mb-2 text-sm font-semibold ${
-						showError ? "text-red-500" : "text-gray-700"
-					}`}
+					className={`mb-2 text-sm font-semibold ${showError ? "text-red-500" : "text-gray-700"
+						}`}
 				>
 					{" "}
 					Headliner{" "}
@@ -787,11 +801,10 @@ const ReplaceProgram = ({
 					<option value="">Please select Program</option>
 					{data.map((program) => (
 						<option
-							className={`block rounded-lg px-4 py-2 text-sm ${
-								program.id === room.heatingSchedule.id
-									? "bg-gray-100 text-gray-400 cursor-not-allowed"
-									: "hover:bg-blue-100 hover:text-blue-700"
-							}`}
+							className={`block rounded-lg px-4 py-2 text-sm ${program.id === room.heatingSchedule.id
+								? "bg-gray-100 text-gray-400 cursor-not-allowed"
+								: "hover:bg-blue-100 hover:text-blue-700"
+								}`}
 							key={program.id}
 							value={program.id}
 							disabled={program.id === room.heatingSchedule.id}

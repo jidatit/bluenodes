@@ -7,12 +7,14 @@ import { useEffect, useState } from "react";
 import HeatingScheduleTable from "../../HeatingSchedule/components/HeatingScheduleTable";
 import HeatingScheduleComparison from "./HeatingScheduleComparison";
 import HeatingScheduleTableStatic from "../../HeatingSchedule/components/HeatingScheduleTableStatic";
+import { Spinner } from "flowbite-react";
 
 export function ViewRoomScheduleModal({ openModal, handleOpenModal, algo, heatingScheduleId }) {
 	const [switch1, setSwitch1] = useState(false);
 	const [isChecked, setIsChecked] = useState(false);
 	const [locationDetails, setLocationDetails] = useState(null);
 	const token = localStorage.getItem("token");
+	const [loading, setloading] = useState(false)
 
 	const handleCheckboxChange = () => {
 		setIsChecked(!isChecked);
@@ -20,10 +22,10 @@ export function ViewRoomScheduleModal({ openModal, handleOpenModal, algo, heatin
 	const handleCloseModal = () => {
 		handleOpenModal();
 	};
-	console.log(locationDetails)
 
 	useEffect(() => {
-		if (heatingScheduleId) {
+		if (heatingScheduleId !== null) {
+			setloading(true);
 			fetch(
 				`https://api-dev.blue-nodes.app/dev/smartheating/heatingschedule/${heatingScheduleId}/details`,
 				{
@@ -36,22 +38,25 @@ export function ViewRoomScheduleModal({ openModal, handleOpenModal, algo, heatin
 				.then((response) => response.json())
 				.then((data) => {
 					setLocationDetails(data);
-					// setLoader(false);
-					// setfetched(true);
 				})
-				.catch((error) => console.error("Error:", error));
+				.catch((error) => console.error("Error:", error))
+				.finally(() => setloading(false)); // Corrected here
 		}
-	}, []);
+	}, [heatingScheduleId]);	
 
 	return (
 		<>
 			<Modal
 				theme={customTheme}
 				size={"7xl"}
-				// dismissible
 				show={openModal}
 				onClose={handleCloseModal}
 			>
+				{loading && (
+					<Modal.Body className="p-5 flex flex-col justify-center items-center overflow-hidden h-auto">
+						<Spinner />
+					</Modal.Body>
+				)}
 				{locationDetails && (
 					<>
 						<Modal.Header className=" text-lg text-gray-900 [&>*]:font-semibold">

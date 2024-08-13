@@ -24,4 +24,5 @@ export const errorMessages = {
 	heatingScheduleEditedFailed: "Failed to edit heating schedule",
 	ProgramReplacedSuccessfully: "Program Replaced Successfully",
 	ProgramReplacedFailed: "Program Replaced Failed",
+	ProgramWithNameAlreadyCreated: "Program with this name is already created"
 };
