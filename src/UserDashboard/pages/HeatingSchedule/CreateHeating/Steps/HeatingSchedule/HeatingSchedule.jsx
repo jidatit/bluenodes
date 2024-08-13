@@ -245,11 +245,7 @@ import { Tooltip } from 'flowbite-react';
           }
 
           else {
-            if (event.target.closest('.box')){
-            }
-            else {
-              alert('Please enter a number between 5 and 30.');
-            }
+            alert('Please enter a number between 5 and 30.');
           }
 
         }
@@ -276,6 +272,9 @@ import { Tooltip } from 'flowbite-react';
       const day = daysOfWeek[dayIndex];
       const newBoxId = generateNewBoxId(day, layouts);
       let newBoxLayout
+      if(rowIndex<=0){
+        return
+      }
       if(rowIndex>92){
         newBoxLayout = { i: newBoxId, x: 0, y: rowIndex-(4-(96-rowIndex)), w: 1, h: 4, minW: 1, maxW: 2, minH: 4, maxH: 24*4, temperature: null };
       }
@@ -532,6 +531,41 @@ import { Tooltip } from 'flowbite-react';
       
       
       const handleCheck = useCallback(() => {
+
+        if(Object.keys(editableBoxes).length>0){
+
+          const boxId = Object.keys(editableBoxes)[0]
+          const str = boxId;
+          const regex = /^box-(\w+)-\d+$/;
+          const match = str.match(regex);
+          console.log(str)
+  
+          if (match) {
+            const day = match[1]; // Extract the day from the first capturing group
+  
+            const inputValue = temperatureInputs[boxId]
+            console.log(inputValue)
+  
+            // Check if input is a number and within the range 5 to 30
+            if (!isNaN(inputValue) && inputValue >= 5 && inputValue <= 30) {
+              console.log("check")
+              setLayouts((prevLayouts) => ({
+                ...prevLayouts,
+                [day]: prevLayouts[day].map((box) =>
+                  box.i === boxId ? { ...box, temperature: temperatureInputs[boxId] } : box
+                )
+              }));
+              setEditableBoxes({})
+            }
+  
+            else {
+              alert('Please enter a number between 5 and 30.');
+              return
+            }  
+          }
+          
+        }
+
         setChecked(true);
         // Generate boxes for empty time slots
         Object.keys(layouts).forEach((day) => {
