@@ -542,6 +542,37 @@ function HeatingSchedule({
 	};
 
 	const handleCheck = useCallback(() => {
+		if(Object.keys(editableBoxes).length>0){
+
+			const boxId = Object.keys(editableBoxes)[0]
+			const str = boxId;
+			const regex = /^box-(\w+)-\d+$/;
+			const match = str.match(regex);
+			console.log(str)
+
+			if (match) {
+				const day = match[1]; // Extract the day from the first capturing group
+
+				const inputValue = temperatureInputs[boxId]
+
+				// Check if input is a number and within the range 5 to 30
+				if (!isNaN(inputValue) && inputValue >= 5 && inputValue <= 30) {
+					setLayouts((prevLayouts) => ({
+						...prevLayouts,
+						[day]: prevLayouts[day].map((box) =>
+							box.i === boxId ? { ...box, temperature: temperatureInputs[boxId] } : box
+						)
+					}));
+					setEditableBoxes({})
+				}
+
+				else {
+					alert('Please enter a number between 5 and 30.');
+					return
+				}  
+			}
+			
+		}
 		let newCheck = false;
 		// Generate boxes for empty time slots
 		Object.keys(layouts).forEach((day) => {
@@ -560,7 +591,6 @@ function HeatingSchedule({
 				if (!slot) {
 					setChecked(true);
 					newCheck = true;
-					console.log(newCheck);
 					const nextBox = layout.find((box) => box.y > y);
 					const height = nextBox ? nextBox.y - y : 24 * 4 - y; // Calculate height up to next box or end of day
 					emptySlots.push({
