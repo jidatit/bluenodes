@@ -79,6 +79,7 @@ function HeatingSchedulePage() {
 	};
 
 	const handleRoomUpdate = (data) => {
+		console.log("are you here?")
 		if (data) {
 			if (data === "Error") {
 				setToastMessage(errorMessages.roomAssignFailed);
@@ -140,6 +141,7 @@ function HeatingSchedulePage() {
 			setIsSuccess(false);
 		}
 		// setResponse(!response);
+		fetchAll()
 		setShowToast(true);
 
 		// Hide the toast after 4 seconds
@@ -287,6 +289,7 @@ function HeatingSchedulePage() {
 						onEditProgram={handleEditProgram}
 						onDeleteProgram={handleDeleteProgram}
 						program={program}
+						fetchAll={fetchAllHeatingSchedules}
 					/>
 				))}
 			{Loader && (

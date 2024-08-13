@@ -118,9 +118,9 @@ const ExampleSidebar = () => {
               <Sidebar.ItemGroup>
                 <Sidebar.Item
                   as={NavLink}
-                  to={NAVIGATION_PATH.statuspage}
+                  to={NAVIGATION_PATH.dashboardLayout}
                   icon={HiHome}
-                  className={NAVIGATION_PATH.statuspage === currentPage ? "bg-gray-100 dark:bg-gray-700" : ""}
+                  className={NAVIGATION_PATH.dashboardLayout === currentPage ? "bg-gray-100 dark:bg-gray-700" : ""}
                 >
                   Status Page
                 </Sidebar.Item>
