@@ -259,76 +259,59 @@ function HeatingSchedule({
 
 				const inputValue = temperatureInputs[boxId];
 
-				// Check if input is a number and within the range 5 to 30
-				if (!isNaN(inputValue) && inputValue >= 5 && inputValue <= 30) {
-					setLayouts((prevLayouts) => ({
-						...prevLayouts,
-						[day]: prevLayouts[day].map((box) =>
-							box.i === boxId
-								? { ...box, temperature: temperatureInputs[boxId] }
-								: box,
-						),
-					}));
-					setEditableBoxes({});
-				} else {
-					if (event.target.closest(".box")) {
-					} else {
-						alert("Please enter a number between 5 and 30.");
-					}
-				}
-			}
-			return;
-		} else if (isResizingOrDragging) {
-			// Ignore the click if a resize or drag event is in progress
-			return;
-		} else if (event.target.closest(".box")) {
-			// If the click happened inside a box, do nothing
-			return;
-		}
+          // Check if input is a number and within the range 5 to 30
+          if (!isNaN(inputValue) && inputValue >= 5 && inputValue <= 30) {
+            setLayouts((prevLayouts) => ({
+              ...prevLayouts,
+              [day]: prevLayouts[day].map((box) =>
+                box.i === boxId ? { ...box, temperature: temperatureInputs[boxId] } : box
+              )
+            }));
+            setEditableBoxes({})
+          }
 
-		const container = event.currentTarget;
-		const rect = container.getBoundingClientRect();
-		const xPosition = event.clientX - rect.left;
-		const yPosition =
-			(event.clientY - rect.top + container.scrollTop) / (rowHeight + 10);
-		const rowIndex = Math.floor(yPosition);
-		if (rowIndex >= 24 * 4) return; // Ignore clicks below the 24th row
-		const dayIndex = Math.floor(xPosition / (rect.width / daysOfWeek.length));
-		const day = daysOfWeek[dayIndex];
-		const newBoxId = generateNewBoxId(day, layouts);
-		let newBoxLayout;
-		if (rowIndex > 92) {
-			newBoxLayout = {
-				i: newBoxId,
-				x: 0,
-				y: rowIndex - (4 - (96 - rowIndex)),
-				w: 1,
-				h: 4,
-				minW: 1,
-				maxW: 2,
-				minH: 4,
-				maxH: 24 * 4,
-				temperature: null,
-			};
-		} else {
-			newBoxLayout = {
-				i: newBoxId,
-				x: 0,
-				y: rowIndex - 1,
-				w: 1,
-				h: 4,
-				minW: 1,
-				maxW: 2,
-				minH: 4,
-				maxH: 24 * 4,
-				temperature: null,
-			};
-		}
+          else {
+            alert('Please enter a number between 5 and 30.');
+          }
 
-		setLayouts((prevLayouts) => ({
-			...prevLayouts,
-			[day]: [...prevLayouts[day], newBoxLayout],
-		}));
+        }
+        return
+      }
+
+      else if (isResizingOrDragging) {
+        // Ignore the click if a resize or drag event is in progress
+        return;
+      }
+
+      else if (event.target.closest('.box')) {
+        // If the click happened inside a box, do nothing
+        return;
+      }
+
+      const container = event.currentTarget;
+      const rect = container.getBoundingClientRect();
+      const xPosition = event.clientX - rect.left;
+      const yPosition = (event.clientY - rect.top + container.scrollTop) / (rowHeight + 10);
+      const rowIndex = Math.floor(yPosition);
+      if (rowIndex >= 24*4) return; // Ignore clicks below the 24th row
+      const dayIndex = Math.floor(xPosition / (rect.width / daysOfWeek.length));
+      const day = daysOfWeek[dayIndex];
+      const newBoxId = generateNewBoxId(day, layouts);
+      let newBoxLayout
+      if(rowIndex<=0){
+        return
+      }
+      if(rowIndex>92){
+        newBoxLayout = { i: newBoxId, x: 0, y: rowIndex-(4-(96-rowIndex)), w: 1, h: 4, minW: 1, maxW: 2, minH: 4, maxH: 24*4, temperature: null };
+      }
+      else{
+        newBoxLayout = { i: newBoxId, x: 0, y: rowIndex-1, w: 1, h: 4, minW: 1, maxW: 2, minH: 4, maxH: 24*4, temperature: null };
+      }
+      
+      setLayouts((prevLayouts) => ({
+        ...prevLayouts,
+        [day]: [...prevLayouts[day], newBoxLayout]
+      }));
 
 		// Focus the input after adding the box
 		setTimeout(() => {
