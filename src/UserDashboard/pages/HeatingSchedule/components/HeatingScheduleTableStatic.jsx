@@ -13,7 +13,7 @@ function HeatingScheduleTableStatic({ locationDetails, props }) {
 		"Saturday",
 		"Sunday",
 	];
-	const rowHeight = 20; // Each row represents 70 pixels
+	const rowHeight = 7.3; // Each row represents 20 pixels
 
 	// Helper function to convert time to units
 	const convertTimeToUnits = (time) => {
@@ -25,12 +25,14 @@ function HeatingScheduleTableStatic({ locationDetails, props }) {
 		return hours * 4 + minutes / 15;
 	};
 
+	// Convert the times in the data
 	locationDetails = locationDetails.days.map((item) => ({
 		...item,
 		from: convertTimeToUnits(item.from),
 		to: convertTimeToUnits(item.to),
 	}));
 
+	// Group data by day
 	let groupedData = locationDetails?.reduce((acc, obj) => {
 		// If the day key doesn't exist, create it
 		if (!acc[obj.day]) {
@@ -45,10 +47,10 @@ function HeatingScheduleTableStatic({ locationDetails, props }) {
 	const initialLayouts = {
 		Monday: groupedData[1].map((item, index) => ({
 			w: 1,
-			h: 24,
-			x: 1,
-			y: 0,
-			i: "box-Monday-2",
+			h: item.to - item.from,
+			x: 0,
+			y: item.from,
+			i: `box-Monday-${index + 1}`,
 			minW: 1,
 			maxW: 2,
 			minH: 1,
@@ -59,10 +61,10 @@ function HeatingScheduleTableStatic({ locationDetails, props }) {
 		})),
 		Tuesday: groupedData[2].map((item, index) => ({
 			w: 1,
-			h: 24,
-			x: 1,
-			y: 0,
-			i: "box-Tuesday-2",
+			h: item.to - item.from,
+			x: 0,
+			y: item.from,
+			i: `box-Tuesday-${index + 1}`,
 			minW: 1,
 			maxW: 2,
 			minH: 1,
@@ -73,10 +75,10 @@ function HeatingScheduleTableStatic({ locationDetails, props }) {
 		})),
 		Wednesday: groupedData[3].map((item, index) => ({
 			w: 1,
-			h: 24,
-			x: 1,
-			y: 0,
-			i: "box-Wednesday-2",
+			h: item.to - item.from,
+			x: 0,
+			y: item.from,
+			i: `box-Wednesday-${index + 1}`,
 			minW: 1,
 			maxW: 2,
 			minH: 1,
@@ -87,10 +89,10 @@ function HeatingScheduleTableStatic({ locationDetails, props }) {
 		})),
 		Thursday: groupedData[4].map((item, index) => ({
 			w: 1,
-			h: 24,
-			x: 1,
-			y: 0,
-			i: "box-Thursday-2",
+			h: item.to - item.from,
+			x: 0,
+			y: item.from,
+			i: `box-Thursday-${index + 1}`,
 			minW: 1,
 			maxW: 2,
 			minH: 1,
@@ -101,10 +103,10 @@ function HeatingScheduleTableStatic({ locationDetails, props }) {
 		})),
 		Friday: groupedData[5].map((item, index) => ({
 			w: 1,
-			h: 24,
-			x: 1,
-			y: 0,
-			i: "box-Friday-2",
+			h: item.to - item.from,
+			x: 0,
+			y: item.from,
+			i: `box-Friday-${index + 1}`,
 			minW: 1,
 			maxW: 2,
 			minH: 1,
@@ -115,10 +117,10 @@ function HeatingScheduleTableStatic({ locationDetails, props }) {
 		})),
 		Saturday: groupedData[6].map((item, index) => ({
 			w: 1,
-			h: 24,
-			x: 1,
-			y: 0,
-			i: "box-Saturday-2",
+			h: item.to - item.from,
+			x: 0,
+			y: item.from,
+			i: `box-Saturday-${index + 1}`,
 			minW: 1,
 			maxW: 2,
 			minH: 1,
@@ -129,10 +131,10 @@ function HeatingScheduleTableStatic({ locationDetails, props }) {
 		})),
 		Sunday: groupedData[7].map((item, index) => ({
 			w: 1,
-			h: 24,
-			x: 1,
-			y: 0,
-			i: "box-Sunday-2",
+			h: item.to - item.from,
+			x: 0,
+			y: item.from,
+			i: `box-Sunday-${index + 1}`,
 			minW: 1,
 			maxW: 2,
 			minH: 1,
@@ -180,6 +182,7 @@ function HeatingScheduleTableStatic({ locationDetails, props }) {
 			return "#0BAAC9";
 		}
 	};
+
 	const timeLabels = Array.from({ length: 24 * 4 }, (_, index) => {
 		const totalMinutes = index * 15;
 		const hours = Math.floor(totalMinutes / 60);
@@ -198,9 +201,7 @@ function HeatingScheduleTableStatic({ locationDetails, props }) {
 				}}
 			>
 				{isFullHour
-					? `${hours.toString().padStart(2, "0")}:${minutes
-							.toString()
-							.padStart(2, "0")}`
+					? `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}`
 					: ""}
 			</div>
 		);
@@ -208,9 +209,7 @@ function HeatingScheduleTableStatic({ locationDetails, props }) {
 
 	return (
 		<div
-			className={`flex flex-col gap-4 ${
-				props?.noHeading ? "w-[98%]" : "w-full"
-			} px-2`}
+			className={`flex flex-col gap-4 ${props?.noHeading ? "w-[98%]" : "w-full"} px-2`}
 		>
 			{!props?.noHeading && (
 				<h3 className="text-[16px] text-gray-500 font-semibold">
@@ -218,7 +217,7 @@ function HeatingScheduleTableStatic({ locationDetails, props }) {
 				</h3>
 			)}
 
-			<div className="mb-10">
+			<div className="">
 				<div
 					style={{
 						display: "flex",
@@ -247,21 +246,8 @@ function HeatingScheduleTableStatic({ locationDetails, props }) {
 					))}
 				</div>
 				<div style={{ display: "flex", zIndex: "10" }}>
-					<div style={{ width: "60px" }}>
-						{Array.from({ length: 24 }).map((_, index) => (
-							<div
-								key={index}
-								style={{
-									height: `${rowHeight}px`,
-									margin: "4px 0",
-									display: "flex",
-									alignItems: "flex-start",
-									justifyContent: "flex-start",
-								}}
-							>
-								{`${index.toString().padStart(2, "0")}:00`}
-							</div>
-						))}
+					<div style={{ width: "60px" }} className=" pt-1">
+						{timeLabels}
 					</div>
 					<div
 						style={{
@@ -274,9 +260,9 @@ function HeatingScheduleTableStatic({ locationDetails, props }) {
 						}}
 					>
 						<div
-							className={`  absolute top-[18px] left-0 bottom-0 right-0 w-full h-full flex flex-col gap-[22px] z-10`}
+							className={`  absolute top-[16px] left-0 bottom-0 right-0 w-full h-full flex flex-col gap-[9px] z-10`}
 						>
-							{Array.from({ length: 24 }).map((_, index) => (
+							{Array.from({ length: 25 * 4 }).map((_, index) => (
 								<div
 									key={index}
 									className="w-full border-t-2 border-[#E8E8E8] border-dotted z-10"
@@ -298,7 +284,7 @@ function HeatingScheduleTableStatic({ locationDetails, props }) {
 									compactType={null}
 									layout={initialLayouts[day]}
 									cols={1}
-									rowHeight={14}
+									rowHeight={1.5}
 									width={150}
 									isDraggable={false}
 									isResizable={false}
@@ -306,7 +292,7 @@ function HeatingScheduleTableStatic({ locationDetails, props }) {
 									{initialLayouts[day].map((box) => (
 										<div
 											key={box.i}
-											className={`box relative w-full !important rounded-md z-10 ${
+											className={`box relative w-full rounded-md z-10 ${
 												box.temperature === false ? "border border-red-500" : ""
 											}`}
 											style={{

@@ -9,12 +9,18 @@ import HeatingScheduleComparison from "./HeatingScheduleComparison";
 import HeatingScheduleTableStatic from "../../HeatingSchedule/components/HeatingScheduleTableStatic";
 import { Spinner } from "flowbite-react";
 
-export function ViewRoomScheduleModal({ openModal, handleOpenModal, algo, heatingScheduleId }) {
+export function ViewRoomScheduleModal({
+	openModal,
+	handleOpenModal,
+	algo,
+	heatingScheduleId,
+	roomName,
+}) {
 	const [switch1, setSwitch1] = useState(false);
 	const [isChecked, setIsChecked] = useState(false);
 	const [locationDetails, setLocationDetails] = useState(null);
 	const token = localStorage.getItem("token");
-	const [loading, setloading] = useState(false)
+	const [loading, setloading] = useState(false);
 
 	const handleCheckboxChange = () => {
 		setIsChecked(!isChecked);
@@ -42,7 +48,7 @@ export function ViewRoomScheduleModal({ openModal, handleOpenModal, algo, heatin
 				.catch((error) => console.error("Error:", error))
 				.finally(() => setloading(false)); // Corrected here
 		}
-	}, [heatingScheduleId]);	
+	}, [heatingScheduleId]);
 
 	return (
 		<>
@@ -60,7 +66,7 @@ export function ViewRoomScheduleModal({ openModal, handleOpenModal, algo, heatin
 				{locationDetails && (
 					<>
 						<Modal.Header className=" text-lg text-gray-900 [&>*]:font-semibold">
-							Room123
+							{roomName}
 						</Modal.Header>
 						<Modal.Body className="p-5 overflow-hidden  h-auto">
 							<div className=" flex items-start">
@@ -75,34 +81,46 @@ export function ViewRoomScheduleModal({ openModal, handleOpenModal, algo, heatin
 										</div>
 										<div className="flex flex-col gap-2">
 											<p className=" font-semibold">Child Safety</p>
-											<p className="">{locationDetails.allowDeviceOverride ? "Yes" : "No"}</p>
-										</div>
-										<div className="flex flex-col gap-2">
-											<p className=" font-semibold flex items-center gap-1">
-												Minimum Temperature
-												<Tooltip
-													className="px-3 py-1.5 text-center max-w-96"
-													content="The minimum temperature that can be manually adjusted on the thermometer by physical means."
-													style="light"
-												>
-													<IoInformationCircleOutline color="#6B7280" />
-												</Tooltip>
+											<p className="">
+												{locationDetails.allowDeviceOverride ? "No" : "Yes"}
 											</p>
-											<p className="">{locationDetails.deviceOverrideTemperatureMin}°C</p>
 										</div>
-										<div className="flex flex-col gap-2">
-											<p className=" font-semibold flex items-center gap-1">
-												Maximum Temperature
-												<Tooltip
-													className="px-3 py-1.5 text-center max-w-96"
-													content="The maximum temperature that can be manually adjusted on the thermometer by physical means."
-													style="light"
-												>
-													<IoInformationCircleOutline color="#6B7280" />
-												</Tooltip>
-											</p>
-											<p className="">{locationDetails.deviceOverrideTemperatureMax}°C</p>
-										</div>
+
+										{locationDetails.allowOverride && (
+											<>
+												<div className="flex flex-col gap-2">
+													<p className="font-semibold flex items-center gap-1">
+														Minimum Temperature
+														<Tooltip
+															className="px-3 py-1.5 text-center max-w-96"
+															content="The minimum temperature that can be manually adjusted on the thermometer by physical means."
+															style="light"
+														>
+															<IoInformationCircleOutline color="#6B7280" />
+														</Tooltip>
+													</p>
+													<p className="">
+														{locationDetails.deviceOverrideTemperatureMin}°C
+													</p>
+												</div>
+												<div className="flex flex-col gap-2">
+													<p className="font-semibold flex items-center gap-1">
+														Maximum Temperature
+														<Tooltip
+															className="px-3 py-1.5 text-center max-w-96"
+															content="The maximum temperature that can be manually adjusted on the thermometer by physical means."
+															style="light"
+														>
+															<IoInformationCircleOutline color="#6B7280" />
+														</Tooltip>
+													</p>
+													<p className="">
+														{locationDetails.deviceOverrideTemperatureMax}°C
+													</p>
+												</div>
+											</>
+										)}
+
 										<div className="flex flex-col gap-2">
 											<p className=" font-semibold  flex items-center gap-1">
 												Apply Algorithm?
@@ -133,12 +151,14 @@ export function ViewRoomScheduleModal({ openModal, handleOpenModal, algo, heatin
 													className="sr-only"
 												/>
 												<div
-													className={`box block h-5 !w-10 rounded-full ${isChecked ? "bg-primary" : " bg-gray-200"
-														}`}
+													className={`box block h-5 !w-10 rounded-full ${
+														isChecked ? "bg-primary" : " bg-gray-200"
+													}`}
 												></div>
 												<div
-													className={`absolute left-1 top-[2px] flex h-4 w-4 items-center justify-center rounded-full bg-white transition ${isChecked ? "translate-x-full" : ""
-														}`}
+													className={`absolute left-1 top-[2px] flex h-4 w-4 items-center justify-center rounded-full bg-white transition ${
+														isChecked ? "translate-x-full" : ""
+													}`}
 												></div>
 											</div>
 											{!isChecked ? (
@@ -154,10 +174,12 @@ export function ViewRoomScheduleModal({ openModal, handleOpenModal, algo, heatin
 									</div>
 									{!isChecked ? (
 										<div className="max-h-[400px] overflow-y-auto overflow-x-hidden">
-											{locationDetails && (<HeatingScheduleTableStatic
-												locationDetails={locationDetails}
-											// noHeading={true}
-											/>)}
+											{locationDetails && (
+												<HeatingScheduleTableStatic
+													locationDetails={locationDetails}
+													// noHeading={true}
+												/>
+											)}
 										</div>
 									) : (
 										<div className="max-h-[400px] overflow-y-auto overflow-x-hidden">

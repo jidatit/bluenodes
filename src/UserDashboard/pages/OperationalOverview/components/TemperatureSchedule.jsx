@@ -108,37 +108,34 @@ const parseTimeToPercentage = (timestamp) => {
 };
 
 const TemperatureSchedule = ({ floorId }) => {
-
-
-
 	const convertUTCToGermanTime = (utcDateTimeString) => {
 		const date = new Date(utcDateTimeString);
 
 		// Manually format the date and time in German timezone
 		const options = {
-			timeZone: 'Europe/Berlin',
-			year: 'numeric',
-			month: '2-digit',
-			day: '2-digit',
-			hour: '2-digit',
-			minute: '2-digit',
-			second: '2-digit',
+			timeZone: "Europe/Berlin",
+			year: "numeric",
+			month: "2-digit",
+			day: "2-digit",
+			hour: "2-digit",
+			minute: "2-digit",
+			second: "2-digit",
 			hour12: false,
 		};
 
 		// Extract year, month, day, hour, minute, second using Intl.DateTimeFormat
-		const dateFormatter = new Intl.DateTimeFormat('de-DE', options);
+		const dateFormatter = new Intl.DateTimeFormat("de-DE", options);
 		const parts = dateFormatter.formatToParts(date);
 
-		const year = parts.find(part => part.type === 'year').value;
-		const month = parts.find(part => part.type === 'month').value;
-		const day = parts.find(part => part.type === 'day').value;
-		const hour = parts.find(part => part.type === 'hour').value;
-		const minute = parts.find(part => part.type === 'minute').value;
-		const second = parts.find(part => part.type === 'second').value;
+		const year = parts.find((part) => part.type === "year").value;
+		const month = parts.find((part) => part.type === "month").value;
+		const day = parts.find((part) => part.type === "day").value;
+		const hour = parts.find((part) => part.type === "hour").value;
+		const minute = parts.find((part) => part.type === "minute").value;
+		const second = parts.find((part) => part.type === "second").value;
 
 		// Extract milliseconds from the original UTC string
-		const milliseconds = utcDateTimeString.split('.')[1].replace('Z', '');
+		const milliseconds = utcDateTimeString.split(".")[1].replace("Z", "");
 
 		// Construct the final date-time string in ISO format
 		const formattedDateTime = `${year}-${month}-${day}T${hour}:${minute}:${second}.${milliseconds}Z`;
@@ -146,26 +143,27 @@ const TemperatureSchedule = ({ floorId }) => {
 		return formattedDateTime;
 	};
 
-
 	const processRoomsData = (roomsData) => {
 		return roomsData.map((room) => {
 			if (room.heatingSchedule) {
-				room.heatingSchedule.currentTargetTemperature.createdAt = convertUTCToGermanTime(room.heatingSchedule.currentTargetTemperature.createdAt);
+				room.heatingSchedule.currentTargetTemperature.createdAt =
+					convertUTCToGermanTime(
+						room.heatingSchedule.currentTargetTemperature.createdAt,
+					);
 			}
 
 			if (room.manuallySetTemperatures) {
-				room.manuallySetTemperatures = room.manuallySetTemperatures.map((temp) => {
-					temp.createdAt = convertUTCToGermanTime(temp.createdAt);
-					return temp;
-				});
+				room.manuallySetTemperatures = room.manuallySetTemperatures.map(
+					(temp) => {
+						temp.createdAt = convertUTCToGermanTime(temp.createdAt);
+						return temp;
+					},
+				);
 			}
 
 			return room;
 		});
 	};
-
-
-
 
 	const [type, setType] = useState("Resident");
 	const [openModal, setOpenModal] = useState(false);
@@ -177,6 +175,7 @@ const TemperatureSchedule = ({ floorId }) => {
 	const [RoomsDetail, setRoomsDetail] = useState([]);
 	const [locationDetails, setLocationDetails] = useState([]);
 	const [scheduleDetails, setscheduleDetails] = useState([]);
+	const [roomName, setroomName] = useState("");
 
 	const handleOpenModal = (roomSchedId) => {
 		setSelectedRoomSchedId(roomSchedId);
@@ -259,7 +258,7 @@ const TemperatureSchedule = ({ floorId }) => {
 				},
 			);
 			const data = await resp.json();
-			const pdata = processRoomsData(data)
+			const pdata = processRoomsData(data);
 			setRoomsDetail(pdata);
 		} catch (error) {
 			console.log(error);
@@ -298,10 +297,11 @@ const TemperatureSchedule = ({ floorId }) => {
 							</div>
 							<Tooltip
 								className={`px-2 py-1.5 text-center max-w-96`}
-								content={`Current Temp: ${room.roomTemperature
-									? `${room.roomTemperature}°C`
-									: "Unavailable"
-									}`}
+								content={`Current Temp: ${
+									room.roomTemperature
+										? `${room.roomTemperature}°C`
+										: "Unavailable"
+								}`}
 								style="light"
 							>
 								<div className="flex items-center gap-1 text-xl">
@@ -342,13 +342,17 @@ const TemperatureSchedule = ({ floorId }) => {
 									onClick={() => {
 										handleOpenModal(
 											room.heatingSchedule ? room.heatingSchedule.id : null,
-										); setSelectedRoomAlgo(room.algorithm && room.algorithm ? true : false)
-									}
-									} // Pass the room ID here
-									className={`hover:!bg-transparent hover:opacity-80 border-none text-primary bg-transparent ${room.heatingSchedule !== null && room.heatingSchedule.id
-										? "text-primary"
-										: "text-gray-500"
-										} pr-2 py-0 [&>*]:p-0 focus:ring-transparent`}
+										);
+										setSelectedRoomAlgo(
+											room.algorithm && room.algorithm ? true : false,
+										);
+										setroomName(room.name);
+									}} // Pass the room ID here
+									className={`hover:!bg-transparent hover:opacity-80 border-none text-primary bg-transparent ${
+										room.heatingSchedule !== null && room.heatingSchedule.id
+											? "text-primary"
+											: "text-gray-500"
+									} pr-2 py-0 [&>*]:p-0 focus:ring-transparent`}
 								>
 									View Schedule
 								</Button>
@@ -381,7 +385,7 @@ const TemperatureSchedule = ({ floorId }) => {
 							</div>
 						</div>
 						{room.manuallySetTemperatures &&
-							room.manuallySetTemperatures.length > 0 ? (
+						room.manuallySetTemperatures.length > 0 ? (
 							<div className="w-full relative px-4">
 								{/* Render dots for manual changes outside the h-4 container */}
 								<div className="w-full relative">
@@ -464,9 +468,10 @@ const TemperatureSchedule = ({ floorId }) => {
 													element.targetTemperature,
 												),
 												left: `${parseTimeToPercentage(element.from)}%`,
-												width: `calc(${parseTimeToPercentage(element.to) -
+												width: `calc(${
+													parseTimeToPercentage(element.to) -
 													parseTimeToPercentage(element.from)
-													}% - 0.275rem)`,
+												}% - 0.275rem)`,
 												marginLeft: index === 0 ? "0" : "0.1rem",
 												marginRight:
 													index === room.heatingSchedule.currentDay.length - 1
@@ -486,9 +491,10 @@ const TemperatureSchedule = ({ floorId }) => {
 										<div
 											key={`separator-parent-${index}`}
 											style={{
-												width: `calc(${parseTimeToPercentage(element.to) -
+												width: `calc(${
+													parseTimeToPercentage(element.to) -
 													parseTimeToPercentage(element.from)
-													}% - 0.275rem)`,
+												}% - 0.275rem)`,
 											}}
 											className="flex justify-start"
 										>
@@ -510,9 +516,10 @@ const TemperatureSchedule = ({ floorId }) => {
 										<React.Fragment key={index}>
 											<span
 												style={{
-													width: `calc(${parseTimeToPercentage(element.to) -
+													width: `calc(${
+														parseTimeToPercentage(element.to) -
 														parseTimeToPercentage(element.from)
-														}%)`,
+													}%)`,
 													marginLeft: index === 0 ? "-16px" : "0",
 												}}
 												key={`time-${index}`}
@@ -533,9 +540,10 @@ const TemperatureSchedule = ({ floorId }) => {
 									{room.heatingSchedule.currentDay.map((element, index) => (
 										<span
 											style={{
-												width: `calc(${parseTimeToPercentage(element.to) -
+												width: `calc(${
+													parseTimeToPercentage(element.to) -
 													parseTimeToPercentage(element.from)
-													}%)`,
+												}%)`,
 												color: handleTextColour(element.targetTemperature),
 											}}
 											key={`temp-${index}`}
@@ -553,19 +561,21 @@ const TemperatureSchedule = ({ floorId }) => {
 								No heating schedule for this room
 							</p>
 						)}
-
 					</div>
 				))
 			) : (
 				<p className="text-center text-gray-600">No rooms available</p>
 			)}
 
-			{selectedRoomSchedId && (<ViewRoomScheduleModal
-				openModal={openModal}
-				handleOpenModal={handleOpenModal}
-				algo={selectedRoomAlgo}
-				heatingScheduleId={selectedRoomSchedId}
-			/>)}
+			{selectedRoomSchedId && (
+				<ViewRoomScheduleModal
+					openModal={openModal}
+					handleOpenModal={handleOpenModal}
+					algo={selectedRoomAlgo}
+					heatingScheduleId={selectedRoomSchedId}
+					roomName={roomName}
+				/>
+			)}
 
 			<EditHeatingProgramModal
 				fetchFloorDetails={getFloorDetails}
@@ -574,7 +584,6 @@ const TemperatureSchedule = ({ floorId }) => {
 				room={selectedRoom}
 				updateReplaced={updateReplacedF}
 			/>
-
 		</>
 	);
 };
