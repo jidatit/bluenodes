@@ -22,7 +22,8 @@ const OverviewCard = ({ formData }) => {
 	const [openDeleteModal, setOpenDeleteModal] = useState(false);
 	const [openAlertDeleteModal, setOpenAlertDeleteModal] = useState(false);
 	const [buildError, setBuildError] = useState(true);
-
+	const [accordianOpened,setaccordianOpened]=useState(false);
+	const [accordianOpened2,setaccordianOpened2]=useState(false);
 	const handleDelete = () => {
 		setOpenDeleteModal(false);
 		if (formData.children.some((child) => child.roomsAssigned !== 0)) {
@@ -118,7 +119,7 @@ const OverviewCard = ({ formData }) => {
 						</div>
 						<div className="w-full bg-[#a3a6ad] opacity-40 mt-3 mb-3 h-[1px]"></div>
 						<div className="w-full flex flex-row justify-start items-center">
-							<Accordion className="w-full border-none" collapseAll>
+							<Accordion onClick={()=>setaccordianOpened(true)} className="w-full border-none" collapseAll>
 								<Accordion.Panel>
 									<Accordion.Title className="p-2 mb-1 flex-row-reverse items-center justify-end gap-1 border-none hover:bg-white focus:ring-none focus:ring-white bg-white focus:bg-white">
 										<p className="text-sm text-gray-900 font-bold">
@@ -130,7 +131,7 @@ const OverviewCard = ({ formData }) => {
 									<Accordion.Content className="rounded-lg p-[16px]">
 										<div className="flex flex-row justify-between gap-4 items-start w-full">
 											<div className="flex flex-col justify-start items-start w-full">
-												<Accordion className="w-full border-none" collapseAll>
+												<Accordion onClick={()=>setaccordianOpened2(true)} className="w-full border-none" collapseAll>
 													{formData.children.map((child, index) => (
 														<Accordion.Panel key={index}>
 															<Accordion.Title className="w-full p-2 mb-1 flex-row-reverse items-center justify-end gap-3 border-none hover:bg-white focus:ring-none focus:ring-white bg-white focus:bg-white [&>h2]:w-full">
@@ -170,7 +171,8 @@ const OverviewCard = ({ formData }) => {
 															<Accordion.Content className="px-4 pt-0 pb-4 border-none">
 																<div className="w-full bg-[#a3a6ad] opacity-40 mt-3 mb-5 h-[1px]"></div>
 																<div className="px-7 flex flex-col gap-5 w-full">
-																	<TemperatureSchedule floorId={child.id} />
+	
+																	<TemperatureSchedule accordianOpened2={accordianOpened2} accordianOpened={accordianOpened} floorId={child.id} />
 																</div>
 															</Accordion.Content>
 														</Accordion.Panel>

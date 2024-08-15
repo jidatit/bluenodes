@@ -52,6 +52,7 @@ const HeatingProgramEntity = ({
 	const [showToast, setShowToast] = useState(false);
 	const [toastMessage, setToastMessage] = useState("");
 	const [isSuccess, setIsSuccess] = useState(true);
+	const [accordianOpened, setaccordianOpened] = useState(true);
 
 	const handleDelete = async () => {
 		fetchDetails();

@@ -107,7 +107,7 @@ const parseTimeToPercentage = (timestamp) => {
 	}
 };
 
-const TemperatureSchedule = ({ floorId }) => {
+const TemperatureSchedule = ({ floorId,accordianOpened,accordianOpened2 }) => {
 	const convertUTCToGermanTime = (utcDateTimeString) => {
 		const date = new Date(utcDateTimeString);
 
@@ -181,10 +181,14 @@ const TemperatureSchedule = ({ floorId }) => {
 		setSelectedRoomSchedId(roomSchedId);
 		setOpenModal(!openModal);
 	};
-
+	let check = null;
 	const handleOpenEditModal = (room) => {
 		setOpenEditModal(!openEditModal);
 		setSelectedRoom(room);
+		console.log(floorId)
+		check=true;
+		
+
 	};
 	const fetchHeatingScheduleForRoom = async (heatingScheduleId) => {
 		try {
@@ -205,13 +209,20 @@ const TemperatureSchedule = ({ floorId }) => {
 		}
 	};
 	// const [shouldFetch, setShouldFetch] = useState(false);
-	let check = null;
-	const updateReplacedF = (update) => {
+	const [fetch1, setfetch1] = useState(false)
+	const updateReplacedF =async () => {
 		// check = update;
-		getFloorDetails(floorId);
+		await getFloorDetails(floorId);
+setfetch1(true)
 		// fetchHeatingScheduleForRoom();
-		fetchSchedules();
+		console.log("aas");
+		await fetchSchedules();
 	};
+
+useEffect(()=>{
+	getFloorDetails(floorId);
+	fetchSchedules();
+},[fetch1])
 
 	const fetchSchedules = async () => {
 		if (RoomsDetail.length > 0) {
@@ -227,6 +238,7 @@ const TemperatureSchedule = ({ floorId }) => {
 				}),
 			);
 			setscheduleDetails(updatedRooms);
+			console.log("accordian open twice")
 		}
 	};
 
@@ -236,9 +248,10 @@ const TemperatureSchedule = ({ floorId }) => {
 	// 		setShouldFetch(false);
 	// 	}
 	// }, [shouldFetch]);
-	useEffect(() => {
-		fetchSchedules();
-	}, [RoomsDetail]);
+	// useEffect(() => {
+	// 	fetchSchedules();
+	
+	// }, [RoomsDetail]);
 
 	const getFloorDetails = async (id) => {
 		try {
@@ -259,16 +272,35 @@ const TemperatureSchedule = ({ floorId }) => {
 		}
 	};
 
-	useEffect(() => {
-		if (floorId) {
-			getFloorDetails(floorId);
-		}
-	}, [floorId]);
+	// useEffect(() => {
+	// 	if (floorId) {
+	// 		getFloorDetails(floorId);
+	// 	}
+	// }, [floorId]);
 
 	if (check !== null && check) {
 		getFloorDetails();
 		fetchSchedules();
 	}
+	useEffect(() => {
+		
+					getFloorDetails(floorId);
+					console.log("ac",accordianOpened)
+				
+				
+				
+	}, [accordianOpened]);
+
+	useEffect(() => {
+
+	
+	fetchSchedules();
+	
+}, [accordianOpened2]);
+
+const testf =()=>{
+	console.log("Test")
+}
 
 	return (
 		<>
@@ -577,6 +609,9 @@ const TemperatureSchedule = ({ floorId }) => {
 				handleOpenModal={handleOpenEditModal}
 				room={selectedRoom}
 				updateReplaced={updateReplacedF}
+				fetchSchedules={fetchSchedules}
+				floorId={floorId}
+				testf={testf}
 			/>
 		</>
 	);

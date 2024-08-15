@@ -149,12 +149,24 @@ export function CreateHeatingModal({ openModal, handleOpenModal, onCreate }) {
     validateField(id, value);
 
     // Check if the change is from the radio button groups
-    if (id === "childSafetyYes" || id === "childSafetyNo") {
-      setFormData((prev) => ({
-        ...prev,
-        childSafety: value,
-      }));
-    } else if (id === "applyAlgorithmYes" || id === "applyAlgorithmNo") {
+    if (id === "childSafetyYes") {
+			setFormData((prev) => ({
+				...prev,
+				childSafety: value,
+				minTemp: "min",
+				maxTemp: "max",
+				
+			}));
+			console.log("min",formData.minTemp)
+		} else if (id === "childSafetyNo") {
+			setFormData((prev) => ({
+				...prev,
+				childSafety: value,
+				minTemp:"",
+				maxTemp:"",
+			}));
+			
+		} else if (id === "applyAlgorithmYes" || id === "applyAlgorithmNo") {
       setFormData((prev) => ({
         ...prev,
         applyAlgorithm: value,

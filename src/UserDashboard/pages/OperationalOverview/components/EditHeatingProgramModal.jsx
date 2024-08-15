@@ -18,13 +18,16 @@ const EditHeatingProgramModal = ({
 	room,
 	fetchFloorDetails,
 	updateReplaced,
+	fetchSchedules,
+	floorId,
+testf
 }) => {
 	const [selectedAction, setSelectedAction] = useState("");
 	const [selectedProgram, setSelectedProgram] = useState("");
 	const [showError, setShowError] = useState(false);
 	const [showConfirmModal, setShowConfirmModal] = useState(false);
 	const [data, setData] = useState([]);
-	const { createdHeatingScheduleNames } = useHeatingSchedule()
+	const { createdHeatingScheduleNames } = useHeatingSchedule();
 
 	const handleCloseModal = () => {
 		handleOpenModal();
@@ -142,6 +145,7 @@ const EditHeatingProgramModal = ({
 		applyAlgorithm: "",
 	});
 	const [locationDetails, setLocationDetails] = useState([]);
+	const [formDataApi,setFormDataApi]= useState()
 	const fetchHeatingScheduleForRoom = async (heatingScheduleId) => {
 		try {
 			const resp = await fetch(
@@ -156,10 +160,11 @@ const EditHeatingProgramModal = ({
 			const data = await resp.json();
 			// console.log("Haeting", data);
 			setLocationDetails(data);
+			setFormDataApi(data);
 			setFormData((prev) => ({
 				...prev,
 				programName: data.templateName,
-				childSafety: data.allowDeviceOverride ? "Yes" : "No",
+				childSafety: data.allowDeviceOverride ? "No" : "Yes",
 				minTemp: data.deviceOverrideTemperatureMin,
 				maxTemp: data.deviceOverrideTemperatureMax,
 				applyAlgorithm: room.algorithm ? "Yes" : "No",
@@ -219,12 +224,13 @@ const EditHeatingProgramModal = ({
 				newErrors.maxTemp = errors.maxTempLowerThanMinTemp;
 			}
 
-			const programName = formData.programName
-			createdHeatingScheduleNames && createdHeatingScheduleNames.map((name, index) => {
-				if (programName == name) {
-					newErrors.programName = errors.ProgramWithNameAlreadyCreated
-				}
-			})
+			const programName = formData.programName;
+			createdHeatingScheduleNames &&
+				createdHeatingScheduleNames.map((name, index) => {
+					if (programName == name) {
+						newErrors.programName = errors.ProgramWithNameAlreadyCreated;
+					}
+				});
 
 			if (Object.keys(newErrors).length > 0 || !allFieldsFilled) {
 				setErrorMessages(newErrors);
@@ -308,11 +314,23 @@ const EditHeatingProgramModal = ({
 		validateField(id, value);
 
 		// Check if the change is from the radio button groups
-		if (id === "childSafetyYes" || id === "childSafetyNo") {
+		if (id === "childSafetyYes") {
 			setFormData((prev) => ({
 				...prev,
 				childSafety: value,
+				minTemp: "min",
+				maxTemp: "max",
+				
 			}));
+			console.log("yes",formData.minTemp)
+		} else if (id === "childSafetyNo") {
+			setFormData((prev) => ({
+				...prev,
+				childSafety: value,
+				minTemp:formDataApi.deviceOverrideTemperatureMin,
+				maxTemp:formDataApi.deviceOverrideTemperatureMax,
+			}));
+			console.log("no value",formDataApi.deviceOverrideTemperatureMin)
 		} else if (id === "applyAlgorithmYes" || id === "applyAlgorithmNo") {
 			setFormData((prev) => ({
 				...prev,
@@ -357,12 +375,13 @@ const EditHeatingProgramModal = ({
 				allFieldsFilled = false; // Set flag to false if any field is empty
 			}
 		});
-		const programName = formData.programName
-		createdHeatingScheduleNames && createdHeatingScheduleNames.map((name, index) => {
-			if (programName == name) {
-				newErrors.programName = errors.ProgramWithNameAlreadyCreated
-			}
-		})
+		const programName = formData.programName;
+		createdHeatingScheduleNames &&
+			createdHeatingScheduleNames.map((name, index) => {
+				if (programName == name) {
+					newErrors.programName = errors.ProgramWithNameAlreadyCreated;
+				}
+			});
 		// Validate temperature fields
 		const minTemp = parseFloat(formData.minTemp);
 		const maxTemp = parseFloat(formData.maxTemp);
@@ -380,8 +399,7 @@ const EditHeatingProgramModal = ({
 		if (Object.keys(newErrors).length > 0 || !allFieldsFilled) {
 			setErrorMessages(newErrors);
 			return false;
-		}
-		else {
+		} else {
 			return true;
 		}
 		// console.log(formData);
@@ -546,6 +564,7 @@ const EditHeatingProgramModal = ({
 				const respData = await resp.json();
 				if (respData.active) {
 					handleOpenModal();
+					updateReplaced();
 					resetModalState();
 					setIsSuccess(true);
 					setToastMessage(errors.heatingScheduleEditedSuccessfull);
@@ -590,18 +609,18 @@ const EditHeatingProgramModal = ({
 		setFormSubmitted(false);
 		setLayouts({});
 		setFinalScheduleData({});
-		setSelectedAction("")
+		setSelectedAction("");
 	};
 
 	const handleCheckName = () => {
-		const exists = createdHeatingScheduleNames.includes(formData.programName)
+		const exists = createdHeatingScheduleNames.includes(formData.programName);
 		if (exists) {
 			setErrorMessages((prev) => ({
 				...prev,
 				programName: errors.ProgramWithNameAlreadyCreated,
 			}));
 		}
-	}
+	};
 
 	return (
 		<>
@@ -621,29 +640,37 @@ const EditHeatingProgramModal = ({
 								<p>Edit room</p>
 								<p className="font-semibold mt-3 ">Select action</p>
 								<div className="w-full flex mt-2 gap-4 flex-row justify-start items-center">
-									<div onClick={() => handleActionChange("edit-room")} className="flex cursor-pointer flex-row justify-center items-center gap-2">
+									<div
+										onClick={() => handleActionChange("edit-room")}
+										className="flex cursor-pointer flex-row justify-center items-center gap-2"
+									>
 										<Radio
 											id="edit-room"
 											name="action"
 											value="edit-room"
 											checked={selectedAction === "edit-room"}
 											className=" cursor-pointer"
-										// onChange={handleActionChange}
+											// onChange={handleActionChange}
 										/>
 										<Label className=" cursor-pointer" htmlFor="edit-room">
 											Edit room heating schedule
 										</Label>
 									</div>
-									<div onClick={() => handleActionChange("replace-room")} className="flex cursor-pointer flex-row justify-center items-center gap-2">
+									<div
+										onClick={() => handleActionChange("replace-room")}
+										className="flex cursor-pointer flex-row justify-center items-center gap-2"
+									>
 										<Radio
 											id="replace-room"
 											name="action"
 											value="replace-room"
 											checked={selectedAction === "replace-room"}
 											className=" cursor-pointer"
-										// onChange={handleActionChange}
+											// onChange={handleActionChange}
 										/>
-										<Label className=" cursor-pointer" htmlFor="replace-room">Replace program</Label>
+										<Label className=" cursor-pointer" htmlFor="replace-room">
+											Replace program
+										</Label>
 									</div>
 								</div>
 
@@ -799,8 +826,9 @@ const ReplaceProgram = ({
 				<label
 					htmlFor="program"
 					value="Program"
-					className={`mb-2 text-sm font-semibold ${showError ? "text-red-500" : "text-gray-700"
-						}`}
+					className={`mb-2 text-sm font-semibold ${
+						showError ? "text-red-500" : "text-gray-700"
+					}`}
 				>
 					{" "}
 					Headliner{" "}
@@ -815,10 +843,11 @@ const ReplaceProgram = ({
 					<option value="">Please select Program</option>
 					{data.map((program) => (
 						<option
-							className={`block rounded-lg px-4 py-2 text-sm ${program.id === room.heatingSchedule.id
-								? "bg-gray-100 text-gray-400 cursor-not-allowed"
-								: "hover:bg-blue-100 hover:text-blue-700"
-								}`}
+							className={`block rounded-lg px-4 py-2 text-sm ${
+								program.id === room.heatingSchedule.id
+									? "bg-gray-100 text-gray-400 cursor-not-allowed"
+									: "hover:bg-blue-100 hover:text-blue-700"
+							}`}
 							key={program.id}
 							value={program.id}
 							disabled={program.id === room.heatingSchedule.id}

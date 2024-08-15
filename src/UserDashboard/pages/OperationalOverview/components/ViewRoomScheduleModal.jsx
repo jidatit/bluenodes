@@ -86,7 +86,7 @@ export function ViewRoomScheduleModal({
 											</p>
 										</div>
 
-										{locationDetails.allowOverride && (
+										{locationDetails.allowDeviceOverride && (
 											<>
 												<div className="flex flex-col gap-2">
 													<p className="font-semibold flex items-center gap-1">
