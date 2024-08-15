@@ -69,7 +69,7 @@ function HeatingSchedule({
 						minW: 1,
 						maxW: 2,
 						minH: 1,
-						maxH: 24,
+						maxH: 96,
 						moved: false,
 						static: false,
 						temperature: item.targetTemperature.toString(),
@@ -83,7 +83,7 @@ function HeatingSchedule({
 						minW: 1,
 						maxW: 2,
 						minH: 1,
-						maxH: 24,
+						maxH: 96,
 						moved: false,
 						static: false,
 						temperature: item.targetTemperature.toString(),
@@ -97,7 +97,7 @@ function HeatingSchedule({
 						minW: 1,
 						maxW: 2,
 						minH: 1,
-						maxH: 24,
+						maxH: 96,
 						moved: false,
 						static: false,
 						temperature: item.targetTemperature.toString(),
@@ -111,7 +111,7 @@ function HeatingSchedule({
 						minW: 1,
 						maxW: 2,
 						minH: 1,
-						maxH: 24,
+						maxH: 96,
 						moved: false,
 						static: false,
 						temperature: item.targetTemperature.toString(),
@@ -125,7 +125,7 @@ function HeatingSchedule({
 						minW: 1,
 						maxW: 2,
 						minH: 1,
-						maxH: 24,
+						maxH: 96,
 						moved: false,
 						static: false,
 						temperature: item.targetTemperature.toString(),
@@ -139,7 +139,7 @@ function HeatingSchedule({
 						minW: 1,
 						maxW: 2,
 						minH: 1,
-						maxH: 24,
+						maxH: 96,
 						moved: false,
 						static: false,
 						temperature: item.targetTemperature.toString(),
@@ -153,7 +153,7 @@ function HeatingSchedule({
 						minW: 1,
 						maxW: 2,
 						minH: 1,
-						maxH: 24,
+						maxH: 96,
 						moved: false,
 						static: false,
 						temperature: item.targetTemperature.toString(),
@@ -548,7 +548,6 @@ function HeatingSchedule({
 			const str = boxId;
 			const regex = /^box-(\w+)-\d+$/;
 			const match = str.match(regex);
-			console.log(str)
 
 			if (match) {
 				const day = match[1]; // Extract the day from the first capturing group
