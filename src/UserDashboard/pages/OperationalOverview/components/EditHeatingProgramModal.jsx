@@ -590,7 +590,18 @@ const EditHeatingProgramModal = ({
 		setFormSubmitted(false);
 		setLayouts({});
 		setFinalScheduleData({});
+		setSelectedAction("")
 	};
+
+	const handleCheckName = () => {
+		const exists = createdHeatingScheduleNames.includes(formData.programName)
+		if (exists) {
+			setErrorMessages((prev) => ({
+				...prev,
+				programName: errors.ProgramWithNameAlreadyCreated,
+			}));
+		}
+	}
 
 	return (
 		<>
@@ -603,7 +614,7 @@ const EditHeatingProgramModal = ({
 				{room && (
 					<>
 						<Modal.Header className=" text-lg text-gray-900 [&>*]:font-semibold">
-							Edit - Room {room.id}
+							Edit - Room {room.name}
 						</Modal.Header>
 						<Modal.Body className="p-5 overflow-y-auto h-auto">
 							<div className="w-full flex flex-col justify-center items-start">
@@ -651,6 +662,7 @@ const EditHeatingProgramModal = ({
 															handleChange={handleChange}
 															errorMessages={errorMessages}
 															generalErrorMessage={generalErrorMessage} // Pass general error message to Form1
+															checkName={handleCheckName}
 														/>
 													</div>
 												)}

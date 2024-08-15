@@ -1,3 +1,4 @@
+import axios from "axios";
 import { createContext, useContext, useState, useEffect } from "react";
 
 const AuthContext = createContext();
@@ -7,24 +8,70 @@ export const useAuth = () => {
 };
 
 export const AuthProvider = ({ children }) => {
-	const [token, setToken] = useState(null);
+	const [token, setToken] = useState(localStorage.getItem("token"));
 	const [isAuthenticated, setIsAuthenticated] = useState(false);
-	const [loading, setloading] = useState(true);
+	const [loading, setLoading] = useState(true);
 
-	useEffect(() => {
-		const token = localStorage.getItem("token");
-		if (token) {
-			setToken(token);
-			setIsAuthenticated(true);
+	const isTokenValid = async (token) => {
+		try {
+			const resp = await axios.get(`https://api-dev.blue-nodes.app/dev/smartheating/locations`, {
+				headers: {
+					Authorization: `Bearer ${token}`,
+				},
+			});
+			return resp.status === 200;
+		} catch (error) {
+			console.error("Token validation error:", error.message);
+			return false;
 		}
-		setloading(false);
+	};
+
+	const validateAndSetAuth = async (currentToken) => {
+		if (currentToken) {
+			const valid = await isTokenValid(currentToken);
+			if (valid) {
+				setToken(currentToken);
+				setIsAuthenticated(true);
+			} else {
+				logout();
+			}
+		} else {
+			setIsAuthenticated(false);
+		}
+		setLoading(false);
+	};
+
+	// Validate the token on initial load
+	useEffect(() => {
+		validateAndSetAuth(token);
 	}, []);
 
-	const login = (token) => {
-		localStorage.setItem("token", token);
-		setToken(token);
+	// Listen for token changes
+	useEffect(() => {
+		const handleStorageChange = (event) => {
+			if (event.key === "token") {
+				validateAndSetAuth(event.newValue);
+			}
+		};
+
+		window.addEventListener("storage", handleStorageChange);
+
+		return () => {
+			window.removeEventListener("storage", handleStorageChange);
+		};
+	}, []);
+
+	useEffect(() => {
+		if (token !== localStorage.getItem("token")) {
+			validateAndSetAuth(token);
+		}
+	}, [token]);
+
+	const login = (newToken) => {
+		localStorage.setItem("token", newToken);
+		setToken(newToken);
 		setIsAuthenticated(true);
-		setloading(false);
+		setLoading(false);
 	};
 
 	const logout = () => {

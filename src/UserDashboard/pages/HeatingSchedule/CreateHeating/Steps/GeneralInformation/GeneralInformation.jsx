@@ -3,7 +3,7 @@ import { Label, Radio, TextInput, Tooltip } from "flowbite-react";
 import { FaCircleCheck } from "react-icons/fa6";
 import { IoInformationCircleOutline } from "react-icons/io5";
 
-function GeneralInformation({ formData, handleChange, errorMessages, generalErrorMessage }) {
+function GeneralInformation({ formData, handleChange, errorMessages, generalErrorMessage, checkName }) {
 
   return (
     <div className="flex flex-col gap-4 w-full">
@@ -25,6 +25,7 @@ function GeneralInformation({ formData, handleChange, errorMessages, generalErro
             <TextInput
               id="programName"
               type="text"
+              onBlur={checkName}
               sizing="sm"
               placeholder="Program name"
               className="w-[250px]"
