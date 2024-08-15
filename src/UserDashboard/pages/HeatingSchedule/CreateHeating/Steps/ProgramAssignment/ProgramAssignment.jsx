@@ -91,7 +91,6 @@ const ProgramAssignment = ({ formData, assignmentData,setHandleAssignmentRef, ha
 
     useEffect(() => {
       const newData = _.cloneDeep(data);
-      console.log('again')
   
       newData.buildings.forEach(building => {
         building.floors.forEach(floor => {
