@@ -210,15 +210,9 @@ const TemperatureSchedule = ({ floorId }) => {
 	const updateReplacedF = (update) => {
 		// check = update;
 		getFloorDetails(floorId);
-		fetchHeatingScheduleForRoom();
+		// fetchHeatingScheduleForRoom();
 		fetchSchedules();
 	};
-
-	// const UpdateReplaced = (update) => {
-	// 	if (update === true) {
-	// 		setShouldFetch(true);
-	// 	}
-	// };
 
 	const fetchSchedules = async () => {
 		if (RoomsDetail.length > 0) {
@@ -226,7 +220,7 @@ const TemperatureSchedule = ({ floorId }) => {
 				RoomsDetail.map(async (room) => {
 					if (room.heatingSchedule) {
 						const schedule = await fetchHeatingScheduleForRoom(
-							room.heatingSchedule.id,
+							room.heatingSchedule?.id,
 						);
 						return { ...room, schedule };
 					}
@@ -287,20 +281,30 @@ const TemperatureSchedule = ({ floorId }) => {
 					>
 						<div className="flex items-center justify-between mb-7 text-gray-900">
 							<div className="flex items-center gap-1">
-								<span className="text-sm font-bold">{room.name}</span>
-								<span
-									className={`text-xs font-normal py-0.5 px-2.5 ml-1 ${handleTypeColor(
-										type,
-									)} rounded-[80px]`}
+								<Tooltip
+									content={room.name}
+									style="light"
 								>
-									{room.tag}
-								</span>
+									<span className="text-sm font-bold">{room.name && room.name.slice(0, 10)}...</span>
+								</Tooltip>
+								<Tooltip
+									content={room.tag}
+									style="light"
+								>
+									<span
+										className={`text-xs font-normal py-0.5 px-2.5 ml-1 ${handleTypeColor(
+											type,
+										)} rounded-[80px]`}
+									>
+										{room.tag && room.tag.slice(0, 5)}...
+									</span>
+								</Tooltip>
 							</div>
 							<Tooltip
 								className={`px-2 py-1.5 text-center max-w-96`}
 								content={`Current Temp: ${room.roomTemperature
 									? `${room.roomTemperature}°C`
-									: "Unavailable"
+									: "Not set"
 									}`}
 								style="light"
 							>
@@ -309,7 +313,7 @@ const TemperatureSchedule = ({ floorId }) => {
 									<p className="text-sm">
 										{room.roomTemperature
 											? `${room.roomTemperature}°C`
-											: "Unavailable"}
+											: "Not set"}
 									</p>
 								</div>
 							</Tooltip>
@@ -381,41 +385,37 @@ const TemperatureSchedule = ({ floorId }) => {
 							</div>
 						</div>
 						{room.manuallySetTemperatures &&
-							room.manuallySetTemperatures.length > 0 ? (
-							<div className="w-full relative px-4">
-								{/* Render dots for manual changes outside the h-4 container */}
-								<div className="w-full relative">
-									{room.manuallySetTemperatures.map((change, index) => (
-										<div
-											key={`dot-wrapper-${index}`}
-											className="absolute"
-											style={{
-												left: `calc(${parseTimeToPercentage(
-													convertUTCToGermanTime(change.createdAt),
-												)}% - 0.375rem)`,
-												top: `-9px`,
-												zIndex: "1", // Ensure dots are above the temperature line
-											}}
-										>
-											<Tooltip
-												className={`px-2 py-1.5 text-center w-full min-w-[170px] max-w-96`}
-												content={`Manual Change: ${change.targetTemperature}°C`}
-												style="light"
+							room.manuallySetTemperatures.length > 0 && (
+								<div className="w-full relative px-4">
+									{/* Render dots for manual changes outside the h-4 container */}
+									<div className="w-full relative">
+										{room.manuallySetTemperatures.map((change, index) => (
+											<div
+												key={`dot-wrapper-${index}`}
+												className="absolute"
+												style={{
+													left: `calc(${parseTimeToPercentage(
+														convertUTCToGermanTime(change.createdAt),
+													)}% - 0.375rem)`,
+													top: `-9px`,
+													zIndex: "1", // Ensure dots are above the temperature line
+												}}
 											>
-												<div
-													key={`dot-${index}`}
-													className="w-2 h-2 bg-gray-400 rounded-full"
-												/>
-											</Tooltip>
-										</div>
-									))}
+												<Tooltip
+													className={`px-2 py-1.5 text-center w-full min-w-[170px] max-w-96`}
+													content={`Manual Change: ${change.targetTemperature}°C`}
+													style="light"
+												>
+													<div
+														key={`dot-${index}`}
+														className="w-2 h-2 bg-gray-400 rounded-full"
+													/>
+												</Tooltip>
+											</div>
+										))}
+									</div>
 								</div>
-							</div>
-						) : (
-							<p className="text-center text-sm italic text-gray-600">
-								No manually set temperatures for this room
-							</p>
-						)}
+							)}
 						{room.heatingSchedule && room.heatingSchedule.currentDay ? (
 							<div className="w-full relative px-4">
 								{/* marker */}

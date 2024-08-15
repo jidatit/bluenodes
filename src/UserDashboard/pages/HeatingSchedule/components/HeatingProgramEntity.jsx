@@ -143,27 +143,6 @@ const HeatingProgramEntity = ({
 		setOpenEditModal(!openEditModal);
 	};
 
-	// Get heating schedule details by idc
-	// const fetchDetails = () => {
-	// 	if (fetched) return;
-	// 	fetch(
-	// 		`https://api-dev.blue-nodes.app/dev/smartheating/heatingschedule/${program.id}/details`,
-	// 		{
-	// 			method: "GET",
-	// 			headers: {
-	// 				Authorization: `Bearer ${token}`,
-	// 			},
-	// 		},
-	// 	)
-	// 		.then((response) => response.json())
-	// 		.then((data) => {
-	// 			setLocationDetails(data);
-	// 			setLoader(false);
-	// 			setfetched(true);
-	// 		})
-	// 		.catch((error) => console.error("Error:", error));
-	// };
-
 	const fetchDetails = async () => {
 		try {
 			const response = await fetch(
