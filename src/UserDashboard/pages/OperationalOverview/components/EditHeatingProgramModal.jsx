@@ -525,7 +525,7 @@ const EditHeatingProgramModal = ({
 
 			try {
 				const resp = await fetch(
-					"https://api-dev.blue-nodes.app/dev/smartheating/heatingschedule",
+					"https://api-dev.blue-nodes.app/dev/smartheating/heatingschedule?from=edit",
 					{
 						method: "POST",
 						headers: {
