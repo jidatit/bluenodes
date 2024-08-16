@@ -18,9 +18,6 @@ const EditHeatingProgramModal = ({
 	room,
 	fetchFloorDetails,
 	updateReplaced,
-	fetchSchedules,
-	floorId,
-testf
 }) => {
 	const [selectedAction, setSelectedAction] = useState("");
 	const [selectedProgram, setSelectedProgram] = useState("");
@@ -145,7 +142,7 @@ testf
 		applyAlgorithm: "",
 	});
 	const [locationDetails, setLocationDetails] = useState([]);
-	const [formDataApi,setFormDataApi]= useState()
+	const [formDataApi, setFormDataApi] = useState();
 	const fetchHeatingScheduleForRoom = async (heatingScheduleId) => {
 		try {
 			const resp = await fetch(
@@ -320,17 +317,16 @@ testf
 				childSafety: value,
 				minTemp: "min",
 				maxTemp: "max",
-				
 			}));
-			console.log("yes",formData.minTemp)
+			console.log("yes", formData.minTemp);
 		} else if (id === "childSafetyNo") {
 			setFormData((prev) => ({
 				...prev,
 				childSafety: value,
-				minTemp:formDataApi.deviceOverrideTemperatureMin,
-				maxTemp:formDataApi.deviceOverrideTemperatureMax,
+				minTemp: formDataApi.deviceOverrideTemperatureMin,
+				maxTemp: formDataApi.deviceOverrideTemperatureMax,
 			}));
-			console.log("no value",formDataApi.deviceOverrideTemperatureMin)
+			console.log("no value", formDataApi.deviceOverrideTemperatureMin);
 		} else if (id === "applyAlgorithmYes" || id === "applyAlgorithmNo") {
 			setFormData((prev) => ({
 				...prev,
@@ -966,41 +962,48 @@ const ViewTableComponent = ({ selectedProgram }) => {
 						</div>
 						<div className="flex flex-col gap-2">
 							<p className="font-semibold">Child Safety</p>
-							<p>{temperatureDetails?.allowDeviceOverride ? "Yes" : "No"}</p>{" "}
+							<p>{temperatureDetails?.allowDeviceOverride ? "No" : "Yes"}</p>{" "}
 							{/* Replace hardcoded value */}
 						</div>
-						<div className="flex flex-col gap-2">
-							<p className="font-semibold flex items-center gap-1">
-								Minimum Temperature
-								<Tooltip
-									className="px-3 py-1.5 text-center max-w-96"
-									content="The minimum temperature that can be manually adjusted on the thermometer by physical means."
-									style="light"
-								>
-									<IoInformationCircleOutline color="#6B7280" />
-								</Tooltip>
-							</p>
-							<p>
-								{temperatureDetails?.deviceOverrideTemperatureMin || "N/A"}°C
-							</p>{" "}
-							{/* Replace hardcoded value */}
-						</div>
-						<div className="flex flex-col gap-2">
-							<p className="font-semibold flex items-center gap-1">
-								Maximum Temperature
-								<Tooltip
-									className="px-3 py-1.5 text-center max-w-96"
-									content="The maximum temperature that can be manually adjusted on the thermometer by physical means."
-									style="light"
-								>
-									<IoInformationCircleOutline color="#6B7280" />
-								</Tooltip>
-							</p>
-							<p>
-								{temperatureDetails?.deviceOverrideTemperatureMax || "N/A"}°C
-							</p>{" "}
-							{/* Replace hardcoded value */}
-						</div>
+						{temperatureDetails?.allowDeviceOverride && (
+							<>
+								<div className="flex flex-col gap-2">
+									<p className="font-semibold flex items-center gap-1">
+										Minimum Temperature
+										<Tooltip
+											className="px-3 py-1.5 text-center max-w-96"
+											content="The minimum temperature that can be manually adjusted on the thermometer by physical means."
+											style="light"
+										>
+											<IoInformationCircleOutline color="#6B7280" />
+										</Tooltip>
+									</p>
+									<p>
+										{temperatureDetails?.deviceOverrideTemperatureMin || "N/A"}
+										°C
+									</p>{" "}
+									{/* Replace hardcoded value */}
+								</div>
+								<div className="flex flex-col gap-2">
+									<p className="font-semibold flex items-center gap-1">
+										Maximum Temperature
+										<Tooltip
+											className="px-3 py-1.5 text-center max-w-96"
+											content="The maximum temperature that can be manually adjusted on the thermometer by physical means."
+											style="light"
+										>
+											<IoInformationCircleOutline color="#6B7280" />
+										</Tooltip>
+									</p>
+									<p>
+										{temperatureDetails?.deviceOverrideTemperatureMax || "N/A"}
+										°C
+									</p>{" "}
+									{/* Replace hardcoded value */}
+								</div>
+							</>
+						)}
+
 						<div className="flex flex-col gap-2">
 							<p className="font-semibold flex items-center gap-1">
 								Apply Algorithm?

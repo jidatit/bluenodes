@@ -107,7 +107,11 @@ const parseTimeToPercentage = (timestamp) => {
 	}
 };
 
-const TemperatureSchedule = ({ floorId,accordianOpened,accordianOpened2 }) => {
+const TemperatureSchedule = ({
+	floorId,
+	accordianOpened,
+	accordianOpened2,
+}) => {
 	const convertUTCToGermanTime = (utcDateTimeString) => {
 		const date = new Date(utcDateTimeString);
 
@@ -185,10 +189,8 @@ const TemperatureSchedule = ({ floorId,accordianOpened,accordianOpened2 }) => {
 	const handleOpenEditModal = (room) => {
 		setOpenEditModal(!openEditModal);
 		setSelectedRoom(room);
-		console.log(floorId)
-		check=true;
-		
-
+		console.log(floorId);
+		check = true;
 	};
 	const fetchHeatingScheduleForRoom = async (heatingScheduleId) => {
 		try {
@@ -209,20 +211,22 @@ const TemperatureSchedule = ({ floorId,accordianOpened,accordianOpened2 }) => {
 		}
 	};
 	// const [shouldFetch, setShouldFetch] = useState(false);
-	const [fetch1, setfetch1] = useState(false)
-	const updateReplacedF =async () => {
+	const [fetch1, setfetch1] = useState(false);
+	const updateReplacedF = async () => {
 		// check = update;
 		await getFloorDetails(floorId);
-setfetch1(true)
+		setfetch1(true);
 		// fetchHeatingScheduleForRoom();
 		console.log("aas");
 		await fetchSchedules();
 	};
 
-useEffect(()=>{
-	getFloorDetails(floorId);
-	fetchSchedules();
-},[fetch1])
+	useEffect(() => {
+		getFloorDetails(floorId);
+		fetchSchedules();
+		setfetch1(false);
+		console.log("fetchign");
+	}, [fetch1]);
 
 	const fetchSchedules = async () => {
 		if (RoomsDetail.length > 0) {
@@ -238,7 +242,7 @@ useEffect(()=>{
 				}),
 			);
 			setscheduleDetails(updatedRooms);
-			console.log("accordian open twice")
+			console.log("accordian open twice");
 		}
 	};
 
@@ -250,7 +254,7 @@ useEffect(()=>{
 	// }, [shouldFetch]);
 	// useEffect(() => {
 	// 	fetchSchedules();
-	
+
 	// }, [RoomsDetail]);
 
 	const getFloorDetails = async (id) => {
@@ -283,24 +287,17 @@ useEffect(()=>{
 		fetchSchedules();
 	}
 	useEffect(() => {
-		
-					getFloorDetails(floorId);
-					console.log("ac",accordianOpened)
-				
-				
-				
+		getFloorDetails(floorId);
+		console.log("ac", accordianOpened);
 	}, [accordianOpened]);
 
 	useEffect(() => {
+		fetchSchedules();
+	}, [accordianOpened2]);
 
-	
-	fetchSchedules();
-	
-}, [accordianOpened2]);
-
-const testf =()=>{
-	console.log("Test")
-}
+	const testf = () => {
+		console.log("Test");
+	};
 
 	return (
 		<>
@@ -609,9 +606,6 @@ const testf =()=>{
 				handleOpenModal={handleOpenEditModal}
 				room={selectedRoom}
 				updateReplaced={updateReplacedF}
-				fetchSchedules={fetchSchedules}
-				floorId={floorId}
-				testf={testf}
 			/>
 		</>
 	);
