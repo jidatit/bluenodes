@@ -308,7 +308,7 @@ const TemperatureSchedule = ({
 						className="w-full p-4 relative rounded-lg border border-gray-200"
 					>
 						<div className="flex items-center justify-between mb-7 text-gray-900">
-							<div className="flex items-center gap-1">
+							<div className="flex items-center gap-1 min-w-[180px]">
 								<Tooltip content={room.name} style="light">
 									<span className="text-sm font-bold">
 										{room.name && room.name.slice(0, 10)}...
@@ -360,8 +360,8 @@ const TemperatureSchedule = ({
 									<p className="text-sm">{room.algorithm ? "On" : "Off"}</p>
 								</div>
 							</Tooltip>
-							<p className="text-sm text-primary">
-								{scheduleDetails[index]?.schedule?.templateName}
+							<p className="text-sm text-primary min-w-[85px]">
+							{scheduleDetails[index]?.schedule?.templateName ? scheduleDetails[index].schedule.templateName : "None"}
 							</p>
 							<div className="flex items-center gap-4 text-sm">
 								<Button
