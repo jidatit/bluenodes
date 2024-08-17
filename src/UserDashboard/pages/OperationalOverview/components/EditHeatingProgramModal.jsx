@@ -37,7 +37,6 @@ const EditHeatingProgramModal = ({
 
 	const handleProgramChange = (event) => {
 		setSelectedProgram(event.target.value);
-		console.log("room", room);
 		if (event.target.value === "") {
 			setShowError(true);
 		} else {
@@ -318,7 +317,6 @@ const EditHeatingProgramModal = ({
 				minTemp: "min",
 				maxTemp: "max",
 			}));
-			console.log("yes", formData.minTemp);
 		} else if (id === "childSafetyNo") {
 			setFormData((prev) => ({
 				...prev,
@@ -326,7 +324,6 @@ const EditHeatingProgramModal = ({
 				minTemp: formDataApi.deviceOverrideTemperatureMin,
 				maxTemp: formDataApi.deviceOverrideTemperatureMax,
 			}));
-			console.log("no value", formDataApi.deviceOverrideTemperatureMin);
 		} else if (id === "applyAlgorithmYes" || id === "applyAlgorithmNo") {
 			setFormData((prev) => ({
 				...prev,
@@ -916,7 +913,6 @@ const ViewTableComponent = ({ selectedProgram }) => {
 	const [temperatureDetails, setTemperatureDetails] = useState(null);
 	const token = localStorage.getItem("token");
 	const heatingScheduleId = selectedProgram;
-	console.log("sc id", selectedProgram);
 
 	const fetchDetails = () => {
 		if (!heatingScheduleId) return;

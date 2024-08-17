@@ -109,7 +109,6 @@ function GeneralInformation({
 				{/* row 2 */}
 				<div className="flex items-start gap-6">
 					{/* Minimum temperature */}
-					{console.log("child", formData.childSafety)}
 					{formData.childSafety === "No" && (
 						<>
 							<div>

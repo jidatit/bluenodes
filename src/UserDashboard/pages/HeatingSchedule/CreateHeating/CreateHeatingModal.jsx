@@ -157,7 +157,6 @@ export function CreateHeatingModal({ openModal, handleOpenModal, onCreate }) {
 				maxTemp: "max",
 				
 			}));
-			console.log("min",formData.minTemp)
 		} else if (id === "childSafetyNo") {
 			setFormData((prev) => ({
 				...prev,

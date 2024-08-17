@@ -79,7 +79,6 @@ function HeatingSchedulePage() {
 	};
 
 	const handleRoomUpdate = (data) => {
-		console.log("are you here?")
 		if (data) {
 			if (data === "Error") {
 				setToastMessage(errorMessages.roomAssignFailed);

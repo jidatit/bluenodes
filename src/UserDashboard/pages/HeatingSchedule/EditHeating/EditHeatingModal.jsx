@@ -175,7 +175,6 @@ export function EditHeatingModal({
 				minTemp: "min",
 				maxTemp: "max",
 			}));
-			console.log("yes", formData.minTemp);
 		} else if (id === "childSafetyNo") {
 			setFormData((prev) => ({
 				...prev,
@@ -183,7 +182,6 @@ export function EditHeatingModal({
 				minTemp: formDataApi.deviceOverrideTemperatureMin,
 				maxTemp: formDataApi.deviceOverrideTemperatureMax,
 			}));
-			console.log("no value", formDataApi.deviceOverrideTemperatureMin);
 		} else if (id === "applyAlgorithmYes" || id === "applyAlgorithmNo") {
 			setFormData((prev) => ({
 				...prev,
@@ -466,7 +464,6 @@ export function EditHeatingModal({
 							)}
 							{currentStep === 2 && (
 								<div>
-									{console.log("this", locationDetails)}
 									<HeatingSchedule
 										onUpdateLayouts={handleLayoutUpdate}
 										onUpdateCheck={handleCheckUpdate}

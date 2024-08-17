@@ -80,7 +80,6 @@ function AssignRoomsModal({ openAssignModal,handleAssign, onUpdate,initialData, 
       const building = newData.buildings.find(b => b.id === buildingId);
       const floor = building.floors.find(f => f.id === floorId);
       const room = floor.rooms.find(r => r.id === roomId);
-      console.log(room.assigned)
   
       if (room.assigned) {
         // Reset the room to its default state using the default values map

@@ -143,7 +143,6 @@ const TemperatureSchedule = ({
 
 		// Construct the final date-time string in ISO format
 		const formattedDateTime = `${year}-${month}-${day}T${hour}:${minute}:${second}.${milliseconds}Z`;
-
 		return formattedDateTime;
 	};
 
@@ -189,7 +188,6 @@ const TemperatureSchedule = ({
 	const handleOpenEditModal = (room) => {
 		setOpenEditModal(!openEditModal);
 		setSelectedRoom(room);
-		console.log(floorId);
 		check = true;
 	};
 	const fetchHeatingScheduleForRoom = async (heatingScheduleId) => {
@@ -217,7 +215,6 @@ const TemperatureSchedule = ({
 		await getFloorDetails(floorId);
 		setfetch1(true);
 		// fetchHeatingScheduleForRoom();
-		console.log("aas");
 		await fetchSchedules();
 	};
 
@@ -225,7 +222,6 @@ const TemperatureSchedule = ({
 		getFloorDetails(floorId);
 		fetchSchedules();
 		setfetch1(false);
-		console.log("fetchign");
 	}, [fetch1]);
 
 	const fetchSchedules = async () => {
@@ -242,7 +238,6 @@ const TemperatureSchedule = ({
 				}),
 			);
 			setscheduleDetails(updatedRooms);
-			console.log("accordian open twice");
 		}
 	};
 
@@ -288,16 +283,11 @@ const TemperatureSchedule = ({
 	}
 	useEffect(() => {
 		getFloorDetails(floorId);
-		console.log("ac", accordianOpened);
 	}, [accordianOpened]);
 
 	useEffect(() => {
 		fetchSchedules();
 	}, [accordianOpened2]);
-
-	const testf = () => {
-		console.log("Test");
-	};
 
 	return (
 		<>
@@ -421,9 +411,7 @@ const TemperatureSchedule = ({
 												key={`dot-wrapper-${index}`}
 												className="absolute"
 												style={{
-													left: `calc(${parseTimeToPercentage(
-														convertUTCToGermanTime(change.createdAt),
-													)}% - 0.375rem)`,
+													left: `calc(${parseTimeToPercentage(change.createdAt)}% - 0.375rem)`,
 													top: `-9px`,
 													zIndex: "1", // Ensure dots are above the temperature line
 												}}
