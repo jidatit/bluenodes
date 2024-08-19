@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import thermometer from "../../../../assets/icons/thermometer-02.png";
 import windowicon from "../../../../assets/icons/Window.png";
 import algo from "../../../../assets/icons/algorithm.png";
@@ -179,16 +179,16 @@ const TemperatureSchedule = ({
 	const [locationDetails, setLocationDetails] = useState([]);
 	const [scheduleDetails, setscheduleDetails] = useState([]);
 	const [roomName, setroomName] = useState("");
+	const isFirstRender = useRef(true);
 
 	const handleOpenModal = (roomSchedId) => {
 		setSelectedRoomSchedId(roomSchedId);
 		setOpenModal(!openModal);
 	};
-	let check = null;
+
 	const handleOpenEditModal = (room) => {
 		setOpenEditModal(!openEditModal);
 		setSelectedRoom(room);
-		check = true;
 	};
 	const fetchHeatingScheduleForRoom = async (heatingScheduleId) => {
 		try {
@@ -216,12 +216,20 @@ const TemperatureSchedule = ({
 		setfetch1(true);
 		// fetchHeatingScheduleForRoom();
 		await fetchSchedules();
+		console.log("call 1");
 	};
 
 	useEffect(() => {
-		getFloorDetails(floorId);
-		fetchSchedules();
-		setfetch1(false);
+		if (isFirstRender.current) {
+			isFirstRender.current = false;
+		} else {
+			if (fetch1 === true) {
+				getFloorDetails(floorId);
+				fetchSchedules();
+				setfetch1(false);
+				console.log("call 2");
+			}
+		}
 	}, [fetch1]);
 
 	const fetchSchedules = async () => {
@@ -240,17 +248,6 @@ const TemperatureSchedule = ({
 			setscheduleDetails(updatedRooms);
 		}
 	};
-
-	// useEffect(() => {
-	// 	if (shouldFetch) {
-	// 		fetchSchedules();
-	// 		setShouldFetch(false);
-	// 	}
-	// }, [shouldFetch]);
-	// useEffect(() => {
-	// 	fetchSchedules();
-
-	// }, [RoomsDetail]);
 
 	const getFloorDetails = async (id) => {
 		try {
@@ -271,18 +268,15 @@ const TemperatureSchedule = ({
 		}
 	};
 
-	// useEffect(() => {
-	// 	if (floorId) {
-	// 		getFloorDetails(floorId);
-	// 	}
-	// }, [floorId]);
-
-	if (check !== null && check) {
-		getFloorDetails();
-		fetchSchedules();
-	}
 	useEffect(() => {
-		getFloorDetails(floorId);
+		if (isFirstRender.current) {
+			isFirstRender.current = false;
+		} else {
+			if (accordianOpened === true) {
+				getFloorDetails(floorId);
+				console.log("call 4");
+			}
+		}
 	}, [accordianOpened]);
 
 	useEffect(() => {
@@ -297,23 +291,26 @@ const TemperatureSchedule = ({
 						key={index}
 						className="w-full p-4 relative rounded-lg border border-gray-200"
 					>
-						<div className="flex items-center justify-between mb-7 text-gray-900">
-							<div className="flex items-center gap-1 min-w-[180px]">
+						<div className="flex items-center justify-between flex-wrap md:gap-4 gap-2 text-gray-900 mb-7">
+							<div className="flex items-center gap-2 min-w-[180px] flex-shrink-0 w-full md:w-auto">
 								<Tooltip content={room.name} style="light">
-									<span className="text-sm font-bold">
-										{room.name && room.name.slice(0, 10)}...
+									<span className="text-sm font-bold w-[120px] md:w-[140px] overflow-hidden text-ellipsis whitespace-nowrap">
+										{room.name && room.name.length > 15
+											? `${room.name.slice(0, 15)}...`
+											: room.name}
 									</span>
 								</Tooltip>
 								<Tooltip content={room.tag} style="light">
 									<span
-										className={`text-xs font-normal py-0.5 px-2.5 ml-1 ${handleTypeColor(
-											type,
-										)} rounded-[80px]`}
+										className={`text-xs font-normal py-0.5 px-2.5 ml-1 ${handleTypeColor(type)} rounded-full overflow-hidden text-ellipsis whitespace-nowrap`}
 									>
-										{room.tag && room.tag.slice(0, 5)}...
+										{room.tag && room.tag.length > 12
+											? `${room.tag.slice(0, 12)}...`
+											: room.tag}
 									</span>
 								</Tooltip>
 							</div>
+
 							<Tooltip
 								className={`px-2 py-1.5 text-center max-w-96`}
 								content={`Current Temp: ${
@@ -321,7 +318,7 @@ const TemperatureSchedule = ({
 								}`}
 								style="light"
 							>
-								<div className="flex items-center gap-1 text-xl">
+								<div className="flex items-center gap-1 text-xl w-full md:w-auto">
 									<img src={thermometer} alt="Thermometer" />
 									<p className="text-sm">
 										{room.roomTemperature
@@ -330,30 +327,36 @@ const TemperatureSchedule = ({
 									</p>
 								</div>
 							</Tooltip>
+
 							<Tooltip
 								className={`px-2 py-1.5 text-center max-w-96`}
 								content={`Window: ${room.windowOpen ? "Yes" : "No"}`}
 								style="light"
 							>
-								<div className="flex items-center gap-1 text-xl">
+								<div className="flex items-center gap-1 text-xl w-full md:w-auto">
 									<img src={windowicon} alt="Window" />
 									<p className="text-sm">{room.windowOpen ? "Yes" : "No"}</p>
 								</div>
 							</Tooltip>
+
 							<Tooltip
 								className={`px-2 py-1.5 text-center max-w-96`}
 								content={`Algorithm: ${room.algorithm ? "On" : "Off"}`}
 								style="light"
 							>
-								<div className="flex items-center gap-1 text-xl">
+								<div className="flex items-center gap-1 text-xl w-full md:w-auto">
 									<img src={algo} alt="Algorithm" />
 									<p className="text-sm">{room.algorithm ? "On" : "Off"}</p>
 								</div>
 							</Tooltip>
-							<p className="text-sm text-primary min-w-[85px]">
-							{scheduleDetails[index]?.schedule?.templateName ? scheduleDetails[index].schedule.templateName : "None"}
+
+							<p className="text-sm text-primary min-w-[85px] text-center w-full md:w-auto">
+								{scheduleDetails[index]?.schedule?.templateName
+									? scheduleDetails[index].schedule.templateName
+									: "None"}
 							</p>
-							<div className="flex items-center gap-4 text-sm">
+
+							<div className="flex items-center gap-4 text-sm flex-shrink-0 w-full md:w-auto">
 								<Button
 									disabled={room.heatingSchedule === null}
 									onClick={() => {
@@ -364,7 +367,7 @@ const TemperatureSchedule = ({
 											room.algorithm && room.algorithm ? true : false,
 										);
 										setroomName(room.name);
-									}} // Pass the room ID here
+									}}
 									className={`hover:!bg-transparent hover:opacity-80 border-none text-primary bg-transparent ${
 										room.heatingSchedule !== null && room.heatingSchedule.id
 											? "text-primary"
@@ -373,6 +376,7 @@ const TemperatureSchedule = ({
 								>
 									View Schedule
 								</Button>
+
 								<Tooltip
 									className={`px-2 py-1.5 text-center min-w-32 max-w-96`}
 									content={`Edit Schedule`}
@@ -401,6 +405,7 @@ const TemperatureSchedule = ({
 								</Tooltip>
 							</div>
 						</div>
+
 						{room.manuallySetTemperatures &&
 							room.manuallySetTemperatures.length > 0 && (
 								<div className="w-full relative px-4">
