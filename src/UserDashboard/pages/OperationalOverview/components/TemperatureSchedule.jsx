@@ -358,12 +358,12 @@ const TemperatureSchedule = ({
 								}
 								style="light"
 							>
-								<p className="text-sm text-primary text-center w-[150px]">
+								<p className="text-sm text-primary text-center w-[180px]">
 									{scheduleDetails[index]?.schedule?.templateName
-										? scheduleDetails[index].schedule.templateName.length > 12
+										? scheduleDetails[index].schedule.templateName.length > 15
 											? `${scheduleDetails[index].schedule.templateName.slice(
 													0,
-													12,
+													15,
 												)}..`
 											: scheduleDetails[index].schedule.templateName
 										: "None"}

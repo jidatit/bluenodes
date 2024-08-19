@@ -18,6 +18,7 @@ function HeatingSchedulePage() {
 	const [selectedFilter, setSelectedFilter] = useState("Filter");
 	const [isDropdownOpen, setDropdownOpen] = useState(false); // Define state to manage dropdown visibility
 	const [openModal, setOpenModal] = useState(false);
+	
 
 	const handleOpenModal = () => {
 		setOpenModal(!openModal);
@@ -52,6 +53,7 @@ function HeatingSchedulePage() {
 	};
 
 	const [response, setResponse] = useState(false);
+	const [response2, setResponse2] = useState(false);
 	const [showToast, setShowToast] = useState(false);
 	const [toastMessage, setToastMessage] = useState("");
 	const [isSuccess, setIsSuccess] = useState(true);
@@ -70,6 +72,7 @@ function HeatingSchedulePage() {
 			setIsSuccess(false);
 		}
 		setResponse(!response);
+
 		setShowToast(true);
 
 		// Hide the toast after 4 seconds
@@ -92,12 +95,15 @@ function HeatingSchedulePage() {
 			setIsSuccess(false);
 		}
 		setResponse(!response);
+		setResponse2(!response2);
+		console.log("from p")
 		setShowToast(true);
 		fetchAllHeatingSchedules();
 		// Hide the toast after 4 seconds
 		setTimeout(() => {
 			setShowToast(false);
 		}, 4000);
+
 	};
 
 	const handleCloneProgram = (data) => {
@@ -289,6 +295,7 @@ function HeatingSchedulePage() {
 						onDeleteProgram={handleDeleteProgram}
 						program={program}
 						fetchAll={fetchAllHeatingSchedules}
+						response2={response2}
 					/>
 				))}
 			{Loader && (

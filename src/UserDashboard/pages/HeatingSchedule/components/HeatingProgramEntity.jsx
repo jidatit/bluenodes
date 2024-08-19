@@ -21,6 +21,7 @@ const HeatingProgramEntity = ({
 	onDeleteProgram,
 	program,
 	fetchAll,
+	response2
 }) => {
 	const token = localStorage.getItem("token");
 
@@ -108,6 +109,13 @@ const HeatingProgramEntity = ({
 
 	const [response, setResponse] = useState(false);
 
+	useEffect(()=>{
+		if(response2){
+			fetchDetails()
+			console.log("hi from",program)
+		}
+	},[response2])
+
 	const handleUpdateRoomsAssigned = (data) => {
 		if (data) {
 			onUpdateRooms(data);
@@ -173,15 +181,15 @@ const HeatingProgramEntity = ({
 	};
 	const options = {
 		onOpen: (item) => {
-			console.log("accordion item has been shown");
+			// console.log("accordion item has been shown");
 			console.log(item);
 		},
 		onClose: (item) => {
-			console.log("accordion item has been hidden");
+			// console.log("accordion item has been hidden");
 			console.log(item);
 		},
 		onToggle: (item) => {
-			console.log("accordion item has been toggled");
+			// console.log("accordion item has been toggled");
 			console.log(item);
 		},
 	};
@@ -262,7 +270,7 @@ const HeatingProgramEntity = ({
 				setInitialData(apiData);
 			})
 			.catch((error) => console.error("Error:", error));
-	}, [response]);
+	}, [response,response2]);
 
 	// console.log(locationDetails)
 	return (
@@ -377,7 +385,7 @@ const HeatingProgramEntity = ({
 													Assign rooms
 												</Button>
 											</div>
-											{console.log(locationDetails)}
+											{/* {console.log(locationDetails)} */}
 											{locationDetails?.assignedRooms?.map(
 												(building, index) => (
 													<Accordion
