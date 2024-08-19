@@ -85,7 +85,7 @@ const HeatingProgramEntity = ({
 
 			if (response.ok) {
 				// Handle successful delete
-				console.log("Delete successful");
+				// console.log("Delete successful");
 				setIsSuccess(true);
 				setToastMessage(errorMessages.deleteSuccessfull);
 				// Perform any state updates or UI changes
@@ -112,7 +112,6 @@ const HeatingProgramEntity = ({
 	useEffect(()=>{
 		if(response2){
 			fetchDetails()
-			console.log("hi from",program)
 		}
 	},[response2])
 
@@ -182,15 +181,15 @@ const HeatingProgramEntity = ({
 	const options = {
 		onOpen: (item) => {
 			// console.log("accordion item has been shown");
-			console.log(item);
+			// console.log(item);
 		},
 		onClose: (item) => {
 			// console.log("accordion item has been hidden");
-			console.log(item);
+			// console.log(item);
 		},
 		onToggle: (item) => {
 			// console.log("accordion item has been toggled");
-			console.log(item);
+			// console.log(item);
 		},
 	};
 

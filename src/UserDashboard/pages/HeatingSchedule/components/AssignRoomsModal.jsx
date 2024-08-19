@@ -260,7 +260,7 @@ function AssignRoomsModal({ openAssignModal,handleAssign, onUpdate,initialData, 
           })
           .then(response => response.json())
           .then(data => {
-            console.log(data)
+            // console.log(data)
             if(data.statusCode===400){
               onUpdate('Error')
             } else {

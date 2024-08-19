@@ -216,7 +216,7 @@ const TemperatureSchedule = ({
 		setfetch1(true);
 		// fetchHeatingScheduleForRoom();
 		await fetchSchedules();
-		console.log("call 1");
+		// console.log("call 1");
 	};
 
 	useEffect(() => {
@@ -227,7 +227,7 @@ const TemperatureSchedule = ({
 				getFloorDetails(floorId);
 				fetchSchedules();
 				setfetch1(false);
-				console.log("call 2");
+				// console.log("call 2");
 			}
 		}
 	}, [fetch1]);
@@ -274,7 +274,7 @@ const TemperatureSchedule = ({
 		} else {
 			if (accordianOpened === true) {
 				getFloorDetails(floorId);
-				console.log("call 4");
+				// console.log("call 4");
 			}
 		}
 	}, [accordianOpened]);

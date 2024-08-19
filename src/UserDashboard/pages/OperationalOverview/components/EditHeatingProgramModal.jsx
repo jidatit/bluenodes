@@ -88,7 +88,7 @@ const EditHeatingProgramModal = ({
 				)
 					.then((response) => response.json())
 					.then((data) => {
-						console.log(data);
+						// console.log(data);
 						// setupdatedR(true);
 						handleCloseModal();
 						setSelectedProgram("");
@@ -266,7 +266,7 @@ const EditHeatingProgramModal = ({
 						maxTemp: "",
 					}));
 				}
-				console.log(errorMessages);
+				// console.log(errorMessages);
 			}
 
 			if (id === "maxTemp") {
@@ -883,7 +883,7 @@ const ReplaceProgram = ({
 			.then((response) => response.json())
 			.then((data) => {
 				setData(data);
-				console.log("schedule programs", data);
+				// console.log("schedule programs", data);
 				// setLoader(false);
 			})
 			.catch((error) => console.error("Error:", error));
@@ -1014,7 +1014,7 @@ const ViewTableComponent = ({ selectedProgram }) => {
 			})
 			.then((data) => {
 				setTemperatureDetails(data);
-				console.log("location details", data);
+				// console.log("location details", data);
 			})
 			.catch((error) => console.error("Error:", error));
 	};
@@ -1098,7 +1098,7 @@ const ViewTableComponent = ({ selectedProgram }) => {
 				</div>
 				<div className="w-[75%] border-l flex flex-col gap-4 border-gray-200 pl-4">
 					<div className="max-h-[400px] overflow-y-auto overflow-x-hidden">
-						{console.log("temp", temperatureDetails)}
+						{/* {console.log("temp", temperatureDetails)} */}
 						{temperatureDetails && (
 							<HeatingScheduleTable locationDetails={temperatureDetails} />
 						)}

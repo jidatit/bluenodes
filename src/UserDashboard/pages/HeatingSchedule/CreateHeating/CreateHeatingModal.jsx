@@ -102,7 +102,7 @@ export function CreateHeatingModal({ openModal, handleOpenModal, onCreate }) {
             maxTemp: "",
           }));
         }
-        console.log(errorMessages)
+        // console.log(errorMessages)
       }
 
       if (id === "maxTemp") {

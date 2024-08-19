@@ -97,7 +97,7 @@ export function EditRoomHeatingSchedule({ openEditModal, handleEditModal, onEdit
             maxTemp: "",
           }));
         }
-        console.log(errorMessages)
+        // console.log(errorMessages)
       }
   
       if (id === "maxTemp") {

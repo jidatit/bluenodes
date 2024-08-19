@@ -114,7 +114,7 @@ export function CloneHeatingModal({ openCloneModal, handleCloneModal, onCreate, 
             maxTemp: "",
           }));
         }
-        console.log(errorMessages)
+        // console.log(errorMessages)
       }
 
       if (id === "maxTemp") {

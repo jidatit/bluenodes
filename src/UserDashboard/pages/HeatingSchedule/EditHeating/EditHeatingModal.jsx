@@ -125,7 +125,7 @@ export function EditHeatingModal({
 						maxTemp: "",
 					}));
 				}
-				console.log(errorMessages);
+				// console.log(errorMessages);
 			}
 
 			if (id === "maxTemp") {
@@ -417,8 +417,8 @@ export function EditHeatingModal({
 						combinedData.formData.maxTemp,
 					);
 				}
-				console.log(combinedData.finalScheduleData);
-				console.log(JSON.stringify(finalObj));
+				// console.log(combinedData.finalScheduleData);
+				// console.log(JSON.stringify(finalObj));
 
 				// Put to API
 				fetch(
@@ -434,7 +434,7 @@ export function EditHeatingModal({
 				)
 					.then((response) => response.json())
 					.then((data) => {
-						console.log(data);
+						// console.log(data);
 						if (data.statusCode === 400) {
 							onEdit("Error");
 						} else {

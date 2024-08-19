@@ -96,7 +96,6 @@ function HeatingSchedulePage() {
 		}
 		setResponse(!response);
 		setResponse2(!response2);
-		console.log("from p")
 		setShowToast(true);
 		fetchAllHeatingSchedules();
 		// Hide the toast after 4 seconds
@@ -318,7 +317,6 @@ function HeatingSchedulePage() {
 					style={{ transition: "transform 0.3s ease-in-out" }}
 				>
 					<Toast className="animate-slideIn">
-						{console.log(isSuccess)}
 						{isSuccess ? (
 							<div className="flex items-center">
 								<div className="text-cyan-600 dark:text-cyan-600 mr-2.5">
