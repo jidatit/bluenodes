@@ -10,7 +10,7 @@ import HeatingSchedule from "../../HeatingSchedule/CreateHeating/Steps/HeatingSc
 import { Toast } from "flowbite-react";
 import HeatingScheduleTable from "../../HeatingSchedule/components/HeatingScheduleTable";
 import { Dropdown } from "flowbite-react";
-import { useHeatingSchedule } from "../../../../hooks/HeatingScheduleContext";
+import useHeatingSchedule from "../../../../hooks/useHeatingSchedule";
 
 const EditHeatingProgramModal = ({
 	openModal,
@@ -28,6 +28,7 @@ const EditHeatingProgramModal = ({
 
 	const handleCloseModal = () => {
 		handleOpenModal();
+		setSelectedProgram("")
 		resetModalState();
 	};
 
@@ -89,6 +90,7 @@ const EditHeatingProgramModal = ({
 						console.log(data);
 						// setupdatedR(true);
 						handleCloseModal();
+						setSelectedProgram("")
 						setToastMessage(errors.ProgramReplacedSuccessfully);
 						updateReplaced();
 						setShowToast(true);
@@ -606,7 +608,7 @@ const EditHeatingProgramModal = ({
 	};
 
 	const handleCheckName = () => {
-		const exists = createdHeatingScheduleNames.includes(formData.programName);
+		const exists = createdHeatingScheduleNames && createdHeatingScheduleNames.includes(formData.programName);
 		if (exists) {
 			setErrorMessages((prev) => ({
 				...prev,
@@ -643,7 +645,7 @@ const EditHeatingProgramModal = ({
 											value="edit-room"
 											checked={selectedAction === "edit-room"}
 											className=" cursor-pointer"
-											// onChange={handleActionChange}
+										// onChange={handleActionChange}
 										/>
 										<Label className=" cursor-pointer" htmlFor="edit-room">
 											Edit room heating schedule
@@ -659,7 +661,7 @@ const EditHeatingProgramModal = ({
 											value="replace-room"
 											checked={selectedAction === "replace-room"}
 											className=" cursor-pointer"
-											// onChange={handleActionChange}
+										// onChange={handleActionChange}
 										/>
 										<Label className=" cursor-pointer" htmlFor="replace-room">
 											Replace program
@@ -819,9 +821,8 @@ const ReplaceProgram = ({
 				<label
 					htmlFor="program"
 					value="Program"
-					className={`mb-2 text-sm font-semibold ${
-						showError ? "text-red-500" : "text-gray-700"
-					}`}
+					className={`mb-2 text-sm font-semibold ${showError ? "text-red-500" : "text-gray-700"
+						}`}
 				>
 					{" "}
 					Headliner{" "}
@@ -836,11 +837,10 @@ const ReplaceProgram = ({
 					<option value="">Please select Program</option>
 					{data.map((program) => (
 						<option
-							className={`block rounded-lg px-4 py-2 text-sm ${
-								program.id === room.heatingSchedule.id
-									? "bg-gray-100 text-gray-400 cursor-not-allowed"
-									: "hover:bg-blue-100 hover:text-blue-700"
-							}`}
+							className={`block rounded-lg px-4 py-2 text-sm ${program.id === room.heatingSchedule.id
+								? "bg-gray-100 text-gray-400 cursor-not-allowed"
+								: "hover:bg-blue-100 hover:text-blue-700"
+								}`}
 							key={program.id}
 							value={program.id}
 							disabled={program.id === room.heatingSchedule.id}

@@ -140,7 +140,7 @@ function HeatingSchedulePage() {
 			setIsSuccess(false);
 		}
 		// setResponse(!response);
-		fetchAll()
+		fetchAllHeatingSchedules()
 		setShowToast(true);
 
 		// Hide the toast after 4 seconds
