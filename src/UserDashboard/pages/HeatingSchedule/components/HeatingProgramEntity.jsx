@@ -58,15 +58,13 @@ const HeatingProgramEntity = ({
 
 		const programName = program.templateName;
 
-		// Check if any room has a matching programAssigned
-		// const hasMatchingProgram = initialData.buildings.some((building) =>
-		// 	building.floors.some((floor) =>
-		// 		floor.rooms.some((room) => room.programAssigned === programName),
-		// 	),
-		// );
-		const assignedRooms = locationDetails.assignedRooms === null;
+		const hasMatchingProgram = initialData.buildings.some((building) =>
+			building.floors.some((floor) =>
+				floor.rooms.some((room) => room.programAssigned === programName),
+			),
+		);
 
-		if (assignedRooms) {
+		if (hasMatchingProgram) {
 			setOpenAlertDeleteModal(true);
 			return; // Exit the function if there's a matching program
 		}

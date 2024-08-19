@@ -302,7 +302,9 @@ const TemperatureSchedule = ({
 								</Tooltip>
 								<Tooltip content={room.tag} style="light">
 									<span
-										className={`text-xs font-normal py-0.5 px-2.5 ml-1 ${handleTypeColor(type)} rounded-full overflow-hidden text-ellipsis whitespace-nowrap`}
+										className={`text-xs font-normal py-0.5 px-2.5 ml-1 ${handleTypeColor(
+											type,
+										)} rounded-full overflow-hidden text-ellipsis whitespace-nowrap`}
 									>
 										{room.tag && room.tag.length > 12
 											? `${room.tag.slice(0, 12)}...`
@@ -350,11 +352,23 @@ const TemperatureSchedule = ({
 								</div>
 							</Tooltip>
 
-							<p className="text-sm text-primary min-w-[85px] text-center w-full md:w-auto">
-								{scheduleDetails[index]?.schedule?.templateName
-									? scheduleDetails[index].schedule.templateName
-									: "None"}
-							</p>
+							<Tooltip
+								content={
+									scheduleDetails[index]?.schedule?.templateName || "None"
+								}
+								style="light"
+							>
+								<p className="text-sm text-primary text-center w-[150px]">
+									{scheduleDetails[index]?.schedule?.templateName
+										? scheduleDetails[index].schedule.templateName.length > 12
+											? `${scheduleDetails[index].schedule.templateName.slice(
+													0,
+													12,
+												)}..`
+											: scheduleDetails[index].schedule.templateName
+										: "None"}
+								</p>
+							</Tooltip>
 
 							<div className="flex items-center gap-4 text-sm flex-shrink-0 w-full md:w-auto">
 								<Button
@@ -416,7 +430,9 @@ const TemperatureSchedule = ({
 												key={`dot-wrapper-${index}`}
 												className="absolute"
 												style={{
-													left: `calc(${parseTimeToPercentage(change.createdAt)}% - 0.375rem)`,
+													left: `calc(${parseTimeToPercentage(
+														change.createdAt,
+													)}% - 0.375rem)`,
 													top: `-9px`,
 													zIndex: "1", // Ensure dots are above the temperature line
 												}}
