@@ -292,7 +292,7 @@ const TemperatureSchedule = ({
 						className="w-full p-4 relative rounded-lg border border-gray-200"
 					>
 						<div className="flex items-center justify-between flex-wrap md:gap-4 gap-2 text-gray-900 mb-7">
-							<div className="flex items-center gap-2 min-w-[180px] flex-shrink-0 w-full md:w-auto">
+							<div className="flex items-center gap-2 min-w-[180px] flex-shrink-0 w-full max-w-[242px] ">
 								<Tooltip content={room.name} style="light">
 									<span className="text-sm font-bold w-[120px] md:w-[140px] overflow-hidden text-ellipsis whitespace-nowrap">
 										{room.name && room.name.length > 15

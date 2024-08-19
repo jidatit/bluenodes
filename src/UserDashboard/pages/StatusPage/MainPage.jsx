@@ -24,10 +24,17 @@ function MainPage() {
 
 	const handleCardClick = (card) => {
 		setLoading(true);
+
 		setTimeout(() => {
-			setActiveCard(card);
+			if (activeCard === card) {
+				// If the clicked card is already the active card, set it to null
+				setActiveCard(null);
+			} else {
+				// Otherwise, set the clicked card as the active card
+				setActiveCard(card);
+			}
 			setLoading(false);
-		}, 500); // Simulate a 500ms delay to show the loader
+		}, 200); // Simulate a 200ms delay to show the loader
 	};
 
 	const handleBackClick = () => {
@@ -35,12 +42,12 @@ function MainPage() {
 		setTimeout(() => {
 			setActiveCard(null);
 			setLoading(false);
-		}, 500);
+		}, 200);
 	};
 
 	return (
 		<>
-			{loading && <Loader />}
+			{/* {loading && <Loader />} */}
 			<div
 				className={`flex flex-col gap-6 transition-opacity duration-500 ${loading ? "opacity-50" : "opacity-100"}`}
 			>
@@ -111,7 +118,7 @@ function MainPage() {
 							onClick={() => handleCardClick("offlineError")}
 							className={`w-1/3 bg-white flex p-6 gap-4 rounded-lg shadow-sm items-center justify-start transition-transform duration-300 ${
 								activeCard === "offlineError"
-									? "ring-primary-400 ring-2 scale-105"
+									? "ring-primary-400 ring-2 scale-105 "
 									: "hover:ring-primary-200 hover:ring-2 cursor-pointer"
 							}`}
 						>

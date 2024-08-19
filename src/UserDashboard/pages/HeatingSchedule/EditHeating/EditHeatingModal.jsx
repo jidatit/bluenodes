@@ -29,7 +29,8 @@ export function EditHeatingModal({
 		applyAlgorithm: "",
 	});
 
-	const { createdHeatingScheduleNames } = useHeatingSchedule();
+	const { createdHeatingScheduleNames, setCreatedHeatingScheduleNames } =
+		useHeatingSchedule();
 
 	const [errorMessages, setErrorMessages] = useState({
 		programName: "",
@@ -230,6 +231,27 @@ export function EditHeatingModal({
 			}
 		});
 
+		const fetchHeatingSchedules = async () => {
+			try {
+				const response = await fetch(
+					"https://api-dev.blue-nodes.app/dev/smartheating/heatingschedule/list",
+					{
+						method: "GET",
+						headers: {
+							Authorization: `Bearer ${token}`,
+						},
+					},
+				);
+				const data = await response.json();
+				const templateNames =
+					data.length > 0 ? data.map((template) => template.templateName) : [];
+				setCreatedHeatingScheduleNames(templateNames);
+			} catch (error) {
+				console.error("Error:", error);
+			}
+		};
+		fetchHeatingSchedules();
+
 		const programName = formData.programName;
 		const isSameAsTemplateName = program.templateName === programName;
 
@@ -387,9 +409,13 @@ export function EditHeatingModal({
 					days: convertScheduleData(scheduleDataTemp),
 				};
 
-				if (combinedData.formData.childSafety !== 'Yes') {
-					finalObj.deviceOverrideTemperatureMin = parseInt(combinedData.formData.minTemp);
-					finalObj.deviceOverrideTemperatureMax = parseInt(combinedData.formData.maxTemp);
+				if (combinedData.formData.childSafety !== "Yes") {
+					finalObj.deviceOverrideTemperatureMin = parseInt(
+						combinedData.formData.minTemp,
+					);
+					finalObj.deviceOverrideTemperatureMax = parseInt(
+						combinedData.formData.maxTemp,
+					);
 				}
 				console.log(combinedData.finalScheduleData);
 				console.log(JSON.stringify(finalObj));
@@ -453,20 +479,43 @@ export function EditHeatingModal({
 	};
 
 	const handleCheckName = () => {
-		const nameExistsInCreatedSchedules = createdHeatingScheduleNames && createdHeatingScheduleNames.includes(formData.programName);
-		const isSameAsTemplateName = program.templateName === formData.programName;
+		const fetchHeatingSchedules = async () => {
+			try {
+				const response = await fetch(
+					"https://api-dev.blue-nodes.app/dev/smartheating/heatingschedule/list",
+					{
+						method: "GET",
+						headers: {
+							Authorization: `Bearer ${token}`,
+						},
+					},
+				);
+				const data = await response.json();
+				const templateNames =
+					data.length > 0 ? data.map((template) => template.templateName) : [];
+				setCreatedHeatingScheduleNames(templateNames);
+				const nameExistsInCreatedSchedules =
+					createdHeatingScheduleNames &&
+					createdHeatingScheduleNames.includes(formData.programName);
+				const isSameAsTemplateName =
+					program.templateName === formData.programName;
 
-		if (!isSameAsTemplateName && nameExistsInCreatedSchedules) {
-			setErrorMessages((prev) => ({
-				...prev,
-				programName: errors.ProgramWithNameAlreadyCreated,
-			}));
-		} else {
-			setErrorMessages((prev) => ({
-				...prev,
-				programName: '',
-			}));
-		}
+				if (!isSameAsTemplateName && nameExistsInCreatedSchedules) {
+					setErrorMessages((prev) => ({
+						...prev,
+						programName: errors.ProgramWithNameAlreadyCreated,
+					}));
+				} else {
+					setErrorMessages((prev) => ({
+						...prev,
+						programName: "",
+					}));
+				}
+			} catch (error) {
+				console.error("Error:", error);
+			}
+		};
+		fetchHeatingSchedules();
 	};
 
 	return (
