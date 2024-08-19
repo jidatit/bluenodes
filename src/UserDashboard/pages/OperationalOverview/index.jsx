@@ -2,14 +2,12 @@ import { useEffect, useState } from "react";
 import { FaFilter } from "react-icons/fa6";
 import OverviewCard from "./components/OverviewCard";
 import { Spinner } from "flowbite-react";
-import { useHeatingSchedule } from "../../../hooks/HeatingScheduleContext";
 
 function OverviewPage() {
 	const [data, setData] = useState([]);
 	const token = localStorage.getItem("token");
 	const [searchTerm, setSearchTerm] = useState("");
 	const [Loader, setLoader] = useState(true);
-	const { setCreatedHeatingScheduleNames } = useHeatingSchedule()
 
 	const fetchAll = () => {
 		fetch(
@@ -29,29 +27,8 @@ function OverviewPage() {
 			.catch((error) => console.error("Error:", error));
 	}
 
-	const fetchAllHeatingSchedules = () => {
-		fetch(
-			"https://api-dev.blue-nodes.app/dev/smartheating/heatingschedule/list",
-			{
-				method: "GET",
-				headers: {
-					Authorization: `Bearer ${token}`,
-				},
-			},
-		)
-			.then((response) => response.json())
-			.then((data) => {
-				const templateNames = data.length > 0 ? data.map((template, index) => {
-					return template.templateName
-				}) : []
-				setCreatedHeatingScheduleNames(templateNames)
-			})
-			.catch((error) => console.error("Error:", error));
-	}
-
 	useEffect(() => {
 		fetchAll()
-		fetchAllHeatingSchedules()
 	}, []);
 
 	const filteredData = data.filter((item) =>

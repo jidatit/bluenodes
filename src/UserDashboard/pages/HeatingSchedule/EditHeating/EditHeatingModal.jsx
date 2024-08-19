@@ -7,6 +7,7 @@ import { errorMessages as errors } from "../../../../globals/errorMessages"; // 
 import ProgressStepper from "../CreateHeating/components/ProgressStepper";
 import GeneralInformation from "../CreateHeating/Steps/GeneralInformation/GeneralInformation";
 import HeatingSchedule from "../CreateHeating/Steps/HeatingSchedule/HeatingSchedule";
+import useHeatingSchedule from "../../../../hooks/useHeatingSchedule";
 
 export function EditHeatingModal({
 	openEditModal,
@@ -27,6 +28,8 @@ export function EditHeatingModal({
 		maxTemp: "",
 		applyAlgorithm: "",
 	});
+
+	const { createdHeatingScheduleNames } = useHeatingSchedule();
 
 	const [errorMessages, setErrorMessages] = useState({
 		programName: "",
@@ -227,6 +230,17 @@ export function EditHeatingModal({
 			}
 		});
 
+		const programName = formData.programName;
+		const isSameAsTemplateName = program.templateName === programName;
+
+		if (!isSameAsTemplateName) {
+			createdHeatingScheduleNames?.forEach((name) => {
+				if (programName === name) {
+					newErrors.programName = errors.ProgramWithNameAlreadyCreated;
+				}
+			});
+		}
+
 		// Validate temperature fields
 		const minTemp = parseFloat(formData.minTemp);
 		const maxTemp = parseFloat(formData.maxTemp);
@@ -366,14 +380,17 @@ export function EditHeatingModal({
 				}
 
 				//Manipulating for API
-				const finalObj = {
+				let finalObj = {
 					templateName: combinedData.formData.programName,
 					allowDeviceOverride:
 						combinedData.formData.childSafety === "No" ? true : false,
-					deviceOverrideTemperatureMin: parseInt(combinedData.formData.minTemp),
-					deviceOverrideTemperatureMax: parseInt(combinedData.formData.maxTemp),
 					days: convertScheduleData(scheduleDataTemp),
 				};
+
+				if (combinedData.formData.childSafety !== 'Yes') {
+					finalObj.deviceOverrideTemperatureMin = parseInt(combinedData.formData.minTemp);
+					finalObj.deviceOverrideTemperatureMax = parseInt(combinedData.formData.maxTemp);
+				}
 				console.log(combinedData.finalScheduleData);
 				console.log(JSON.stringify(finalObj));
 
@@ -434,7 +451,23 @@ export function EditHeatingModal({
 		resetModalState();
 		handleEditModal();
 	};
-	console.log(locationDetails);
+
+	const handleCheckName = () => {
+		const nameExistsInCreatedSchedules = createdHeatingScheduleNames && createdHeatingScheduleNames.includes(formData.programName);
+		const isSameAsTemplateName = program.templateName === formData.programName;
+
+		if (!isSameAsTemplateName && nameExistsInCreatedSchedules) {
+			setErrorMessages((prev) => ({
+				...prev,
+				programName: errors.ProgramWithNameAlreadyCreated,
+			}));
+		} else {
+			setErrorMessages((prev) => ({
+				...prev,
+				programName: '',
+			}));
+		}
+	};
 
 	return (
 		<>
@@ -459,6 +492,7 @@ export function EditHeatingModal({
 										handleChange={handleChange}
 										errorMessages={errorMessages}
 										generalErrorMessage={generalErrorMessage} // Pass general error message to Form1
+										checkName={handleCheckName}
 									/>
 								</div>
 							)}
