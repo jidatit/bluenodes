@@ -185,6 +185,20 @@ function HeatingSchedule({
 	const [copyTargetDays, setCopyTargetDays] = useState([]);
 	const [resizingBox, setResizingBox] = useState(null); // State to track which box is currently being resized
 	const inputRefs = useRef({});
+	const [editableBoxes, setEditableBoxes] = useState({});
+
+  	const editableBoxesRef = useRef(editableBoxes);
+  	const temperatureBoxesRef = useRef(temperatureInputs);
+
+	// Update the ref whenever editableBoxes changes
+	useEffect(() => {
+		temperatureBoxesRef.current = temperatureInputs;
+	}, [temperatureInputs]);
+
+	// Update the ref whenever editableBoxes changes
+	useEffect(() => {
+		editableBoxesRef.current = editableBoxes;
+	}, [editableBoxes]);
 
 	const adjustLayoutForOverlap = (layout, old, newResize) => {
 		// Check if two boxes overlap
@@ -337,8 +351,6 @@ function HeatingSchedule({
 		const maxId = ids.length ? Math.max(...ids) : 0;
 		return `box-${day}-${maxId + 1}`;
 	};
-
-	const [editableBoxes, setEditableBoxes] = useState({});
 
 	const handleTemperatureChange = (event, boxId) => {
 		setTemperatureInputs((prevInputs) => ({
@@ -542,37 +554,9 @@ function HeatingSchedule({
 	};
 
 	const handleCheck = useCallback(() => {
-		if(Object.keys(editableBoxes).length>0){
 
-			const boxId = Object.keys(editableBoxes)[0]
-			const str = boxId;
-			const regex = /^box-(\w+)-\d+$/;
-			const match = str.match(regex);
-
-			if (match) {
-				const day = match[1]; // Extract the day from the first capturing group
-
-				const inputValue = temperatureInputs[boxId]
-
-				// Check if input is a number and within the range 5 to 30
-				if (!isNaN(inputValue) && inputValue >= 5 && inputValue <= 30) {
-					setLayouts((prevLayouts) => ({
-						...prevLayouts,
-						[day]: prevLayouts[day].map((box) =>
-							box.i === boxId ? { ...box, temperature: temperatureInputs[boxId] } : box
-						)
-					}));
-					setEditableBoxes({})
-				}
-
-				else {
-					alert('Please enter a number between 5 and 30.');
-					return
-				}  
-			}
-			
-		}
 		let newCheck = false;
+
 		// Generate boxes for empty time slots
 		Object.keys(layouts).forEach((day) => {
 			const layout = layouts[day];
@@ -614,6 +598,42 @@ function HeatingSchedule({
 			onUpdateLayouts(layouts);
 			onUpdateCheck(newCheck);
 		});
+
+		const currentEditableBoxes = editableBoxesRef.current;
+
+		const currentTemperatureInputs = temperatureBoxesRef.current
+
+		if(Object.keys(currentEditableBoxes).length>0){
+
+			const boxId = Object.keys(currentEditableBoxes)[0]
+			const str = boxId;
+			const regex = /^box-(\w+)-\d+$/;
+			const match = str.match(regex);
+
+			if (match) {
+				const day = match[1]; // Extract the day from the first capturing group
+
+				const inputValue = currentTemperatureInputs[boxId]
+
+				// Check if input is a number and within the range 5 to 30
+				if (!isNaN(inputValue) && inputValue >= 5 && inputValue <= 30) {
+					
+					let currentLayout = {
+						...layouts, // assuming `layouts` is the current state
+						[day]: layouts[day].map((box) =>
+							box.i === boxId ? { ...box, temperature: currentTemperatureInputs[boxId] } : box
+						)
+					};
+					onUpdateLayouts(currentLayout);
+				}
+
+				else {
+					alert('Please enter a number between 5 and 30.');
+					newCheck = true
+				}  
+			}
+			
+		}
 	}, [
 		layouts,
 		setLayouts,
