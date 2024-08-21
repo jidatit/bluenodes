@@ -31,6 +31,14 @@ const OverviewCard = ({ formData }) => {
 			setOpenAlertDeleteModal(true);
 		}
 	};
+	const [count, setCount] = useState(0);
+	
+	const triggerCount = () => {
+		setCount(count+1);
+		if(count % 2 === 0) {
+			setaccordianOpened(true)
+		}
+	};
 
 	return (
 		<>
@@ -121,7 +129,7 @@ const OverviewCard = ({ formData }) => {
 						<div className="w-full bg-[#a3a6ad] opacity-40 mt-3 mb-3 h-[1px]"></div>
 						<div className="w-full flex flex-row justify-start items-center">
 							<Accordion
-								onClick={() => setaccordianOpened(true)}
+								onClick={() => triggerCount()}
 								className="w-full border-none"
 								collapseAll
 							>
