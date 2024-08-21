@@ -111,6 +111,8 @@ const TemperatureSchedule = ({
 	floorId,
 	accordianOpened,
 	accordianOpened2,
+	setaccordianOpened2,
+	setaccordianOpened,
 }) => {
 	const convertUTCToGermanTime = (utcDateTimeString) => {
 		const date = new Date(utcDateTimeString);
@@ -274,6 +276,7 @@ const TemperatureSchedule = ({
 		} else {
 			if (accordianOpened === true) {
 				getFloorDetails(floorId);
+				setaccordianOpened(false);
 				// console.log("call 4");
 			}
 		}
@@ -281,6 +284,7 @@ const TemperatureSchedule = ({
 
 	useEffect(() => {
 		fetchSchedules();
+		setaccordianOpened2(false);
 	}, [accordianOpened2]);
 
 	return (
@@ -320,7 +324,7 @@ const TemperatureSchedule = ({
 								}`}
 								style="light"
 							>
-								<div className="flex items-center gap-1 text-xl w-full md:w-auto">
+								<div className="flex items-center gap-2 text-xl w-full ">
 									<img src={thermometer} alt="Thermometer" />
 									<p className="text-sm">
 										{room.roomTemperature
@@ -335,7 +339,7 @@ const TemperatureSchedule = ({
 								content={`Window: ${room.windowOpen ? "Yes" : "No"}`}
 								style="light"
 							>
-								<div className="flex items-center gap-1 text-xl w-full md:w-auto">
+								<div className="flex items-center gap-2 text-xl w-full ">
 									<img src={windowicon} alt="Window" />
 									<p className="text-sm">{room.windowOpen ? "Yes" : "No"}</p>
 								</div>
@@ -346,7 +350,7 @@ const TemperatureSchedule = ({
 								content={`Algorithm: ${room.algorithm ? "On" : "Off"}`}
 								style="light"
 							>
-								<div className="flex items-center gap-1 text-xl w-full md:w-auto">
+								<div className="flex items-center gap-2 text-xl w-full ">
 									<img src={algo} alt="Algorithm" />
 									<p className="text-sm">{room.algorithm ? "On" : "Off"}</p>
 								</div>
@@ -360,10 +364,10 @@ const TemperatureSchedule = ({
 							>
 								<p className="text-sm text-primary text-center w-[180px]">
 									{scheduleDetails[index]?.schedule?.templateName
-										? scheduleDetails[index].schedule.templateName.length > 15
+										? scheduleDetails[index].schedule.templateName.length > 20
 											? `${scheduleDetails[index].schedule.templateName.slice(
 													0,
-													15,
+													20,
 												)}..`
 											: scheduleDetails[index].schedule.templateName
 										: "None"}

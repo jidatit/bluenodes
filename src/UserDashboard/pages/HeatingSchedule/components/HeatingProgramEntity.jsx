@@ -21,7 +21,7 @@ const HeatingProgramEntity = ({
 	onDeleteProgram,
 	program,
 	fetchAll,
-	response2
+	response2,
 }) => {
 	const token = localStorage.getItem("token");
 
@@ -109,11 +109,11 @@ const HeatingProgramEntity = ({
 
 	const [response, setResponse] = useState(false);
 
-	useEffect(()=>{
-		if(response2){
-			fetchDetails()
+	useEffect(() => {
+		if (response2) {
+			fetchDetails();
 		}
-	},[response2])
+	}, [response2]);
 
 	const handleUpdateRoomsAssigned = (data) => {
 		if (data) {
@@ -269,7 +269,7 @@ const HeatingProgramEntity = ({
 				setInitialData(apiData);
 			})
 			.catch((error) => console.error("Error:", error));
-	}, [response,response2]);
+	}, [response, response2]);
 
 	// console.log(locationDetails)
 	return (
@@ -361,7 +361,7 @@ const HeatingProgramEntity = ({
 						collapseAll
 					>
 						<Accordion.Panel isOpen={isOpen} className="">
-							<Accordion.Title className=" p-2 mb-1 flex-row-reverse items-center justify-end gap-3 border-none hover:bg-white focus:ring-none focus:ring-white bg-white focus:bg-white">
+							<Accordion.Title className=" p-2 mb-1 flex-row-reverse items-center justify-end gap-3 border-none hover:bg-white focus:ring-none focus:ring-white bg-white focus:bg-white outline-0">
 								<p className="text-sm text-gray-900 font-bold">
 									<span
 										className={`text-xs font-normal py-0.5 px-2.5 ml-1 bg-gray-200 text-gray-900 rounded-md`}
@@ -393,7 +393,7 @@ const HeatingProgramEntity = ({
 														collapseAll
 													>
 														<Accordion.Panel>
-															<Accordion.Title className="p-2 mb-1 flex-row-reverse items-center justify-end gap-3 border-none hover:bg-white focus:ring-none focus:ring-white bg-white focus:bg-white">
+															<Accordion.Title className="p-2 mb-1 flex-row-reverse items-center justify-end gap-3 border-none hover:bg-white focus:ring-none focus:ring-white bg-white focus:bg-white outline-0">
 																<p className="text-[12px] text-gray-900 font-bold">
 																	{building.name}
 																	<span
@@ -414,7 +414,7 @@ const HeatingProgramEntity = ({
 																		collapseAll
 																	>
 																		<Accordion.Panel>
-																			<Accordion.Title className="p-2 mb-1 flex-row-reverse items-center justify-end gap-3 border-none hover:bg-white focus:ring-none focus:ring-white bg-white focus:bg-white">
+																			<Accordion.Title className="p-2 mb-1 flex-row-reverse items-center justify-end gap-3 border-none hover:bg-white focus:ring-none focus:ring-white bg-white focus:bg-white outline-0">
 																				<p className="text-[12px] text-gray-900 font-bold">
 																					{floor.name}
 																					<span
