@@ -295,8 +295,8 @@ const TemperatureSchedule = ({
 						key={index}
 						className="w-full p-4 relative rounded-lg border border-gray-200"
 					>
-						<div className="flex items-center justify-between flex-wrap md:gap-4 gap-2 text-gray-900 mb-7">
-							<div className="flex items-center gap-2 min-w-[180px] flex-shrink-0 w-full max-w-[242px] ">
+						<div className="flex items-center justify-between flex-wrap md:gap-4 gap-2 text-gray-900 mb-12 2xl:mb-10">
+							<div className="flex flex-wrap items-center gap-2 w-full 2xl:w-[22%]  2xl:mr-0 ">
 								<Tooltip content={room.name} style="light">
 									<span className="text-sm font-bold w-[120px] md:w-[140px] overflow-hidden text-ellipsis whitespace-nowrap">
 										{room.name && room.name.length > 15
@@ -316,65 +316,68 @@ const TemperatureSchedule = ({
 									</span>
 								</Tooltip>
 							</div>
+							<div className=" flex  items-center gap-4 justify-between w-auto 2xl:w-[25%] 2xl:gap-10">
+								<Tooltip
+									className={`px-2 py-1.5 text-center w-full max-w-96`}
+									content={`Current Temp: ${
+										room.roomTemperature ? `${room.roomTemperature}°C` : "Unset"
+									}`}
+									style="light"
+								>
+									<div className="flex items-center gap-2 text-xl w-full ">
+										<img src={thermometer} alt="Thermometer" />
+										<p className="text-sm w-[80px]">
+											{room.roomTemperature
+												? `${room.roomTemperature}°C`
+												: "Not set"}
+										</p>
+									</div>
+								</Tooltip>
 
-							<Tooltip
-								className={`px-2 py-1.5 text-center max-w-96`}
-								content={`Current Temp: ${
-									room.roomTemperature ? `${room.roomTemperature}°C` : "Not set"
-								}`}
-								style="light"
-							>
-								<div className="flex items-center gap-2 text-xl w-full ">
-									<img src={thermometer} alt="Thermometer" />
-									<p className="text-sm">
-										{room.roomTemperature
-											? `${room.roomTemperature}°C`
-											: "Not set"}
+								<Tooltip
+									className={`px-2 py-1.5 text-center max-w-96`}
+									content={`Window: ${room.windowOpen ? "Yes" : "No"}`}
+									style="light"
+								>
+									<div className="flex items-center gap-2 text-xl w-full ">
+										<img src={windowicon} alt="Window" />
+										<p className="text-sm w-[45px]">{room.windowOpen ? "Yes" : "No"}</p>
+									</div>
+								</Tooltip>
+
+								<Tooltip
+									className={`px-2 py-1.5 text-center max-w-96`}
+									content={`Algorithm: ${room.algorithm ? "On" : "Off"}`}
+									style="light"
+								>
+									<div className="flex items-center gap-2 text-xl w-full ">
+										<img src={algo} alt="Algorithm" />
+										<p className="text-sm w-[45px]">{room.algorithm ? "On" : "Off"}</p>
+									</div>
+								</Tooltip>
+							</div>
+
+							<div className=" w-auto 2xl:w-[20%] flex justify-center">
+								<Tooltip
+									content={
+										scheduleDetails[index]?.schedule?.templateName || "None"
+									}
+									style="light"
+								>
+									<p className="text-sm text-primary">
+										{scheduleDetails[index]?.schedule?.templateName
+											? scheduleDetails[index].schedule.templateName.length > 20
+												? `${scheduleDetails[index].schedule.templateName.slice(
+														0,
+														20,
+													)}..`
+												: scheduleDetails[index].schedule.templateName
+											: "None"}
 									</p>
-								</div>
-							</Tooltip>
+								</Tooltip>
+							</div>
 
-							<Tooltip
-								className={`px-2 py-1.5 text-center max-w-96`}
-								content={`Window: ${room.windowOpen ? "Yes" : "No"}`}
-								style="light"
-							>
-								<div className="flex items-center gap-2 text-xl w-full ">
-									<img src={windowicon} alt="Window" />
-									<p className="text-sm">{room.windowOpen ? "Yes" : "No"}</p>
-								</div>
-							</Tooltip>
-
-							<Tooltip
-								className={`px-2 py-1.5 text-center max-w-96`}
-								content={`Algorithm: ${room.algorithm ? "On" : "Off"}`}
-								style="light"
-							>
-								<div className="flex items-center gap-2 text-xl w-full ">
-									<img src={algo} alt="Algorithm" />
-									<p className="text-sm">{room.algorithm ? "On" : "Off"}</p>
-								</div>
-							</Tooltip>
-
-							<Tooltip
-								content={
-									scheduleDetails[index]?.schedule?.templateName || "None"
-								}
-								style="light"
-							>
-								<p className="text-sm text-primary text-center w-[180px]">
-									{scheduleDetails[index]?.schedule?.templateName
-										? scheduleDetails[index].schedule.templateName.length > 20
-											? `${scheduleDetails[index].schedule.templateName.slice(
-													0,
-													20,
-												)}..`
-											: scheduleDetails[index].schedule.templateName
-										: "None"}
-								</p>
-							</Tooltip>
-
-							<div className="flex items-center gap-4 text-sm flex-shrink-0 w-full md:w-auto">
+							<div className="flex items-center justify-end gap-4 text-sm xl:w-[20%] 2xl:w-[15%]">
 								<Button
 									disabled={room.heatingSchedule === null}
 									onClick={() => {
@@ -436,7 +439,7 @@ const TemperatureSchedule = ({
 												style={{
 													left: `calc(${parseTimeToPercentage(
 														change.createdAt,
-													)}% - 0.375rem)`,
+													)}% + 0.215rem)`,
 													top: `-9px`,
 													zIndex: "1", // Ensure dots are above the temperature line
 												}}
