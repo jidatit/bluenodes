@@ -329,9 +329,9 @@ const TemperatureSchedule = ({
 									<div className="flex items-center gap-2 text-xl w-full ">
 										<img src={thermometer} alt="Thermometer" />
 										<p className="text-sm w-[80px]">
-											{room.roomTemperature
-												? `${room.roomTemperature}°C`
-												: "Not set"}
+										{room.roomTemperature
+    ? `${room.roomTemperature.toFixed(1)}°C`
+    : "Not set"}
 										</p>
 									</div>
 								</Tooltip>
