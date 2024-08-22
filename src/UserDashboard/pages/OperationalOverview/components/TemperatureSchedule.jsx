@@ -363,23 +363,24 @@ const TemperatureSchedule = ({
 								</Tooltip>
 							</div>
 
-							<div className=" w-auto 2xl:w-[20%] flex justify-center">
+							<div className=" w-auto 2xl:w-[20%] flex justify-end">
 								<Tooltip
 									content={
 										scheduleDetails[index]?.schedule?.templateName || "None"
 									}
 									style="light"
 								>
-									<p className="text-sm text-primary">
-										{scheduleDetails[index]?.schedule?.templateName
-											? scheduleDetails[index].schedule.templateName.length > 20
-												? `${scheduleDetails[index].schedule.templateName.slice(
-														0,
-														20,
-													)}..`
-												: scheduleDetails[index].schedule.templateName
-											: "None"}
-									</p>
+    <p
+      className="text-sm text-primary"
+      style={{
+        overflow: 'hidden',
+        whiteSpace: 'nowrap',
+        textOverflow: 'ellipsis',
+        maxWidth: '100%',
+      }}
+    >
+      {scheduleDetails[index]?.schedule?.templateName || "None"}
+    </p>
 								</Tooltip>
 							</div>
 
