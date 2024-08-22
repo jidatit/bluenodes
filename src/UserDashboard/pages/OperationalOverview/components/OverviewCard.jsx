@@ -24,6 +24,7 @@ const OverviewCard = ({ formData }) => {
 	const [buildError, setBuildError] = useState(true);
 	const [accordianOpened, setaccordianOpened] = useState(false);
 	const [accordianOpened2, setaccordianOpened2] = useState(false);
+
 	const [opened, setOpened] = useState(false);
 	const handleDelete = () => {
 		setOpenDeleteModal(false);
@@ -35,15 +36,15 @@ const OverviewCard = ({ formData }) => {
 	const [count, setCount] = useState(0);
 
 	const triggerCount = () => {
-		setCount(count+1);
-		if(count % 2 === 0) {
-			setaccordianOpened(true)
+		setCount(count + 1);
+		if (count % 2 === 0) {
+			setaccordianOpened(true);
 		}
 	};
 	const triggerCount2 = () => {
-		setCount2(count2+1);
-		if(count2 % 2 === 0) {
-			setaccordianOpened2(true)
+		setCount2(count2 + 1);
+		if (count2 % 2 === 0) {
+			setaccordianOpened2(true);
 		}
 	};
 
@@ -135,13 +136,13 @@ const OverviewCard = ({ formData }) => {
 						</div>
 						<div className="w-full bg-[#a3a6ad] opacity-40 mt-3 mb-3 h-[1px]"></div>
 						<div className="w-full flex flex-row justify-start items-center">
-							<Accordion
-								onClick={() => triggerCount()}
-								className="w-full border-none"
-								collapseAll
-							>
+							<Accordion className="w-full border-none" collapseAll>
 								<Accordion.Panel>
-									<Accordion.Title className="p-2 mb-1 flex-row-reverse items-center justify-end gap-1 border-none hover:bg-white focus:ring-none focus:ring-white bg-white focus:bg-white outline-0">
+									<Accordion.Title className="p-2 mb-1 flex-row-reverse items-center justify-end gap-1 border-none relative hover:bg-white focus:ring-none focus:ring-white bg-white focus:bg-white outline-0">
+										<div
+											onClick={() => triggerCount()}
+											className="absolute left-0 right-0 bottom-0 top-0 z-50 bg-transparent"
+										></div>
 										<p className="text-sm text-gray-900 font-bold">
 											<span className="text-xs font-normal py-0.5 px-2.5 ml-1 bg-gray-200 text-gray-900 rounded-md">
 												{formData.numberOfFloors} floors
@@ -151,14 +152,14 @@ const OverviewCard = ({ formData }) => {
 									<Accordion.Content className="rounded-lg p-[16px]">
 										<div className="flex flex-row justify-between gap-4 items-start w-full">
 											<div className="flex flex-col justify-start items-start w-full">
-												<Accordion
-													onClick={() => triggerCount2()}
-													className="w-full border-none"
-													collapseAll
-												>
+												<Accordion className="w-full border-none" collapseAll>
 													{formData.children.map((child, index) => (
 														<Accordion.Panel key={index}>
-															<Accordion.Title className="w-full p-2 mb-1 flex-row-reverse items-center justify-end gap-3 border-none hover:bg-white focus:ring-none focus:ring-white bg-white focus:bg-white outline-0 [&>h2]:w-full">
+															<Accordion.Title className="w-full relative p-2 mb-1 flex-row-reverse items-center justify-end gap-3 border-none hover:bg-white focus:ring-none focus:ring-white bg-white focus:bg-white outline-0 [&>h2]:w-full">
+																<div
+																	onClick={() => triggerCount2()}
+																	className="absolute left-0 right-0 bottom-0 top-0 z-50 bg-transparent"
+																></div>
 																<div className="w-full flex justify-between items-center">
 																	<p className="text-sm w-full text-gray-900 font-bold">
 																		{child.name}

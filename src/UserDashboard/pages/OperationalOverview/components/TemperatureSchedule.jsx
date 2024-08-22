@@ -276,6 +276,7 @@ const TemperatureSchedule = ({
 		} else {
 			if (accordianOpened === true) {
 				getFloorDetails(floorId);
+				fetchSchedules();
 				setaccordianOpened(false);
 				// console.log("call 4");
 			}
@@ -285,6 +286,7 @@ const TemperatureSchedule = ({
 	useEffect(() => {
 		fetchSchedules();
 		setaccordianOpened2(false);
+		// console.log("call1");
 	}, [accordianOpened2]);
 
 	return (
@@ -341,7 +343,9 @@ const TemperatureSchedule = ({
 								>
 									<div className="flex items-center gap-2 text-xl w-full ">
 										<img src={windowicon} alt="Window" />
-										<p className="text-sm w-[45px]">{room.windowOpen ? "Yes" : "No"}</p>
+										<p className="text-sm w-[45px]">
+											{room.windowOpen ? "Yes" : "No"}
+										</p>
 									</div>
 								</Tooltip>
 
@@ -352,7 +356,9 @@ const TemperatureSchedule = ({
 								>
 									<div className="flex items-center gap-2 text-xl w-full ">
 										<img src={algo} alt="Algorithm" />
-										<p className="text-sm w-[45px]">{room.algorithm ? "On" : "Off"}</p>
+										<p className="text-sm w-[45px]">
+											{room.algorithm ? "On" : "Off"}
+										</p>
 									</div>
 								</Tooltip>
 							</div>

@@ -1,9 +1,28 @@
 /* eslint-disable react/prop-types */
+import { useEffect, useState } from "react";
 import GridLayout from "react-grid-layout";
 import "react-grid-layout/css/styles.css";
 import "react-resizable/css/styles.css";
 
 function HeatingScheduleTableStatic({ locationDetails, props }) {
+	const [zoomLevel, setZoomLevel] = useState(1);
+	const updateZoomLevel = () => {
+		const level =
+			window.devicePixelRatio || window.outerWidth / window.innerWidth;
+		setZoomLevel(level);
+	};
+	useEffect(() => {
+		// Set the initial zoom level
+		updateZoomLevel();
+
+		// Update zoom level on window resize (as zoom might change)
+		window.addEventListener("resize", updateZoomLevel);
+
+		// Clean up the event listener on component unmount
+		return () => {
+			window.removeEventListener("resize", updateZoomLevel);
+		};
+	}, []);
 	const daysOfWeek = [
 		"Monday",
 		"Tuesday",
@@ -207,6 +226,27 @@ function HeatingScheduleTableStatic({ locationDetails, props }) {
 		);
 	});
 
+	const [zoomGap, setZoomGap] = useState(0.563);
+
+	useEffect(() => {
+		if (zoomLevel) {
+			if (zoomLevel === 1.100000023841858) {
+				setZoomGap(0.573);
+			} else if (zoomLevel === 1.2) {
+				setZoomGap(0.584);
+			} else if (zoomLevel === 1.25) {
+				setZoomGap(0.584);
+			} else if (zoomLevel === 1.5) {
+				setZoomGap(0.56);
+			} else if (zoomLevel === 1.75) {
+				setZoomGap(1.77);
+			} else {
+				setZoomGap(0.563);
+			}
+			console.log(zoomLevel, zoomGap);
+		}
+	}, [zoomLevel]);
+
 	return (
 		<div
 			className={`flex flex-col gap-4 ${props?.noHeading ? "w-[98%]" : "w-full"} px-2`}
@@ -260,13 +300,18 @@ function HeatingScheduleTableStatic({ locationDetails, props }) {
 						}}
 					>
 						<div
+							style={{
+								gap: `${zoomGap}rem`,
+							}}
 							className={`  absolute top-[16px] left-0 bottom-0 right-0 w-full h-full flex flex-col gap-[9px] z-10`}
 						>
 							{Array.from({ length: 25 * 4 }).map((_, index) => (
 								<div
 									key={index}
 									className="w-full border-t-2 border-[#E8E8E8] border-dotted z-10"
-								></div>
+								>
+									{" "}
+								</div>
 							))}
 						</div>
 						{daysOfWeek.map((day) => (

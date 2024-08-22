@@ -10,6 +10,7 @@ import { FaCircleCheck } from "react-icons/fa6";
 import { errorMessages } from "../../../../../../globals/errorMessages";
 import { IoArrowBackCircle } from "react-icons/io5";
 import { Tooltip } from "flowbite-react";
+import { LuGalleryHorizontal } from "react-icons/lu";
 
 function HeatingSchedule({
 	onUpdateLayouts,
@@ -186,9 +187,27 @@ function HeatingSchedule({
 	const [resizingBox, setResizingBox] = useState(null); // State to track which box is currently being resized
 	const inputRefs = useRef({});
 	const [editableBoxes, setEditableBoxes] = useState({});
+	const [zoomLevel, setZoomLevel] = useState(1);
+	const updateZoomLevel = () => {
+		const level =
+			window.devicePixelRatio || window.outerWidth / window.innerWidth;
+		setZoomLevel(level);
+	};
+	useEffect(() => {
+		// Set the initial zoom level
+		updateZoomLevel();
 
-  	const editableBoxesRef = useRef(editableBoxes);
-  	const temperatureBoxesRef = useRef(temperatureInputs);
+		// Update zoom level on window resize (as zoom might change)
+		window.addEventListener("resize", updateZoomLevel);
+
+		// Clean up the event listener on component unmount
+		return () => {
+			window.removeEventListener("resize", updateZoomLevel);
+		};
+	}, []);
+
+	const editableBoxesRef = useRef(editableBoxes);
+	const temperatureBoxesRef = useRef(temperatureInputs);
 
 	// Update the ref whenever editableBoxes changes
 	useEffect(() => {
@@ -273,59 +292,76 @@ function HeatingSchedule({
 
 				const inputValue = temperatureInputs[boxId];
 
-          // Check if input is a number and within the range 5 to 30
-          if (!isNaN(inputValue) && inputValue >= 5 && inputValue <= 30) {
-            setLayouts((prevLayouts) => ({
-              ...prevLayouts,
-              [day]: prevLayouts[day].map((box) =>
-                box.i === boxId ? { ...box, temperature: temperatureInputs[boxId] } : box
-              )
-            }));
-            setEditableBoxes({})
-          }
+				// Check if input is a number and within the range 5 to 30
+				if (!isNaN(inputValue) && inputValue >= 5 && inputValue <= 30) {
+					setLayouts((prevLayouts) => ({
+						...prevLayouts,
+						[day]: prevLayouts[day].map((box) =>
+							box.i === boxId
+								? { ...box, temperature: temperatureInputs[boxId] }
+								: box,
+						),
+					}));
+					setEditableBoxes({});
+				} else {
+					alert("Please enter a number between 5 and 30.");
+				}
+			}
+			return;
+		} else if (isResizingOrDragging) {
+			// Ignore the click if a resize or drag event is in progress
+			return;
+		} else if (event.target.closest(".box")) {
+			// If the click happened inside a box, do nothing
+			return;
+		}
 
-          else {
-            alert('Please enter a number between 5 and 30.');
-          }
+		const container = event.currentTarget;
+		const rect = container.getBoundingClientRect();
+		const xPosition = event.clientX - rect.left;
+		const yPosition =
+			(event.clientY - rect.top + container.scrollTop) / (rowHeight + 10);
+		const rowIndex = Math.floor(yPosition);
+		if (rowIndex >= 24 * 4) return; // Ignore clicks below the 24th row
+		const dayIndex = Math.floor(xPosition / (rect.width / daysOfWeek.length));
+		const day = daysOfWeek[dayIndex];
+		const newBoxId = generateNewBoxId(day, layouts);
+		let newBoxLayout;
+		if (rowIndex <= 0) {
+			return;
+		}
+		if (rowIndex > 92) {
+			newBoxLayout = {
+				i: newBoxId,
+				x: 0,
+				y: rowIndex - (4 - (96 - rowIndex)),
+				w: 1,
+				h: 4,
+				minW: 1,
+				maxW: 2,
+				minH: 4,
+				maxH: 24 * 4,
+				temperature: null,
+			};
+		} else {
+			newBoxLayout = {
+				i: newBoxId,
+				x: 0,
+				y: rowIndex - 1,
+				w: 1,
+				h: 4,
+				minW: 1,
+				maxW: 2,
+				minH: 4,
+				maxH: 24 * 4,
+				temperature: null,
+			};
+		}
 
-        }
-        return
-      }
-
-      else if (isResizingOrDragging) {
-        // Ignore the click if a resize or drag event is in progress
-        return;
-      }
-
-      else if (event.target.closest('.box')) {
-        // If the click happened inside a box, do nothing
-        return;
-      }
-
-      const container = event.currentTarget;
-      const rect = container.getBoundingClientRect();
-      const xPosition = event.clientX - rect.left;
-      const yPosition = (event.clientY - rect.top + container.scrollTop) / (rowHeight + 10);
-      const rowIndex = Math.floor(yPosition);
-      if (rowIndex >= 24*4) return; // Ignore clicks below the 24th row
-      const dayIndex = Math.floor(xPosition / (rect.width / daysOfWeek.length));
-      const day = daysOfWeek[dayIndex];
-      const newBoxId = generateNewBoxId(day, layouts);
-      let newBoxLayout
-      if(rowIndex<=0){
-        return
-      }
-      if(rowIndex>92){
-        newBoxLayout = { i: newBoxId, x: 0, y: rowIndex-(4-(96-rowIndex)), w: 1, h: 4, minW: 1, maxW: 2, minH: 4, maxH: 24*4, temperature: null };
-      }
-      else{
-        newBoxLayout = { i: newBoxId, x: 0, y: rowIndex-1, w: 1, h: 4, minW: 1, maxW: 2, minH: 4, maxH: 24*4, temperature: null };
-      }
-      
-      setLayouts((prevLayouts) => ({
-        ...prevLayouts,
-        [day]: [...prevLayouts[day], newBoxLayout]
-      }));
+		setLayouts((prevLayouts) => ({
+			...prevLayouts,
+			[day]: [...prevLayouts[day], newBoxLayout],
+		}));
 
 		// Focus the input after adding the box
 		setTimeout(() => {
@@ -554,7 +590,6 @@ function HeatingSchedule({
 	};
 
 	const handleCheck = useCallback(() => {
-
 		let newCheck = false;
 
 		// Generate boxes for empty time slots
@@ -601,11 +636,10 @@ function HeatingSchedule({
 
 		const currentEditableBoxes = editableBoxesRef.current;
 
-		const currentTemperatureInputs = temperatureBoxesRef.current
+		const currentTemperatureInputs = temperatureBoxesRef.current;
 
-		if(Object.keys(currentEditableBoxes).length>0){
-
-			const boxId = Object.keys(currentEditableBoxes)[0]
+		if (Object.keys(currentEditableBoxes).length > 0) {
+			const boxId = Object.keys(currentEditableBoxes)[0];
 			const str = boxId;
 			const regex = /^box-(\w+)-\d+$/;
 			const match = str.match(regex);
@@ -613,26 +647,24 @@ function HeatingSchedule({
 			if (match) {
 				const day = match[1]; // Extract the day from the first capturing group
 
-				const inputValue = currentTemperatureInputs[boxId]
+				const inputValue = currentTemperatureInputs[boxId];
 
 				// Check if input is a number and within the range 5 to 30
 				if (!isNaN(inputValue) && inputValue >= 5 && inputValue <= 30) {
-					
 					let currentLayout = {
 						...layouts, // assuming `layouts` is the current state
 						[day]: layouts[day].map((box) =>
-							box.i === boxId ? { ...box, temperature: currentTemperatureInputs[boxId] } : box
-						)
+							box.i === boxId
+								? { ...box, temperature: currentTemperatureInputs[boxId] }
+								: box,
+						),
 					};
 					onUpdateLayouts(currentLayout);
+				} else {
+					alert("Please enter a number between 5 and 30.");
+					newCheck = true;
 				}
-
-				else {
-					alert('Please enter a number between 5 and 30.');
-					newCheck = true
-				}  
 			}
-			
 		}
 	}, [
 		layouts,
@@ -703,6 +735,26 @@ function HeatingSchedule({
 		const uniqueKey = `${day}-${boxId}`;
 		setHoveredBoxes((prev) => ({ ...prev, [uniqueKey]: false }));
 	};
+
+	const [zoomGap, setZoomGap] = useState(1.75);
+
+	useEffect(() => {
+		if (zoomLevel) {
+			if (zoomLevel === 1.100000023841858) {
+				setZoomGap(1.76);
+			} else if (zoomLevel === 1.2) {
+				setZoomGap(1.78);
+			} else if (zoomLevel === 1.25) {
+				setZoomGap(1.775);
+			} else if (zoomLevel === 1.5) {
+				setZoomGap(1.75);
+			} else if (zoomLevel === 1.75) {
+				setZoomGap(1.77);
+			} else {
+				setZoomGap(1.75);
+			}
+		}
+	}, [zoomLevel]);
 
 	return (
 		<div className="flex flex-col gap-4 w-full">
@@ -831,7 +883,12 @@ function HeatingSchedule({
 						className="custom"
 					>
 						<div
-							className={`  absolute top-[22px] left-0 bottom-0 right-0 w-full h-full flex flex-col gap-[28px] z-10`}
+							className="absolute top-[22px] left-0 bottom-0 right-0 w-full h-full flex flex-col z-10"
+							style={{
+								gap: `${zoomGap}rem`,
+								// transform: `scale(${zoomLevel})`,
+								transformOrigin: "top left",
+							}}
 						>
 							{Array.from({ length: 24 * 4 }).map((_, index) => (
 								<div
@@ -840,7 +897,6 @@ function HeatingSchedule({
 								></div>
 							))}
 						</div>
-
 						{daysOfWeek.map((day) => (
 							<div
 								key={day}

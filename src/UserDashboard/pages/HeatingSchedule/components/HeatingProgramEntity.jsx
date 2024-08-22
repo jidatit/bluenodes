@@ -25,7 +25,6 @@ const HeatingProgramEntity = ({
 }) => {
 	const token = localStorage.getItem("token");
 
-	// console.log("static", formData)
 	const [openDeleteModal, setOpenDeleteModal] = useState(false);
 	const [openAlertDeleteModal, setOpenAlertDeleteModal] = useState(false);
 	const [openAssignModal, setOpenAssignModal] = useState(false);
@@ -35,12 +34,6 @@ const HeatingProgramEntity = ({
 	const [isOpen, setIsOpen] = useState(false);
 	const [fetched, setfetched] = useState(false);
 	const [Loader, setLoader] = useState(true);
-	const handleToggle = () => {
-		setIsOpen(!isOpen);
-		if (!isOpen) {
-			console.log("fetching");
-		}
-	};
 
 	const handleAssign = () => {
 		setOpenAssignModal(!openAssignModal);
@@ -53,7 +46,14 @@ const HeatingProgramEntity = ({
 	const [toastMessage, setToastMessage] = useState("");
 	const [isSuccess, setIsSuccess] = useState(true);
 	const [accordianOpened, setaccordianOpened] = useState(true);
+	const [count, setCount] = useState(0);
 
+	const triggerCount = () => {
+		setCount(count + 1);
+		if (count % 2 === 0) {
+			fetchDetails();
+		}
+	};
 	const handleDelete = async () => {
 		fetchDetails();
 
@@ -85,7 +85,7 @@ const HeatingProgramEntity = ({
 
 			if (response.ok) {
 				// Handle successful delete
-				// console.log("Delete successful");
+
 				setIsSuccess(true);
 				setToastMessage(errorMessages.deleteSuccessfull);
 				// Perform any state updates or UI changes
@@ -178,6 +178,7 @@ const HeatingProgramEntity = ({
 		}
 		return 0;
 	};
+
 	const options = {
 		onOpen: (item) => {
 			// console.log("accordion item has been shown");
@@ -229,7 +230,6 @@ const HeatingProgramEntity = ({
 		)
 			.then((response) => response.json())
 			.then((data) => {
-				// console.log(data,"from backend")
 				const apiData = {
 					buildings: data.map((building) => {
 						// Calculate the total rooms in the building
@@ -271,7 +271,6 @@ const HeatingProgramEntity = ({
 			.catch((error) => console.error("Error:", error));
 	}, [response, response2]);
 
-	// console.log(locationDetails)
 	return (
 		<>
 			<div className="w-full relative border-gray-200 border-[1px] flex flex-col bg-white rounded-[8px] px-4 py-4 justify-center items-center">
@@ -355,13 +354,13 @@ const HeatingProgramEntity = ({
 				<div className="w-full bg-[#a3a6ad] opacity-40 mt-3 mb-3 h-[1px]"></div>
 
 				<div className="w-full flex flex-row justify-start items-center">
-					<Accordion
-						onClick={fetchDetails}
-						className="w-full border-none"
-						collapseAll
-					>
+					<Accordion className="w-full border-none" collapseAll>
 						<Accordion.Panel isOpen={isOpen} className="">
-							<Accordion.Title className=" p-2 mb-1 flex-row-reverse items-center justify-end gap-3 border-none hover:bg-white focus:ring-none focus:ring-white bg-white focus:bg-white outline-0">
+							<Accordion.Title className=" p-2 mb-1 relative flex-row-reverse items-center justify-end gap-3 border-none hover:bg-white focus:ring-none focus:ring-white bg-white focus:bg-white outline-0">
+								<div
+									onClick={() => triggerCount()}
+									className="absolute left-0 right-0 bottom-0 top-0 z-50 bg-transparent"
+								></div>
 								<p className="text-sm text-gray-900 font-bold">
 									<span
 										className={`text-xs font-normal py-0.5 px-2.5 ml-1 bg-gray-200 text-gray-900 rounded-md`}
@@ -384,7 +383,7 @@ const HeatingProgramEntity = ({
 													Assign rooms
 												</Button>
 											</div>
-											{/* {console.log(locationDetails)} */}
+
 											{locationDetails?.assignedRooms?.map(
 												(building, index) => (
 													<Accordion
