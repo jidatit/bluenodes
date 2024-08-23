@@ -32,8 +32,8 @@ const OverviewCard = ({ formData }) => {
 			setOpenAlertDeleteModal(true);
 		}
 	};
-	const [count2, setCount2] = useState(0);
 	const [count, setCount] = useState(0);
+	const [indexCount, setIndexCount] = useState();
 
 	const triggerCount = () => {
 		setCount(count + 1);
@@ -41,12 +41,21 @@ const OverviewCard = ({ formData }) => {
 			setaccordianOpened(true);
 		}
 	};
-	const triggerCount2 = () => {
-		setCount2(count2 + 1);
-		if (count2 % 2 === 0) {
-			setaccordianOpened2(true);
-		}
+	const [openedIndex, setOpenedIndex] = useState(null);
+
+	const triggerCount2 = (index) => {
+	
+	  if (openedIndex === index) {
+		setOpenedIndex(null);
+		setaccordianOpened2(false); 
+	  } else {
+		
+		setOpenedIndex(index);
+		setaccordianOpened2(true);
+	  }
 	};
+	  
+
 
 	return (
 		<>
@@ -157,7 +166,7 @@ const OverviewCard = ({ formData }) => {
 														<Accordion.Panel key={index}>
 															<Accordion.Title className="w-full relative p-2 mb-1 flex-row-reverse items-center justify-end gap-3 border-none hover:bg-white focus:ring-none focus:ring-white bg-white focus:bg-white outline-0 [&>h2]:w-full">
 																<div
-																	onClick={() => triggerCount2()}
+																	onClick={() =>{ triggerCount2(index)}}
 																	className="absolute left-0 right-0 bottom-0 top-0 z-50 bg-transparent"
 																></div>
 																<div className="w-full flex justify-between items-center">

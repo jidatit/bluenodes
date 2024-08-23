@@ -559,6 +559,27 @@ const EditHeatingProgramModal = ({
 					combinedData.formData.maxTemp,
 				);
 			}
+			const fetchHeatingSchedules = async () => {
+				try {
+					const response = await fetch(
+						"https://api-dev.blue-nodes.app/dev/smartheating/heatingschedule/list",
+						{
+							method: "GET",
+							headers: {
+								Authorization: `Bearer ${token}`,
+							},
+						},
+					);
+					const data = await response.json();
+					const templateNames =
+						data.length > 0
+							? data.map((template) => template.templateName)
+							: [];
+					setCreatedHeatingScheduleNames(templateNames);
+				} catch (error) {
+					console.error("Error:", error);
+				}
+			};
 
 			try {
 				const resp = await fetch(
@@ -594,6 +615,8 @@ const EditHeatingProgramModal = ({
 					setTimeout(() => {
 						setShowToast(false);
 					}, 4000);
+					handleCloseModal();
+					fetchHeatingSchedules();
 				} else {
 					setIsSuccess(false);
 					setToastMessage(errors.heatingScheduleEditedFailed);
@@ -647,20 +670,20 @@ const EditHeatingProgramModal = ({
 				const templateNames =
 					data.length > 0 ? data.map((template) => template.templateName) : [];
 				setCreatedHeatingScheduleNames(templateNames);
-				const exists =
-					createdHeatingScheduleNames &&
-					createdHeatingScheduleNames.includes(formData.programName);
-				if (exists) {
-					setErrorMessages((prev) => ({
-						...prev,
-						programName: errors.ProgramWithNameAlreadyCreated,
-					}));
-				}
 			} catch (error) {
 				console.error("Error:", error);
 			}
 		};
 		fetchHeatingSchedules();
+		const exists =
+			createdHeatingScheduleNames &&
+			createdHeatingScheduleNames.includes(formData.programName);
+		if (exists) {
+			setErrorMessages((prev) => ({
+				...prev,
+				programName: errors.ProgramWithNameAlreadyCreated,
+			}));
+		}
 	};
 
 	return (
