@@ -10,22 +10,21 @@ function OverviewPage() {
 	const [Loader, setLoader] = useState(true);
 
 	const fetchAll = () => {
-		axios.get(
-			ApiUrls.SMARTHEATING_OPERATIONALVIEW.LIST
-		)
+		axios
+			.get(ApiUrls.SMARTHEATING_OPERATIONALVIEW.LIST)
 			.then((response) => response.data)
 			.then((data) => {
 				setData(data);
 				setLoader(false);
 			})
 			.catch((error) => console.error("Error:", error));
-	}
+	};
 
 	useEffect(() => {
-		fetchAll()
+		fetchAll();
 	}, []);
 
-	const filteredData = data.filter((item) =>
+	const filteredData = data?.filter((item) =>
 		item.name.toLowerCase().includes(searchTerm.toLowerCase()),
 	);
 
@@ -82,7 +81,7 @@ function OverviewPage() {
 						<Spinner aria-label="Extra large spinner example" size="xl" />
 					</div>
 				)}
-				{filteredData.map((item) => (
+				{filteredData?.map((item) => (
 					<OverviewCard key={item.id} formData={item} />
 				))}
 			</div>

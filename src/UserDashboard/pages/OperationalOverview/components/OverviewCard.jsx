@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaRegCopy, FaEdit } from "react-icons/fa";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import {
@@ -17,6 +17,7 @@ import bimg from "../../../../assets/images/Image.png";
 import TemperatureSchedule from "./TemperatureSchedule";
 import { FaCircleExclamation } from "react-icons/fa6";
 import { errorMessages as errors } from "../../../../globals/errorMessages"; // Import error messages
+import React, { memo } from "react";
 
 const OverviewCard = ({ formData }) => {
 	const [openDeleteModal, setOpenDeleteModal] = useState(false);
@@ -44,18 +45,14 @@ const OverviewCard = ({ formData }) => {
 	const [openedIndex, setOpenedIndex] = useState(null);
 
 	const triggerCount2 = (index) => {
-	
-	  if (openedIndex === index) {
-		setOpenedIndex(null);
-		setaccordianOpened2(false); 
-	  } else {
-		
-		setOpenedIndex(index);
-		setaccordianOpened2(true);
-	  }
+		if (openedIndex === index) {
+			setOpenedIndex(null);
+			setaccordianOpened2(false);
+		} else {
+			setOpenedIndex(index);
+			setaccordianOpened2(true);
+		}
 	};
-	  
-
 
 	return (
 		<>
@@ -166,7 +163,9 @@ const OverviewCard = ({ formData }) => {
 														<Accordion.Panel key={index}>
 															<Accordion.Title className="w-full relative p-2 mb-1 flex-row-reverse items-center justify-end gap-3 border-none hover:bg-white focus:ring-none focus:ring-white bg-white focus:bg-white outline-0 [&>h2]:w-full">
 																<div
-																	onClick={() =>{ triggerCount2(index)}}
+																	onClick={() => {
+																		triggerCount2(index);
+																	}}
 																	className="absolute left-0 right-0 bottom-0 top-0 z-50 bg-transparent"
 																></div>
 																<div className="w-full flex justify-between items-center">

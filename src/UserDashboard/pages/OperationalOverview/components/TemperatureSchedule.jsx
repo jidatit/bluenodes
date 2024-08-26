@@ -1,12 +1,13 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, { useEffect, useRef, useState } from "react";
 import thermometer from "../../../../assets/icons/thermometer-02.png";
 import windowicon from "../../../../assets/icons/Window.png";
 import algo from "../../../../assets/icons/algorithm.png";
-import {Button, Tooltip} from "flowbite-react";
-import {ViewRoomScheduleModal} from "./ViewRoomScheduleModal";
+import { Button, Tooltip } from "flowbite-react";
+import { ViewRoomScheduleModal } from "./ViewRoomScheduleModal";
 import EditHeatingProgramModal from "./EditHeatingProgramModal";
 import axios from "axios";
 import ApiUrls from "../../../../globals/apiURL.js";
+import { memo } from "react";
 
 // Function to determine the background and text colors based on type
 const handleTypeColor = (type) => {
@@ -188,6 +189,9 @@ const TemperatureSchedule = ({
 		setSelectedRoomSchedId(roomSchedId);
 		setOpenModal(!openModal);
 	};
+	// useEffect(() => {
+	// 	console.log("temp schdeuled rendere");
+	// }, []);
 
 	const handleOpenEditModal = (room) => {
 		setOpenEditModal(!openEditModal);
@@ -195,7 +199,11 @@ const TemperatureSchedule = ({
 	};
 	const fetchHeatingScheduleForRoom = async (heatingScheduleId) => {
 		try {
-			const resp = await axios.get(ApiUrls.SMARTHEATING_HEATINGSCHEDULE.HEATINGSCHEDULE_ID(heatingScheduleId))
+			const resp = await axios.get(
+				ApiUrls.SMARTHEATING_HEATINGSCHEDULE.HEATINGSCHEDULE_ID(
+					heatingScheduleId,
+				),
+			);
 			return await resp.data;
 		} catch (error) {
 			console.error("Error fetching heating schedule:", error);
@@ -245,7 +253,9 @@ const TemperatureSchedule = ({
 
 	const getFloorDetails = async (id) => {
 		try {
-			const resp = await axios.get(ApiUrls.SMARTHEATING_OPERATIONALVIEW.DETAILS(id))
+			const resp = await axios.get(
+				ApiUrls.SMARTHEATING_OPERATIONALVIEW.DETAILS(id),
+			);
 			const data = await resp.data;
 			const pdata = processRoomsData(data);
 			setRoomsDetail(pdata);
@@ -313,9 +323,9 @@ const TemperatureSchedule = ({
 									<div className="flex items-center gap-2 text-xl w-full ">
 										<img src={thermometer} alt="Thermometer" />
 										<p className="text-sm w-[80px]">
-										{room.roomTemperature
-    ? `${room.roomTemperature.toFixed(1)}°C`
-    : "Not set"}
+											{room.roomTemperature
+												? `${room.roomTemperature.toFixed(1)}°C`
+												: "Not set"}
 										</p>
 									</div>
 								</Tooltip>
@@ -354,17 +364,17 @@ const TemperatureSchedule = ({
 									}
 									style="light"
 								>
-    <p
-      className="text-sm text-primary"
-      style={{
-        overflow: 'hidden',
-        whiteSpace: 'nowrap',
-        textOverflow: 'ellipsis',
-        maxWidth: '100%',
-      }}
-    >
-      {scheduleDetails[index]?.schedule?.templateName || "None"}
-    </p>
+									<p
+										className="text-sm text-primary"
+										style={{
+											overflow: "hidden",
+											whiteSpace: "nowrap",
+											textOverflow: "ellipsis",
+											maxWidth: "100%",
+										}}
+									>
+										{scheduleDetails[index]?.schedule?.templateName || "None"}
+									</p>
 								</Tooltip>
 							</div>
 
@@ -606,14 +616,15 @@ const TemperatureSchedule = ({
 					roomName={roomName}
 				/>
 			)}
-
-			<EditHeatingProgramModal
-				fetchFloorDetails={getFloorDetails}
-				openModal={openEditModal}
-				handleOpenModal={handleOpenEditModal}
-				room={selectedRoom}
-				updateReplaced={updateReplacedF}
-			/>
+			{handleOpenEditModal && openEditModal && (
+				<EditHeatingProgramModal
+					fetchFloorDetails={getFloorDetails}
+					openModal={openEditModal}
+					handleOpenModal={handleOpenEditModal}
+					room={selectedRoom}
+					updateReplaced={updateReplacedF}
+				/>
+			)}
 		</>
 	);
 };

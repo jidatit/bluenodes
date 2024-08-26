@@ -24,8 +24,8 @@ const HeatingProgramEntity = ({
 	program,
 	fetchAll,
 	response2,
+	initialData,
 }) => {
-
 	const [openDeleteModal, setOpenDeleteModal] = useState(false);
 	const [openAlertDeleteModal, setOpenAlertDeleteModal] = useState(false);
 	const [openAssignModal, setOpenAssignModal] = useState(false);
@@ -73,7 +73,9 @@ const HeatingProgramEntity = ({
 
 		// If no matching program, proceed to call the delete API
 		try {
-			const response = await axios.delete(ApiUrls.SMARTHEATING_HEATINGSCHEDULE.HEATINGSCHEDULE_ID(program.id))
+			const response = await axios.delete(
+				ApiUrls.SMARTHEATING_HEATINGSCHEDULE.HEATINGSCHEDULE_ID(program.id),
+			);
 
 			if (response.status >= 200 && response.status < 300) {
 				// Handle successful delete
@@ -143,7 +145,9 @@ const HeatingProgramEntity = ({
 
 	const fetchDetails = async () => {
 		try {
-			const response = await axios.get(ApiUrls.SMARTHEATING_HEATINGSCHEDULE.DETAILS(program.id))
+			const response = await axios.get(
+				ApiUrls.SMARTHEATING_HEATINGSCHEDULE.DETAILS(program.id),
+			);
 			const data = await response.data;
 			setLocationDetails(data); // Update the state with the fetched data
 			setLoader(false);
@@ -200,54 +204,56 @@ const HeatingProgramEntity = ({
 		return `${day}/${month}/${year} ${formattedHours}:${minutes} ${ampm}`;
 	};
 
-	const [initialData, setInitialData] = useState({});
+	// const [initialData, setInitialData] = useState({});
+	// const fetchAllLocations = () => {
+	// 	axios
+	// 		.get(ApiUrls.SMARTHEATING_LOCATIONS.LOCATIONS(true, true, true, true))
+	// 		.then((response) => response.data)
+	// 		.then((data) => {
+	// 			console.log("program id", program.id);
+	// 			const apiData = {
+	// 				buildings: data.map((building) => {
+	// 					// Calculate the total rooms in the building
+	// 					const totalRooms = building.children.reduce(
+	// 						(sum, floor) => sum + floor.children.length,
+	// 						0,
+	// 					);
 
-	useEffect(() => {
-		axios.get(
-			ApiUrls.SMARTHEATING_LOCATIONS.LOCATIONS(true, true, true, true)
-		)
-			.then((response) => response.data)
-			.then(data => {
-				const apiData = {
-					buildings: data.map((building) => {
-						// Calculate the total rooms in the building
-						const totalRooms = building.children.reduce(
-							(sum, floor) => sum + floor.children.length,
-							0,
-						);
-
-						return {
-							id: building.id,
-							name: building.name,
-							roomsAssigned: building.assignedNumberOfRooms,
-							totalRooms: totalRooms,
-							floors: building.children.map((floor) => ({
-								id: floor.id,
-								name: floor.name,
-								roomsAssigned: floor.assignedNumberOfRooms,
-								totalRooms: floor.children.length,
-								rooms: floor.children.map((room) => ({
-									id: room.id,
-									name: room.name,
-									type: room.type,
-									algorithmOn: false,
-									programAssigned: room.heatingSchedule
-										? room.heatingSchedule.templateName
-										: null,
-									currentTemperature: room.roomTemperature,
-									assigned:
-										room.assignedNumberOfRooms !== 0 &&
-										room.heatingSchedule.id === program.id,
-								})),
-							})),
-						};
-					}),
-				};
-
-				setInitialData(apiData);
-			})
-			.catch((error) => console.error("Error:", error));
-	}, [response, response2]);
+	// 					return {
+	// 						id: building.id,
+	// 						name: building.name,
+	// 						roomsAssigned: building.assignedNumberOfRooms,
+	// 						totalRooms: totalRooms,
+	// 						floors: building.children.map((floor) => ({
+	// 							id: floor.id,
+	// 							name: floor.name,
+	// 							roomsAssigned: floor.assignedNumberOfRooms,
+	// 							totalRooms: floor.children.length,
+	// 							rooms: floor.children.map((room) => ({
+	// 								id: room.id,
+	// 								name: room.name,
+	// 								type: room.type,
+	// 								algorithmOn: false,
+	// 								programAssigned: room.heatingSchedule
+	// 									? room.heatingSchedule.templateName
+	// 									: null,
+	// 								currentTemperature: room.roomTemperature,
+	// 								assigned:
+	// 									room.assignedNumberOfRooms !== 0 &&
+	// 									room.heatingSchedule.id === program.id,
+	// 							})),
+	// 						})),
+	// 					};
+	// 				}),
+	// 			};
+	// 			console.log("assigned", apiData?.assigned);
+	// 			setInitialData(apiData);
+	// 		})
+	// 		.catch((error) => console.error("Error:", error));
+	// };
+	// useEffect(() => {
+	// 	fetchAllLocations();
+	// }, [response, response2]);
 
 	return (
 		<>
@@ -466,8 +472,8 @@ const HeatingProgramEntity = ({
 						openAssignModal={openAssignModal}
 						handleAssign={handleAssign}
 						onUpdate={handleUpdateRoomsAssigned}
-						initialData={initialData}
 						program={program}
+						initialData={initialData}
 					/>
 				)}
 				{openCloneModal && (

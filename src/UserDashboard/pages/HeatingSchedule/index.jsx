@@ -9,9 +9,9 @@ import { errorMessages } from "../../../globals/errorMessages";
 import { Spinner } from "flowbite-react";
 import axios from "axios";
 import ApiUrls from "../../../globals/apiURL.js";
+import { flushSync } from "react-dom";
 
 function HeatingSchedulePage() {
-
 	// Adding use state React Hooks here
 	const [programList, setProgramList] = useState([]);
 	const [filteredPrograms, setFilteredPrograms] = useState([]);
@@ -19,7 +19,6 @@ function HeatingSchedulePage() {
 	const [selectedFilter, setSelectedFilter] = useState("Filter");
 	const [isDropdownOpen, setDropdownOpen] = useState(false); // Define state to manage dropdown visibility
 	const [openModal, setOpenModal] = useState(false);
-
 
 	const handleOpenModal = () => {
 		setOpenModal(!openModal);
@@ -103,7 +102,6 @@ function HeatingSchedulePage() {
 		setTimeout(() => {
 			setShowToast(false);
 		}, 4000);
-
 	};
 
 	const handleCloneProgram = (data) => {
@@ -158,9 +156,8 @@ function HeatingSchedulePage() {
 	const [Loader, setLoader] = useState(true);
 
 	const fetchAllHeatingSchedules = async () => {
-		await axios.get(
-			ApiUrls.SMARTHEATING_HEATINGSCHEDULE.LIST
-		)
+		await axios
+			.get(ApiUrls.SMARTHEATING_HEATINGSCHEDULE.LIST)
 			.then((response) => response.data)
 			.then((data) => {
 				setProgramList(data);
@@ -185,6 +182,55 @@ function HeatingSchedulePage() {
 			setFilteredPrograms(programList);
 		}
 	}, [searchQuery, programList]);
+	const [initialData, setInitialData] = useState({});
+	const fetchAllLocations = () => {
+		axios
+			.get(ApiUrls.SMARTHEATING_LOCATIONS.LOCATIONS(true, true, true, true))
+			.then((response) => response.data)
+			.then((data) => {
+				const apiData = {
+					buildings: data.map((building) => {
+						// Calculate the total rooms in the building
+						const totalRooms = building.children.reduce(
+							(sum, floor) => sum + floor.children.length,
+							0,
+						);
+
+						return {
+							id: building.id,
+							name: building.name,
+							roomsAssigned: building.assignedNumberOfRooms,
+							totalRooms: totalRooms,
+							floors: building.children.map((floor) => ({
+								id: floor.id,
+								name: floor.name,
+								roomsAssigned: floor.assignedNumberOfRooms,
+								totalRooms: floor.children.length,
+								rooms: floor.children.map((room) => ({
+									id: room.id,
+									name: room.name,
+									type: room.type,
+									algorithmOn: false,
+									programAssigned: room.heatingSchedule
+										? room.heatingSchedule.templateName
+										: null,
+									currentTemperature: room.roomTemperature,
+									// assigned:
+									// 	room.assignedNumberOfRooms !== 0 &&
+									// 	room.heatingSchedule.id === program.id,
+								})),
+							})),
+						};
+					}),
+				};
+
+				setInitialData(apiData);
+			})
+			.catch((error) => console.error("Error:", error));
+	};
+	useEffect(() => {
+		fetchAllLocations();
+	}, [response, response2]);
 
 	const handleKeyDown = (e) => {
 		if (e.keyCode === 13) {
@@ -290,6 +336,7 @@ function HeatingSchedulePage() {
 						program={program}
 						fetchAll={fetchAllHeatingSchedules}
 						response2={response2}
+						initialData={initialData}
 					/>
 				))}
 			{Loader && (

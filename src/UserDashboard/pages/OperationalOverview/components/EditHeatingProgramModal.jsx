@@ -60,16 +60,20 @@ const EditHeatingProgramModal = ({
 
 	const handleConfirmReplace = () => {
 		const roomId = room.id;
-		axios.get(ApiUrls.SMARTHEATING_HEATINGSCHEDULE.DETAILS(selectedProgram))
+		axios
+			.get(ApiUrls.SMARTHEATING_HEATINGSCHEDULE.DETAILS(selectedProgram))
 
 			.then((response) => response.data)
 			.then((data) => {
 				const existingRoomIds = data.locations || [];
 				const updatedRoomIds = [...existingRoomIds, roomId];
-				axios.post(ApiUrls.SMARTHEATING_HEATINGSCHEDULE.ASSIGN_ROOM(selectedProgram),
-					{
-						locations: updatedRoomIds,
-					})
+				axios
+					.post(
+						ApiUrls.SMARTHEATING_HEATINGSCHEDULE.ASSIGN_ROOM(selectedProgram),
+						{
+							locations: updatedRoomIds,
+						},
+					)
 					.then((response) => response.data)
 					.then((data) => {
 						// console.log(data);
@@ -130,7 +134,11 @@ const EditHeatingProgramModal = ({
 	const [formDataApi, setFormDataApi] = useState();
 	const fetchHeatingScheduleForRoom = async (heatingScheduleId) => {
 		try {
-			const resp = await axios.get(ApiUrls.SMARTHEATING_HEATINGSCHEDULE.HEATINGSCHEDULE_ID(heatingScheduleId))
+			const resp = await axios.get(
+				ApiUrls.SMARTHEATING_HEATINGSCHEDULE.HEATINGSCHEDULE_ID(
+					heatingScheduleId,
+				),
+			);
 			const data = await resp.data;
 			// console.log("Haeting", data);
 			setLocationDetails(data);
@@ -199,12 +207,11 @@ const EditHeatingProgramModal = ({
 			}
 
 			const programName = formData.programName;
-			createdHeatingScheduleNames &&
-				createdHeatingScheduleNames.map((name, index) => {
-					if (programName == name) {
-						newErrors.programName = errors.ProgramWithNameAlreadyCreated;
-					}
-				});
+			createdHeatingScheduleNames?.map((name, index) => {
+				if (programName == name) {
+					newErrors.programName = errors.ProgramWithNameAlreadyCreated;
+				}
+			});
 
 			if (Object.keys(newErrors).length > 0 || !allFieldsFilled) {
 				setErrorMessages(newErrors);
@@ -349,7 +356,7 @@ const EditHeatingProgramModal = ({
 		const fetchHeatingSchedules = async () => {
 			try {
 				const response = await axios.get(
-					ApiUrls.SMARTHEATING_HEATINGSCHEDULE.LIST
+					ApiUrls.SMARTHEATING_HEATINGSCHEDULE.LIST,
 				);
 				const data = await response.data;
 				const templateNames =
@@ -531,7 +538,7 @@ const EditHeatingProgramModal = ({
 			const fetchHeatingSchedules = async () => {
 				try {
 					const response = await axios.get(
-						ApiUrls.SMARTHEATING_HEATINGSCHEDULE.LIST
+						ApiUrls.SMARTHEATING_HEATINGSCHEDULE.LIST,
 					);
 					const data = await response.data;
 					const templateNames =
@@ -547,8 +554,8 @@ const EditHeatingProgramModal = ({
 			try {
 				const resp = await axios.post(
 					ApiUrls.SMARTHEATING_HEATINGSCHEDULE.HEATINGSCHEDULE_FROM_EDIT,
-					requestBody
-				)
+					requestBody,
+				);
 
 				if (resp.status > 400) {
 					const errorText = await resp.data; // Get response text for error details
@@ -614,9 +621,9 @@ const EditHeatingProgramModal = ({
 		const fetchHeatingSchedules = async () => {
 			try {
 				const response = await axios.get(
-					ApiUrls.SMARTHEATING_HEATINGSCHEDULE.LIST
+					ApiUrls.SMARTHEATING_HEATINGSCHEDULE.LIST,
 				);
-				const data = await response.data
+				const data = await response.data;
 				const templateNames =
 					data.length > 0 ? data.map((template) => template.templateName) : [];
 				setCreatedHeatingScheduleNames(templateNames);
@@ -843,9 +850,8 @@ const ReplaceProgram = ({
 	const [data, setData] = useState([]);
 
 	const fetchAll = () => {
-		axios.get(
-			ApiUrls.SMARTHEATING_HEATINGSCHEDULE.LIST
-		)
+		axios
+			.get(ApiUrls.SMARTHEATING_HEATINGSCHEDULE.LIST)
 			.then((response) => response.data)
 			.then((data) => {
 				setData(data);
@@ -962,7 +968,8 @@ const ViewTableComponent = ({ selectedProgram }) => {
 	const fetchDetails = () => {
 		if (!heatingScheduleId) return;
 
-		axios.get(ApiUrls.SMARTHEATING_HEATINGSCHEDULE.DETAILS(heatingScheduleId))
+		axios
+			.get(ApiUrls.SMARTHEATING_HEATINGSCHEDULE.DETAILS(heatingScheduleId))
 
 			.then((response) => {
 				if (response.status > 400) {
