@@ -11,6 +11,7 @@ import ProgramAssignment from "./Steps/ProgramAssignment/ProgramAssignment";
 import HeatingSchedule from "./Steps/HeatingSchedule/HeatingSchedule";
 import axios from "axios";
 import ApiUrls from "../../../../globals/apiURL.js";
+import useHeatingSchedule from "../../../../hooks/useHeatingSchedule.jsx";
 
 export function CreateHeatingModal({ openModal, handleOpenModal, onCreate }) {
 
@@ -528,6 +529,41 @@ export function CreateHeatingModal({ openModal, handleOpenModal, onCreate }) {
       .catch(error => console.error('Error:', error));
   }, [])
 
+  const { createdHeatingScheduleNames, setCreatedHeatingScheduleNames } =
+  useHeatingSchedule();
+
+  const handleCheckName = () => {
+		const fetchHeatingSchedules = async () => {
+			try {
+				const response = await axios.get(
+					ApiUrls.SMARTHEATING_HEATINGSCHEDULE.LIST
+				);
+				const data = await response.data
+				const templateNames =
+					data.length > 0 ? data.map((template) => template.templateName) : [];
+				setCreatedHeatingScheduleNames(templateNames);
+				const nameExistsInCreatedSchedules =
+					createdHeatingScheduleNames &&
+					createdHeatingScheduleNames.includes(formData.programName);
+
+				if (nameExistsInCreatedSchedules) {
+					setErrorMessages((prev) => ({
+						...prev,
+						programName: errors.ProgramWithNameAlreadyCreated,
+					}));
+				} else {
+					setErrorMessages((prev) => ({
+						...prev,
+						programName: "",
+					}));
+				}
+			} catch (error) {
+				console.error("Error:", error);
+			}
+		};
+		fetchHeatingSchedules();
+	};
+
   return (
     <>
       <Modal theme={customTheme} size={currentStep === 2 ? "7xl" : "5xl"} dismissible show={openModal} onClose={handleCloseModal}>
@@ -543,6 +579,7 @@ export function CreateHeatingModal({ openModal, handleOpenModal, onCreate }) {
                     handleChange={handleChange}
                     errorMessages={errorMessages}
                     generalErrorMessage={generalErrorMessage} // Pass general error message to Form1
+                    checkName={handleCheckName}
                   />
                 </div>
               )}

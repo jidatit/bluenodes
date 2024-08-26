@@ -865,12 +865,12 @@ const ReplaceProgram = ({
 				<label
 					htmlFor="program"
 					value="Program"
-					className={`mb-2 text-sm font-semibold ${
+					className={`mb-2 text-sm pt-3 font-semibold ${
 						showError ? "text-red-500" : "text-gray-700"
 					}`}
 				>
 					{" "}
-					Headliner{" "}
+					{" "}
 				</label>
 				<select
 					id="program"
