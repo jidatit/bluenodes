@@ -1,25 +1,19 @@
 import { useEffect, useState } from "react";
-import { FaFilter } from "react-icons/fa6";
 import OverviewCard from "./components/OverviewCard";
 import { Spinner } from "flowbite-react";
+import axios from "axios";
+import ApiUrls from "../../../globals/apiURL.js";
 
 function OverviewPage() {
 	const [data, setData] = useState([]);
-	const token = localStorage.getItem("token");
 	const [searchTerm, setSearchTerm] = useState("");
 	const [Loader, setLoader] = useState(true);
 
 	const fetchAll = () => {
-		fetch(
-			`https://api-dev.blue-nodes.app/dev/smartheating/operationaloverview/list`,
-			{
-				method: "GET",
-				headers: {
-					Authorization: `Bearer ${token}`,
-				},
-			},
+		axios.get(
+			ApiUrls.SMARTHEATING_OPERATIONALVIEW.LIST
 		)
-			.then((response) => response.json())
+			.then((response) => response.data)
 			.then((data) => {
 				setData(data);
 				setLoader(false);
@@ -38,7 +32,7 @@ function OverviewPage() {
 	return (
 		<>
 			<div className="flex flex-col gap-6 ">
-				<h2 className="text-[24px] text-gray-900">Operational Overview</h2>
+				<h2 className="text-[24px] text-gray-900"></h2>
 				<div className=" flex items-center justify-between">
 					<div className=" flex gap-4 items-center">
 						<form className="w-[380px] ">

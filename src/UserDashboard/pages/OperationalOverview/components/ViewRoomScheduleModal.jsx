@@ -8,6 +8,8 @@ import HeatingScheduleTable from "../../HeatingSchedule/components/HeatingSchedu
 import HeatingScheduleComparison from "./HeatingScheduleComparison";
 import HeatingScheduleTableStatic from "../../HeatingSchedule/components/HeatingScheduleTableStatic";
 import { Spinner } from "flowbite-react";
+import axios from "axios";
+import ApiUrls from "../../../../globals/apiURL.js";
 
 export function ViewRoomScheduleModal({
 	openModal,
@@ -19,7 +21,6 @@ export function ViewRoomScheduleModal({
 	const [switch1, setSwitch1] = useState(false);
 	const [isChecked, setIsChecked] = useState(false);
 	const [locationDetails, setLocationDetails] = useState(null);
-	const token = localStorage.getItem("token");
 	const [loading, setloading] = useState(false);
 
 	const handleCheckboxChange = () => {
@@ -32,16 +33,9 @@ export function ViewRoomScheduleModal({
 	useEffect(() => {
 		if (heatingScheduleId !== null) {
 			setloading(true);
-			fetch(
-				`https://api-dev.blue-nodes.app/dev/smartheating/heatingschedule/${heatingScheduleId}/details`,
-				{
-					method: "GET",
-					headers: {
-						Authorization: `Bearer ${token}`,
-					},
-				},
-			)
-				.then((response) => response.json())
+			axios.get(ApiUrls.SMARTHEATING_HEATINGSCHEDULE.DETAILS(heatingScheduleId))
+
+				.then((response) => response.data)
 				.then((data) => {
 					setLocationDetails(data);
 				})

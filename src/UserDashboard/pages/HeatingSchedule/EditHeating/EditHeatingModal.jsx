@@ -8,6 +8,8 @@ import ProgressStepper from "../CreateHeating/components/ProgressStepper";
 import GeneralInformation from "../CreateHeating/Steps/GeneralInformation/GeneralInformation";
 import HeatingSchedule from "../CreateHeating/Steps/HeatingSchedule/HeatingSchedule";
 import useHeatingSchedule from "../../../../hooks/useHeatingSchedule";
+import axios from "axios";
+import ApiUrls from "../../../../globals/apiURL.js";
 
 export function EditHeatingModal({
 	openEditModal,
@@ -17,7 +19,6 @@ export function EditHeatingModal({
 	locationDetails,
 }) {
 	//Set token for bearer authorization
-	const token = localStorage.getItem("token");
 
 	const [currentStep, setCurrentStep] = useState(1);
 	const [formDataApi, setFormDataApi] = useState();
@@ -233,16 +234,10 @@ export function EditHeatingModal({
 
 		const fetchHeatingSchedules = async () => {
 			try {
-				const response = await fetch(
-					"https://api-dev.blue-nodes.app/dev/smartheating/heatingschedule/list",
-					{
-						method: "GET",
-						headers: {
-							Authorization: `Bearer ${token}`,
-						},
-					},
+				const response = await axios.get(
+					ApiUrls.SMARTHEATING_HEATINGSCHEDULE.LIST
 				);
-				const data = await response.json();
+				const data = await response.data;
 				const templateNames =
 					data.length > 0 ? data.map((template) => template.templateName) : [];
 				setCreatedHeatingScheduleNames(templateNames);
@@ -421,21 +416,11 @@ export function EditHeatingModal({
 				// console.log(JSON.stringify(finalObj));
 
 				// Put to API
-				fetch(
-					`https://api-dev.blue-nodes.app/dev/smartheating/heatingschedule/${program.id}`,
-					{
-						method: "PUT",
-						headers: {
-							Authorization: `Bearer ${token}`,
-							"Content-Type": "application/json",
-						},
-						body: JSON.stringify(finalObj),
-					},
-				)
-					.then((response) => response.json())
-					.then((data) => {
+				axios.put(ApiUrls.SMARTHEATING_HEATINGSCHEDULE.HEATINGSCHEDULE_ID(program.id), finalObj)
+					.then(response => {
+						const { data, status } = response;
 						// console.log(data);
-						if (data.statusCode === 400) {
+						if (status === 400) {
 							onEdit("Error");
 						} else {
 							onEdit(combinedData);
@@ -481,16 +466,10 @@ export function EditHeatingModal({
 	const handleCheckName = () => {
 		const fetchHeatingSchedules = async () => {
 			try {
-				const response = await fetch(
-					"https://api-dev.blue-nodes.app/dev/smartheating/heatingschedule/list",
-					{
-						method: "GET",
-						headers: {
-							Authorization: `Bearer ${token}`,
-						},
-					},
+				const response = await axios.get(
+					ApiUrls.SMARTHEATING_HEATINGSCHEDULE.LIST
 				);
-				const data = await response.json();
+				const data = await response.data
 				const templateNames =
 					data.length > 0 ? data.map((template) => template.templateName) : [];
 				setCreatedHeatingScheduleNames(templateNames);

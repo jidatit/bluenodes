@@ -10,6 +10,8 @@ import ProgressStepper from "../CreateHeating/components/ProgressStepper";
 import GeneralInformation from "../CreateHeating/Steps/GeneralInformation/GeneralInformation";
 import HeatingSchedule from "../CreateHeating/Steps/HeatingSchedule/HeatingSchedule";
 import ProgramAssignment from "../CreateHeating/Steps/ProgramAssignment/ProgramAssignment";
+import axios from "axios";
+import ApiUrls from "../../../../globals/apiURL.js";
 
 export function CloneHeatingModal({ openCloneModal, handleCloneModal, onCreate, program, locationDetails }) {
   //Set token for bearer authorization
@@ -363,7 +365,7 @@ export function CloneHeatingModal({ openCloneModal, handleCloneModal, onCreate, 
           return roomIds;
         }
 
-        // Convert schedule data into API format 
+        // Convert schedule data into API format
         function convertScheduleData(data) {
           const dayMapping = {
             "Monday": 1,
@@ -409,7 +411,7 @@ export function CloneHeatingModal({ openCloneModal, handleCloneModal, onCreate, 
         //Manipulating for API
         const finalObj = {
           "templateName": combinedData.formData.programName,
-          "allowDeviceOverride": combinedData.formData.childSafety === 'No' ? true : false,
+          "allowDeviceOverride": combinedData.formData.childSafety === 'No',
           "deviceOverrideTemperatureMin": parseInt(combinedData.formData.minTemp),
           "deviceOverrideTemperatureMax": parseInt(combinedData.formData.maxTemp),
           ...(anyRoomSelected && { "locations": getRoomIdsByProgram(combinedData.heatingAssignmentData.buildings) }),
@@ -419,34 +421,29 @@ export function CloneHeatingModal({ openCloneModal, handleCloneModal, onCreate, 
 
         // Submit the form or perform other actions
 
-        fetch(`https://api-dev.blue-nodes.app/dev/smartheating/heatingschedule`, {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(finalObj)
-        })
-          .then(response => response.json())
-          .then(data => {
-            console.log(data)
-            if (data.statusCode === 400) {
-              onCreate('Error')
-            } else {
-              onCreate(combinedData)
-              handleCloneModal();
-              resetModalState();
-            }
-          })
+        axios.post(
+            ApiUrls.SMARTHEATING_HEATINGSCHEDULE.HEATINGSCHEDULE,
+            finalObj
+        )
+            .then(response => {
+              const { data, status } = response;
+              if (status === 400) {
+                onCreate('Error');
+              } else {
+                onCreate(combinedData);
+                handleCloneModal();
+                resetModalState();
+              }
+            })
           .catch(error => {
             console.error('Error:', error);
-            onCreate('Error'); // Error occurred: Send 'Error'
+            onCreate('Error');
           })
       }
     } else {
       console.error('handleAssignmentRef.current is not defined');
     }
-    // } 
+    // }
     // else {
     //   // Confirm button clicked
     //   handleAssignmentData();
@@ -489,13 +486,10 @@ export function CloneHeatingModal({ openCloneModal, handleCloneModal, onCreate, 
   const [initialData, setInitialData] = useState({})
 
   useEffect(() => {
-    fetch(`https://api-dev.blue-nodes.app/dev/smartheating/locations?heatingScheduleDetails=true&roomTemperature=true&assignedNumberOfRooms=true&numberOfRooms=true`, {
-      method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${token}`
-      }
-    })
-      .then(response => response.json())
+    axios.get(
+        ApiUrls.SMARTHEATING_LOCATIONS.LOCATIONS(true, true, true, true)
+    )
+        .then((response) => response.data)
       .then(data => {
         const apiData = {
           buildings: data.map((building) => {

@@ -1,23 +1,18 @@
 import { useState, useEffect } from "react";
+import ApiUrls from "../globals/apiURL.js";
+import axios from "axios";
 
 const useHeatingSchedule = () => {
 	const [createdHeatingScheduleNames, setCreatedHeatingScheduleNames] =
 		useState([]);
-	const token = localStorage.getItem("token");
 
 	useEffect(() => {
 		const fetchHeatingSchedules = async () => {
 			try {
-				const response = await fetch(
-					"https://api-dev.blue-nodes.app/dev/smartheating/heatingschedule/list",
-					{
-						method: "GET",
-						headers: {
-							Authorization: `Bearer ${token}`,
-						},
-					},
+				const response = await axios.get(
+					ApiUrls.SMARTHEATING_HEATINGSCHEDULE.LIST
 				);
-				const data = await response.json();
+				const data = await response.data
 				const templateNames =
 					data.length > 0 ? data.map((template) => template.templateName) : [];
 				setCreatedHeatingScheduleNames(templateNames);

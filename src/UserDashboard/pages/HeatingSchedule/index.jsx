@@ -7,9 +7,10 @@ import { CreateHeatingModal } from "./CreateHeating/CreateHeatingModal";
 import HeatingProgramEntity from "./components/HeatingProgramEntity";
 import { errorMessages } from "../../../globals/errorMessages";
 import { Spinner } from "flowbite-react";
+import axios from "axios";
+import ApiUrls from "../../../globals/apiURL.js";
 
 function HeatingSchedulePage() {
-	const token = localStorage.getItem("token");
 
 	// Adding use state React Hooks here
 	const [programList, setProgramList] = useState([]);
@@ -18,7 +19,7 @@ function HeatingSchedulePage() {
 	const [selectedFilter, setSelectedFilter] = useState("Filter");
 	const [isDropdownOpen, setDropdownOpen] = useState(false); // Define state to manage dropdown visibility
 	const [openModal, setOpenModal] = useState(false);
-	
+
 
 	const handleOpenModal = () => {
 		setOpenModal(!openModal);
@@ -156,17 +157,11 @@ function HeatingSchedulePage() {
 	};
 	const [Loader, setLoader] = useState(true);
 
-	const fetchAllHeatingSchedules = () => {
-		fetch(
-			"https://api-dev.blue-nodes.app/dev/smartheating/heatingschedule/list",
-			{
-				method: "GET",
-				headers: {
-					Authorization: `Bearer ${token}`,
-				},
-			},
+	const fetchAllHeatingSchedules = async () => {
+		await axios.get(
+			ApiUrls.SMARTHEATING_HEATINGSCHEDULE.LIST
 		)
-			.then((response) => response.json())
+			.then((response) => response.data)
 			.then((data) => {
 				setProgramList(data);
 				setFilteredPrograms(data);

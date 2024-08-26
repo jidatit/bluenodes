@@ -1,10 +1,12 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, {useEffect, useRef, useState} from "react";
 import thermometer from "../../../../assets/icons/thermometer-02.png";
 import windowicon from "../../../../assets/icons/Window.png";
 import algo from "../../../../assets/icons/algorithm.png";
-import { Button, Tooltip } from "flowbite-react";
-import { ViewRoomScheduleModal } from "./ViewRoomScheduleModal";
+import {Button, Tooltip} from "flowbite-react";
+import {ViewRoomScheduleModal} from "./ViewRoomScheduleModal";
 import EditHeatingProgramModal from "./EditHeatingProgramModal";
+import axios from "axios";
+import ApiUrls from "../../../../globals/apiURL.js";
 
 // Function to determine the background and text colors based on type
 const handleTypeColor = (type) => {
@@ -176,7 +178,6 @@ const TemperatureSchedule = ({
 	const [selectedRoom, setSelectedRoom] = useState(null);
 	const [selectedRoomSchedId, setSelectedRoomSchedId] = useState(null);
 	const [selectedRoomAlgo, setSelectedRoomAlgo] = useState(false);
-	const token = localStorage.getItem("token");
 	const [RoomsDetail, setRoomsDetail] = useState([]);
 	const [locationDetails, setLocationDetails] = useState([]);
 	const [scheduleDetails, setscheduleDetails] = useState([]);
@@ -194,17 +195,8 @@ const TemperatureSchedule = ({
 	};
 	const fetchHeatingScheduleForRoom = async (heatingScheduleId) => {
 		try {
-			const resp = await fetch(
-				`https://api-dev.blue-nodes.app/dev/smartheating/heatingschedule/${heatingScheduleId}`,
-				{
-					headers: {
-						Authorization: `Bearer ${token}`,
-						"Content-Type": "application/json",
-					},
-				},
-			);
-			const data = await resp.json();
-			return data;
+			const resp = await axios.get(ApiUrls.SMARTHEATING_HEATINGSCHEDULE.HEATINGSCHEDULE_ID(heatingScheduleId))
+			return await resp.data;
 		} catch (error) {
 			console.error("Error fetching heating schedule:", error);
 			return null;
@@ -253,16 +245,8 @@ const TemperatureSchedule = ({
 
 	const getFloorDetails = async (id) => {
 		try {
-			const resp = await fetch(
-				`https://api-dev.blue-nodes.app/dev/smartheating/operationaloverview/${id}/details`,
-				{
-					headers: {
-						Authorization: `Bearer ${token}`,
-						"Content-Type": "application/json",
-					},
-				},
-			);
-			const data = await resp.json();
+			const resp = await axios.get(ApiUrls.SMARTHEATING_OPERATIONALVIEW.DETAILS(id))
+			const data = await resp.data;
 			const pdata = processRoomsData(data);
 			setRoomsDetail(pdata);
 		} catch (error) {

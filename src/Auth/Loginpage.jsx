@@ -5,6 +5,8 @@ import { FcGoogle } from "react-icons/fc";
 import authImage from "../assets/images/auth-image.png";
 import BlueNodeLogo from "../assets/logos/BlueNodes.png";
 import { useAuth } from "../AuthContext";
+import ApiUrls from "../globals/apiURL.js";
+import axios from "axios";
 
 const Loginpage = () => {
 	const { login } = useAuth();
@@ -31,24 +33,12 @@ const Loginpage = () => {
 		setError("");
 
 		try {
-			const response = await fetch(
-				"https://api-dev.blue-nodes.app/dev/auth/login",
-				{
-					method: "POST",
-					headers: {
-						"Content-Type": "application/json",
-					},
-					body: JSON.stringify({ email, password }),
-				},
-			);
-
-			if (!response.ok) {
-				throw new Error("Login failed");
-			}
-
-			const data = await response.json();
+			const response = await axios.post(ApiUrls.AUTH_LOGIN, {
+				email: email,
+				password: password,
+			});
+			const data = response.data;
 			const token = data.access_token;
-
 			login(token);
 			navigate("/dashboard");
 		} catch (error) {

@@ -11,6 +11,8 @@ import { Toast } from "flowbite-react";
 import HeatingScheduleTable from "../../HeatingSchedule/components/HeatingScheduleTable";
 import { Dropdown } from "flowbite-react";
 import useHeatingSchedule from "../../../../hooks/useHeatingSchedule";
+import axios from "axios";
+import ApiUrls from "../../../../globals/apiURL.js";
 
 const EditHeatingProgramModal = ({
 	openModal,
@@ -58,35 +60,17 @@ const EditHeatingProgramModal = ({
 
 	const handleConfirmReplace = () => {
 		const roomId = room.id;
+		axios.get(ApiUrls.SMARTHEATING_HEATINGSCHEDULE.DETAILS(selectedProgram))
 
-		fetch(
-			`https://api-dev.blue-nodes.app/dev/smartheating/heatingschedule/${selectedProgram}/details`,
-			{
-				method: "GET",
-				headers: {
-					Authorization: `Bearer ${token}`,
-				},
-			},
-		)
-			.then((response) => response.json())
+			.then((response) => response.data)
 			.then((data) => {
 				const existingRoomIds = data.locations || [];
 				const updatedRoomIds = [...existingRoomIds, roomId];
-
-				fetch(
-					`https://api-dev.blue-nodes.app/dev/smartheating/heatingschedule/${selectedProgram}/assignrooms`,
+				axios.post(ApiUrls.SMARTHEATING_HEATINGSCHEDULE.ASSIGN_ROOM(selectedProgram),
 					{
-						method: "POST",
-						headers: {
-							Authorization: `Bearer ${token}`,
-							"Content-Type": "application/json",
-						},
-						body: JSON.stringify({
-							locations: updatedRoomIds,
-						}),
-					},
-				)
-					.then((response) => response.json())
+						locations: updatedRoomIds,
+					})
+					.then((response) => response.data)
 					.then((data) => {
 						// console.log(data);
 						// setupdatedR(true);
@@ -130,7 +114,6 @@ const EditHeatingProgramModal = ({
 	}, [selectedAction, selectedProgram]);
 
 	const [currentStep, setCurrentStep] = useState(1);
-	const token = localStorage.getItem("token");
 	const [formData, setFormData] = useState({
 		//   programName: program?.templateName || "",
 		//   childSafety: program?.allowDeviceOverride===true?"No":"Yes" || "",
@@ -147,16 +130,8 @@ const EditHeatingProgramModal = ({
 	const [formDataApi, setFormDataApi] = useState();
 	const fetchHeatingScheduleForRoom = async (heatingScheduleId) => {
 		try {
-			const resp = await fetch(
-				`https://api-dev.blue-nodes.app/dev/smartheating/heatingschedule/${heatingScheduleId}`,
-				{
-					headers: {
-						Authorization: `Bearer ${token}`,
-						"Content-Type": "application/json",
-					},
-				},
-			);
-			const data = await resp.json();
+			const resp = await axios.get(ApiUrls.SMARTHEATING_HEATINGSCHEDULE.HEATINGSCHEDULE_ID(heatingScheduleId))
+			const data = await resp.data;
 			// console.log("Haeting", data);
 			setLocationDetails(data);
 			setFormDataApi(data);
@@ -373,16 +348,10 @@ const EditHeatingProgramModal = ({
 		});
 		const fetchHeatingSchedules = async () => {
 			try {
-				const response = await fetch(
-					"https://api-dev.blue-nodes.app/dev/smartheating/heatingschedule/list",
-					{
-						method: "GET",
-						headers: {
-							Authorization: `Bearer ${token}`,
-						},
-					},
+				const response = await axios.get(
+					ApiUrls.SMARTHEATING_HEATINGSCHEDULE.LIST
 				);
-				const data = await response.json();
+				const data = await response.data;
 				const templateNames =
 					data.length > 0 ? data.map((template) => template.templateName) : [];
 				setCreatedHeatingScheduleNames(templateNames);
@@ -561,16 +530,10 @@ const EditHeatingProgramModal = ({
 			}
 			const fetchHeatingSchedules = async () => {
 				try {
-					const response = await fetch(
-						"https://api-dev.blue-nodes.app/dev/smartheating/heatingschedule/list",
-						{
-							method: "GET",
-							headers: {
-								Authorization: `Bearer ${token}`,
-							},
-						},
+					const response = await axios.get(
+						ApiUrls.SMARTHEATING_HEATINGSCHEDULE.LIST
 					);
-					const data = await response.json();
+					const data = await response.data;
 					const templateNames =
 						data.length > 0
 							? data.map((template) => template.templateName)
@@ -582,26 +545,19 @@ const EditHeatingProgramModal = ({
 			};
 
 			try {
-				const resp = await fetch(
-					"https://api-dev.blue-nodes.app/dev/smartheating/heatingschedule?from=edit",
-					{
-						method: "POST",
-						headers: {
-							Authorization: `Bearer ${token}`,
-							"Content-Type": "application/json",
-						},
-						body: JSON.stringify(requestBody),
-					},
-				);
+				const resp = await axios.post(
+					ApiUrls.SMARTHEATING_HEATINGSCHEDULE.HEATINGSCHEDULE_FROM_EDIT,
+					requestBody
+				)
 
-				if (!resp.ok) {
-					const errorText = await resp.text(); // Get response text for error details
+				if (resp.status > 400) {
+					const errorText = await resp.data; // Get response text for error details
 					throw new Error(
 						`HTTP error! Status: ${resp.status}, Details: ${errorText}`,
 					);
 				}
 
-				const respData = await resp.json();
+				const respData = await resp.data;
 				if (respData.active) {
 					handleOpenModal();
 					updateReplaced();
@@ -657,16 +613,10 @@ const EditHeatingProgramModal = ({
 	const handleCheckName = () => {
 		const fetchHeatingSchedules = async () => {
 			try {
-				const response = await fetch(
-					"https://api-dev.blue-nodes.app/dev/smartheating/heatingschedule/list",
-					{
-						method: "GET",
-						headers: {
-							Authorization: `Bearer ${token}`,
-						},
-					},
+				const response = await axios.get(
+					ApiUrls.SMARTHEATING_HEATINGSCHEDULE.LIST
 				);
-				const data = await response.json();
+				const data = await response.data
 				const templateNames =
 					data.length > 0 ? data.map((template) => template.templateName) : [];
 				setCreatedHeatingScheduleNames(templateNames);
@@ -891,19 +841,12 @@ const ReplaceProgram = ({
 	room,
 }) => {
 	const [data, setData] = useState([]);
-	const token = localStorage.getItem("token");
 
 	const fetchAll = () => {
-		fetch(
-			`https://api-dev.blue-nodes.app/dev/smartheating/heatingschedule/list`,
-			{
-				method: "GET",
-				headers: {
-					Authorization: `Bearer ${token}`,
-				},
-			},
+		axios.get(
+			ApiUrls.SMARTHEATING_HEATINGSCHEDULE.LIST
 		)
-			.then((response) => response.json())
+			.then((response) => response.data)
 			.then((data) => {
 				setData(data);
 				// console.log("schedule programs", data);
@@ -1014,26 +957,18 @@ const ReplaceProgram = ({
 const ViewTableComponent = ({ selectedProgram }) => {
 	// Destructure selectedProgram from props
 	const [temperatureDetails, setTemperatureDetails] = useState(null);
-	const token = localStorage.getItem("token");
 	const heatingScheduleId = selectedProgram;
 
 	const fetchDetails = () => {
 		if (!heatingScheduleId) return;
 
-		fetch(
-			`https://api-dev.blue-nodes.app/dev/smartheating/heatingschedule/${heatingScheduleId}/details`,
-			{
-				method: "GET",
-				headers: {
-					Authorization: `Bearer ${token}`,
-				},
-			},
-		)
+		axios.get(ApiUrls.SMARTHEATING_HEATINGSCHEDULE.DETAILS(heatingScheduleId))
+
 			.then((response) => {
-				if (!response.ok) {
+				if (response.status > 400) {
 					throw new Error("Network response was not ok");
 				}
-				return response.json();
+				return response.data;
 			})
 			.then((data) => {
 				setTemperatureDetails(data);

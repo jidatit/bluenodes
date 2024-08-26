@@ -1,5 +1,6 @@
 import axios from "axios";
 import { createContext, useContext, useState, useEffect } from "react";
+import ApiUrls from "./globals/apiURL.js";
 
 const AuthContext = createContext();
 
@@ -14,7 +15,7 @@ export const AuthProvider = ({ children }) => {
 
 	const isTokenValid = async (token) => {
 		try {
-			const resp = await axios.get(`https://api-dev.blue-nodes.app/dev/smartheating/locations`, {
+			const resp = await axios.get(ApiUrls.USER.PROFILE, {
 				headers: {
 					Authorization: `Bearer ${token}`,
 				},

@@ -12,6 +12,8 @@ import { EditHeatingModal } from "../EditHeating/EditHeatingModal";
 import { errorMessages } from "../../../../globals/errorMessages";
 import { Toast } from "flowbite-react";
 import { Spinner } from "flowbite-react";
+import axios from "axios";
+import ApiUrls from "../../../../globals/apiURL.js";
 
 const HeatingProgramEntity = ({
 	formData,
@@ -23,7 +25,6 @@ const HeatingProgramEntity = ({
 	fetchAll,
 	response2,
 }) => {
-	const token = localStorage.getItem("token");
 
 	const [openDeleteModal, setOpenDeleteModal] = useState(false);
 	const [openAlertDeleteModal, setOpenAlertDeleteModal] = useState(false);
@@ -72,18 +73,9 @@ const HeatingProgramEntity = ({
 
 		// If no matching program, proceed to call the delete API
 		try {
-			const response = await fetch(
-				`https://api-dev.blue-nodes.app/dev/smartheating/heatingschedule/${program.id}`,
-				{
-					method: "DELETE",
-					headers: {
-						"Content-Type": "application/json",
-						Authorization: `Bearer ${token}`, // Add auth token if needed
-					},
-				},
-			);
+			const response = await axios.delete(ApiUrls.SMARTHEATING_HEATINGSCHEDULE.HEATINGSCHEDULE_ID(program.id))
 
-			if (response.ok) {
+			if (response.status >= 200 && response.status < 300) {
 				// Handle successful delete
 
 				setIsSuccess(true);
@@ -91,7 +83,7 @@ const HeatingProgramEntity = ({
 				// Perform any state updates or UI changes
 			} else {
 				// Handle errors
-				const errorData = await response.json();
+				const errorData = await response.data;
 				console.error("Delete failed", errorData);
 				setIsSuccess(false);
 				setToastMessage(errorMessages.deleteFailed);
@@ -151,16 +143,8 @@ const HeatingProgramEntity = ({
 
 	const fetchDetails = async () => {
 		try {
-			const response = await fetch(
-				`https://api-dev.blue-nodes.app/dev/smartheating/heatingschedule/${program.id}/details`,
-				{
-					method: "GET",
-					headers: {
-						Authorization: `Bearer ${token}`,
-					},
-				},
-			);
-			const data = await response.json();
+			const response = await axios.get(ApiUrls.SMARTHEATING_HEATINGSCHEDULE.DETAILS(program.id))
+			const data = await response.data;
 			setLocationDetails(data); // Update the state with the fetched data
 			setLoader(false);
 			setfetched(true); // Ensure fetched is set to true only after data is fetched
@@ -219,17 +203,11 @@ const HeatingProgramEntity = ({
 	const [initialData, setInitialData] = useState({});
 
 	useEffect(() => {
-		fetch(
-			`https://api-dev.blue-nodes.app/dev/smartheating/locations?heatingScheduleDetails=true&roomTemperature=true&assignedNumberOfRooms=true&numberOfRooms=true`,
-			{
-				method: "GET",
-				headers: {
-					Authorization: `Bearer ${token}`,
-				},
-			},
+		axios.get(
+			ApiUrls.SMARTHEATING_LOCATIONS.LOCATIONS(true, true, true, true)
 		)
-			.then((response) => response.json())
-			.then((data) => {
+			.then((response) => response.data)
+			.then(data => {
 				const apiData = {
 					buildings: data.map((building) => {
 						// Calculate the total rooms in the building

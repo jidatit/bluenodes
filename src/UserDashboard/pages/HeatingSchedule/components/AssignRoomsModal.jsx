@@ -8,12 +8,14 @@ import { errorMessages } from '../../../../globals/errorMessages';
 import _ from 'lodash';
 import { IoArrowBackCircle } from 'react-icons/io5';
 import customTheme from '../CreateHeating/ModalTheme';
+import axios from "axios";
+import ApiUrls from "../../../../globals/apiURL.js";
 
 function AssignRoomsModal({ openAssignModal,handleAssign, onUpdate,initialData, program }) {
-  
+
   //Set token for bearer authorization
   const token = localStorage.getItem('token');
-  
+
   const [heatingData, setheatingData] = useState({});
   const [data, setData] = useState(initialData);
   useEffect(()=>{
@@ -36,7 +38,7 @@ function AssignRoomsModal({ openAssignModal,handleAssign, onUpdate,initialData, 
     setViewAll(false);
     setError(null);
     setNoRoomsError(false);
-  
+
     // Call handleAssign to close the modal
     handleAssign();
   };
@@ -49,7 +51,7 @@ function AssignRoomsModal({ openAssignModal,handleAssign, onUpdate,initialData, 
     applyAlgorithm: "",
   });
 
-  
+
   const assignmentData = (assignmentData) => {
     setheatingData(assignmentData);
   };
@@ -80,7 +82,7 @@ function AssignRoomsModal({ openAssignModal,handleAssign, onUpdate,initialData, 
       const building = newData.buildings.find(b => b.id === buildingId);
       const floor = building.floors.find(f => f.id === floorId);
       const room = floor.rooms.find(r => r.id === roomId);
-  
+
       if (room.assigned) {
         // Reset the room to its default state using the default values map
         const defaultValues = defaultValuesMap[roomId];
@@ -104,7 +106,7 @@ function AssignRoomsModal({ openAssignModal,handleAssign, onUpdate,initialData, 
           building.roomsAssigned -= 1;
 
         }
-  
+
       }
        else if (!room.assigned && room.programAssigned!==null) {
         const defaultValues = defaultValuesMap[roomId];
@@ -124,18 +126,18 @@ function AssignRoomsModal({ openAssignModal,handleAssign, onUpdate,initialData, 
           floor.roomsAssigned = sameFloor;
           building.roomsAssigned = sameBuild;
         }
-  
+
       } else {
         // Assign the room
         room.programAssigned = program.templateName;
         room.algorithmOn = formData.applyAlgorithm;
         room.assigned = true;
-  
+
         // Update room and floor assignments count
         floor.roomsAssigned += 1;
         building.roomsAssigned += 1;
       }
-  
+
       setData(newData);
     };
 
@@ -144,7 +146,7 @@ function AssignRoomsModal({ openAssignModal,handleAssign, onUpdate,initialData, 
       const building = newData.buildings.find(b => b.id === buildingId);
       const floor = building.floors.find(f => f.id === floorId);
       let newVar = 0
-  
+
       floor.rooms.forEach(room => {
         room.assigned = isSelected;
         if (isSelected) {
@@ -158,7 +160,7 @@ function AssignRoomsModal({ openAssignModal,handleAssign, onUpdate,initialData, 
           room.assigned = defaultValues.assigned;
         }
       });
-  
+
       // Update rooms assigned count
       const previouslyAssigned = floor.roomsAssigned;
       const newlyAssigned = isSelected ? floor.totalRooms  : 0;
@@ -168,10 +170,10 @@ function AssignRoomsModal({ openAssignModal,handleAssign, onUpdate,initialData, 
 
       // floor.roomsAssigned = isSelected ? floor.totalRooms : floor.rooms.filter(room => room.assigned).length;
       // building.roomsAssigned = newData.buildings.reduce((acc, b) => acc + b.floors.reduce((acc, f) => acc + f.roomsAssigned, 0), 0);
-    
+
       setData(newData);
     };
-  
+
     const isAllRoomsSelected = (floor) => {
       return floor.rooms.every(room => room.assigned);
     };
@@ -201,7 +203,26 @@ function AssignRoomsModal({ openAssignModal,handleAssign, onUpdate,initialData, 
       setviewSelected(true)
       setViewAll(true)
     }
+    function getRoomIdsByProgram(data) {
+        const programName = program.templateName;
+        const roomIds = [];
 
+        // Loop through each building
+        data.forEach(building => {
+            // Loop through each floor in the building
+            building.floors.forEach(floor => {
+                // Loop through each room on the floor
+                floor.rooms.forEach(room => {
+                    // Check if the programAssigned matches the programName
+                    if (room.programAssigned === programName) {
+                        roomIds.push(room.id);
+                    }
+                });
+            });
+        });
+
+        return roomIds;
+    }
     const handleViewAll = ()=> {
       setFilter('All');
       setViewAll(false)
@@ -228,46 +249,21 @@ function AssignRoomsModal({ openAssignModal,handleAssign, onUpdate,initialData, 
         handleAssign()
         // onUpdate(data)
 
-        function getRoomIdsByProgram(data) {
-          const programName = program.templateName;
-          const roomIds = [];
-      
-          // Loop through each building
-          data.forEach(building => {
-              // Loop through each floor in the building
-              building.floors.forEach(floor => {
-                  // Loop through each room on the floor
-                  floor.rooms.forEach(room => {
-                      // Check if the programAssigned matches the programName
-                      if (room.programAssigned === programName) {
-                          roomIds.push(room.id);
-                      }
-                  });
-              });
-          });
-      
-          return roomIds;
-        }
 
         // API call
-        fetch(`https://api-dev.blue-nodes.app/dev/smartheating/heatingschedule/${program.id}/assignrooms`, {
-              method: 'POST',
-              headers: {
-                  'Authorization': `Bearer ${token}`,
-                  'Content-Type': 'application/json'
-              },
-              body: JSON.stringify({locations:getRoomIdsByProgram(data.buildings)})
+        axios.post(ApiUrls.SMARTHEATING_HEATINGSCHEDULE.ASSIGN_ROOM(program.id),
+            {
+                    locations: getRoomIdsByProgram(data.buildings)
           })
-          .then(response => response.json())
-          .then(data => {
-            // console.log(data)
-            if(data.statusCode===400){
+            .then(response => {
+              const { data, status } = response;
+              if (status === 400) {
               onUpdate('Error')
             } else {
               onUpdate(data)
             }
           })
-          .catch(error => console.error('Error:', error)); 
+          .catch(error => console.error('Error:', error));
       }
     }, [data, setNoRoomsError, setError]); // Dependency array
 
@@ -300,7 +296,7 @@ function AssignRoomsModal({ openAssignModal,handleAssign, onUpdate,initialData, 
           Heating program assignment
         </h3>
         <div className='w-full flex justify-end'>
-          {!viewAll ? 
+          {!viewAll ?
           (
             <Button onClick={handleViewSelected} className=' hover:!bg-transparent hover:opacity-80 border-none text-primary bg-transparent pr-2 py-0 [&>*]:p-0 focus:ring-transparent'>View Selected</Button>
            ):
@@ -325,7 +321,7 @@ function AssignRoomsModal({ openAssignModal,handleAssign, onUpdate,initialData, 
             <option value="Unassigned">Unassigned</option>
           </Select>
         </div>
-        <form onSubmit={(e)=>{e.preventDefault()}} className="w-[380px] ">   
+        <form onSubmit={(e)=>{e.preventDefault()}} className="w-[380px] ">
             <label htmlFor="default-search" className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
             <div className="relative">
                 <div className="absolute inset-y-0 start-0 flex items-center ps-4 pointer-events-none">
@@ -347,7 +343,7 @@ function AssignRoomsModal({ openAssignModal,handleAssign, onUpdate,initialData, 
           <Accordion className=' border-none' key={building.id} collapseAll >
             <Accordion.Panel className=''>
               <Accordion.Title className=' p-2 mb-1 flex-row-reverse items-center justify-end gap-3 border-none hover:bg-white focus:ring-none focus:ring-white bg-white'>
-                <p className="text-sm text-gray-900 font-bold">{building.name} 
+                <p className="text-sm text-gray-900 font-bold">{building.name}
                   <span className={`text-xs font-normal py-0.5 px-2.5 ml-1 ${building.roomsAssigned === building.totalRooms ? 'text-primary' : 'text-indigo-800'} ${building.roomsAssigned === building.totalRooms ? 'bg-primary-200' : 'bg-indigo-100'} rounded-md`}>
                     {building.roomsAssigned}/{building.totalRooms} rooms assigned
                   </span>
@@ -358,7 +354,7 @@ function AssignRoomsModal({ openAssignModal,handleAssign, onUpdate,initialData, 
                   <Accordion  className=' border-none' key={floor.id} collapseAll={true} >
                     <Accordion.Panel>
                       <Accordion.Title className=' p-2 mb-1 flex-row-reverse items-center justify-end gap-3 border-none hover:bg-white focus:ring-none focus:ring-white bg-white'>
-                        <p className="text-sm text-gray-900 font-bold">{floor.name} 
+                        <p className="text-sm text-gray-900 font-bold">{floor.name}
                           <span className={`text-xs font-normal py-0.5 px-2.5 ml-1 ${floor.roomsAssigned === floor.totalRooms ? 'text-primary' : 'text-indigo-800'} ${floor.roomsAssigned === floor.totalRooms ? 'bg-primary-200' : 'bg-indigo-100'} rounded-md`}>
                             {floor.roomsAssigned}/{floor.totalRooms} rooms assigned
                           </span>
@@ -373,9 +369,9 @@ function AssignRoomsModal({ openAssignModal,handleAssign, onUpdate,initialData, 
                           <Table theme={customTableTheme} hoverable>
                             <Table.Head className='text-gray-500 [&>tr>th]:font-semibold '>
                               <Table.HeadCell className="pl-4 ">
-                                <Checkbox 
-                                  checked={isAllRoomsSelected(floor)} 
-                                  onChange={(e) => handleSelectAllRooms(building.id, floor.id, e.target.checked)} 
+                                <Checkbox
+                                  checked={isAllRoomsSelected(floor)}
+                                  onChange={(e) => handleSelectAllRooms(building.id, floor.id, e.target.checked)}
                                 />
                               </Table.HeadCell>
                               <Table.HeadCell>Room</Table.HeadCell>
@@ -416,7 +412,7 @@ function AssignRoomsModal({ openAssignModal,handleAssign, onUpdate,initialData, 
             <Accordion className=' border-none' key={building.id} collapseAll={false} >
               <Accordion.Panel className=''>
                 <Accordion.Title className=' p-2 mb-1 flex-row-reverse items-center justify-end gap-3 border-none hover:bg-white focus:ring-none focus:ring-white bg-white'>
-                  <p className="text-sm text-gray-900 font-bold">{building.name} 
+                  <p className="text-sm text-gray-900 font-bold">{building.name}
                     <span className={`text-xs font-normal py-0.5 px-2.5 ml-1 ${building.roomsAssigned === building.totalRooms ? 'text-primary' : 'text-indigo-800'} ${building.roomsAssigned === building.totalRooms ? 'bg-primary-200' : 'bg-indigo-100'} rounded-md`}>
                       {building.roomsAssigned}/{building.totalRooms} rooms assigned
                     </span>
@@ -427,7 +423,7 @@ function AssignRoomsModal({ openAssignModal,handleAssign, onUpdate,initialData, 
                     <Accordion  className=' border-none' key={floor.id} collapseAll={!floor.roomsAssigned} >
                       <Accordion.Panel>
                         <Accordion.Title className=' p-2 mb-1 flex-row-reverse items-center justify-end gap-3 border-none hover:bg-white focus:ring-none focus:ring-white bg-white'>
-                          <p className="text-sm text-gray-900 font-bold">{floor.name} 
+                          <p className="text-sm text-gray-900 font-bold">{floor.name}
                             <span className={`text-xs font-normal py-0.5 px-2.5 ml-1 ${floor.roomsAssigned === floor.totalRooms ? 'text-primary' : 'text-indigo-800'} ${floor.roomsAssigned === floor.totalRooms ? 'bg-primary-200' : 'bg-indigo-100'} rounded-md`}>
                               {floor.roomsAssigned}/{floor.totalRooms} rooms assigned
                             </span>
@@ -442,9 +438,9 @@ function AssignRoomsModal({ openAssignModal,handleAssign, onUpdate,initialData, 
                             <Table theme={customTableTheme} hoverable>
                               <Table.Head className='text-gray-500 [&>tr>th]:font-semibold '>
                                 <Table.HeadCell className="pl-4">
-                                  <Checkbox 
-                                    checked={isAllRoomsSelected(floor)} 
-                                    onChange={(e) => handleSelectAllRooms(building.id, floor.id, e.target.checked)} 
+                                  <Checkbox
+                                    checked={isAllRoomsSelected(floor)}
+                                    onChange={(e) => handleSelectAllRooms(building.id, floor.id, e.target.checked)}
                                   />
                                 </Table.HeadCell>
                                 <Table.HeadCell>Rooms</Table.HeadCell>

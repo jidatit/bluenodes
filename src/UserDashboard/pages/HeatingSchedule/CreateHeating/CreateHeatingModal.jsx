@@ -9,6 +9,8 @@ import { errorMessages as errors } from "../../../../globals/errorMessages"; // 
 import GeneralInformation from "./Steps/GeneralInformation/GeneralInformation";
 import ProgramAssignment from "./Steps/ProgramAssignment/ProgramAssignment";
 import HeatingSchedule from "./Steps/HeatingSchedule/HeatingSchedule";
+import axios from "axios";
+import ApiUrls from "../../../../globals/apiURL.js";
 
 export function CreateHeatingModal({ openModal, handleOpenModal, onCreate }) {
 
@@ -155,7 +157,7 @@ export function CreateHeatingModal({ openModal, handleOpenModal, onCreate }) {
 				childSafety: value,
 				minTemp: "min",
 				maxTemp: "max",
-				
+
 			}));
 		} else if (id === "childSafetyNo") {
 			setFormData((prev) => ({
@@ -164,7 +166,7 @@ export function CreateHeatingModal({ openModal, handleOpenModal, onCreate }) {
 				minTemp:"",
 				maxTemp:"",
 			}));
-			
+
 		} else if (id === "applyAlgorithmYes" || id === "applyAlgorithmNo") {
       setFormData((prev) => ({
         ...prev,
@@ -362,7 +364,7 @@ export function CreateHeatingModal({ openModal, handleOpenModal, onCreate }) {
           return roomIds;
         }
 
-        // Convert schedule data into API format 
+        // Convert schedule data into API format
         function convertScheduleData(data) {
           const dayMapping = {
             "Monday": 1,
@@ -422,18 +424,13 @@ export function CreateHeatingModal({ openModal, handleOpenModal, onCreate }) {
 
         // Submit the form or perform other actions
 
-        fetch(`https://api-dev.blue-nodes.app/dev/smartheating/heatingschedule`, {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(finalObj)
-        })
-          .then(response => response.json())
-          .then(data => {
-            console.log(data)
-            if (data.statusCode === 400) {
+        axios.post(
+            ApiUrls.SMARTHEATING_HEATINGSCHEDULE.HEATINGSCHEDULE,
+            finalObj
+        )
+            .then(response => {
+              const { data, status } = response;
+              if (status === 400) {
               onCreate('Error')
             } else {
               onCreate(combinedData)
@@ -480,13 +477,10 @@ export function CreateHeatingModal({ openModal, handleOpenModal, onCreate }) {
   const [initialData, setInitialData] = useState({})
 
   useEffect(() => {
-    fetch(`https://api-dev.blue-nodes.app/dev/smartheating/locations?heatingScheduleDetails=true&roomTemperature=true&assignedNumberOfRooms=true&numberOfRooms=true`, {
-      method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${token}`
-      }
-    })
-      .then(response => response.json())
+    axios.get(
+        ApiUrls.SMARTHEATING_LOCATIONS.LOCATIONS(true, true, true, true)
+    )
+        .then((response) => response.data)
       .then(data => {
         const apiData = {
           buildings: data.map((building) => {
