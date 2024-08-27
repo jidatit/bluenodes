@@ -60,8 +60,8 @@ const HeatingProgramEntity = ({
 
 		const programName = program.templateName;
 
-		const hasMatchingProgram = initialData.buildings.some((building) =>
-			building.floors.some((floor) =>
+		const hasMatchingProgram = initialData?.buildings?.some((building) =>
+			building.floors?.some((floor) =>
 				floor.rooms.some((room) => room.programAssigned === programName),
 			),
 		);

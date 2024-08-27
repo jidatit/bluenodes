@@ -153,22 +153,22 @@ export function CreateHeatingModal({ openModal, handleOpenModal, onCreate }) {
 
     // Check if the change is from the radio button groups
     if (id === "childSafetyYes") {
-			setFormData((prev) => ({
-				...prev,
-				childSafety: value,
-				minTemp: "min",
-				maxTemp: "max",
+      setFormData((prev) => ({
+        ...prev,
+        childSafety: value,
+        minTemp: "min",
+        maxTemp: "max",
 
-			}));
-		} else if (id === "childSafetyNo") {
-			setFormData((prev) => ({
-				...prev,
-				childSafety: value,
-				minTemp:"",
-				maxTemp:"",
-			}));
+      }));
+    } else if (id === "childSafetyNo") {
+      setFormData((prev) => ({
+        ...prev,
+        childSafety: value,
+        minTemp: "",
+        maxTemp: "",
+      }));
 
-		} else if (id === "applyAlgorithmYes" || id === "applyAlgorithmNo") {
+    } else if (id === "applyAlgorithmYes" || id === "applyAlgorithmNo") {
       setFormData((prev) => ({
         ...prev,
         applyAlgorithm: value,
@@ -425,21 +425,28 @@ export function CreateHeatingModal({ openModal, handleOpenModal, onCreate }) {
 
         // Submit the form or perform other actions
 
-        axios.post(
-            ApiUrls.SMARTHEATING_HEATINGSCHEDULE.HEATINGSCHEDULE,
-            finalObj
-        )
-            .then(response => {
-              const { data, status } = response;
-              if (status === 400) {
-              onCreate('Error')
+        axios.post(ApiUrls.SMARTHEATING_HEATINGSCHEDULE.HEATINGSCHEDULE, finalObj)
+          .then(response => {
+            console.log("response is ", response);
+            const { data } = response;
+            if (data.status === 400) {
+              console.log("3434");
+              onCreate('Error');
             } else {
-              onCreate(combinedData)
+              onCreate(combinedData);
               handleOpenModal();
               resetModalState();
             }
           })
-          .catch(error => console.error('Error:', error));
+          .catch(error => {
+            if (error.response && error.response.status === 400) {
+              console.log("3434");
+              onCreate('Error');
+            } else {
+              console.error('Error:', error);
+            }
+          });
+
       }
     } else {
       console.error('handleAssignmentRef.current is not defined');
@@ -479,9 +486,9 @@ export function CreateHeatingModal({ openModal, handleOpenModal, onCreate }) {
 
   useEffect(() => {
     axios.get(
-        ApiUrls.SMARTHEATING_LOCATIONS.LOCATIONS(true, true, true, true)
+      ApiUrls.SMARTHEATING_LOCATIONS.LOCATIONS(true, true, true, true)
     )
-        .then((response) => response.data)
+      .then((response) => response.data)
       .then(data => {
         const apiData = {
           buildings: data.map((building) => {
@@ -530,39 +537,39 @@ export function CreateHeatingModal({ openModal, handleOpenModal, onCreate }) {
   }, [])
 
   const { createdHeatingScheduleNames, setCreatedHeatingScheduleNames } =
-  useHeatingSchedule();
+    useHeatingSchedule();
 
   const handleCheckName = () => {
-		const fetchHeatingSchedules = async () => {
-			try {
-				const response = await axios.get(
-					ApiUrls.SMARTHEATING_HEATINGSCHEDULE.LIST
-				);
-				const data = await response.data
-				const templateNames =
-					data.length > 0 ? data.map((template) => template.templateName) : [];
-				setCreatedHeatingScheduleNames(templateNames);
-				const nameExistsInCreatedSchedules =
-					createdHeatingScheduleNames &&
-					createdHeatingScheduleNames.includes(formData.programName);
+    const fetchHeatingSchedules = async () => {
+      try {
+        const response = await axios.get(
+          ApiUrls.SMARTHEATING_HEATINGSCHEDULE.LIST
+        );
+        const data = await response.data
+        const templateNames =
+          data.length > 0 ? data.map((template) => template.templateName) : [];
+        setCreatedHeatingScheduleNames(templateNames);
+        const nameExistsInCreatedSchedules =
+          createdHeatingScheduleNames &&
+          createdHeatingScheduleNames.includes(formData.programName);
 
-				if (nameExistsInCreatedSchedules) {
-					setErrorMessages((prev) => ({
-						...prev,
-						programName: errors.ProgramWithNameAlreadyCreated,
-					}));
-				} else {
-					setErrorMessages((prev) => ({
-						...prev,
-						programName: "",
-					}));
-				}
-			} catch (error) {
-				console.error("Error:", error);
-			}
-		};
-		fetchHeatingSchedules();
-	};
+        if (nameExistsInCreatedSchedules) {
+          setErrorMessages((prev) => ({
+            ...prev,
+            programName: errors.ProgramWithNameAlreadyCreated,
+          }));
+        } else {
+          setErrorMessages((prev) => ({
+            ...prev,
+            programName: "",
+          }));
+        }
+      } catch (error) {
+        console.error("Error:", error);
+      }
+    };
+    fetchHeatingSchedules();
+  };
 
   return (
     <>

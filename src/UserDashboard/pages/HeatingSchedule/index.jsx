@@ -326,7 +326,7 @@ function HeatingSchedulePage() {
 				</div>
 			</div>
 			{filteredPrograms.length > 0 &&
-				filteredPrograms.map((program, index) => (
+				filteredPrograms.sort((a, b) => b.assignedRooms - a.assignedRooms).map((program, index) => (
 					<HeatingProgramEntity
 						key={index}
 						onUpdateRooms={handleRoomUpdate}

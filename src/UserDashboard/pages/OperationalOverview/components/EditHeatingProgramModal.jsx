@@ -145,7 +145,7 @@ const EditHeatingProgramModal = ({
 			setFormDataApi(data);
 			setFormData((prev) => ({
 				...prev,
-				programName: data.templateName,
+				programName: `${data.templateName} - Room ${room.name}`,
 				childSafety: data.allowDeviceOverride ? "No" : "Yes",
 				minTemp: data.deviceOverrideTemperatureMin,
 				maxTemp: data.deviceOverrideTemperatureMax,
