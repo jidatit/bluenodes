@@ -326,19 +326,21 @@ function HeatingSchedulePage() {
 				</div>
 			</div>
 			{filteredPrograms.length > 0 &&
-				filteredPrograms.sort((a, b) => b.assignedRooms - a.assignedRooms).map((program, index) => (
-					<HeatingProgramEntity
-						key={index}
-						onUpdateRooms={handleRoomUpdate}
-						onCloneProgram={handleCloneProgram}
-						onEditProgram={handleEditProgram}
-						onDeleteProgram={handleDeleteProgram}
-						program={program}
-						fetchAll={fetchAllHeatingSchedules}
-						response2={response2}
-						initialData={initialData}
-					/>
-				))}
+				filteredPrograms
+					.sort((a, b) => b.assignedRooms - a.assignedRooms)
+					.map((program, index) => (
+						<HeatingProgramEntity
+							key={index}
+							onUpdateRooms={handleRoomUpdate}
+							onCloneProgram={handleCloneProgram}
+							onEditProgram={handleEditProgram}
+							onDeleteProgram={handleDeleteProgram}
+							program={program}
+							fetchAll={fetchAllHeatingSchedules}
+							response2={response2}
+							initialData={initialData}
+						/>
+					))}
 			{Loader && (
 				<div className="w-full flex flex-col justify-center items-center">
 					<Spinner aria-label="Extra large spinner example" size="xl" />

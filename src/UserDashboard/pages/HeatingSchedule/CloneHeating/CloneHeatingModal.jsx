@@ -12,6 +12,7 @@ import HeatingSchedule from "../CreateHeating/Steps/HeatingSchedule/HeatingSched
 import ProgramAssignment from "../CreateHeating/Steps/ProgramAssignment/ProgramAssignment";
 import axios from "axios";
 import ApiUrls from "../../../../globals/apiURL.js";
+import useHeatingSchedule from "../../../../hooks/useHeatingSchedule.jsx";
 
 export function CloneHeatingModal({
 	openCloneModal,
@@ -32,7 +33,8 @@ export function CloneHeatingModal({
 		maxTemp: "",
 		applyAlgorithm: "",
 	});
-
+	const { createdHeatingScheduleNames, setCreatedHeatingScheduleNames } =
+		useHeatingSchedule();
 	const [errorMessages, setErrorMessages] = useState({
 		programName: "",
 		childSafety: "",
@@ -219,6 +221,7 @@ export function CloneHeatingModal({
 	};
 
 	const handleSubmit = () => {
+		handleCheckName();
 		setFormSubmitted(true);
 
 		let allFieldsFilled = true; // Flag to check if all fields are filled
@@ -231,6 +234,31 @@ export function CloneHeatingModal({
 				allFieldsFilled = false; // Set flag to false if any field is empty
 			}
 		});
+		const fetchHeatingSchedules = async () => {
+			try {
+				const response = await axios.get(
+					ApiUrls.SMARTHEATING_HEATINGSCHEDULE.LIST,
+				);
+				const data = await response.data;
+				const templateNames =
+					data.length > 0 ? data.map((template) => template.templateName) : [];
+				setCreatedHeatingScheduleNames(templateNames);
+			} catch (error) {
+				console.error("Error:", error);
+			}
+		};
+		fetchHeatingSchedules();
+
+		const programName = formData.programName;
+		const isSameAsTemplateName = program.templateName === programName;
+
+		if (!isSameAsTemplateName) {
+			createdHeatingScheduleNames?.forEach((name) => {
+				if (programName === name) {
+					newErrors.programName = errors.ProgramWithNameAlreadyCreated;
+				}
+			});
+		}
 
 		// Validate temperature fields
 		const minTemp = parseFloat(formData.minTemp);
@@ -398,7 +426,9 @@ export function CloneHeatingModal({
 					const normalizeTime = (value) => {
 						const hours = Math.floor((value * 24) / 96);
 						const minutes = Math.floor(((value * 24 * 60) / 96) % 60);
-						return `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}`;
+						return `${hours.toString().padStart(2, "0")}:${minutes
+							.toString()
+							.padStart(2, "0")}`;
 					};
 
 					for (const [dayName, entries] of Object.entries(data)) {
@@ -506,6 +536,39 @@ export function CloneHeatingModal({
 		resetModalState();
 		handleCloneModal();
 	};
+	const handleCheckName = () => {
+		const fetchHeatingSchedules = async () => {
+			try {
+				const response = await axios.get(
+					ApiUrls.SMARTHEATING_HEATINGSCHEDULE.LIST,
+				);
+				const data = await response.data;
+				const templateNames =
+					data.length > 0 ? data.map((template) => template.templateName) : [];
+				setCreatedHeatingScheduleNames(templateNames);
+				const nameExistsInCreatedSchedules =
+					createdHeatingScheduleNames &&
+					createdHeatingScheduleNames.includes(formData.programName);
+				const isSameAsTemplateName =
+					program.templateName === formData.programName;
+
+				if (!isSameAsTemplateName && nameExistsInCreatedSchedules) {
+					setErrorMessages((prev) => ({
+						...prev,
+						programName: errors.ProgramWithNameAlreadyCreated,
+					}));
+				} else {
+					setErrorMessages((prev) => ({
+						...prev,
+						programName: "",
+					}));
+				}
+			} catch (error) {
+				console.error("Error:", error);
+			}
+		};
+		fetchHeatingSchedules();
+	};
 
 	const [initialData, setInitialData] = useState({});
 
@@ -590,6 +653,7 @@ export function CloneHeatingModal({
 										handleChange={handleChange}
 										errorMessages={errorMessages}
 										generalErrorMessage={generalErrorMessage} // Pass general error message to Form1
+										checkName={handleCheckName}
 									/>
 								</div>
 							)}
@@ -634,7 +698,11 @@ export function CloneHeatingModal({
 						</Button>
 					) : (
 						<Button
-							className={` ${buttonText === "Confirm" ? "bg-green-400 focus:ring-green-400 focus:bg-green-400 hover:bg-green-400 enabled:hover:bg-green-400" : "bg-primary"}`}
+							className={` ${
+								buttonText === "Confirm"
+									? "bg-green-400 focus:ring-green-400 focus:bg-green-400 hover:bg-green-400 enabled:hover:bg-green-400"
+									: "bg-primary"
+							}`}
 							onClick={handleCreate}
 						>
 							{buttonText}

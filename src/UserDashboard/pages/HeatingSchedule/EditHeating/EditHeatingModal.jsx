@@ -219,6 +219,7 @@ export function EditHeatingModal({
 	};
 
 	const handleSubmit = () => {
+		handleCheckName();
 		setFormSubmitted(true);
 
 		let allFieldsFilled = true; // Flag to check if all fields are filled
@@ -235,7 +236,7 @@ export function EditHeatingModal({
 		const fetchHeatingSchedules = async () => {
 			try {
 				const response = await axios.get(
-					ApiUrls.SMARTHEATING_HEATINGSCHEDULE.LIST
+					ApiUrls.SMARTHEATING_HEATINGSCHEDULE.LIST,
 				);
 				const data = await response.data;
 				const templateNames =
@@ -370,7 +371,9 @@ export function EditHeatingModal({
 					const normalizeTime = (value) => {
 						const hours = Math.floor((value * 24) / 96);
 						const minutes = Math.floor(((value * 24 * 60) / 96) % 60);
-						return `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}`;
+						return `${hours.toString().padStart(2, "0")}:${minutes
+							.toString()
+							.padStart(2, "0")}`;
 					};
 
 					for (const [dayName, entries] of Object.entries(data)) {
@@ -416,8 +419,12 @@ export function EditHeatingModal({
 				// console.log(JSON.stringify(finalObj));
 
 				// Put to API
-				axios.put(ApiUrls.SMARTHEATING_HEATINGSCHEDULE.HEATINGSCHEDULE_ID(program.id), finalObj)
-					.then(response => {
+				axios
+					.put(
+						ApiUrls.SMARTHEATING_HEATINGSCHEDULE.HEATINGSCHEDULE_ID(program.id),
+						finalObj,
+					)
+					.then((response) => {
 						const { data, status } = response;
 						// console.log(data);
 						if (status === 400) {
@@ -467,9 +474,9 @@ export function EditHeatingModal({
 		const fetchHeatingSchedules = async () => {
 			try {
 				const response = await axios.get(
-					ApiUrls.SMARTHEATING_HEATINGSCHEDULE.LIST
+					ApiUrls.SMARTHEATING_HEATINGSCHEDULE.LIST,
 				);
-				const data = await response.data
+				const data = await response.data;
 				const templateNames =
 					data.length > 0 ? data.map((template) => template.templateName) : [];
 				setCreatedHeatingScheduleNames(templateNames);
