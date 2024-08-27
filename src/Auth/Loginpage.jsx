@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Checkbox, Label, TextInput } from "flowbite-react";
 import { FcGoogle } from "react-icons/fc";
 import authImage from "../assets/images/auth-image.png";
-import BlueNodeLogo from "../assets/logos/BlueNodes.png";
+import BlueNodeLogo from "../assets/logos/bluenodeslogohigh.png";
 import { useAuth } from "../AuthContext";
 import ApiUrls from "../globals/apiURL.js";
 import axios from "axios";
@@ -88,7 +88,7 @@ const Loginpage = () => {
 					/>
 				</div>
 				{error && <div className="text-red-500">{error}</div>}
-				<div className="w-full flex flex-row justify-between items-start">
+				{/* <div className="w-full flex flex-row justify-between items-start">
 					<div className="flex gap-2 px-2">
 						<Checkbox id="agree" className="border border-black" />
 						<Label htmlFor="agree" className="flex">
@@ -99,7 +99,7 @@ const Loginpage = () => {
 						{" "}
 						Forget Password{" "}
 					</h2>
-				</div>
+				</div> */}
 				<button
 					onClick={handleLogin}
 					className={`w-full py-2 rounded-[10px] bg-[#0BAAC9] text-base font-semibold text-white ${
@@ -109,11 +109,11 @@ const Loginpage = () => {
 				>
 					{loading ? "Logging in..." : "Login"}
 				</button>
-				<button className="w-full flex flex-row justify-center items-center gap-2 py-2 rounded-[10px] bg-[white] border-2 border-[#0BAAC9] text-base font-medium text-black">
+				{/* <button className="w-full flex flex-row justify-center items-center gap-2 py-2 rounded-[10px] bg-[white] border-2 border-[#0BAAC9] text-base font-medium text-black">
 					<FcGoogle className="text-3xl" />
 					<p>Log in with Google</p>
-				</button>
-				<div className="w-full flex flex-row justify-center items-start gap-1">
+				</button> */}
+				{/* <div className="w-full flex flex-row justify-center items-start gap-1">
 					<p className="text-base text-gray-700"> Don’t have an account? </p>
 					<h2
 						className="text-[#0DC8ED] text-base cursor-pointer font-semibold"
@@ -122,7 +122,7 @@ const Loginpage = () => {
 						{" "}
 						Sign up{" "}
 					</h2>
-				</div>
+				</div> */}
 			</div>
 
 			<div className="w-[50%] h-full flex flex-col justify-center items-center overflow-hidden">
