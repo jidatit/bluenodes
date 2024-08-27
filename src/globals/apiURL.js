@@ -6,6 +6,12 @@ const ApiUrls = {
 	STAGE,
 	BASE_URL: `${BASE}${STAGE}`,
 	AUTH_LOGIN: "/auth/login",
+	SMARTHEATING_STATUSPAGE: {
+		STATS: "/smartheating/statuspage/report",
+		EVENT_LOGS: (page, limit) => `/smartheating/statuspage/list?page=${page}&limit=${limit}`,
+		ROOM_UNASSIGNED: (page, limit) => `/smartheating/statuspage/list-unassigned-rooms?page=${page}&limit=${limit}`,
+		DEVICES_OFFLINE: (page, limit) => `/smartheating/statuspage/list-devices-offline?page=${page}&limit=${limit}`
+	},
 	SMARTHEATING_HEATINGSCHEDULE: {
 		LIST: "/smartheating/heatingschedule/list",
 		HEATINGSCHEDULE: "/smartheating/heatingschedule",

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AiFillExclamationCircle } from "react-icons/ai";
 import { FaTablet } from "react-icons/fa6";
 import { FaBuilding } from "react-icons/fa";
@@ -11,16 +11,44 @@ import OfflineTable from "./components/OfflineTable";
 import { tableData } from "./components/data/tableData";
 import { deviceData } from "./components/data/deviceData";
 import celeAnimation from "../../../assets/icons/celeb.gif";
-
-const Loader = () => (
-	<div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-200 opacity-75 z-50">
-		<div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-900"></div>
-	</div>
-);
+import { fetchStatusPageStats } from "./data/Statuspageapis";
 
 function MainPage() {
 	const [activeCard, setActiveCard] = useState(null);
 	const [loading, setLoading] = useState(false);
+	const [statsData, setStatsData] = useState({
+		numberOfDevices: 0,
+		numberOfDevicesOffline: 0,
+		numberOfErrors: 0,
+		numberOfRooms: 0,
+		unassignedNumberOfRooms: 0
+	})
+
+	const fetchData = async () => {
+		try {
+			const {
+				numberOfDevices,
+				numberOfDevicesOffline,
+				numberOfErrors,
+				numberOfRooms,
+				unassignedNumberOfRooms
+			} = await fetchStatusPageStats();
+
+			setStatsData({
+				numberOfDevices,
+				numberOfDevicesOffline,
+				numberOfErrors,
+				numberOfRooms,
+				unassignedNumberOfRooms
+			})
+		} catch (error) {
+			console.error("Failed to fetch stats:", error);
+		}
+	};
+
+	useEffect(() => {
+		fetchData();
+	}, []);
 
 	const handleCardClick = (card) => {
 		setLoading(true);
@@ -80,17 +108,16 @@ function MainPage() {
 					<div className="flex gap-4">
 						<div
 							onClick={() => handleCardClick("generalError")}
-							className={`w-1/3 bg-white flex p-6 gap-4 rounded-lg shadow-sm items-center justify-start transition-transform duration-300 ${
-								activeCard === "generalError"
-									? "ring-primary-400 ring-2 scale-105"
-									: "hover:ring-primary-200 hover:ring-2 cursor-pointer"
-							}`}
+							className={`w-1/3 bg-white flex p-6 gap-4 rounded-lg shadow-sm items-center justify-start transition-transform duration-300 ${activeCard === "generalError"
+								? "ring-primary-400 ring-2 scale-105"
+								: "hover:ring-primary-200 hover:ring-2 cursor-pointer"
+								}`}
 						>
 							<div className="bg-red-100 text-red-700 p-3 text-2xl rounded-lg">
 								<AiFillExclamationCircle />
 							</div>
 							<div className="flex flex-col">
-								<p className="text-gray-900 font-bold">123</p>
+								<p className="text-gray-900 font-bold">{statsData.numberOfErrors}</p>
 								<p className="text-base text-gray-500 font-normal">
 									Errors occurred
 								</p>
@@ -98,17 +125,16 @@ function MainPage() {
 						</div>
 						<div
 							onClick={() => handleCardClick("unassignedError")}
-							className={`w-1/3 bg-white flex p-6 gap-4 rounded-lg shadow-sm items-center justify-start transition-transform duration-300 ${
-								activeCard === "unassignedError"
-									? "ring-primary-400 ring-2 scale-105"
-									: "hover:ring-primary-200 hover:ring-2 cursor-pointer"
-							}`}
+							className={`w-1/3 bg-white flex p-6 gap-4 rounded-lg shadow-sm items-center justify-start transition-transform duration-300 ${activeCard === "unassignedError"
+								? "ring-primary-400 ring-2 scale-105"
+								: "hover:ring-primary-200 hover:ring-2 cursor-pointer"
+								}`}
 						>
 							<div className="bg-green-100 text-green-700 p-3 text-2xl rounded-lg">
 								<FaBuilding />
 							</div>
 							<div className="flex flex-col">
-								<p className="text-gray-900 font-bold">123/1234</p>
+								<p className="text-gray-900 font-bold">{statsData.unassignedNumberOfRooms}/{statsData.numberOfRooms}</p>
 								<p className="text-base text-gray-500 font-normal">
 									Rooms unassigned
 								</p>
@@ -116,17 +142,16 @@ function MainPage() {
 						</div>
 						<div
 							onClick={() => handleCardClick("offlineError")}
-							className={`w-1/3 bg-white flex p-6 gap-4 rounded-lg shadow-sm items-center justify-start transition-transform duration-300 ${
-								activeCard === "offlineError"
-									? "ring-primary-400 ring-2 scale-105 "
-									: "hover:ring-primary-200 hover:ring-2 cursor-pointer"
-							}`}
+							className={`w-1/3 bg-white flex p-6 gap-4 rounded-lg shadow-sm items-center justify-start transition-transform duration-300 ${activeCard === "offlineError"
+								? "ring-primary-400 ring-2 scale-105 "
+								: "hover:ring-primary-200 hover:ring-2 cursor-pointer"
+								}`}
 						>
 							<div className="bg-yellow-100 text-yellow-700 p-3 text-2xl rounded-lg">
 								<FaTablet />
 							</div>
 							<div className="flex flex-col">
-								<p className="text-gray-900 font-bold">100/1234</p>
+								<p className="text-gray-900 font-bold">{statsData.numberOfDevicesOffline}/{statsData.numberOfDevices}</p>
 								<p className="text-base text-gray-500 font-normal">
 									Devices Offline
 								</p>
@@ -134,12 +159,12 @@ function MainPage() {
 						</div>
 					</div>
 				</div>
-				{!activeCard && !loading && <EventLogsTable tableData={tableData} />}
+				{!activeCard && !loading && <EventLogsTable />}
 				{activeCard === "generalError" && (
 					<ErrorLogsTable tableData={tableData} />
 				)}
 				{activeCard === "unassignedError" && (
-					<UnassignedTable tableData={tableData} />
+					<UnassignedTable />
 				)}
 				{activeCard === "offlineError" && (
 					<OfflineTable tableData={deviceData} />

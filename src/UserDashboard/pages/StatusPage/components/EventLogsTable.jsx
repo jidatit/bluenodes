@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 import { useState, useEffect } from "react";
-import { Select } from "flowbite-react";
+import { Select, Tooltip } from "flowbite-react";
 import { IoChevronBackOutline } from "react-icons/io5";
 import { IoChevronForwardOutline } from "react-icons/io5";
 import { MdOutlineAccessTimeFilled } from "react-icons/md";
@@ -10,55 +10,33 @@ import { RiErrorWarningFill } from "react-icons/ri";
 import { IoIosWarning } from "react-icons/io";
 import { FaSearch } from "react-icons/fa";
 import { GiTireIronCross } from "react-icons/gi";
+import { fetchEventLogsData } from "../data/Statuspageapis";
 
-const EventLogsTable = ({ tableData }) => {
+const EventLogsTable = () => {
+
+	const [tableData, setTableData] = useState([])
 	const [selectedFilter, setSelectedFilter] = useState("Last Year");
 	const [selectedEvent, setSelectedEvent] = useState("All events");
-	const [currentPage, setCurrentPage] = useState(1);
-	const [filteredData, setFilteredData] = useState([]);
 	const [searchQuery, setSearchQuery] = useState("");
+	const [currentPage, setCurrentPage] = useState(1);
+	const [totalRows, setTotalRows] = useState(0)
+
+	const getData = async () => {
+		try {
+			const data = await fetchEventLogsData(currentPage, itemsPerPage)
+			setTotalRows(data.count)
+			setTableData(data.rows);
+		} catch (error) {
+			console.log(error)
+		}
+	}
+	useEffect(() => {
+		getData()
+	}, [currentPage])
 
 	const itemsPerPage = 10;
-	const totalItems = filteredData && filteredData.length;
+	const totalItems = totalRows && totalRows;
 	const totalPages = Math.ceil(totalItems / itemsPerPage);
-
-	useEffect(() => {
-		filterData();
-	}, [selectedFilter, searchQuery]);
-
-	const filterData = () => {
-		let currentDate = new Date();
-		let startDate = new Date();
-		switch (selectedFilter) {
-			case "Last 7 days":
-				startDate.setDate(currentDate.getDate() - 7);
-				break;
-			case "Last 30 days":
-				startDate.setDate(currentDate.getDate() - 30);
-				break;
-			case "Last Month":
-				startDate.setMonth(currentDate.getMonth() - 1);
-				break;
-			case "Last Year":
-				startDate.setFullYear(currentDate.getFullYear() - 1);
-				break;
-			default:
-				break;
-		}
-
-		const filtered = tableData.filter((item) => {
-			let eventDate = new Date(item.date + " " + item.time);
-			return (
-				eventDate >= startDate &&
-				eventDate <= currentDate &&
-				(item.room.toLowerCase().includes(searchQuery.toLowerCase()) ||
-					item.event_type.toLowerCase().includes(searchQuery.toLowerCase()))
-			);
-		});
-
-		setFilteredData(filtered);
-		setCurrentPage(1);
-	};
 
 	const handlePageChange = (page) => {
 		setCurrentPage(page);
@@ -71,6 +49,11 @@ const EventLogsTable = ({ tableData }) => {
 
 	let startPage = Math.max(1, currentPage - paginationRange);
 	let endPage = Math.min(totalPages, currentPage + paginationRange);
+
+	const formatDate = (dateString) => {
+		const options = { year: "numeric", month: "long", day: "numeric", hour: "2-digit", minute: "2-digit" };
+		return new Date(dateString).toLocaleDateString("de-DE", options);
+	};
 
 	return (
 		<div className=" flex flex-col gap-4 w-full">
@@ -138,6 +121,9 @@ const EventLogsTable = ({ tableData }) => {
 					<thead className="text-xs font-semibold text-gray-500 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
 						<tr>
 							<th scope="col" className="p-4">
+								EVENT ID
+							</th>
+							<th scope="col" className="p-4">
 								ROOM
 							</th>
 							<th scope="col" className="p-4">
@@ -150,51 +136,54 @@ const EventLogsTable = ({ tableData }) => {
 								EVENT TYPE
 							</th>
 							<th scope="col" className="p-4">
-								AFTER
+								MESSAGE
 							</th>
 						</tr>
 					</thead>
 					<tbody>
-						{filteredData.length > 0 &&
-							filteredData
-								.slice(
-									(currentPage - 1) * itemsPerPage,
-									currentPage * itemsPerPage,
-								)
-								.map((item, index) => (
-									<tr
-										key={index}
-										className=" text-sm bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
-									>
-										<td className="px-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-											{item.room}{" "}
-											<span className="text-[12px] py-0.5 px-2.5 font-semibold bg-gray-100 rounded-[80px] p-1">
-												Room type name
-											</span>
-										</td>
-										<td className="px-4 py-4">
-											Building {item.building} -<span> Floor {item.floor}</span>
-										</td>
-										<td className="px-4 py-4">
-											{item.date} -<span> {item.time}</span>
-										</td>
-										<td className="px-4 py-4 inline-flex justify-center items-center text-center gap-1 text-sm">
-											{item.event_status === "info" ? (
-												<FaCircleInfo />
-											) : item.event_status === "warning" ? (
-												<RiErrorWarningFill className="text-yellow-500" />
-											) : (
-												<IoIosWarning className="text-red-700" />
-											)}
-											<span className="text-sm">{item.event_type}</span>
-										</td>
-										<td className="px-4 py-4 truncate">{item.after}</td>
-									</tr>
-								))}
+						{tableData.length > 0 && tableData.map((item, index) => (
+							<tr
+								key={index}
+								className=" text-sm bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
+							>
+								<td className="px-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+									{item.id ? item.id : "N/A"}
+								</td>
+								<td className="px-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+									{item.roomName ? item.roomName : "N/A"}{" "}
+									<span className="text-[12px] py-0.5 px-2.5 font-semibold bg-gray-100 rounded-[80px] p-1">
+										{item.roomTag ? item.roomTag : "N/A"}
+									</span>
+								</td>
+								<td className="px-4 py-4">
+									{item.building_floor_string ? item.building_floor_string : "N/A"}
+								</td>
+								<td className="px-4 py-4">
+									{item.createdAt ? formatDate(item.createdAt) : "N/A"}
+								</td>
+								<td className="px-4 py-4 inline-flex justify-center items-center text-center gap-1 text-sm">
+									{item.eventTypeLevel === "Information" ? (
+										<FaCircleInfo />
+									) : item.eventTypeLevel === "Warning" ? (
+										<RiErrorWarningFill className="text-yellow-500" />
+									) : (
+										<IoIosWarning className="text-red-700" />
+									)}
+									<span className="text-sm">
+										{item.eventTypeMessage ? item.eventTypeMessage : "N/A"}
+									</span>
+								</td>
+								<td className="px-4 py-4">
+									<Tooltip content={item.message} style="light">
+										{item.message ? `${item.message.slice(0, 25)}...` : "N/A"}
+									</Tooltip>
+								</td>
+							</tr>
+						))}
 					</tbody>
 				</table>
 
-				{filteredData.length === 0 && (
+				{tableData.length === 0 && (
 					<>
 						<div className="w-full bg-slate-100 flex flex-col justify-center items-center">
 							<p className="w-full text-center italic py-2 font-semibold">
