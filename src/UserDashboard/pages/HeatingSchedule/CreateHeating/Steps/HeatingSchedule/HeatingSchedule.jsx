@@ -684,8 +684,8 @@ function HeatingSchedule({
 		const hours = y;
 		return `${hours.toString().padStart(2, "0")}:00`;
 	};
-	const timeLabels = Array.from({ length: 24 * 4 }, (_, index) => {
-		const totalMinutes = index * 15;
+	const timeLabels = Array.from({ length: 24 * 4 + 1 }, (_, index) => {
+		const totalMinutes = (index % (24 * 4)) * 15; // Wrap around after 24 hours
 		const hours = Math.floor(totalMinutes / 60);
 		const minutes = totalMinutes % 60;
 		const isFullHour = minutes === 0; // Check if it's a complete hour
@@ -890,7 +890,7 @@ function HeatingSchedule({
 								transformOrigin: "top left",
 							}}
 						>
-							{Array.from({ length: 24 * 4 }).map((_, index) => (
+							{Array.from({ length: 24 * 4 + 1 }).map((_, index) => (
 								<div
 									key={index}
 									className="w-full border-t-2 border-[#E8E8E8] border-dotted z-10"

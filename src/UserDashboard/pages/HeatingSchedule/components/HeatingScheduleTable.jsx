@@ -202,8 +202,8 @@ function HeatingScheduleTable({ locationDetails, props }) {
 		}
 	};
 
-	const timeLabels = Array.from({ length: 24 * 4 }, (_, index) => {
-		const totalMinutes = index * 15;
+	const timeLabels = Array.from({ length: 24 * 4 + 1 }, (_, index) => {
+		const totalMinutes = (index % (24 * 4)) * 15; // Wrap around after 24 hours
 		const hours = Math.floor(totalMinutes / 60);
 		const minutes = totalMinutes % 60;
 		const isFullHour = minutes === 0; // Check if it's a complete hour
@@ -225,6 +225,7 @@ function HeatingScheduleTable({ locationDetails, props }) {
 			</div>
 		);
 	});
+
 	const [zoomGap, setZoomGap] = useState(0.563);
 
 	useEffect(() => {
@@ -238,7 +239,8 @@ function HeatingScheduleTable({ locationDetails, props }) {
 			} else if (zoomLevel === 1.5) {
 				setZoomGap(0.56);
 			} else if (zoomLevel === 1.75) {
-				setZoomGap(1.77);
+				console.log("zoom level", zoomLevel, zoomGap);
+				setZoomGap(0.579);
 			} else {
 				setZoomGap(0.563);
 			}
@@ -298,7 +300,7 @@ function HeatingScheduleTable({ locationDetails, props }) {
 						}}
 					>
 						<div
-							className={`  absolute top-[16px] left-0 bottom-0 right-0 w-full h-full flex flex-col gap-[9px] z-10`}
+							className={`absolute top-[1.156rem] left-0 bottom-0 right-0 w-full h-full flex flex-col gap-[9px] z-10`}
 							style={{
 								gap: `${zoomGap}rem`,
 								// transform: `scale(${zoomLevel})`,

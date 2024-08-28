@@ -133,6 +133,7 @@ const EditHeatingProgramModal = ({
 	const [locationDetails, setLocationDetails] = useState([]);
 	const [formDataApi, setFormDataApi] = useState();
 	const fetchHeatingScheduleForRoom = async (heatingScheduleId) => {
+		console.log("id", heatingScheduleId);
 		try {
 			const resp = await axios.get(
 				ApiUrls.SMARTHEATING_HEATINGSCHEDULE.HEATINGSCHEDULE_ID(
@@ -875,7 +876,6 @@ const ReplaceProgram = ({
 						showError ? "text-red-500" : "text-gray-700"
 					}`}
 				>
-					{" "}
 					{" "}
 				</label>
 				<select

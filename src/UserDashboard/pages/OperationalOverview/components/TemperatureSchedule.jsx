@@ -406,8 +406,15 @@ const TemperatureSchedule = ({
 								>
 									<div>
 										<svg
-											onClick={() => handleOpenEditModal(room ? room : null)}
-											className="cursor-pointer w-6 h-6 text-gray-800 dark:text-white"
+											onClick={() => {
+												if (room.heatingSchedule !== null)
+													handleOpenEditModal(room ? room : null);
+											}}
+											className={`cursor-pointer w-6 h-6  dark:text-white ${
+												room.heatingSchedule !== null && room.heatingSchedule.id
+													? "text-gray-800"
+													: "text-gray-500"
+											}`}
 											aria-hidden="true"
 											xmlns="http://www.w3.org/2000/svg"
 											width="24"
