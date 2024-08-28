@@ -10,55 +10,34 @@ import { RiErrorWarningFill } from "react-icons/ri";
 import { IoIosWarning } from "react-icons/io";
 import { FaSearch } from "react-icons/fa";
 import { GiTireIronCross } from "react-icons/gi";
+import { fetchUnassignedRoomsData } from '../data/Statuspageapis';
 
-const UnassignedTable = ({tableData}) => {
+const UnassignedTable = () => {
+
+    const [tableData, setTableData] = useState([])
     const [selectedFilter, setSelectedFilter] = useState('Last Year');
     const [selectedEvent, setSelectedEvent] = useState("All events");
-    const [currentPage, setCurrentPage] = useState(1);
-    const [filteredData, setFilteredData] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalRows, setTotalRows] = useState(0)
 
     const itemsPerPage = 10;
-    const totalItems = filteredData && filteredData.length;
-    const totalPages = Math.ceil(totalItems / itemsPerPage);
 
-    useEffect(() => {
-        filterData();
-    }, [selectedFilter, searchQuery]);
-
-    const filterData = () => {
-        let currentDate = new Date();
-        let startDate = new Date();
-        switch (selectedFilter) {
-            case 'Last 7 days':
-                startDate.setDate(currentDate.getDate() - 7);
-                break;
-            case 'Last 30 days':
-                startDate.setDate(currentDate.getDate() - 30);
-                break;
-            case 'Last Month':
-                startDate.setMonth(currentDate.getMonth() - 1);
-                break;
-            case 'Last Year':
-                startDate.setFullYear(currentDate.getFullYear() - 1);
-                break;
-            default:
-                break;
+    const getData = async () => {
+        try {
+            const data = await fetchUnassignedRoomsData(currentPage, itemsPerPage);
+            setTotalRows(data.count)
+            setTableData(data.rows);
+        } catch (error) {
+            console.log(error)
         }
+    }
+    useEffect(() => {
+        getData()
+    }, [currentPage])
 
-        const filtered = tableData.filter(item => {
-            let eventDate = new Date(item.date + ' ' + item.time);
-            return (
-                eventDate >= startDate &&
-                eventDate <= currentDate &&
-                (item.room.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                    item.event_type.toLowerCase().includes(searchQuery.toLowerCase()))
-            );
-        });
-
-        setFilteredData(filtered);
-        setCurrentPage(1);
-    };
+    const totalItems = totalRows && totalRows;
+    const totalPages = Math.ceil(totalItems / itemsPerPage);
 
     const handlePageChange = (page) => {
         setCurrentPage(page);
@@ -111,6 +90,9 @@ const UnassignedTable = ({tableData}) => {
                 <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                     <thead className="text-xs font-semibold text-gray-500 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                         <tr className=' uppercase'>
+                            <th scope="col" className="p-4 w-[20%]">
+                                ID
+                            </th>
                             <th scope="col" className="p-4 w-[30%]">
                                 ROOM
                             </th>
@@ -123,22 +105,23 @@ const UnassignedTable = ({tableData}) => {
                         </tr>
                     </thead>
                     <tbody>
-                        {filteredData.length > 0 &&
-                            (filteredData
-                                .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
-                                .map((item, index) => (
-                                    <tr key={index} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                                        <td className="px-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{item.room} <span className='text-[12px] py-0.5 px-2.5 font-semibold bg-gray-100 rounded-[80px] p-1'>Room type name</span></td>
-                                        <td className="px-4 py-4">Building {item.building} -<span> Floor {item.floor}</span></td>
-                                        <td className="px-4 py-4 truncate">
-                                          <Button className=' hover:!bg-transparent hover:opacity-80 border-none text-primary bg-transparent pr-2 py-0 [&>*]:p-0 focus:ring-transparent'>Assign</Button>
-                                        </td>
-                                    </tr>
-                                )))}
+                        {tableData.length > 0 &&
+                            tableData.map((item, index) => (
+                                <tr key={index} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                                    <td className="px-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                        {item.id ? item.id : "N/A"}
+                                    </td>
+                                    <td className="px-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{item.name ? item.name : "N/A"} <span className='text-[12px] py-0.5 px-2.5 font-semibold bg-gray-100 rounded-[80px] p-1'>{item.tag ? item.tag : "N/A"}</span></td>
+                                    <td className="px-4 py-4">{item.building_floor_string ? item.building_floor_string : "N/A"}</td>
+                                    <td className="px-4 py-4">
+                                        <Button className=' hover:!bg-transparent hover:opacity-80 border-none text-primary bg-transparent pr-2 py-0 [&>*]:p-0 focus:ring-transparent'>Assign</Button>
+                                    </td>
+                                </tr>
+                            ))}
                     </tbody>
                 </table>
 
-                {filteredData.length === 0 && (
+                {tableData.length === 0 && (
                     <>
                         <div className='w-full bg-slate-100 flex flex-col justify-center items-center'>
                             <p className='w-full text-center italic py-2 font-semibold'>No Results Found</p>
