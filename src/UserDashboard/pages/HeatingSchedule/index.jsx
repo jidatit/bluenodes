@@ -320,7 +320,7 @@ function HeatingSchedulePage() {
 						className="bg-primary text-white rounded-lg text-sm cursor-pointer"
 					>
 						<GoPlus className="mr-2 h-5 w-5" />
-						Add heating program
+						helinascas
 					</Button>
 				</div>
 			</div>
