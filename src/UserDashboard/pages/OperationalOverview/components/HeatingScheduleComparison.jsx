@@ -291,11 +291,6 @@ function HeatingScheduleComparison(props) {
 				props.noHeading ? "w-[98%]" : "w-full"
 			} px-2`}
 		>
-			{!props.noHeading && (
-				<h3 className="text-[16px] text-gray-500 font-semibold">
-					Heating Schedule
-				</h3>
-			)}
 			<div className="mb-10">
 				<div
 					style={{

@@ -17,6 +17,8 @@ export function ViewRoomScheduleModal({
 	algo,
 	heatingScheduleId,
 	roomName,
+	handleOpenEditModal,
+	room,
 }) {
 	const [switch1, setSwitch1] = useState(false);
 	const [isChecked, setIsChecked] = useState(false);
@@ -33,7 +35,8 @@ export function ViewRoomScheduleModal({
 	useEffect(() => {
 		if (heatingScheduleId !== null) {
 			setloading(true);
-			axios.get(ApiUrls.SMARTHEATING_HEATINGSCHEDULE.DETAILS(heatingScheduleId))
+			axios
+				.get(ApiUrls.SMARTHEATING_HEATINGSCHEDULE.DETAILS(heatingScheduleId))
 
 				.then((response) => response.data)
 				.then((data) => {
@@ -187,7 +190,17 @@ export function ViewRoomScheduleModal({
 							</div>
 						</Modal.Body>
 						<Modal.Footer>
-							<Button className="bg-primary">Edit</Button>
+							<Button
+								onClick={() => {
+									if (room.heatingSchedule !== null) {
+										handleCloseModal();
+										handleOpenEditModal(room ? room : null);
+									}
+								}}
+								className="bg-primary"
+							>
+								Edit
+							</Button>
 
 							<Button
 								className="font-black"

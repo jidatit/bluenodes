@@ -389,6 +389,7 @@ const TemperatureSchedule = ({
 											room.algorithm && room.algorithm ? true : false,
 										);
 										setroomName(room.name);
+										setSelectedRoom(room);
 									}}
 									className={`hover:!bg-transparent hover:opacity-80 border-none text-primary bg-transparent ${
 										room.heatingSchedule !== null && room.heatingSchedule.id
@@ -621,6 +622,8 @@ const TemperatureSchedule = ({
 					algo={selectedRoomAlgo}
 					heatingScheduleId={selectedRoomSchedId}
 					roomName={roomName}
+					room={selectedRoom}
+					handleOpenEditModal={handleOpenEditModal}
 				/>
 			)}
 			{handleOpenEditModal && openEditModal && (

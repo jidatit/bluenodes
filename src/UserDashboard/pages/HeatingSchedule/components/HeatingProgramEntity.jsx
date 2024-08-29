@@ -257,9 +257,10 @@ const HeatingProgramEntity = ({
 
 	return (
 		<>
-			<div className={`w-full relative ${program.assignedRooms > 0 ? "border-green-500 border-[2px]" : "border-gray-200 border-[1px]"} flex flex-col bg-white rounded-[8px] px-4 py-4 justify-center items-center`}>
+			<div
+				className={`w-full relative ${program.assignedRooms > 0 ? "border-green-500 border-[2px]" : "border-gray-200 border-[1px]"} flex flex-col bg-white rounded-[8px] px-4 py-4 justify-center items-center`}
+			>
 				<div className="flex absolute top-4 right-3 flex-row justify-center items-center gap-3 text-gray-900">
-
 					{program.assignedRooms > 0 && (
 						<p className="text-sm text-gray-900 font-bold">
 							<span

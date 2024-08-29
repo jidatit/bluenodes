@@ -9,7 +9,6 @@ import { errorMessages } from "../../../globals/errorMessages";
 import { Spinner } from "flowbite-react";
 import axios from "axios";
 import ApiUrls from "../../../globals/apiURL.js";
-import { flushSync } from "react-dom";
 
 function HeatingSchedulePage() {
 	// Adding use state React Hooks here
@@ -352,6 +351,9 @@ function HeatingSchedulePage() {
 						openModal={openModal}
 						handleOpenModal={handleOpenModal}
 						onCreate={handleCreateHeatingProgram}
+						showToast={showToast}
+						toastMessage={toastMessage}
+						isSuccess={isSuccess}
 					/>
 				)}
 			</div>

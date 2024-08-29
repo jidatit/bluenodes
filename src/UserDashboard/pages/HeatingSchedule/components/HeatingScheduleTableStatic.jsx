@@ -243,7 +243,6 @@ function HeatingScheduleTableStatic({ locationDetails, props }) {
 			} else {
 				setZoomGap(0.563);
 			}
-			console.log(zoomLevel, zoomGap);
 		}
 	}, [zoomLevel]);
 
@@ -251,11 +250,11 @@ function HeatingScheduleTableStatic({ locationDetails, props }) {
 		<div
 			className={`flex flex-col gap-4 ${props?.noHeading ? "w-[98%]" : "w-full"} px-2`}
 		>
-			{!props?.noHeading && (
+			{/* {!props?.noHeading && (
 				<h3 className="text-[16px] text-gray-500 font-semibold">
 					Heating Schedule
 				</h3>
-			)}
+			)} */}
 
 			<div className="">
 				<div

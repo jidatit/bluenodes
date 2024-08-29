@@ -226,23 +226,22 @@ function HeatingScheduleTable({ locationDetails, props }) {
 		);
 	});
 
-	const [zoomGap, setZoomGap] = useState(0.563);
+	const [zoomGap, setZoomGap] = useState(0.58);
 
 	useEffect(() => {
 		if (zoomLevel) {
 			if (zoomLevel === 1.100000023841858) {
-				setZoomGap(0.573);
+				setZoomGap(0.59);
 			} else if (zoomLevel === 1.2) {
-				setZoomGap(0.584);
+				setZoomGap(0.63);
 			} else if (zoomLevel === 1.25) {
-				setZoomGap(0.584);
+				setZoomGap(0.605);
 			} else if (zoomLevel === 1.5) {
-				setZoomGap(0.56);
+				setZoomGap(0.58);
 			} else if (zoomLevel === 1.75) {
-				console.log("zoom level", zoomLevel, zoomGap);
-				setZoomGap(0.579);
+				setZoomGap(0.599);
 			} else {
-				setZoomGap(0.563);
+				setZoomGap(0.58);
 			}
 		}
 	}, [zoomLevel]);
@@ -251,11 +250,11 @@ function HeatingScheduleTable({ locationDetails, props }) {
 		<div
 			className={`flex flex-col gap-4 ${props?.noHeading ? "w-[98%]" : "w-full"} px-2`}
 		>
-			{!props?.noHeading && (
+			{/* {!props?.noHeading && (
 				<h3 className="text-[16px] text-gray-500 font-semibold">
 					Heating Schedule
 				</h3>
-			)}
+			)} */}
 
 			<div className="">
 				<div
@@ -300,14 +299,14 @@ function HeatingScheduleTable({ locationDetails, props }) {
 						}}
 					>
 						<div
-							className={`absolute top-[1.156rem] left-0 bottom-0 right-0 w-full h-full flex flex-col gap-[9px] z-10`}
+							className={`absolute top-[1.156rem] left-0 bottom-0 right-0 w-full h-full flex flex-col gap-[9px] pt-[3px] z-10`}
 							style={{
 								gap: `${zoomGap}rem`,
 								// transform: `scale(${zoomLevel})`,
 								// transformOrigin: "top left",
 							}}
 						>
-							{Array.from({ length: 25 * 4 }).map((_, index) => (
+							{Array.from({ length: 24 * 4 + 1 }).map((_, index) => (
 								<div
 									key={index}
 									className="w-full border-t-2 border-[#E8E8E8] border-dotted z-10"
