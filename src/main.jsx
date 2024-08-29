@@ -5,6 +5,9 @@ import "./index.css";
 import { AuthProvider } from "./AuthContext.jsx";
 import axios from "axios";
 import ApiUrls from "./globals/apiURL.js";
+import { PrimeReactProvider } from 'primereact/api';
+import "primereact/resources/themes/lara-light-cyan/theme.css";
+import 'primereact/resources/primereact.min.css';
 
 axios.interceptors.request.use(
 	(config) => {
@@ -23,6 +26,8 @@ axios.defaults.baseURL = ApiUrls.BASE_URL;
 
 ReactDOM.createRoot(document.getElementById("root")).render(
 	<AuthProvider>
-		<App />
+		<PrimeReactProvider value={{ unstyled: false }}>
+			<App />
+		</PrimeReactProvider>
 	</AuthProvider>,
 );

@@ -8,10 +8,10 @@ const ApiUrls = {
 	AUTH_LOGIN: "/auth/login",
 	SMARTHEATING_STATUSPAGE: {
 		STATS: "/smartheating/statuspage/report",
-		EVENT_LOGS: (page, limit) =>
-			`/smartheating/statuspage/list?page=${page}&limit=${limit}`,
-		ROOM_UNASSIGNED: (page, limit) =>
-			`/smartheating/statuspage/list-unassigned-rooms?page=${page}&limit=${limit}`,
+		EVENT_LOGS: (page, limit, locations) =>
+			locations ? `/smartheating/statuspage/list?page=${page}&limit=${limit}&locationId=${locations}` : `/smartheating/statuspage/list?page=${page}&limit=${limit}`,
+		ROOM_UNASSIGNED: (page, limit, locations) =>
+			locations ? `/smartheating/statuspage/list-unassigned-rooms?page=${page}&limit=${limit}&locationId=${locations}` : `/smartheating/statuspage/list-unassigned-rooms?page=${page}&limit=${limit}`,
 		DEVICES_OFFLINE: (page, limit) =>
 			`/smartheating/statuspage/list-devices-offline?page=${page}&limit=${limit}`,
 	},
@@ -39,6 +39,7 @@ const ApiUrls = {
 			numberOfRooms,
 		) =>
 			`/smartheating/locations?heatingScheduleDetails=${heatingScheduleDetails}&roomTemperature=${roomTemperature}&assignedNumberOfRooms=${assignedNumberOfRooms}&numberOfRooms=${numberOfRooms}`,
+		LIST: `/smartheating/locations`,
 	},
 	USER: {
 		PROFILE: "/user/profile",

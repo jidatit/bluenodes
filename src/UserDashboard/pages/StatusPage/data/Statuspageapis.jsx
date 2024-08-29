@@ -10,18 +10,18 @@ export const fetchStatusPageStats = async () => {
     }
 };
 
-export const fetchUnassignedRoomsData = async (page = 1, limit = 10) => {
+export const fetchUnassignedRoomsData = async (page = 1, limit = 10, locations) => {
     try {
-        const data = await axios.get(ApiUrls.SMARTHEATING_STATUSPAGE.ROOM_UNASSIGNED(page, limit))
+        const data = await axios.get(ApiUrls.SMARTHEATING_STATUSPAGE.ROOM_UNASSIGNED(page, limit, locations))
         return data.data;
     } catch (error) {
         console.log(error)
     }
 }
 
-export const fetchEventLogsData = async (page = 1, limit = 10) => {
+export const fetchEventLogsData = async (page = 1, limit = 10, locations) => {
     try {
-        const data = await axios.get(ApiUrls.SMARTHEATING_STATUSPAGE.EVENT_LOGS(page, limit))
+        const data = await axios.get(ApiUrls.SMARTHEATING_STATUSPAGE.EVENT_LOGS(page, limit, locations))
         return data.data;
     } catch (error) {
         console.log(error)

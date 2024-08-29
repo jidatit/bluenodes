@@ -11,21 +11,150 @@ import { IoIosWarning } from "react-icons/io";
 import { FaSearch } from "react-icons/fa";
 import { GiTireIronCross } from "react-icons/gi";
 import { fetchUnassignedRoomsData } from '../data/Statuspageapis';
+import { TreeSelect } from 'primereact/treeselect';
+import axios from "axios";
+import ApiUrls from "../../../../globals/apiURL";
 
 const UnassignedTable = () => {
 
+    const [LocationsData, setLocationsData] = useState([]);
+
+    const transformData = (nodes) => {
+        return nodes.map(node => {
+            const key = node.children.length > 0
+                ? node.id.toString()
+                : `room${node.id}`;
+
+            const transformedNode = {
+                key: key,
+                label: node.name,
+            };
+
+            if (node.children.length > 0) {
+                transformedNode.children = transformData(node.children);
+            }
+
+            return transformedNode;
+        });
+    };
+
+    const getAllLocations = async () => {
+        try {
+            const data = await axios.get(ApiUrls.SMARTHEATING_LOCATIONS.LIST);
+            const transformedData = transformData(data.data)
+            setLocationsData(transformedData)
+        } catch (error) {
+            console.log(error)
+        }
+    }
+    useEffect(() => {
+        getAllLocations()
+    }, [])
+
     const [tableData, setTableData] = useState([])
-    const [selectedFilter, setSelectedFilter] = useState('Last Year');
-    const [selectedEvent, setSelectedEvent] = useState("All events");
+    // const [selectedFilter, setSelectedFilter] = useState('Last Year');
+    // const [selectedEvent, setSelectedEvent] = useState("All events");
     const [searchQuery, setSearchQuery] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
     const [totalRows, setTotalRows] = useState(0)
 
     const itemsPerPage = 10;
 
-    const getData = async () => {
+    const [selectedKeys, setSelectedKeys] = useState({});
+    const [selectedRoomIds, setSelectedRoomIds] = useState(new Set());
+
+    const getAllKeys = (node) => {
+        let keys = [node.key];
+        if (node.children) {
+            for (const child of node.children) {
+                keys = [...keys, ...getAllKeys(child)];
+            }
+        }
+        return keys;
+    };
+
+    const updateSelection = (newSelectedKeys) => {
+        let newSelectedRoomIds = new Set([...selectedRoomIds]);
+
+        // Update selection state
+        const updatedKeys = { ...selectedKeys };
+
+        // Add new selections
+        Object.keys(newSelectedKeys).forEach((key) => {
+            const node = findNodeByKey(key, LocationsData);
+            if (node) {
+                const allKeys = getAllKeys(node);
+                allKeys.forEach((childKey) => {
+                    updatedKeys[childKey] = true;
+                    if (childKey.startsWith('room')) {
+                        newSelectedRoomIds.add(childKey);
+                    }
+                });
+            }
+        });
+
+        // Remove unselected keys
+        Object.keys(selectedKeys).forEach((key) => {
+            if (!newSelectedKeys[key]) {
+                const node = findNodeByKey(key, LocationsData);
+                if (node) {
+                    const allKeys = getAllKeys(node);
+                    allKeys.forEach((childKey) => {
+                        delete updatedKeys[childKey];
+                        if (childKey.startsWith('room')) {
+                            newSelectedRoomIds.delete(childKey);
+                        }
+                    });
+                }
+            }
+        });
+
+        // Check if any children are still selected for a parent
+        Object.keys(updatedKeys).forEach((key) => {
+            const node = findNodeByKey(key, LocationsData);
+            if (node && node.children) {
+                const anyChildSelected = node.children.some(child => updatedKeys[child.key]);
+                if (!anyChildSelected) {
+                    delete updatedKeys[node.key];
+                }
+            }
+        });
+
+        setSelectedKeys(updatedKeys);
+        setSelectedRoomIds(newSelectedRoomIds);
+        const locations = Array.from(newSelectedRoomIds);
+        const transformedArray = locations && locations.map(item => parseInt(item.replace('room', ''), 10));
+        if (transformedArray.length > 0) {
+            const sep_locations = transformedArray.join(',');
+            getData(sep_locations);
+        } else {
+            getData() // no locations to send thats why empty parameter.
+        }
+    };
+
+    const onNodeSelectChange = (e) => {
+        const newSelectedKeys = e.value;
+        updateSelection(newSelectedKeys);
+    };
+
+    const findNodeByKey = (key, nodes) => {
+        for (const node of nodes) {
+            if (node.key === key) {
+                return node;
+            }
+            if (node.children) {
+                const childNode = findNodeByKey(key, node.children);
+                if (childNode) {
+                    return childNode;
+                }
+            }
+        }
+        return null;
+    };
+
+    const getData = async (locations) => {
         try {
-            const data = await fetchUnassignedRoomsData(currentPage, itemsPerPage);
+            const data = await fetchUnassignedRoomsData(currentPage, itemsPerPage, locations);
             setTotalRows(data.count)
             setTableData(data.rows);
         } catch (error) {
@@ -60,15 +189,17 @@ const UnassignedTable = () => {
                 <div className="flex flex-column my-2 bg-transparent mx-2 sm:flex-row flex-wrap space-y-4 sm:space-y-0 items-center justify-between">
                     {/* Filter buttons */}
                     <div className='flex flex-row justify-center items-center gap-1'>
-                        <Select id="dayFilter" icon={MdOutlineAccessTimeFilled} required value={selectedFilter} onChange={(e) => setSelectedFilter(e.target.value)}>
-                            <option className=' text-md' value="Last 30 days">Last 30 days</option>
-                            <option className=' text-md' value="Last 7 days">Last 7 days</option>
-                            <option className=' text-md' value="Last Month">Last Month</option>
-                            <option className=' text-md' value="Last Year">Last Year</option>
-                        </Select>
-                        <Select id="eventFilter" required value={selectedEvent} onChange={(e) => setSelectedEvent(e.target.value)}>
-                            <option className='font-semibold text-md' value="Last 30 days">All events</option>
-                        </Select>
+                        <TreeSelect
+                            value={selectedKeys}
+                            options={LocationsData}
+                            onChange={onNodeSelectChange}
+                            className="md:w-20rem w-full"
+                            selectionMode="multiple"
+                            placeholder="All Buildings"
+                            display="chip"
+                            filter
+                            filterPlaceholder="Search"
+                        />
                     </div>
                     {/* Search bar */}
                     <div className="relative">
