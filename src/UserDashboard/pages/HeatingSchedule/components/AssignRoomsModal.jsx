@@ -322,9 +322,10 @@ function AssignRoomsModal({
 				? getRoomIdsByProgram(data.buildings)
 				: [];
 
+
 			axios
 				.post(ApiUrls.SMARTHEATING_HEATINGSCHEDULE.ASSIGN_ROOM(program.id), {
-					locations: "locationstosend",
+					locations: locationstosend,
 				})
 				.then((response) => {
 					const { data, status } = response;
