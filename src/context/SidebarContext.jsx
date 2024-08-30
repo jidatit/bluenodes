@@ -77,7 +77,7 @@ export function SidebarProvider({ children }) {
         setIsHovered,
         handleMouseEnter,
         handleMouseLeave,
-        toggleCollapsedState
+        toggleCollapsedState,
       }}
     >
       {children}
