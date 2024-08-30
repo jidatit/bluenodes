@@ -443,6 +443,10 @@ function HeatingSchedule({
 		}
 	};
 
+	useEffect(()=>{
+		console.log(editableBoxes)
+	},[editableBoxes])
+
 	// Set Box colour change depending on Temperature change here
 	const handleHoverColour = (temp) => {
 		if (temp === null) {
@@ -608,12 +612,9 @@ function HeatingSchedule({
 		setCopyTargetDays([]);
 	};
 
-	useEffect(()=>{
-		// console.log(layouts)
-	},[layouts])
-
 	const handleCheck = useCallback(() => {
 		let newCheck = false;
+		let invalidInput = false
 
 		// Generate boxes for empty time slots
 		Object.keys(layouts).forEach((day) => {
@@ -661,23 +662,26 @@ function HeatingSchedule({
 
 		const currentTemperatureInputs = temperatureBoxesRef.current;
 
+		let currentLayout = layouts
+
 		if (Object.keys(currentEditableBoxes).length > 0) {
+
 			// Loop through all keys in currentEditableBoxes
 			Object.keys(currentEditableBoxes).forEach((boxId) => {
-				// console.log(boxId)
 				const str = boxId;
-				const regex = /^(?:box-)?(\w+)-\d+$/;
+				const regex = /^box-(\w+)-\d+$/;
 				const match = str.match(regex);
 
 				if (match) {
 					const day = match[1]; // Extract the day from the first capturing group
 					const inputValue = currentTemperatureInputs[boxId];
-					// console.log(inputValue,day)
+
+					console.log(day,inputValue)
 
 					// Check if input is a number and within the range 5 to 30
 					if (!isNaN(inputValue) && inputValue >= 5 && inputValue <= 30) {
-						let currentLayout = {
-							...layouts, // assuming `layouts` is the current state
+						currentLayout = {
+							...currentLayout, // assuming `layouts` is the current state
 							[day]: layouts[day].map((box) =>
 								box.i === boxId
 									? { ...box, temperature: currentTemperatureInputs[boxId] }
@@ -686,12 +690,30 @@ function HeatingSchedule({
 						};
 						onUpdateLayouts(currentLayout);
 					} else {
-						alert("Please enter a number between 5 and 30.");
+						invalidInput = true; // Set the flag if invalid input is found
 						newCheck = true;
 					}
 				}
 			});
 		}
+
+        Object.keys(currentLayout).forEach((day) => {
+            currentLayout[day].forEach((box) => {
+                const temperature = box.temperature;
+                // Check if temperature is a number and within the range 5 to 30
+                if ((!isNaN(temperature) && (temperature < 5 || temperature > 30))) {
+                    invalidInput = true;
+                }
+            });
+        });
+
+		// If any invalid input is found, alert once
+        if (invalidInput) {
+            alert("Please enter a number between 5 and 30.");
+            newCheck = true;
+			onUpdateCheck(newCheck);
+        }
+
 	}, [
 		layouts,
 		setLayouts,
