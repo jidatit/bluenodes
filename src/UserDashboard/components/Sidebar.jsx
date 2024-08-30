@@ -3,14 +3,14 @@ import classNames from "classnames";
 import { Dropdown, Sidebar } from "flowbite-react";
 import { useEffect, useState } from "react";
 import { HiHome } from "react-icons/hi";
-import logoIcon from "../../assets/logos/Logo-sm.png"
-import logoText from "../../assets/logos/logo-text.png"
+import logoIcon from "../../assets/logos/Logo-sm.png";
+import logoText from "../../assets/logos/logo-text.png";
 import { useSidebarContext } from "../../context/SidebarContext";
 import isSmallScreen from "../helpers/is-small-screen";
 import { FaBuilding, FaRegWindowRestore } from "react-icons/fa";
 import { HiMiniCog6Tooth } from "react-icons/hi2";
 import customTheme from "./sidebarTheme";
-import Avatar from "../../assets/dummy/Avatar.png"
+import Avatar from "../../assets/dummy/Avatar.png";
 import { NavLink, useLocation } from "react-router-dom";
 import { NAVIGATION_PATH } from "../../globals/navPaths";
 import { IoLogOut } from "react-icons/io5";
@@ -21,12 +21,19 @@ import { Button } from "flowbite-react";
 const user = {
   name: "Bonnie Green",
   email: "name@company.com",
-  avatar: Avatar
+  avatar: Avatar,
 };
 
 const ExampleSidebar = () => {
-
-  const { isOpenOnSmallScreens: isSidebarOpenOnSmallScreens, isCollapsed, setIsCollapsed, isHovered, handleMouseEnter, handleMouseLeave, toggleCollapsedState } = useSidebarContext();
+  const {
+    isOpenOnSmallScreens: isSidebarOpenOnSmallScreens,
+    isCollapsed,
+    setIsCollapsed,
+    isHovered,
+    handleMouseEnter,
+    handleMouseLeave,
+    toggleCollapsedState,
+  } = useSidebarContext();
 
   const [currentPage, setCurrentPage] = useState("");
   const location = useLocation();
@@ -40,45 +47,34 @@ const ExampleSidebar = () => {
     setIsCollapsed(isSmallScreen());
   }, []);
 
-
   return (
     <div
-      className={classNames("lg:!block", { hidden: isSmallScreen() && !isSidebarOpenOnSmallScreens })}
+      className={classNames("lg:!block", {
+        hidden: isSmallScreen() && !isSidebarOpenOnSmallScreens,
+      })}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
       <Sidebar
-        collapsed={isSmallScreen() ? isCollapsed : (isCollapsed && !isHovered)}
+        collapsed={isSmallScreen() ? isCollapsed : isCollapsed && !isHovered}
         theme={customTheme}
       >
-
         <div className="flex h-full min-h-[98vh] flex-col justify-between py-2 bg-white">
-          <div className=" text-lg">
+          <div className="text-lg ">
             <div
-              className={classNames(
-                "flex items-center mb-6 ",
-                {
-                  "justify-center": isCollapsed, // Hide button when sidebar is collapsed
-                  "!justify-between": (isHovered && isCollapsed) || !isCollapsed, // Hide button when sidebar is collapsed
-                }
-              )}
+              className={classNames("flex items-center mb-6 ", {
+                "justify-center": isCollapsed, // Hide button when sidebar is collapsed
+                "!justify-between": (isHovered && isCollapsed) || !isCollapsed, // Hide button when sidebar is collapsed
+              })}
             >
-              <div
-                className=" flex items-center gap-3"
-
-              >
-                <img
-                  src={logoIcon}
-                  onClick={toggleCollapsedState}
-                />
+              <div className="flex items-center gap-3 ">
+                <img src={logoIcon} onClick={toggleCollapsedState} />
                 <img
                   src={logoText}
-                  className={classNames(
-                    {
-                      "hidden ": isCollapsed, // Hide button when sidebar is collapsed
-                      "!block ": isHovered && isCollapsed, // Hide button when sidebar is collapsed
-                    }
-                  )}
+                  className={classNames({
+                    "hidden ": isCollapsed, // Hide button when sidebar is collapsed
+                    "!block ": isHovered && isCollapsed, // Hide button when sidebar is collapsed
+                  })}
                 />
               </div>
 
@@ -94,8 +90,12 @@ const ExampleSidebar = () => {
               >
                 <span className="sr-only">Toggle collapsed state</span>
                 <svg
-                  className={`w-6 h-6 text-gray-800 dark:text-white transform transition-transform duration-300 ${isCollapsed || (isSmallScreen() && !isSidebarOpenOnSmallScreens) ? 'rotate-0' : 'rotate-180'
-                    }`}
+                  className={`w-6 h-6 text-gray-800 dark:text-white transform transition-transform duration-300 ${
+                    isCollapsed ||
+                    (isSmallScreen() && !isSidebarOpenOnSmallScreens)
+                      ? "rotate-0"
+                      : "rotate-180"
+                  }`}
                   aria-hidden="true"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
@@ -112,7 +112,6 @@ const ExampleSidebar = () => {
                   />
                 </svg>
               </button>
-
             </div>
             <Sidebar.Items>
               <Sidebar.ItemGroup>
@@ -120,24 +119,36 @@ const ExampleSidebar = () => {
                   as={NavLink}
                   to={NAVIGATION_PATH.dashboardLayout}
                   icon={HiHome}
-                  className={NAVIGATION_PATH.dashboardLayout === currentPage ? "bg-gray-100 dark:bg-gray-700" : ""}
+                  className={
+                    NAVIGATION_PATH.dashboardLayout === currentPage
+                      ? "bg-gray-100 dark:bg-gray-700"
+                      : ""
+                  }
                 >
-                  Status Page
+                  Startseite
                 </Sidebar.Item>
 
                 <Sidebar.Item
                   as={NavLink}
                   to={NAVIGATION_PATH.operationalOverview}
                   icon={FaRegWindowRestore}
-                  className={NAVIGATION_PATH.operationalOverview === currentPage ? "bg-gray-100 dark:bg-gray-700" : ""}
+                  className={
+                    NAVIGATION_PATH.operationalOverview === currentPage
+                      ? "bg-gray-100 dark:bg-gray-700"
+                      : ""
+                  }
                 >
-                  Operational overview
+                  Betriebsübersicht
                 </Sidebar.Item>
                 <Sidebar.Item
                   as={NavLink}
                   to={NAVIGATION_PATH.heatingprograms}
                   icon={FaBuilding}
-                  className={NAVIGATION_PATH.heatingprograms === currentPage ? "bg-gray-100 dark:bg-gray-700" : ""}
+                  className={
+                    NAVIGATION_PATH.heatingprograms === currentPage
+                      ? "bg-gray-100 dark:bg-gray-700"
+                      : ""
+                  }
                 >
                   Heating Schedule
                 </Sidebar.Item>
@@ -145,7 +156,11 @@ const ExampleSidebar = () => {
                   as={NavLink}
                   to={NAVIGATION_PATH.deviceManagement}
                   icon={HiMiniCog6Tooth}
-                  className={NAVIGATION_PATH.deviceManagement === currentPage ? "bg-gray-100 dark:bg-gray-700" : ""}
+                  className={
+                    NAVIGATION_PATH.deviceManagement === currentPage
+                      ? "bg-gray-100 dark:bg-gray-700"
+                      : ""
+                  }
                 >
                   Device management
                 </Sidebar.Item>
@@ -162,28 +177,22 @@ const ExampleSidebar = () => {
 const BottomMenu = ({ isCollapsed, isHovered }) => {
   return (
     <div className="flex items-center justify-center gap-x-5">
-
-      <div className=" flex items-center w-full justify-between">
+      <div className="flex items-center justify-between w-full ">
         <img src={user.avatar} />
         <div
-          className={classNames(
-            " flex flex-col",
-            {
-              "hidden ": isCollapsed, // Hide button when sidebar is collapsed
-              "!block ": isHovered && isCollapsed, // Hide button when sidebar is collapsed
-            }
-          )}
+          className={classNames(" flex flex-col", {
+            "hidden ": isCollapsed, // Hide button when sidebar is collapsed
+            "!block ": isHovered && isCollapsed, // Hide button when sidebar is collapsed
+          })}
         >
           <p className=" font-bold text-[#111928]">{user.name}</p>
           <p className=" text-sm  text-[#6B7280]">{user.email}</p>
         </div>
         <div
-          className={classNames(
-            {
-              "hidden ": isCollapsed, // Hide button when sidebar is collapsed
-              "!block ": isHovered && isCollapsed, // Hide button when sidebar is collapsed
-            }
-          )}
+          className={classNames({
+            "hidden ": isCollapsed, // Hide button when sidebar is collapsed
+            "!block ": isHovered && isCollapsed, // Hide button when sidebar is collapsed
+          })}
         >
           <OptionsDropdown />
         </div>
@@ -193,7 +202,7 @@ const BottomMenu = ({ isCollapsed, isHovered }) => {
 };
 
 const OptionsDropdown = () => {
-  const { logout } = useAuth()
+  const { logout } = useAuth();
   const [isSignoutModalOpen, setIsSignoutModalOpen] = useState(false);
 
   const handleSignout = () => {
@@ -205,19 +214,34 @@ const OptionsDropdown = () => {
         arrowIcon={false}
         inline
         label={
-          <span className="inline-flex cursor-pointer justify-center rounded p-1 text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:hover:bg-gray-700 dark:hover:text-white">
+          <span className="inline-flex justify-center p-1 text-gray-500 rounded cursor-pointer hover:bg-gray-100 hover:text-gray-900 dark:hover:bg-gray-700 dark:hover:text-white">
             <span className="sr-only">Current User</span>
-            <svg className="w-5 h-5 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-              <path stroke="currentColor" strokeLinecap="round" strokeWidth="4" d="M6 12h.01m6 0h.01m5.99 0h.01" />
+            <svg
+              className="w-5 h-5 text-gray-800 dark:text-white"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke="currentColor"
+                strokeLinecap="round"
+                strokeWidth="4"
+                d="M6 12h.01m6 0h.01m5.99 0h.01"
+              />
             </svg>
           </span>
         }
       >
-        <Dropdown.Item onClick={() => setIsSignoutModalOpen(true)} className="flex flex-row justify-center items-center gap-1">
+        <Dropdown.Item
+          onClick={() => setIsSignoutModalOpen(true)}
+          className="flex flex-row items-center justify-center gap-1"
+        >
           <IoLogOut size={20} />
           Sign out
         </Dropdown.Item>
-
       </Dropdown>
       <ConfirmSignOutModal
         isSignoutModalOpen={isSignoutModalOpen}
@@ -225,11 +249,14 @@ const OptionsDropdown = () => {
         handleSignout={handleSignout}
       />
     </>
-
   );
 };
 
-const ConfirmSignOutModal = ({ isSignoutModalOpen, setIsSignoutModalOpen, handleSignout }) => {
+const ConfirmSignOutModal = ({
+  isSignoutModalOpen,
+  setIsSignoutModalOpen,
+  handleSignout,
+}) => {
   return (
     <Modal
       show={isSignoutModalOpen}
@@ -259,4 +286,3 @@ const ConfirmSignOutModal = ({ isSignoutModalOpen, setIsSignoutModalOpen, handle
 };
 
 export default ExampleSidebar;
-
