@@ -239,7 +239,7 @@ const UnassignedTable = () => {
                             filterPlaceholder="Search"
                         />
                         {/* <MultiSelect value={selectedEventFilters} onChange={(e) => setSelectedEventFilters(e.value)} showSelectAll={false} options={eventFilterOptions} optionLabel="name"
-                            filter placeholder="All Events" display="chip" className="w-full md:w-20rem" />
+                            filter placeholder="Alle Events" display="chip" className="w-full md:w-20rem" />
 
                         <DateFilter onDatesChange={handleDatesChange} /> */}
 
@@ -254,13 +254,13 @@ const UnassignedTable = () => {
                                 ID
                             </th>
                             <th scope="col" className="p-4 w-[30%]">
-                                ROOM
+                                RAUM
                             </th>
                             <th scope="col" className="p-4 w-[60%]">
-                                BUILDING - FLOOR
+                            GEBÄUDE - ETAGE
                             </th>
                             <th scope="col" className="p-4">
-                                Action
+                            JETZT ZUWEISEN
                             </th>
                         </tr>
                     </thead>
@@ -274,7 +274,7 @@ const UnassignedTable = () => {
                                     <td className="px-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{item.name ? item.name : "N/A"} <span className='text-[12px] py-0.5 px-2.5 font-semibold bg-gray-100 rounded-[80px] p-1'>{item.tag ? item.tag : "N/A"}</span></td>
                                     <td className="px-4 py-4">{item.building_floor_string ? item.building_floor_string : "N/A"}</td>
                                     <td className="px-4 py-4">
-                                        <Button className=' hover:!bg-transparent hover:opacity-80 border-none text-primary bg-transparent pr-2 py-0 [&>*]:p-0 focus:ring-transparent'>Assign</Button>
+                                        <Button className=' hover:!bg-transparent hover:opacity-80 border-none text-primary bg-transparent pr-2 py-0 [&>*]:p-0 focus:ring-transparent'>Heizplan auswählenä</Button>
                                     </td>
                                 </tr>
                             ))}
@@ -284,7 +284,7 @@ const UnassignedTable = () => {
                 {tableData.length === 0 && (
                     <>
                         <div className='w-full bg-slate-100 flex flex-col justify-center items-center'>
-                            <p className='w-full text-center italic py-2 font-semibold'>No Results Found</p>
+                            <p className='w-full text-center italic py-2 font-semibold'>Keine Ergebnisse</p>
                         </div>
                     </>
                 )}

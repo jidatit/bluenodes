@@ -83,7 +83,7 @@ function MainPage() {
 				<div className="w-full flex flex-col gap-4">
 					<div className="flex flex-col">
 						<h2 className="text-[18px] text-gray-900 flex items-center gap-3">
-							Reports Summary
+            Zusammenfassung
 							{activeCard && (
 								<Tooltip
 									className="min-w-[130px]"
@@ -96,13 +96,13 @@ function MainPage() {
 										className="text-[16px] text-primary font-normal flex items-center gap-2 cursor-pointer hover:scale-95"
 									>
 										<IoMdArrowRoundBack className="text-2xl text-primary" />
-										Back to event Logs
+										Zurück zur Event Übersicht
 									</h3>
 								</Tooltip>
 							)}
 						</h2>
 						<p className="text-sm text-gray-500">
-							Click on card to view details
+            Klicken Sie auf eine Kachel, um Details anzuzeigen.
 						</p>
 					</div>
 					<div className="flex gap-4">
@@ -119,7 +119,7 @@ function MainPage() {
 							<div className="flex flex-col">
 								<p className="text-gray-900 font-bold">{statsData.numberOfErrors}</p>
 								<p className="text-base text-gray-500 font-normal">
-									Errors occurred
+                Fehlermeldungen
 								</p>
 							</div>
 						</div>
@@ -136,7 +136,7 @@ function MainPage() {
 							<div className="flex flex-col">
 								<p className="text-gray-900 font-bold">{statsData.unassignedNumberOfRooms}/{statsData.numberOfRooms}</p>
 								<p className="text-base text-gray-500 font-normal">
-									Rooms unassigned
+                Räume ohne Heizplan
 								</p>
 							</div>
 						</div>
@@ -153,7 +153,7 @@ function MainPage() {
 							<div className="flex flex-col">
 								<p className="text-gray-900 font-bold">{statsData.numberOfDevicesOffline}/{statsData.numberOfDevices}</p>
 								<p className="text-base text-gray-500 font-normal">
-									Devices Offline
+                Geräte sind offline
 								</p>
 							</div>
 						</div>
@@ -179,13 +179,12 @@ const Card = () => {
 		<div className="max-w-md px-6 pb-6 pt-4 bg-[#E7F9FD] border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
 			<div className="flex flex-row relative justify-start items-end">
 				<h5 className="text-2xl font-semibold text-gray-900 dark:text-white">
-					Everything is going well
+        Einwandfreier Betrieb!
 				</h5>
 				<img className="w-[40px] h-[39px]" src={celeAnimation} alt="" />
 			</div>
 			<p className="mb-3 font-normal text-gray-500 dark:text-gray-400 text-sm">
-				Sit back and relax, we will alert you if any error(s) appear in your
-				system.
+      Alle Räume sind automatisiert.
 			</p>
 		</div>
 	);
