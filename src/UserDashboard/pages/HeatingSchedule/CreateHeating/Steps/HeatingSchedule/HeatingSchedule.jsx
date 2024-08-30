@@ -209,7 +209,7 @@ function HeatingSchedule({
 	const editableBoxesRef = useRef(editableBoxes);
 	const temperatureBoxesRef = useRef(temperatureInputs);
 
-	// Update the ref whenever editableBoxes changes
+	// Update the ref whenever temperatureBoxes changes
 	useEffect(() => {
 		temperatureBoxesRef.current = temperatureInputs;
 	}, [temperatureInputs]);
@@ -319,8 +319,7 @@ function HeatingSchedule({
 		const container = event.currentTarget;
 		const rect = container.getBoundingClientRect();
 		const xPosition = event.clientX - rect.left;
-		const yPosition =
-			(event.clientY - rect.top + container.scrollTop) / (rowHeight + 10);
+		const yPosition = (event.clientY - rect.top + container.scrollTop) / (rowHeight + 10);
 		const rowIndex = Math.floor(yPosition);
 		if (rowIndex >= 24 * 4) return; // Ignore clicks below the 24th row
 		const dayIndex = Math.floor(xPosition / (rect.width / daysOfWeek.length));
@@ -531,6 +530,7 @@ function HeatingSchedule({
 	const handleCopyClick = (day) => {
 		if (showDropdown) {
 			setShowDropdown(null);
+			setCopyTargetDays([]);
 		} else {
 			setShowDropdown(day);
 		}
@@ -548,7 +548,7 @@ function HeatingSchedule({
 	// unique id for copy
 	const generateCopyId = (oldId, newDay) => {
 		const idParts = oldId.split("-");
-		const newId = `${newDay}-${idParts[idParts.length - 1]}`;
+		const newId = `box-${newDay}-${idParts[idParts.length - 1]}`;
 		return newId;
 	};
 
@@ -558,10 +558,28 @@ function HeatingSchedule({
 			setLayouts((prevLayouts) => {
 				const newLayouts = { ...prevLayouts };
 				copyTargetDays.forEach((targetDay) => {
-					const copiedBoxes = prevLayouts[showDropdown].map((box) => ({
-						...box,
-						i: generateCopyId(box.i, targetDay),
-					}));
+					// Copy the boxes from the day specified in showDropdown
+					const copiedBoxes = prevLayouts[showDropdown].map((box) => {
+						const newBoxId = generateCopyId(box.i, targetDay); // Generate a unique ID for the copied box
+	
+						// Set the newly copied box as editable
+						setEditableBoxes((prevEditable) => ({
+							...prevEditable,
+							[newBoxId]: true, // Enter editing mode on the newly copied box
+						}));
+
+						// Set temperature for copied boxes
+						setTemperatureInputs((prevInputs) => ({
+							...prevInputs,
+							[newBoxId]: "", // Initialize temperature input for the new box
+						}));
+	
+						// Return the new box with the generated ID
+						return {
+							...box,
+							i: newBoxId,
+						};
+					});
 
 					// Check if two boxes overlap
 					const boxesOverlap = (box1, box2) => {
@@ -581,6 +599,7 @@ function HeatingSchedule({
 
 					// Add the copied boxes to the target day
 					newLayouts[targetDay] = [...newLayouts[targetDay], ...copiedBoxes];
+
 				});
 				return newLayouts;
 			});
@@ -588,6 +607,10 @@ function HeatingSchedule({
 		setShowDropdown(null);
 		setCopyTargetDays([]);
 	};
+
+	useEffect(()=>{
+		// console.log(layouts)
+	},[layouts])
 
 	const handleCheck = useCallback(() => {
 		let newCheck = false;
@@ -639,32 +662,35 @@ function HeatingSchedule({
 		const currentTemperatureInputs = temperatureBoxesRef.current;
 
 		if (Object.keys(currentEditableBoxes).length > 0) {
-			const boxId = Object.keys(currentEditableBoxes)[0];
-			const str = boxId;
-			const regex = /^box-(\w+)-\d+$/;
-			const match = str.match(regex);
+			// Loop through all keys in currentEditableBoxes
+			Object.keys(currentEditableBoxes).forEach((boxId) => {
+				// console.log(boxId)
+				const str = boxId;
+				const regex = /^(?:box-)?(\w+)-\d+$/;
+				const match = str.match(regex);
 
-			if (match) {
-				const day = match[1]; // Extract the day from the first capturing group
+				if (match) {
+					const day = match[1]; // Extract the day from the first capturing group
+					const inputValue = currentTemperatureInputs[boxId];
+					// console.log(inputValue,day)
 
-				const inputValue = currentTemperatureInputs[boxId];
-
-				// Check if input is a number and within the range 5 to 30
-				if (!isNaN(inputValue) && inputValue >= 5 && inputValue <= 30) {
-					let currentLayout = {
-						...layouts, // assuming `layouts` is the current state
-						[day]: layouts[day].map((box) =>
-							box.i === boxId
-								? { ...box, temperature: currentTemperatureInputs[boxId] }
-								: box,
-						),
-					};
-					onUpdateLayouts(currentLayout);
-				} else {
-					alert("Please enter a number between 5 and 30.");
-					newCheck = true;
+					// Check if input is a number and within the range 5 to 30
+					if (!isNaN(inputValue) && inputValue >= 5 && inputValue <= 30) {
+						let currentLayout = {
+							...layouts, // assuming `layouts` is the current state
+							[day]: layouts[day].map((box) =>
+								box.i === boxId
+									? { ...box, temperature: currentTemperatureInputs[boxId] }
+									: box,
+							),
+						};
+						onUpdateLayouts(currentLayout);
+					} else {
+						alert("Please enter a number between 5 and 30.");
+						newCheck = true;
+					}
 				}
-			}
+			});
 		}
 	}, [
 		layouts,
