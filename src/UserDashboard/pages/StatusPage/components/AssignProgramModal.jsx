@@ -18,6 +18,8 @@ const AssignProgramModal = ({
 	openModal,
 	handleOpenModal,
 	room,
+	fetchList,
+	assignSuccess
 	// fetchFloorDetails,
 	// updateReplaced,
 }) => {
@@ -30,13 +32,11 @@ const AssignProgramModal = ({
 		useHeatingSchedule();
 
 	const handleCloseModal = () => {
+		handleCancelReplace();
 		handleOpenModal();
 		setSelectedProgram("");
 		resetModalState();
-	};
-
-	const handleActionChange = (value) => {
-		setSelectedAction(value);
+		fetchList()
 	};
 
 	const handleProgramChange = (event) => {
@@ -49,15 +49,17 @@ const AssignProgramModal = ({
 	};
 
 	const handleDone = () => {
-		if (selectedProgram) {
-			setShowConfirmModal(true);
+		if (!selectedProgram) {
+			setShowError(true);
+		} else {
+			handleConfirmReplace();
 		}
 	};
 	const [updatedR, setupdatedR] = useState(false);
 	let replaced = null;
 
 	const handleConfirmReplace = () => {
-		const roomId = room.id;
+		const roomId = room.locationId;
 
 		axios
 			.get(ApiUrls.SMARTHEATING_HEATINGSCHEDULE.DETAILS(selectedProgram))
@@ -77,16 +79,19 @@ const AssignProgramModal = ({
 					.then((data) => {
 						// console.log(data);
 						// setupdatedR(true);
+						setIsSuccess(true);
 						setShowToast(true);
 						setSelectedProgram("");
-						setToastMessage(errors.ProgramReplacedSuccessfully);
+						setToastMessage(errors.PorgramAssignedSuccessfully);
+						assignSuccess();
 						// updateReplaced();
 
 						handleCloseModal();
 					})
 					.catch((error) => {
+						setIsSuccess(false);
 						setShowToast(true);
-						setToastMessage(errors.ProgramReplacedFailed);
+						setToastMessage(errors.PorgramAssignedFailed);
 					});
 
 				setShowConfirmModal(false);
@@ -94,6 +99,8 @@ const AssignProgramModal = ({
 				// Corrected prop name usage
 			})
 			.catch((error) => {
+				setIsSuccess(false);
+				setShowToast(true);
 				console.error("Error fetching existing locations:", error);
 				setToastMessage(errors.ProgramReplacedFailed);
 			});
@@ -660,7 +667,7 @@ const AssignProgramModal = ({
 				{room && (
 					<>
 						<Modal.Header className=" text-lg text-gray-900 [&>*]:font-semibold">
-							Assign Room {room.name}
+							Assign Program - {room.name}
 						</Modal.Header>
 						<Modal.Body className="p-5 overflow-y-auto h-auto">
 							<div className="w-full flex flex-col justify-center items-start">
@@ -1083,7 +1090,7 @@ const ConfirmReplaceModal = ({ show, onClose, onConfirm }) => {
 		<Modal show={show} onClose={onClose} size="lg">
 			<Modal.Header className="flex justify-between items-center">
 				<span className="text-lg font-semibold text-gray-900">
-					Confirm Replace Program
+					Confirm Program Assignment
 				</span>
 				<button
 					onClick={onClose}
@@ -1092,7 +1099,7 @@ const ConfirmReplaceModal = ({ show, onClose, onConfirm }) => {
 			</Modal.Header>
 			<Modal.Body className="text-[#6B7280]">
 				<p>
-					Replacing program will remove all information of the previous program,
+					Assigning a program will remove all information of the previous program,
 					including the algorithm existed.
 				</p>
 				<p className="mt-2">Are you sure you want to continue?</p>

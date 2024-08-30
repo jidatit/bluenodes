@@ -105,59 +105,66 @@ function MainPage() {
             Klicken Sie auf eine Kachel, um Details anzuzeigen.
 						</p>
 					</div>
-					<div className="flex gap-4">
-						<div
-							onClick={() => handleCardClick("generalError")}
-							className={`w-1/3 bg-white flex p-6 gap-4 rounded-lg shadow-sm items-center justify-start transition-transform duration-300 ${activeCard === "generalError"
-								? "ring-primary-400 ring-2 scale-105"
-								: "hover:ring-primary-200 hover:ring-2 cursor-pointer"
-								}`}
-						>
-							<div className="bg-red-100 text-red-700 p-3 text-2xl rounded-lg">
-								<AiFillExclamationCircle />
-							</div>
-							<div className="flex flex-col">
-								<p className="text-gray-900 font-bold">{statsData.numberOfErrors}</p>
-								<p className="text-base text-gray-500 font-normal">
-                Fehlermeldungen
-								</p>
-							</div>
-						</div>
-						<div
-							onClick={() => handleCardClick("unassignedError")}
-							className={`w-1/3 bg-white flex p-6 gap-4 rounded-lg shadow-sm items-center justify-start transition-transform duration-300 ${activeCard === "unassignedError"
-								? "ring-primary-400 ring-2 scale-105"
-								: "hover:ring-primary-200 hover:ring-2 cursor-pointer"
-								}`}
-						>
-							<div className="bg-green-100 text-green-700 p-3 text-2xl rounded-lg">
-								<FaBuilding />
-							</div>
-							<div className="flex flex-col">
-								<p className="text-gray-900 font-bold">{statsData.unassignedNumberOfRooms}/{statsData.numberOfRooms}</p>
-								<p className="text-base text-gray-500 font-normal">
-                Räume ohne Heizplan
-								</p>
-							</div>
-						</div>
-						<div
-							onClick={() => handleCardClick("offlineError")}
-							className={`w-1/3 bg-white flex p-6 gap-4 rounded-lg shadow-sm items-center justify-start transition-transform duration-300 ${activeCard === "offlineError"
-								? "ring-primary-400 ring-2 scale-105 "
-								: "hover:ring-primary-200 hover:ring-2 cursor-pointer"
-								}`}
-						>
-							<div className="bg-yellow-100 text-yellow-700 p-3 text-2xl rounded-lg">
-								<FaTablet />
-							</div>
-							<div className="flex flex-col">
-								<p className="text-gray-900 font-bold">{statsData.numberOfDevicesOffline}/{statsData.numberOfDevices}</p>
-								<p className="text-base text-gray-500 font-normal">
-                Geräte sind offline
-								</p>
-							</div>
-						</div>
-					</div>
+          {statsData.numberOfDevicesOffline === 0 && statsData.numberOfErrors === 0 && statsData.unassignedNumberOfRooms=== 0 ? 
+            (
+              <Card/>
+            ):(
+              <div className="flex gap-4">
+                <div
+                  onClick={() => handleCardClick("generalError")}
+                  className={`w-1/3 bg-white flex p-6 gap-4 rounded-lg shadow-sm items-center justify-start transition-transform duration-300 ${activeCard === "generalError"
+                    ? "ring-primary-400 ring-2 scale-105"
+                    : "hover:ring-primary-200 hover:ring-2 cursor-pointer"
+                    }`}
+                >
+                  <div className="bg-red-100 text-red-700 p-3 text-2xl rounded-lg">
+                    <AiFillExclamationCircle />
+                  </div>
+                  <div className="flex flex-col">
+                    <p className="text-gray-900 font-bold">{statsData.numberOfErrors}</p>
+                    <p className="text-base text-gray-500 font-normal">
+                    Fehlermeldungen
+                    </p>
+                  </div>
+                </div>
+                <div
+                  onClick={() => handleCardClick("unassignedError")}
+                  className={`w-1/3 bg-white flex p-6 gap-4 rounded-lg shadow-sm items-center justify-start transition-transform duration-300 ${activeCard === "unassignedError"
+                    ? "ring-primary-400 ring-2 scale-105"
+                    : "hover:ring-primary-200 hover:ring-2 cursor-pointer"
+                    }`}
+                >
+                  <div className="bg-green-100 text-green-700 p-3 text-2xl rounded-lg">
+                    <FaBuilding />
+                  </div>
+                  <div className="flex flex-col">
+                    <p className="text-gray-900 font-bold">{statsData.unassignedNumberOfRooms}/{statsData.numberOfRooms}</p>
+                    <p className="text-base text-gray-500 font-normal">
+                    Räume ohne Heizplan
+                    </p>
+                  </div>
+                </div>
+                <div
+                  onClick={() => handleCardClick("offlineError")}
+                  className={`w-1/3 bg-white flex p-6 gap-4 rounded-lg shadow-sm items-center justify-start transition-transform duration-300 ${activeCard === "offlineError"
+                    ? "ring-primary-400 ring-2 scale-105 "
+                    : "hover:ring-primary-200 hover:ring-2 cursor-pointer"
+                    }`}
+                >
+                  <div className="bg-yellow-100 text-yellow-700 p-3 text-2xl rounded-lg">
+                    <FaTablet />
+                  </div>
+                  <div className="flex flex-col">
+                    <p className="text-gray-900 font-bold">{statsData.numberOfDevicesOffline}/{statsData.numberOfDevices}</p>
+                    <p className="text-base text-gray-500 font-normal">
+                    Geräte sind offline
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+            )
+          }
 				</div>
 				{!activeCard && !loading && <EventLogsTable />}
 				{activeCard === "generalError" && (
