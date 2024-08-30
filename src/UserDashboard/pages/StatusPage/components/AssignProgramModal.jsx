@@ -57,7 +57,7 @@ const AssignProgramModal = ({
 	let replaced = null;
 
 	const handleConfirmReplace = () => {
-		const roomId = room.id;
+		const roomId = room.locationId;
 
 		axios
 			.get(ApiUrls.SMARTHEATING_HEATINGSCHEDULE.DETAILS(selectedProgram))
