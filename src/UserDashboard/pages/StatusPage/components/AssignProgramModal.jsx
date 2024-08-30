@@ -18,6 +18,8 @@ const AssignProgramModal = ({
 	openModal,
 	handleOpenModal,
 	room,
+	fetchList,
+	assignSuccess
 	// fetchFloorDetails,
 	// updateReplaced,
 }) => {
@@ -30,13 +32,11 @@ const AssignProgramModal = ({
 		useHeatingSchedule();
 
 	const handleCloseModal = () => {
+		handleCancelReplace();
 		handleOpenModal();
 		setSelectedProgram("");
 		resetModalState();
-	};
-
-	const handleActionChange = (value) => {
-		setSelectedAction(value);
+		fetchList()
 	};
 
 	const handleProgramChange = (event) => {
@@ -49,8 +49,10 @@ const AssignProgramModal = ({
 	};
 
 	const handleDone = () => {
-		if (selectedProgram) {
-			setShowConfirmModal(true);
+		if (!selectedProgram) {
+			setShowError(true);
+		} else {
+			handleConfirmReplace();
 		}
 	};
 	const [updatedR, setupdatedR] = useState(false);
@@ -81,6 +83,7 @@ const AssignProgramModal = ({
 						setShowToast(true);
 						setSelectedProgram("");
 						setToastMessage(errors.PorgramAssignedSuccessfully);
+						assignSuccess();
 						// updateReplaced();
 
 						handleCloseModal();
@@ -1087,7 +1090,7 @@ const ConfirmReplaceModal = ({ show, onClose, onConfirm }) => {
 		<Modal show={show} onClose={onClose} size="lg">
 			<Modal.Header className="flex justify-between items-center">
 				<span className="text-lg font-semibold text-gray-900">
-					Confirm Assign Program
+					Confirm Program Assignment
 				</span>
 				<button
 					onClick={onClose}
@@ -1096,7 +1099,7 @@ const ConfirmReplaceModal = ({ show, onClose, onConfirm }) => {
 			</Modal.Header>
 			<Modal.Body className="text-[#6B7280]">
 				<p>
-					Assigning program will remove all information of the previous program,
+					Assigning a program will remove all information of the previous program,
 					including the algorithm existed.
 				</p>
 				<p className="mt-2">Are you sure you want to continue?</p>
