@@ -14,8 +14,19 @@ import { fetchUnassignedRoomsData } from '../data/Statuspageapis';
 import { TreeSelect } from 'primereact/treeselect';
 import axios from "axios";
 import ApiUrls from "../../../../globals/apiURL";
+import { MultiSelect } from 'primereact/multiselect';
+import DateFilter from "./dateFilter/DateFilter";
 
 const UnassignedTable = () => {
+
+    const [selectedEventFilters, setSelectedEventFilters] = useState(null);
+    const [ApiLocationsToBeSend, setApiLocationsToBeSend] = useState(null);
+    const eventFilterOptions = [
+        { name: 'Information', code: 'info' },
+        { name: 'Error', code: 'err' },
+        { name: 'Warning', code: 'warn' },
+        { name: 'Behoben', code: 'beh' },
+    ];
 
     const [LocationsData, setLocationsData] = useState([]);
 
@@ -54,7 +65,7 @@ const UnassignedTable = () => {
     const [tableData, setTableData] = useState([])
     // const [selectedFilter, setSelectedFilter] = useState('Last Year');
     // const [selectedEvent, setSelectedEvent] = useState("All events");
-    const [searchQuery, setSearchQuery] = useState('');
+    // const [searchQuery, setSearchQuery] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
     const [totalRows, setTotalRows] = useState(0)
 
@@ -126,7 +137,7 @@ const UnassignedTable = () => {
         const transformedArray = locations && locations.map(item => parseInt(item.replace('room', ''), 10));
         if (transformedArray.length > 0) {
             const sep_locations = transformedArray.join(',');
-            getData(sep_locations);
+            setApiLocationsToBeSend(sep_locations)
         } else {
             getData() // no locations to send thats why empty parameter.
         }
@@ -154,16 +165,23 @@ const UnassignedTable = () => {
 
     const getData = async (locations) => {
         try {
-            const data = await fetchUnassignedRoomsData(currentPage, itemsPerPage, locations);
+            const eventTypeLevel = selectedEventFilters !== null && selectedEventFilters.map(filter => filter.name).join(',') || null;
+            const data = await fetchUnassignedRoomsData(currentPage, itemsPerPage, locations, eventTypeLevel, dateTo, dateFrom);
             setTotalRows(data.count)
             setTableData(data.rows);
         } catch (error) {
             console.log(error)
         }
     }
+    const [dateTo, setdateTo] = useState(null);
+    const [dateFrom, setdateFrom] = useState(null);
     useEffect(() => {
         getData()
     }, [currentPage])
+
+    useEffect(() => {
+        getData(ApiLocationsToBeSend, selectedEventFilters);
+    }, [ApiLocationsToBeSend, selectedEventFilters, dateTo, dateFrom])
 
     const totalItems = totalRows && totalRows;
     const totalPages = Math.ceil(totalItems / itemsPerPage);
@@ -179,6 +197,26 @@ const UnassignedTable = () => {
 
     let startPage = Math.max(1, currentPage - paginationRange);
     let endPage = Math.min(totalPages, currentPage + paginationRange);
+
+    const formatDateforApitosend = (date) => {
+        const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+        return new Intl.DateTimeFormat('en-GB', options).format(date).split('/').reverse().join('-');
+    };
+
+    const handleDatesChange = (newDates) => {
+        if (!newDates || !newDates[0]) {
+            console.log('cleared');
+            setdateFrom(null)
+            setdateTo(null)
+            return;
+        }
+        if (newDates[0] && newDates[1]) {
+            let from = newDates[0] && formatDateforApitosend(new Date(newDates[0]));
+            setdateFrom(from);
+            let to = newDates[1] && formatDateforApitosend(new Date(newDates[1]));
+            setdateTo(to);
+        }
+    };
 
     return (
         <div className=' flex flex-col gap-4 w-full'>
@@ -200,22 +238,13 @@ const UnassignedTable = () => {
                             filter
                             filterPlaceholder="Search"
                         />
+                        {/* <MultiSelect value={selectedEventFilters} onChange={(e) => setSelectedEventFilters(e.value)} showSelectAll={false} options={eventFilterOptions} optionLabel="name"
+                            filter placeholder="All Events" display="chip" className="w-full md:w-20rem" />
+
+                        <DateFilter onDatesChange={handleDatesChange} /> */}
+
                     </div>
-                    {/* Search bar */}
-                    <div className="relative">
-                        <div className="absolute inset-y-0 left-0 rtl:inset-r-0 rtl:right-0 flex items-center ps-3 pointer-events-none">
-                            <FaSearch className="w-4 h-4 text-gray-500 dark:text-gray-400" />
-                        </div>
-                        <input
-                            type="text"
-                            id="table-search"
-                            className="block p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                            placeholder="Search for event logs"
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                        />
-                        {searchQuery.length > 0 && (<GiTireIronCross onClick={(e) => setSearchQuery('')} className='w-5 h-5 cursor-pointer absolute p-1 bg-gray-200 text-black rounded-full right-[7px] top-[9px] hover:scale-75 transition-all delay-100' />)}
-                    </div>
+
                 </div>
                 {/* Table */}
                 <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">

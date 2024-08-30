@@ -8,12 +8,45 @@ const ApiUrls = {
 	AUTH_LOGIN: "/auth/login",
 	SMARTHEATING_STATUSPAGE: {
 		STATS: "/smartheating/statuspage/report",
-		EVENT_LOGS: (page, limit, locations) =>
-			locations ? `/smartheating/statuspage/list?page=${page}&limit=${limit}&locationId=${locations}` : `/smartheating/statuspage/list?page=${page}&limit=${limit}`,
-		ROOM_UNASSIGNED: (page, limit, locations) =>
-			locations ? `/smartheating/statuspage/list-unassigned-rooms?page=${page}&limit=${limit}&locationId=${locations}` : `/smartheating/statuspage/list-unassigned-rooms?page=${page}&limit=${limit}`,
-		DEVICES_OFFLINE: (page, limit) =>
-			`/smartheating/statuspage/list-devices-offline?page=${page}&limit=${limit}`,
+		EVENT_LOGS: (page, limit, locations, eventTypeLevel, dateTo, dateFrom) => {
+			let url = `/smartheating/statuspage/list?page=${page}&limit=${limit}`;
+			if (locations) {
+				url += `&locationId=${locations}`;
+			}
+			if (eventTypeLevel) {
+				url += `&eventTypeLevel=${eventTypeLevel}`;
+			}
+			if (dateTo && dateFrom) {
+				url += `&dateTo=${dateTo}&dateFrom=${dateFrom}`;
+			}
+			return url;
+		},
+		ROOM_UNASSIGNED: (page, limit, locations, eventTypeLevel, dateTo, dateFrom) => {
+			let url = `/smartheating/statuspage/list-unassigned-rooms?page=${page}&limit=${limit}`;
+			if (locations) {
+				url += `&locationId=${locations}`
+			}
+			if (eventTypeLevel) {
+				url += `&eventTypeLevel=${eventTypeLevel}`;
+			}
+			if (dateTo && dateFrom) {
+				url += `&dateTo=${dateTo}&dateFrom=${dateFrom}`;
+			}
+			return url;
+		},
+		DEVICES_OFFLINE: (page, limit, locations, eventTypeLevel, dateTo, dateFrom) => {
+			let url = `/smartheating/statuspage/list-devices-offline?page=${page}&limit=${limit}`;
+			if (locations) {
+				url += `&locationId=${locations}`
+			}
+			if (eventTypeLevel) {
+				url += `&eventTypeLevel=${eventTypeLevel}`;
+			}
+			if (dateTo && dateFrom) {
+				url += `&dateTo=${dateTo}&dateFrom=${dateFrom}`;
+			}
+			return url;
+		}
 	},
 	SMARTHEATING_HEATINGSCHEDULE: {
 		LIST: "/smartheating/heatingschedule/list",

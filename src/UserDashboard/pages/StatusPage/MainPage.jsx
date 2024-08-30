@@ -167,7 +167,7 @@ function MainPage() {
 					<UnassignedTable />
 				)}
 				{activeCard === "offlineError" && (
-					<OfflineTable tableData={deviceData} />
+					<OfflineTable />
 				)}
 			</div>
 		</>

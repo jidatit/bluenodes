@@ -10,27 +10,27 @@ export const fetchStatusPageStats = async () => {
     }
 };
 
-export const fetchUnassignedRoomsData = async (page = 1, limit = 10, locations) => {
+export const fetchUnassignedRoomsData = async (page = 1, limit = 10, locations, eventTypeLevel, dateTo, dateFrom) => {
     try {
-        const data = await axios.get(ApiUrls.SMARTHEATING_STATUSPAGE.ROOM_UNASSIGNED(page, limit, locations))
+        const data = await axios.get(ApiUrls.SMARTHEATING_STATUSPAGE.ROOM_UNASSIGNED(page, limit, locations, eventTypeLevel, dateTo, dateFrom))
         return data.data;
     } catch (error) {
         console.log(error)
     }
 }
 
-export const fetchEventLogsData = async (page = 1, limit = 10, locations) => {
+export const fetchEventLogsData = async (page = 1, limit = 10, locations, eventTypeLevel, dateTo, dateFrom) => {
     try {
-        const data = await axios.get(ApiUrls.SMARTHEATING_STATUSPAGE.EVENT_LOGS(page, limit, locations))
+        const data = await axios.get(ApiUrls.SMARTHEATING_STATUSPAGE.EVENT_LOGS(page, limit, locations, eventTypeLevel, dateTo, dateFrom))
         return data.data;
     } catch (error) {
         console.log(error)
     }
 }
 
-export const fetchDevicesOfflineData = async (page = 1, limit = 10) => {
+export const fetchDevicesOfflineData = async (page = 1, limit = 10, locations, eventTypeLevel, dateTo, dateFrom) => {
     try {
-        const data = await axios.get(ApiUrls.SMARTHEATING_STATUSPAGE.DEVICES_OFFLINE(page, limit))
+        const data = await axios.get(ApiUrls.SMARTHEATING_STATUSPAGE.DEVICES_OFFLINE(page, limit, locations, eventTypeLevel, dateTo, dateFrom))
         return data.data;
     } catch (error) {
         console.log(error)

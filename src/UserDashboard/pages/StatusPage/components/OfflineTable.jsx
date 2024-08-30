@@ -16,70 +16,199 @@ import BatteryHigh from '../../../../assets/battery-icons/battery-76.png';
 import BatteryMedium from '../../../../assets/battery-icons/battery-51.png';
 import BatteryLow from '../../../../assets/battery-icons/battery-26.png';
 import BatteryEmpty from '../../../../assets/battery-icons/battery-0.png';
+import { fetchDevicesOfflineData } from '../data/Statuspageapis';
+import ApiUrls from "../../../../globals/apiURL";
+import { MultiSelect } from 'primereact/multiselect';
+import axios from "axios";
+import { TreeSelect } from 'primereact/treeselect';
+import DateFilter from "./dateFilter/DateFilter";
 
 const getBatteryImage = (battery_level) => {
-  const level = parseInt(battery_level);
-  if (level === 100) {
-    return BatteryFull;
-  } else if (level >= 76) {
-    return BatteryHigh;
-  } else if (level >= 51) {
-    return BatteryMedium;
-  } else if (level >= 26) {
-    return BatteryLow;
-  } else {
-    return BatteryEmpty;
-  }
+    const level = parseInt(battery_level);
+    if (level === 100) {
+        return BatteryFull;
+    } else if (level >= 76) {
+        return BatteryHigh;
+    } else if (level >= 51) {
+        return BatteryMedium;
+    } else if (level >= 26) {
+        return BatteryLow;
+    } else {
+        return BatteryEmpty;
+    }
 };
 
-const OfflineTable = ({tableData}) => {
-    const [selectedFilter, setSelectedFilter] = useState('Last Year');
-    const [selectedEvent, setSelectedEvent] = useState("All events");
+const OfflineTable = () => {
+
+    const [selectedEventFilters, setSelectedEventFilters] = useState(null);
+    const [ApiLocationsToBeSend, setApiLocationsToBeSend] = useState(null);
+    const eventFilterOptions = [
+        { name: 'Information', code: 'info' },
+        { name: 'Error', code: 'err' },
+        { name: 'Warning', code: 'warn' },
+        { name: 'Behoben', code: 'beh' },
+    ];
+
+    const [LocationsData, setLocationsData] = useState([]);
+
+    const transformData = (nodes) => {
+        return nodes.map(node => {
+            const key = node.children.length > 0
+                ? node.id.toString()
+                : `room${node.id}`;
+
+            const transformedNode = {
+                key: key,
+                label: node.name,
+            };
+
+            if (node.children.length > 0) {
+                transformedNode.children = transformData(node.children);
+            }
+
+            return transformedNode;
+        });
+    };
+
+    const getAllLocations = async () => {
+        try {
+            const data = await axios.get(ApiUrls.SMARTHEATING_LOCATIONS.LIST);
+            const transformedData = transformData(data.data)
+            setLocationsData(transformedData)
+        } catch (error) {
+            console.log(error)
+        }
+    }
+    useEffect(() => {
+        getAllLocations()
+    }, [])
+
+    const [tableData, setTableData] = useState([])
+    // const [selectedFilter, setSelectedFilter] = useState('Last Year');
+    // const [selectedEvent, setSelectedEvent] = useState("All events");
     const [currentPage, setCurrentPage] = useState(1);
-    const [filteredData, setFilteredData] = useState([]);
-    const [searchQuery, setSearchQuery] = useState('');
+    const [totalRows, setTotalRows] = useState(0)
+    // const [filteredData, setFilteredData] = useState([]);
+    // const [searchQuery, setSearchQuery] = useState('');
 
     const itemsPerPage = 10;
-    const totalItems = filteredData && filteredData.length;
-    const totalPages = Math.ceil(totalItems / itemsPerPage);
 
-    useEffect(() => {
-        filterData();
-    }, [selectedFilter, searchQuery]);
+    const [selectedKeys, setSelectedKeys] = useState({});
+    const [selectedRoomIds, setSelectedRoomIds] = useState(new Set());
 
-    const filterData = () => {
-        let currentDate = new Date();
-        let startDate = new Date();
-        switch (selectedFilter) {
-            case 'Last 7 days':
-                startDate.setDate(currentDate.getDate() - 7);
-                break;
-            case 'Last 30 days':
-                startDate.setDate(currentDate.getDate() - 30);
-                break;
-            case 'Last Month':
-                startDate.setMonth(currentDate.getMonth() - 1);
-                break;
-            case 'Last Year':
-                startDate.setFullYear(currentDate.getFullYear() - 1);
-                break;
-            default:
-                break;
+    const getAllKeys = (node) => {
+        let keys = [node.key];
+        if (node.children) {
+            for (const child of node.children) {
+                keys = [...keys, ...getAllKeys(child)];
+            }
         }
+        return keys;
+    };
 
-        const filtered = tableData.filter(item => {
-            let eventDate = new Date(item.date + ' ' + item.time);
-            return (
-                eventDate >= startDate &&
-                eventDate <= currentDate &&
-                (item.device_id.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                    item.type.toLowerCase().includes(searchQuery.toLowerCase()))
-            );
+    const updateSelection = (newSelectedKeys) => {
+        let newSelectedRoomIds = new Set([...selectedRoomIds]);
+
+        // Update selection state
+        const updatedKeys = { ...selectedKeys };
+
+        // Add new selections
+        Object.keys(newSelectedKeys).forEach((key) => {
+            const node = findNodeByKey(key, LocationsData);
+            if (node) {
+                const allKeys = getAllKeys(node);
+                allKeys.forEach((childKey) => {
+                    updatedKeys[childKey] = true;
+                    if (childKey.startsWith('room')) {
+                        newSelectedRoomIds.add(childKey);
+                    }
+                });
+            }
         });
 
-        setFilteredData(filtered);
-        setCurrentPage(1);
+        // Remove unselected keys
+        Object.keys(selectedKeys).forEach((key) => {
+            if (!newSelectedKeys[key]) {
+                const node = findNodeByKey(key, LocationsData);
+                if (node) {
+                    const allKeys = getAllKeys(node);
+                    allKeys.forEach((childKey) => {
+                        delete updatedKeys[childKey];
+                        if (childKey.startsWith('room')) {
+                            newSelectedRoomIds.delete(childKey);
+                        }
+                    });
+                }
+            }
+        });
+
+        // Check if any children are still selected for a parent
+        Object.keys(updatedKeys).forEach((key) => {
+            const node = findNodeByKey(key, LocationsData);
+            if (node && node.children) {
+                const anyChildSelected = node.children.some(child => updatedKeys[child.key]);
+                if (!anyChildSelected) {
+                    delete updatedKeys[node.key];
+                }
+            }
+        });
+
+        setSelectedKeys(updatedKeys);
+        setSelectedRoomIds(newSelectedRoomIds);
+        const locations = Array.from(newSelectedRoomIds);
+        const transformedArray = locations && locations.map(item => parseInt(item.replace('room', ''), 10));
+        if (transformedArray.length > 0) {
+            const sep_locations = transformedArray.join(',');
+            setApiLocationsToBeSend(sep_locations)
+        } else {
+            getData() // no locations to send thats why empty parameter.
+        }
     };
+
+    const onNodeSelectChange = (e) => {
+        const newSelectedKeys = e.value;
+        updateSelection(newSelectedKeys);
+    };
+
+    const findNodeByKey = (key, nodes) => {
+        for (const node of nodes) {
+            if (node.key === key) {
+                return node;
+            }
+            if (node.children) {
+                const childNode = findNodeByKey(key, node.children);
+                if (childNode) {
+                    return childNode;
+                }
+            }
+        }
+        return null;
+    };
+
+    const getData = async (locations) => {
+        try {
+            const eventTypeLevel = selectedEventFilters !== null && selectedEventFilters.map(filter => filter.name).join(',') || null;
+            const data = await fetchDevicesOfflineData(currentPage, itemsPerPage, locations, eventTypeLevel, dateTo, dateFrom);
+            setTotalRows(data.count);
+            setTableData(data.rows);
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    const [dateTo, setdateTo] = useState(null);
+    const [dateFrom, setdateFrom] = useState(null);
+
+    useEffect(() => {
+        getData()
+    }, [currentPage])
+
+    useEffect(() => {
+        getData(ApiLocationsToBeSend, selectedEventFilters);
+    }, [ApiLocationsToBeSend, selectedEventFilters, dateTo, dateFrom])
+
+    const totalItems = totalRows
+    const totalPages = Math.ceil(totalItems / itemsPerPage);
 
     const handlePageChange = (page) => {
         setCurrentPage(page);
@@ -93,6 +222,26 @@ const OfflineTable = ({tableData}) => {
     let startPage = Math.max(1, currentPage - paginationRange);
     let endPage = Math.min(totalPages, currentPage + paginationRange);
 
+    const formatDateforApitosend = (date) => {
+        const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+        return new Intl.DateTimeFormat('en-GB', options).format(date).split('/').reverse().join('-');
+    };
+
+    const handleDatesChange = (newDates) => {
+        if (!newDates || !newDates[0]) {
+            console.log('cleared');
+            setdateFrom(null)
+            setdateTo(null)
+            return;
+        }
+        if (newDates[0] && newDates[1]) {
+            let from = newDates[0] && formatDateforApitosend(new Date(newDates[0]));
+            setdateFrom(from);
+            let to = newDates[1] && formatDateforApitosend(new Date(newDates[1]));
+            setdateTo(to);
+        }
+    };
+
     return (
         <div className=' flex flex-col gap-4 w-full'>
             <div className='flex flex-col justify-center items-start w-full'>
@@ -102,30 +251,21 @@ const OfflineTable = ({tableData}) => {
                 <div className="flex flex-column my-2 bg-transparent mx-2 sm:flex-row flex-wrap space-y-4 sm:space-y-0 items-center justify-between">
                     {/* Filter buttons */}
                     <div className='flex flex-row justify-center items-center gap-1'>
-                        <Select id="dayFilter" icon={MdOutlineAccessTimeFilled} required value={selectedFilter} onChange={(e) => setSelectedFilter(e.target.value)}>
-                            <option className=' text-md' value="Last 30 days">Last 30 days</option>
-                            <option className=' text-md' value="Last 7 days">Last 7 days</option>
-                            <option className=' text-md' value="Last Month">Last Month</option>
-                            <option className=' text-md' value="Last Year">Last Year</option>
-                        </Select>
-                        <Select id="eventFilter" required value={selectedEvent} onChange={(e) => setSelectedEvent(e.target.value)}>
-                            <option className='font-semibold text-md' value="Last 30 days">All events</option>
-                        </Select>
-                    </div>
-                    {/* Search bar */}
-                    <div className="relative">
-                        <div className="absolute inset-y-0 left-0 rtl:inset-r-0 rtl:right-0 flex items-center ps-3 pointer-events-none">
-                            <FaSearch className="w-4 h-4 text-gray-500 dark:text-gray-400" />
-                        </div>
-                        <input
-                            type="text"
-                            id="table-search"
-                            className="block p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                            placeholder="Search for event logs"
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
+                        <TreeSelect
+                            value={selectedKeys}
+                            options={LocationsData}
+                            onChange={onNodeSelectChange}
+                            className="md:w-20rem w-full"
+                            selectionMode="multiple"
+                            placeholder="All Buildings"
+                            display="chip"
+                            filter
+                            filterPlaceholder="Search"
                         />
-                        {searchQuery.length > 0 && (<GiTireIronCross onClick={(e) => setSearchQuery('')} className='w-5 h-5 cursor-pointer absolute p-1 bg-gray-200 text-black rounded-full right-[7px] top-[9px] hover:scale-75 transition-all delay-100' />)}
+                        {/* <MultiSelect value={selectedEventFilters} onChange={(e) => setSelectedEventFilters(e.value)} showSelectAll={false} options={eventFilterOptions} optionLabel="name"
+                            filter placeholder="All Events" display="chip" className="w-full md:w-20rem" />
+
+                        <DateFilter onDatesChange={handleDatesChange} /> */}
                     </div>
                 </div>
                 {/* Table */}
@@ -156,37 +296,35 @@ const OfflineTable = ({tableData}) => {
                         </tr>
                     </thead>
                     <tbody>
-                        {filteredData.length > 0 &&
-                            (filteredData
-                                .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
-                                .map((item, index) => (
-                                    <tr key={index} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                                        <td className="px-4 py-4 truncate">{item.device_id}</td>
-                                        <td className="px-4 py-4 truncate">{item.type}</td>
-                                        <td className="px-4 py-4">Building {item.building} -<span> Floor {item.floor}</span></td>
-                                        <td className="px-4 py-4">{item.room}</td>
-                                        <td className="px-4 py-4">{item.date} -<span> {item.time}</span></td>
-                                        <td className="px-4 py-4 truncate">
-                                          <Tooltip className='p-3' content={`${item.battery_level}%`} style="light" animation="duration-500">
+                        {tableData.length > 0 &&
+                            (tableData.map((item, index) => (
+                                <tr key={index} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                                    <td className="px-4 py-4 truncate">{item.device_id}</td>
+                                    <td className="px-4 py-4 truncate">{item.type}</td>
+                                    <td className="px-4 py-4">Building {item.building} -<span> Floor {item.floor}</span></td>
+                                    <td className="px-4 py-4">{item.room}</td>
+                                    <td className="px-4 py-4">{item.date} -<span> {item.time}</span></td>
+                                    <td className="px-4 py-4 truncate">
+                                        <Tooltip className='p-3' content={`${item.battery_level}%`} style="light" animation="duration-500">
                                             <div className="flex items-center gap-1">
-                                              <img src={getBatteryImage(item.battery_level)} alt="Battery Level" className="w-4 h-4 mr-2" />
-                                              {parseInt(item.battery_level) < 26 && (<p className='text-base font-bold text-red-500'>Low Battery</p>)}
+                                                <img src={getBatteryImage(item.battery_level)} alt="Battery Level" className="w-4 h-4 mr-2" />
+                                                {parseInt(item.battery_level) < 26 && (<p className='text-base font-bold text-red-500'>Low Battery</p>)}
                                             </div>
-                                          </Tooltip>
-                                        </td>
-                                        <td className="px-4 py-4 truncate">
-                                          <div className={`py-0.5 px-2.5 rounded-md flex items-center justify-center gap-1 w-fit
+                                        </Tooltip>
+                                    </td>
+                                    <td className="px-4 py-4 truncate">
+                                        <div className={`py-0.5 px-2.5 rounded-md flex items-center justify-center gap-1 w-fit
                                             ${item.status === 'online' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-900'} text-[10px]`}>
                                             {item.status === 'online' ? <FaRegCircleCheck /> : <AiOutlineExclamationCircle />}
                                             <p className='text-xs font-medium'>{item.status}</p>
-                                          </div>
-                                        </td>
-                                    </tr>
-                                )))}
+                                        </div>
+                                    </td>
+                                </tr>
+                            )))}
                     </tbody>
                 </table>
 
-                {filteredData.length === 0 && (
+                {tableData.length === 0 && (
                     <>
                         <div className='w-full bg-slate-100 flex flex-col justify-center items-center'>
                             <p className='w-full text-center italic py-2 font-semibold'>No Results Found</p>
