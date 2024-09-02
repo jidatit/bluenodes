@@ -570,7 +570,7 @@ const AssignProgramModal = ({
 					requestBody,
 				);
 
-				if (resp.status > 400) {
+				if (resp.status >= 400) {
 					const errorText = await resp.data; // Get response text for error details
 					throw new Error(
 						`HTTP error! Status: ${resp.status}, Details: ${errorText}`,
@@ -983,7 +983,7 @@ const ViewTableComponent = ({ selectedProgram }) => {
 			.get(ApiUrls.SMARTHEATING_HEATINGSCHEDULE.DETAILS(heatingScheduleId))
 
 			.then((response) => {
-				if (response.status > 400) {
+				if (response.status >= 400) {
 					throw new Error("Network response was not ok");
 				}
 				return response.data;

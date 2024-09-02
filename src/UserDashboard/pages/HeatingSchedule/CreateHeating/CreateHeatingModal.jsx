@@ -472,7 +472,7 @@ export function CreateHeatingModal({
 					.post(ApiUrls.SMARTHEATING_HEATINGSCHEDULE.HEATINGSCHEDULE, finalObj)
 					.then((response) => {
 						const { data } = response;
-						if (data.status === 400) {
+						if (data.status >= 400) {
 							onCreate("Error");
 						} else {
 							onCreate(combinedData);
@@ -481,7 +481,7 @@ export function CreateHeatingModal({
 						}
 					})
 					.catch((error) => {
-						if (error.response && error.response.status === 400) {
+						if (error.response && error.response.status >= 400) {
 							onCreate("Error");
 						} else {
 							console.error("Error:", error);
