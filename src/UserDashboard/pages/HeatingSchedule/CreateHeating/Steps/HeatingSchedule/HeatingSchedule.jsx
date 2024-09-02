@@ -443,10 +443,6 @@ function HeatingSchedule({
 		}
 	};
 
-	useEffect(()=>{
-		console.log(editableBoxes)
-	},[editableBoxes])
-
 	// Set Box colour change depending on Temperature change here
 	const handleHoverColour = (temp) => {
 		if (temp === null) {
@@ -575,7 +571,7 @@ function HeatingSchedule({
 						// Set temperature for copied boxes
 						setTemperatureInputs((prevInputs) => ({
 							...prevInputs,
-							[newBoxId]: "", // Initialize temperature input for the new box
+							[newBoxId]: box.temperature, // Initialize temperature input for the new box
 						}));
 	
 						// Return the new box with the generated ID
@@ -613,6 +609,7 @@ function HeatingSchedule({
 	};
 
 	const handleCheck = useCallback(() => {
+
 		let newCheck = false;
 		let invalidInput = false
 
@@ -676,7 +673,6 @@ function HeatingSchedule({
 					const day = match[1]; // Extract the day from the first capturing group
 					const inputValue = currentTemperatureInputs[boxId];
 
-					console.log(day,inputValue)
 
 					// Check if input is a number and within the range 5 to 30
 					if (!isNaN(inputValue) && inputValue >= 5 && inputValue <= 30) {

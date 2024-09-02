@@ -425,7 +425,7 @@ export function CreateHeatingModal({
 						entries.forEach((entry) => {
 							const from = normalizeTime(entry.y);
 							let to = normalizeTime(entry.y + entry.h);
-							const targetTemperature = parseInt(entry.temperature, 10);
+							const targetTemperature = parseFloat(entry.temperature, 10);
 
 							if (to === "24:00") {
 								to = "23:59";
@@ -457,10 +457,10 @@ export function CreateHeatingModal({
 				};
 
 				if (combinedData.formData.childSafety !== "Yes") {
-					finalObj.deviceOverrideTemperatureMin = parseInt(
+					finalObj.deviceOverrideTemperatureMin = parseFloat(
 						combinedData.formData.minTemp,
 					);
-					finalObj.deviceOverrideTemperatureMax = parseInt(
+					finalObj.deviceOverrideTemperatureMax = parseFloat(
 						combinedData.formData.maxTemp,
 					);
 				}
