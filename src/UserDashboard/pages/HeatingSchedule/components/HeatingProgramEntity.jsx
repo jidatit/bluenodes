@@ -618,7 +618,12 @@ const AlertDeleteModal = ({
 						Reassign rooms to different program before proceeding with delete.
 					</h3>
 					<div className="flex justify-center gap-4">
-						<Button color="gray" onClick={() => setOpenAlertDeleteModal(false)}>
+						<Button
+							color="gray"
+							onClick={() => {
+								setOpenAlertDeleteModal(false);
+							}}
+						>
 							Cancel
 						</Button>
 					</div>
