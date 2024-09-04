@@ -565,7 +565,7 @@ function HeatingSchedule({
 						// Set the newly copied box as editable
 						setEditableBoxes((prevEditable) => ({
 							...prevEditable,
-							[newBoxId]: true, // Enter editing mode on the newly copied box
+							[newBoxId]: false, // Enter editing mode on the newly copied box
 						}));
 
 						// Set temperature for copied boxes
