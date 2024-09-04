@@ -23,7 +23,21 @@ const EventLogsTable = () => {
   const [ApiLocationsToBeSend, setApiLocationsToBeSend] = useState(null);
   const [apiLocationsToBeSendCounter, setApiLocationsToBeSendCounter] =
     useState(null);
-
+  const [closeDateFilter, setCloseDateFilter] = useState(false);
+  const [FirstApiStatus, setFirstApiStatus] = useState(false);
+  const [treeSelectOpen, setTreeSelectOpen] = useState(false);
+  const handleTreeSelectClick = () => {
+    setCloseDateFilter(true);
+    setdateFrom(null);
+    setdateTo(null);
+    // Additional logic for TreeSelect click if needed
+  };
+  const handleMultiSelectClick = () => {
+    console.log("heyy");
+    setCloseDateFilter(true);
+    setdateFrom(null);
+    setdateTo(null);
+  };
   const eventFilterOptions = [
     { name: "Information", code: "info" },
     { name: "Error", code: "err" },
@@ -196,24 +210,20 @@ const EventLogsTable = () => {
   const [dateFrom, setdateFrom] = useState(null);
 
   useEffect(() => {
+    getData();
+  }, [currentPage]);
+
+  useEffect(() => {
+    getData(ApiLocationsToBeSend);
+  }, [ApiLocationsToBeSend, apiLocationsToBeSendCounter, dateTo, dateFrom]);
+
+  useEffect(() => {
     if (selectedEventFilters !== null) {
       setApiLocationsToBeSend(null);
-    }
-
-    // Avoid calling getData multiple times during the initial render.
-    if (currentPage === 1 || ApiLocationsToBeSend !== null) {
-      console.log("event");
+      setApiLocationsToBeSendCounter(0);
       getData(ApiLocationsToBeSend);
     }
-  }, [
-    currentPage,
-    ApiLocationsToBeSend,
-    apiLocationsToBeSendCounter,
-    selectedEventFilters,
-    dateTo,
-    dateFrom,
-  ]);
-
+  }, [selectedEventFilters]);
   const itemsPerPage = 10;
   const totalItems = totalRows && totalRows;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
@@ -251,8 +261,8 @@ const EventLogsTable = () => {
   };
 
   const handleDatesChange = (newDates) => {
+    console.log(newDates);
     if (!newDates || !newDates[0]) {
-      console.log("cleared");
       setdateFrom(null);
       setdateTo(null);
       return;
@@ -297,6 +307,7 @@ const EventLogsTable = () => {
               value={selectedKeys}
               options={filteredLocations} // Use filteredLocations here
               onChange={onNodeSelectChange}
+              onClick={handleTreeSelectClick}
               selectionMode="multiple"
               placeholder="All Buildings"
               filter
@@ -349,6 +360,7 @@ const EventLogsTable = () => {
             />
             <MultiSelect
               value={selectedEventFilters}
+              onShow={handleMultiSelectClick}
               onChange={(e) => setSelectedEventFilters(e.value)}
               showSelectAll={false}
               options={eventFilterOptions}
@@ -362,7 +374,11 @@ const EventLogsTable = () => {
                 borderRadius: "4px",
               }}
             />
-            <DateFilter onDatesChange={handleDatesChange} />
+            <DateFilter
+              closeDropdown={closeDateFilter}
+              setCloseDateFilter={setCloseDateFilter}
+              onDatesChange={handleDatesChange}
+            />
           </div>
         </div>
         {/* Table */}
@@ -396,7 +412,7 @@ const EventLogsTable = () => {
                   key={index}
                   className="text-sm bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
                 >
-                  <td className="px-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white w-full md:w-[10%]">
+                  <td className="px-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white w-full md:w-[6%]">
                     {item.id ? item.id : "-"}
                   </td>
                   <td className="px-4 py-4 font-medium text-gray-900 break-words dark:text-white w-full md:w-[15%]">
@@ -413,7 +429,7 @@ const EventLogsTable = () => {
                   <td className="px-4 py-4 w-full md:w-[15%]">
                     {item.createdAt ? formatDate(item.createdAt) : "-"}
                   </td>
-                  <td className="px-4 py-4 w-full md:w-[15%]">
+                  <td className="px-4 py-4 w-full md:w-[13%]">
                     <Tooltip content={item.eventTypeLevel} style="light">
                       <div className="flex items-center gap-x-2">
                         {item.eventTypeLevel === "Information" ? (
@@ -432,7 +448,7 @@ const EventLogsTable = () => {
 
                   <td className="px-4 py-4 w-full md:w-[40%]">
                     <Tooltip content={item.message} style="light">
-                      {item.message ? `${item.message.slice(0, 60)}...` : "-"}
+                      {item.message ? `${item.message.slice(0, 70)}...` : "-"}
                     </Tooltip>
                   </td>
                 </tr>
