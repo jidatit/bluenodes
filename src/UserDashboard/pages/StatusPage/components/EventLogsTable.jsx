@@ -151,9 +151,8 @@ const EventLogsTable = () => {
   };
 
   const onNodeSelectChange = (e) => {
-    console.log("HEYY");
     const newSelectedKeys = e.value;
-    console.log(newSelectedKeys);
+
     updateSelection(newSelectedKeys);
   };
 
@@ -197,12 +196,17 @@ const EventLogsTable = () => {
   const [dateFrom, setdateFrom] = useState(null);
 
   useEffect(() => {
-    getData();
-  }, [currentPage]);
+    if (selectedEventFilters !== null) {
+      setApiLocationsToBeSend(null);
+    }
 
-  useEffect(() => {
-    getData(ApiLocationsToBeSend);
+    // Avoid calling getData multiple times during the initial render.
+    if (currentPage === 1 || ApiLocationsToBeSend !== null) {
+      console.log("event");
+      getData(ApiLocationsToBeSend);
+    }
   }, [
+    currentPage,
     ApiLocationsToBeSend,
     apiLocationsToBeSendCounter,
     selectedEventFilters,
@@ -262,7 +266,7 @@ const EventLogsTable = () => {
   };
   const [filterValue, setFilterValue] = useState("");
   const [filteredLocations, setFilteredLocations] = useState(LocationsData); // Initialize with LocationsData
-  console.log(LocationsData);
+
   const handleFilterChange = (event) => {
     const filterText = event.target.value.toLowerCase();
     setFilterValue(filterText);
@@ -285,8 +289,8 @@ const EventLogsTable = () => {
       <div className="flex flex-col justify-center items-start w-full">
         <h1 className=" font-[500] text-lg text-gray-900">Event Übersicht</h1>
       </div>
-      <div className="relative w-full overflow-x-auto bg-white shadow-md sm:rounded-lg">
-        <div className="flex flex-column my-2 bg-transparent mx-2 sm:flex-row flex-wrap space-y-4 sm:space-y-0 items-center justify-between">
+      <div className="relative w-full overflow-x-auto bg-white shadow-md sm:rounded-lg z-10">
+        <div className="flex flex-column my-2 bg-transparent mx-2 sm:flex-row flex-wrap space-y-4 sm:space-y-0 items-center justify-between z-10">
           {/* Filter buttons */}
           <div className="flex flex-row justify-center items-center gap-1">
             <TreeSelect
@@ -362,7 +366,7 @@ const EventLogsTable = () => {
           </div>
         </div>
         {/* Table */}
-        <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+        <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 z-10 min-h-[10rem]">
           <thead className="text-xs font-semibold text-gray-500 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
             <tr>
               <th scope="col" className="p-4">
@@ -390,40 +394,45 @@ const EventLogsTable = () => {
               tableData.map((item, index) => (
                 <tr
                   key={index}
-                  className=" text-sm bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
+                  className="text-sm bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
                 >
-                  <td className="px-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                    {item.id ? item.id : "N/A"}
+                  <td className="px-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white w-full md:w-[10%]">
+                    {item.id ? item.id : "-"}
                   </td>
-                  <td className="px-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                    {item.roomName ? item.roomName : "N/A"}{" "}
-                    <span className="text-[12px] py-0.5 px-2.5 font-semibold bg-gray-100 rounded-[80px] p-1">
-                      {item.roomTag ? item.roomTag : "N/A"}
+                  <td className="px-4 py-4 font-medium text-gray-900 break-words dark:text-white w-full md:w-[15%]">
+                    {item.roomName ? item.roomName : "-"}{" "}
+                    <span className="text-[10px] py-0.5 px-2.5 font-semibold bg-gray-100 rounded-[80px] p-1">
+                      {item.roomTag ? item.roomTag : "-"}
                     </span>
                   </td>
-                  <td className="px-4 py-4">
+                  <td className="px-4 py-4 w-full md:w-[15%]">
                     {item.building_floor_string
                       ? item.building_floor_string
-                      : "N/A"}
+                      : "-"}
                   </td>
-                  <td className="px-4 py-4">
-                    {item.createdAt ? formatDate(item.createdAt) : "N/A"}
+                  <td className="px-4 py-4 w-full md:w-[15%]">
+                    {item.createdAt ? formatDate(item.createdAt) : "-"}
                   </td>
-                  <td className="px-4 py-4 inline-flex justify-center items-center text-center gap-1 text-sm">
-                    {item.eventTypeLevel === "Information" ? (
-                      <FaCircleInfo />
-                    ) : item.eventTypeLevel === "Warning" ? (
-                      <RiErrorWarningFill className="text-yellow-500" />
-                    ) : (
-                      <IoIosWarning className="text-red-700" />
-                    )}
-                    <span className="text-sm">
-                      {item.eventTypeMessage ? item.eventTypeMessage : "N/A"}
-                    </span>
+                  <td className="px-4 py-4 w-full md:w-[15%]">
+                    <Tooltip content={item.eventTypeLevel} style="light">
+                      <div className="flex items-center gap-x-2">
+                        {item.eventTypeLevel === "Information" ? (
+                          <FaCircleInfo />
+                        ) : item.eventTypeLevel === "Warning" ? (
+                          <RiErrorWarningFill className="text-yellow-500" />
+                        ) : (
+                          <IoIosWarning className="text-red-700" />
+                        )}
+                        <span className="text-sm">
+                          {item.eventTypeMessage ? item.eventTypeMessage : "-"}
+                        </span>
+                      </div>
+                    </Tooltip>
                   </td>
-                  <td className="px-4 py-4">
+
+                  <td className="px-4 py-4 w-full md:w-[40%]">
                     <Tooltip content={item.message} style="light">
-                      {item.message ? `${item.message.slice(0, 25)}...` : "N/A"}
+                      {item.message ? `${item.message.slice(0, 60)}...` : "-"}
                     </Tooltip>
                   </td>
                 </tr>
