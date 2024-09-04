@@ -26,12 +26,7 @@ const EventLogsTable = () => {
   const [closeDateFilter, setCloseDateFilter] = useState(false);
   const [FirstApiStatus, setFirstApiStatus] = useState(false);
   const [treeSelectOpen, setTreeSelectOpen] = useState(false);
-  const handleTreeSelectClick = () => {
-    setCloseDateFilter(true);
-    setdateFrom(null);
-    setdateTo(null);
-    // Additional logic for TreeSelect click if needed
-  };
+
   const handleMultiSelectClick = () => {
     console.log("heyy");
     setCloseDateFilter(true);
@@ -307,7 +302,6 @@ const EventLogsTable = () => {
               value={selectedKeys}
               options={filteredLocations} // Use filteredLocations here
               onChange={onNodeSelectChange}
-              onClick={handleTreeSelectClick}
               selectionMode="multiple"
               placeholder="All Buildings"
               filter
