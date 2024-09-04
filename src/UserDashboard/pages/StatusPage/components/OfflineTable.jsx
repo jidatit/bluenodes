@@ -273,11 +273,11 @@ const OfflineTable = () => {
               onChange={onNodeSelectChange}
               className="md:w-20rem w-full"
               selectionMode="multiple"
-              placeholder="All Buildings"
+              placeholder="Alle Gebäude"
               display="chip"
               filter
-              filterPlaceholder="Search"
-            />
+              filterPlaceholder="Suche"
+              />
             {/* <MultiSelect value={selectedEventFilters} onChange={(e) => setSelectedEventFilters(e.value)} showSelectAll={false} options={eventFilterOptions} optionLabel="name"
                             filter placeholder="All Events" display="chip" className="w-full md:w-20rem" />
 
@@ -320,9 +320,8 @@ const OfflineTable = () => {
                 >
                   <td className="px-4 py-4 truncate">{item.device_id}</td>
                   <td className="px-4 py-4 truncate">{item.type}</td>
-                  <td className="px-4 py-4">
-                    Building {item.building} -<span> Floor {item.floor}</span>
-                  </td>
+                  <td className="px-4 py-4">Gebäude {item.building} -<span> Etage {item.floor}</span></td>
+
                   <td className="px-4 py-4">{item.room}</td>
                   <td className="px-4 py-4">
                     {item.date} -<span> {item.time}</span>
@@ -374,8 +373,7 @@ const OfflineTable = () => {
           <>
             <div className="w-full bg-slate-100 flex flex-col justify-center items-center">
               <p className="w-full text-center italic py-2 font-semibold">
-                No Results Found
-              </p>
+              Keine Ergebnisse              </p>
             </div>
           </>
         )}
@@ -383,11 +381,11 @@ const OfflineTable = () => {
         <div className="w-full p-3 flex flex-row justify-between items-center">
           {tableData && (
             <p className="font-light text-sm text-gray-500">
-              Showing{" "}
+              {" "}
               <span className="font-bold text-black">
                 {startIndex}-{endIndex}
               </span>{" "}
-              of <span className="font-bold text-black">{totalItems}</span>
+              von <span className="font-bold text-black">{totalItems}</span>
             </p>
           )}
 

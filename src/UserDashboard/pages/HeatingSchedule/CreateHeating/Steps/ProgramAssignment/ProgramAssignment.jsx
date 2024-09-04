@@ -227,7 +227,7 @@ const ProgramAssignment = ({ formData, assignmentData,setHandleAssignmentRef, ha
           <Tooltip className='min-w-[130px]' content="Go to Previous Step" style="light" animation="duration-500">
             <IoArrowBackCircle onClick={()=> handlePrev()} className=' text-2xl hover:text-primary cursor-pointer' />
           </Tooltip>
-          Heating program assignment
+          Wählen Sie die Räume aus.
         </h3>
         <div className='w-full flex justify-end'>
           {!viewAll ? 
@@ -248,11 +248,11 @@ const ProgramAssignment = ({ formData, assignmentData,setHandleAssignmentRef, ha
       </div>
       <div className=' flex items-center justify-between w-full'>
         <div className=' flex items-center gap-1.5'>
-          <p className=' text-sm font-semibold text-black'>Filter by:</p>
+          <p className=' text-sm font-semibold text-black'>Filtern nach:</p>
           <Select id="roomFilter" required value={filter} onChange={(e) => setFilter(e.target.value)}>
-            <option value="All">All</option>
-            <option value="Assigned">Assigned</option>
-            <option value="Unassigned">Unassigned</option>
+          <option value="All">Alle</option>
+            <option value="Assigned">Zugewiesen</option>
+            <option value="Unassigned">Nicht zugewiesen</option>
           </Select>
         </div>
         <form onSubmit={(e)=>{e.preventDefault()}} className="w-[380px] ">   
@@ -270,7 +270,7 @@ const ProgramAssignment = ({ formData, assignmentData,setHandleAssignmentRef, ha
       </div>
       <div className=' flex items-center justify-between gap-2'>
         <p className=' text-sm text-gray-500'>Select rooms to assign a heating program.</p>
-        <Button onClick={resetAssignments} className=' hover:!bg-transparent hover:opacity-80 border-none text-red-600 bg-transparent pr-2 py-0 [&>*]:p-0 focus:ring-transparent'>Reset Selections</Button>
+        <Button onClick={resetAssignments} className=' hover:!bg-transparent hover:opacity-80 border-none text-red-600 bg-transparent pr-2 py-0 [&>*]:p-0 focus:ring-transparent'>Auswahl zurücksetzen</Button>
       </div>
       <div className=' flex flex-col gap-0'>
         {!viewSelected ? (data.buildings.map(building => (

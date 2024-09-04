@@ -19,7 +19,7 @@ import DateFilter from "./dateFilter/DateFilter";
 import AssignProgramModal from "./AssignProgramModal";
 import { errorMessages as errors } from "../../../../globals/errorMessages"; // Import error messages
 
-const UnassignedTable = () => {
+const UnassignedTable = ({assignUpdate}) => {
   const [selectedEventFilters, setSelectedEventFilters] = useState(null);
   const [ApiLocationsToBeSend, setApiLocationsToBeSend] = useState(null);
   const [showToast, setShowToast] = useState(false);
@@ -250,6 +250,7 @@ const UnassignedTable = () => {
   const assignSuccess = () => {
     setIsSuccess(true);
     setShowToast(true);
+    assignUpdate();
     setToastMessage(errors.PorgramAssignedSuccessfully);
     setTimeout(() => {
       setShowToast(false);
@@ -272,10 +273,10 @@ const UnassignedTable = () => {
               onChange={onNodeSelectChange}
               className="md:w-20rem w-full"
               selectionMode="multiple"
-              placeholder="All Buildings"
+							placeholder="Alle Gebäude"
               display="chip"
               filter
-              filterPlaceholder="Search"
+							filterPlaceholder="Suche"
             />
             {/* <MultiSelect value={selectedEventFilters} onChange={(e) => setSelectedEventFilters(e.value)} showSelectAll={false} options={eventFilterOptions} optionLabel="name"
                             filter placeholder="All Events" display="chip" className="w-full md:w-20rem" />
@@ -291,13 +292,13 @@ const UnassignedTable = () => {
                 ID
               </th>
               <th scope="col" className="p-4 w-[30%]">
-                ROOM
+              RAUM
               </th>
               <th scope="col" className="p-4 w-[60%]">
-                BUILDING - FLOOR
+              GEBÄUDE - ETAGE
               </th>
               <th scope="col" className="p-4">
-                Action
+                {/* Action */}
               </th>
             </tr>
           </thead>
@@ -333,8 +334,8 @@ const UnassignedTable = () => {
                       }}
                       className=" hover:!bg-transparent hover:opacity-80 border-none text-primary bg-transparent pr-2 py-0 [&>*]:p-0 focus:ring-transparent"
                     >
-                      Assign
-                    </Button>
+											Heizplan zuweisen
+                      </Button>
                   </td>
                 </tr>
               ))}
@@ -345,8 +346,7 @@ const UnassignedTable = () => {
           <>
             <div className="w-full bg-slate-100 flex flex-col justify-center items-center">
               <p className="w-full text-center italic py-2 font-semibold">
-                No Results Found
-              </p>
+              Keine Ergebnisse              </p>
             </div>
           </>
         )}
@@ -354,11 +354,11 @@ const UnassignedTable = () => {
         <div className="w-full p-3 flex flex-row justify-between items-center">
           {tableData && (
             <p className="font-light text-sm text-gray-500">
-              Showing{" "}
+              {" "}
               <span className="font-bold text-black">
                 {startIndex}-{endIndex}
               </span>{" "}
-              of <span className="font-bold text-black">{totalItems}</span>
+              von <span className="font-bold text-black">{totalItems}</span>
             </p>
           )}
 

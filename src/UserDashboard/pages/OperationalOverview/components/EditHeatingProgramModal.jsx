@@ -920,7 +920,9 @@ const ReplaceProgram = ({
 							value={program.id}
 							disabled={program.id === room.heatingSchedule.id}
 						>
-							{program.templateName}
+      {program.templateName.length > 50
+        ? `${program.templateName.slice(0, 50)}...`
+        : program.templateName}
 						</option>
 					))}
 				</select>
@@ -936,11 +938,11 @@ const ReplaceProgram = ({
 					<Label
 						className="text-sm font-semibold text-gray-700"
 						htmlFor="apply-algorithm"
-						value="Apply algorithm?"
+						value="Algorithmus aktivieren"
 					/>
 					<Tooltip
 						className="px-3 py-1.5 text-center max-w-96"
-						content="The minimum temperature that can be manually adjusted on the thermometer by physical means."
+						content="Der Algorithmus passt dynamisch den Heizplan an."
 						style="light"
 					>
 						<IoInformationCircleOutline color="#6B7280" className="w-5 h-5" />
@@ -959,7 +961,7 @@ const ReplaceProgram = ({
 								className="text-sm text-gray-900"
 								htmlFor="applyAlgorithmYes"
 							>
-								Yes
+								Ja
 							</Label>
 						</div>
 						<div className="flex items-center gap-2">
@@ -973,7 +975,7 @@ const ReplaceProgram = ({
 								className="text-sm text-gray-900"
 								htmlFor="applyAlgorithmNo"
 							>
-								No
+								Nein
 							</Label>
 						</div>
 					</div>
@@ -1016,11 +1018,11 @@ const ViewTableComponent = ({ selectedProgram }) => {
 			<div className="flex items-start w-full">
 				<div className="w-[25%] flex flex-col gap-4">
 					<h3 className="text-[16px] text-gray-500 font-semibold">
-						General Information
+						Einstellungen
 					</h3>
 					<div className="flex flex-col gap-2 text-sm font-normal text-gray-900">
 						<div className="flex flex-col gap-2">
-							<p className="font-semibold">Program Name</p>
+												<p className="font-semibold">Kindersicherung</p>
 							<p>{temperatureDetails?.templateName || "N/A"}</p>{" "}
 							{/* Replace hardcoded value */}
 						</div>
@@ -1033,10 +1035,10 @@ const ViewTableComponent = ({ selectedProgram }) => {
 							<>
 								<div className="flex flex-col gap-2">
 									<p className="flex items-center gap-1 font-semibold">
-										Minimum Temperature
+									Mindesttemperatur
 										<Tooltip
 											className="px-3 py-1.5 text-center max-w-96"
-											content="The minimum temperature that can be manually adjusted on the thermometer by physical means."
+											content="Die Mindesttemperatur, die am Thermostat manuell eingestellt werden kann.."
 											style="light"
 										>
 											<IoInformationCircleOutline color="#6B7280" />
@@ -1050,10 +1052,10 @@ const ViewTableComponent = ({ selectedProgram }) => {
 								</div>
 								<div className="flex flex-col gap-2">
 									<p className="flex items-center gap-1 font-semibold">
-										Maximum Temperature
-										<Tooltip
+									Höchsttemperatur
+									<Tooltip
 											className="px-3 py-1.5 text-center max-w-96"
-											content="The maximum temperature that can be manually adjusted on the thermometer by physical means."
+											content="Die Höchsttemperatur, die am Thermostat manuell eingestellt werden kann."
 											style="light"
 										>
 											<IoInformationCircleOutline color="#6B7280" />
@@ -1070,10 +1072,10 @@ const ViewTableComponent = ({ selectedProgram }) => {
 
 						<div className="flex flex-col gap-2">
 							<p className="flex items-center gap-1 font-semibold">
-								Apply Algorithm?
-								<Tooltip
+							Algorithmus aktivieren
+							<Tooltip
 									className="px-3 py-1.5 text-center max-w-96"
-									content="The minimum temperature that can be manually adjusted on the thermometer by physical means."
+									content="Der Algorithmus passt dynamisch den Heizplan an."
 									style="light"
 								>
 									<IoInformationCircleOutline color="#6B7280" />
@@ -1102,7 +1104,7 @@ const ConfirmReplaceModal = ({ show, onClose, onConfirm }) => {
 		<Modal show={show} onClose={onClose} size="lg">
 			<Modal.Header className="flex items-center justify-between">
 				<span className="text-lg font-semibold text-gray-900">
-					Confirm Replace Program
+				Ersetzen des Programms bestätigen
 				</span>
 				<button
 					onClick={onClose}
@@ -1111,17 +1113,17 @@ const ConfirmReplaceModal = ({ show, onClose, onConfirm }) => {
 			</Modal.Header>
 			<Modal.Body className="text-[#6B7280]">
 				<p>
-					Replacing program will remove all information of the previous program,
-					including the algorithm existed.
+				Das Ersetzen des Programms wird alle Informationen des vorherigen Programms entfernen.
+
 				</p>
-				<p className="mt-2">Are you sure you want to continue?</p>
+				<p className="mt-2">Sind Sie sicher, dass Sie fortfahren möchten?</p>
 			</Modal.Body>
 			<Modal.Footer>
 				<Button onClick={onConfirm} className="bg-primary">
-					Confirm
+				Ja
 				</Button>
 				<Button color="gray" onClick={onClose}>
-					Cancel
+				Abbrechen
 				</Button>
 			</Modal.Footer>
 		</Modal>

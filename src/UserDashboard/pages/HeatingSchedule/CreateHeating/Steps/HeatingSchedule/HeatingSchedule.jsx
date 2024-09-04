@@ -304,7 +304,7 @@ function HeatingSchedule({
 					}));
 					setEditableBoxes({});
 				} else {
-					alert("Please enter a number between 5 and 30.");
+					alert("Bitte eine Temperatur zwischen 10 und 30 °C eintragen.");
 				}
 			}
 			return;
@@ -427,7 +427,7 @@ function HeatingSchedule({
 			// Check if input is a number and within the range 10 to 30
 			if (!isNaN(inputValue) && inputValue >= 10 && inputValue <= 30) {
 			} else {
-				alert("Please enter a number between 10 and 30.");
+				alert("Bitte eine Temperatur zwischen 10 und 30 °C eintragen.");
 				return;
 			}
 
@@ -705,7 +705,7 @@ function HeatingSchedule({
 
 		// If any invalid input is found, alert once
         if (invalidInput) {
-            alert("Please enter a number between 5 and 30.");
+            alert("Bitte eine Temperatur zwischen 10 und 30 °C eintragen.");
             newCheck = true;
 			onUpdateCheck(newCheck);
         }
@@ -814,7 +814,7 @@ function HeatingSchedule({
 						className=" text-2xl hover:text-primary cursor-pointer"
 					/>
 				</Tooltip>
-				Heating Schedule
+				Heizplan
 			</h3>
 			{batteryAlert && (
 				<div className="text-red-800 px-4 py-3 bg-[#FDF2F2] w-fit text-[16px] flex flex-col items-start gap-2">
@@ -879,7 +879,7 @@ function HeatingSchedule({
 									className="absolute top-10 left-0 bg-white py-2 px-4 border border-gray-300 shadow rounded z-[100] text-sm text-gray-900"
 								>
 									<fieldset className=" flex flex-col justify-start items-start gap-3">
-										<div className=" font-bold mb-1">Copy to</div>
+										<div className=" font-bold mb-1">Kopieren nach</div>
 										{daysOfWeek
 											// .filter(d => d !== day) // Filter out the current day
 											.map((d) => (
@@ -905,7 +905,7 @@ function HeatingSchedule({
 										className=" mt-3 text-xs text-primary rounded-lg px-3 py-2 border border-primary hover:text-white hover:bg-primary transition duration-100"
 										type="submit"
 									>
-										Submit
+										Bestätigen
 									</button>
 								</form>
 							)}
@@ -1065,7 +1065,7 @@ function HeatingSchedule({
 													)
 												) : (
 													// If box.temperature is not null, render nothing
-													<div>Fill in schedule</div>
+													<div>Soll-Temperatur angeben</div>
 												)}
 
 												<button

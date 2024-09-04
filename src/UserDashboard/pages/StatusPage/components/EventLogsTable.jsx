@@ -309,7 +309,7 @@ const EventLogsTable = () => {
               onChange={onNodeSelectChange}
               onClick={handleTreeSelectClick}
               selectionMode="multiple"
-              placeholder="All Buildings"
+							placeholder="Alle Gebäude"
               filter
               filterBy="label"
               filterValue={filterValue}
@@ -353,7 +353,7 @@ const EventLogsTable = () => {
 
                       color: "#6e6e6e",
                     }}
-                    placeholder="Search" // Optional: you can add a placeholder
+                    placeholder="Suche" // Optional: you can add a placeholder
                   />
                 </div>
               )}
@@ -389,19 +389,19 @@ const EventLogsTable = () => {
                 EVENT ID
               </th>
               <th scope="col" className="p-4">
-                ROOM
-              </th>
-              <th scope="col" className="p-4">
-                BUILDING - FLOOR
-              </th>
-              <th scope="col" className="p-4">
-                DATE - TIME
-              </th>
-              <th scope="col" className="p-4">
-                EVENT TYPE
-              </th>
-              <th scope="col" className="p-4">
-                MESSAGE
+              RAUM
+							</th>
+							<th scope="col" className="p-4">
+								GEBÄUDE - ETAGE
+							</th>
+							<th scope="col" className="p-4">
+								DATUM - UHRZEIT
+							</th>
+							<th scope="col" className="p-4">
+								EVENT
+							</th>
+							<th scope="col" className="p-4">
+								NACHRICHT
               </th>
             </tr>
           </thead>
@@ -460,7 +460,7 @@ const EventLogsTable = () => {
           <>
             <div className="w-full bg-slate-100 flex flex-col justify-center items-center">
               <p className="w-full text-center italic py-2 font-semibold">
-                No Results Found
+              Keine Ergebnisse
               </p>
             </div>
           </>
@@ -469,11 +469,11 @@ const EventLogsTable = () => {
         <div className="w-full p-3 flex flex-row justify-between items-center">
           {tableData && (
             <p className="font-light text-sm text-gray-500">
-              Showing{" "}
+							{" "}
               <span className="font-bold text-black">
                 {startIndex}-{endIndex}
               </span>{" "}
-              of <span className="font-bold text-black">{totalItems}</span>
+							von <span className="font-bold text-black">{totalItems}</span>
             </p>
           )}
 

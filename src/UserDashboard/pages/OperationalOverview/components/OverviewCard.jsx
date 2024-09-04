@@ -242,7 +242,7 @@ const DeleteModal = ({ openDeleteModal, setOpenDeleteModal, handleDelete }) => {
         <div className="text-center">
           <RiDeleteBin6Line size={30} className="text-[#9CA3AF] mx-auto mb-4" />
           <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
-            Möchten Sie diesen Heizplan wirklich löschen
+            Möchten Sie diesen Heizplan wirklich löschen?
           </h3>
           <div className="flex justify-center gap-4">
             <Button color="gray" onClick={() => setOpenDeleteModal(false)}>

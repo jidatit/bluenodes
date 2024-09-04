@@ -359,7 +359,7 @@ function HeatingScheduleTable({ locationDetails, props }) {
 														"Fill in schedule"
 													)
 												) : (
-													<div>Fill in schedule</div>
+													<div>Soll-Temperatur fehlt</div>
 												)}
 											</div>
 										</div>

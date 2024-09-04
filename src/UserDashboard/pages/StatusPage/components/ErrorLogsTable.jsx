@@ -213,10 +213,10 @@ const ErrorLogsTable = () => {
               onChange={onNodeSelectChange}
               className="md:w-20rem w-full"
               selectionMode="multiple"
-              placeholder="All Buildings"
+              placeholder="Alle Gebäude"
               display="chip"
               filter
-              filterPlaceholder="Search"
+              filterPlaceholder="Suche"
             />
             <DateFilter onDatesChange={handleDatesChange} />
           </div>
@@ -225,16 +225,16 @@ const ErrorLogsTable = () => {
           <thead className="text-xs font-semibold text-gray-500 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
             <tr>
             <th scope="col" className="p-4">
-								ROOM
+            RAUM
 							</th>
 							<th scope="col" className="p-4">
-								BUILDING - FLOOR
+								GEBÄUDE - ETAGE
 							</th>
 							<th scope="col" className="p-4">
-								DATE - TIME
+								DATUM - UHRZEIT
 							</th>
 							<th scope="col" className="p-4">
-								MESSAGE
+								Fehlermeldung
 							</th>
             </tr>
           </thead>
@@ -267,7 +267,7 @@ const ErrorLogsTable = () => {
 					<>
 						<div className="w-full bg-slate-100 flex flex-col justify-center items-center">
 							<p className="w-full text-center italic py-2 font-semibold">
-								No Results Found
+              Keine Ergebnisse
 							</p>
 						</div>
 					</>
@@ -276,11 +276,11 @@ const ErrorLogsTable = () => {
 				<div className="w-full p-3 flex flex-row justify-between items-center">
 					{tableData && (
 						<p className="font-light text-sm text-gray-500">
-							Showing{" "}
+							{" "}
 							<span className="font-bold text-black">
 								{startIndex}-{endIndex}
 							</span>{" "}
-							of <span className="font-bold text-black">{totalItems}</span>
+							von <span className="font-bold text-black">{totalItems}</span>
 						</p>
 					)}
 

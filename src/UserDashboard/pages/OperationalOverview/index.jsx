@@ -31,7 +31,7 @@ function OverviewPage() {
   return (
     <>
       <div className="flex flex-col gap-6 ">
-        <h2 className="text-[24px] text-gray-900"></h2>
+        <h2 className="text-[24px] text-gray-900">Operational Overview</h2>
         <div className="flex items-center justify-between ">
           <div className="flex items-center gap-4 ">
             <form className="w-[380px] ">
@@ -65,7 +65,7 @@ function OverviewPage() {
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="block w-full p-4 px-4 py-2 text-sm text-gray-900 border border-gray-300 rounded-lg ps-10 bg-gray-50 focus:ring-primary focus:border-primary dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary dark:focus:border-primary"
-                  placeholder="Search building"
+                  placeholder="Gebäude suchen"
                   required
                 />
               </div>

@@ -28,8 +28,7 @@ const AssignProgramModal = ({
 	const [showError, setShowError] = useState(false);
 	const [showConfirmModal, setShowConfirmModal] = useState(false);
 	const [data, setData] = useState([]);
-	const { createdHeatingScheduleNames, setCreatedHeatingScheduleNames } =
-		useHeatingSchedule();
+	// const { createdHeatingScheduleNames, setCreatedHeatingScheduleNames } = useHeatingSchedule();
 
 	const handleCloseModal = () => {
 		handleCancelReplace();
@@ -908,7 +907,9 @@ const ReplaceProgram = ({
 							value={program.id}
 							// disabled={program.id === room.heatingSchedule.id}
 						>
-							{program.templateName}
+							{program.templateName.length > 50
+								? `${program.templateName.slice(0, 50)}...`
+								: program.templateName}
 						</option>
 					))}
 				</select>
@@ -1004,11 +1005,11 @@ const ViewTableComponent = ({ selectedProgram }) => {
 			<div className="flex w-full items-start">
 				<div className="w-[25%] flex flex-col gap-4">
 					<h3 className="text-[16px] text-gray-500 font-semibold">
-						General Information
+						Einstellungen
 					</h3>
 					<div className="flex flex-col gap-2 text-sm text-gray-900 font-normal">
 						<div className="flex flex-col gap-2">
-							<p className="font-semibold">Program Name</p>
+												<p className="font-semibold">Kindersicherung</p>
 							<p>{temperatureDetails?.templateName || "N/A"}</p>{" "}
 							{/* Replace hardcoded value */}
 						</div>

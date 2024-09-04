@@ -245,7 +245,7 @@ function HeatingSchedulePage() {
 
 	return (
 		<div className="flex flex-col gap-6">
-			<h2 className="text-[24px] text-black">Heating programs management</h2>
+			<h2 className="text-[24px] text-black">Heizpläne</h2>
 			<div className="flex items-center justify-between">
 				<div className="flex gap-4 items-center">
 					<form className="w-[380px]">
@@ -253,7 +253,7 @@ function HeatingSchedulePage() {
 							htmlFor="default-search"
 							className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"
 						>
-							Search
+							Suche
 						</label>
 						<div className="relative">
 							<div className="absolute inset-y-0 start-0 flex items-center ps-4 pointer-events-none">
@@ -300,19 +300,19 @@ function HeatingSchedulePage() {
 										className="cursor-pointer block rounded-lg px-4 py-2 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-700"
 										onClick={() => handleFilterChange("Oldest to Newest")}
 									>
-										Oldest to Newest
+										Älteste zuerst
 									</li>
 									<li
 										className="cursor-pointer block rounded-lg px-4 py-2 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-700"
 										onClick={() => handleFilterChange("Newest to Oldest")}
 									>
-										Newest to Oldest
+										Neueste zuerst
 									</li>
 									<li
 										className="cursor-pointer block rounded-lg px-4 py-2 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-700"
 										onClick={() => handleFilterChange("No filter")}
 									>
-										No filter
+										Kein Filter
 									</li>
 								</ul>
 							</div>
@@ -326,7 +326,7 @@ function HeatingSchedulePage() {
 						className="bg-primary text-white rounded-lg text-sm cursor-pointer"
 					>
 						<GoPlus className="mr-2 h-5 w-5" />
-						helinascas
+						Heizplan erstellen
 					</Button>
 				</div>
 			</div>

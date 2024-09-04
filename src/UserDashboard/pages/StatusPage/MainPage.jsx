@@ -81,11 +81,11 @@ function MainPage() {
           loading ? "opacity-50" : "opacity-100"
         }`}
       >
-        <h2 className="text-[24px] text-gray-900">Status Page</h2>
+        <h2 className="text-[24px] text-gray-900">Statusansicht</h2>
         <div className="w-full flex flex-col gap-4">
           <div className="flex flex-col">
             <h2 className="text-[18px] text-gray-900 flex items-center gap-3">
-              Zusammenfassung
+              {/* Zusammenfassung */}
               {activeCard && (
                 <Tooltip
                   className="min-w-[130px]"
@@ -182,7 +182,7 @@ function MainPage() {
         {activeCard === "generalError" && (
           <ErrorLogsTable tableData={tableData} />
         )}
-        {activeCard === "unassignedError" && <UnassignedTable />}
+        {activeCard === "unassignedError" && <UnassignedTable assignUpdate={fetchData} />}
         {activeCard === "offlineError" && <OfflineTable />}
       </div>
     </>

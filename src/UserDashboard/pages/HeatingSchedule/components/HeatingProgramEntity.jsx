@@ -310,7 +310,7 @@ const HeatingProgramEntity = ({
 					<div className="w-[25%] flex flex-col justify-center items-start">
 						<p className="text-[16px] font-[700]">{program?.templateName}</p>
 						<p className="text-[12px] font-[400] text-gray-500">
-							Last updated: {getDate()}
+						Zuletzt aktualisiert: {getDate()}
 						</p>
 					</div>
 					<div className="w-[15%] flex flex-col justify-center items-start">
@@ -323,7 +323,7 @@ const HeatingProgramEntity = ({
 						<>
 							<div className="w-[15%] flex flex-col justify-center items-start">
 								<p className="text-[12px] text-gray-500 font-[500]">
-									Minimum temperature
+								Mindesttemperatur
 								</p>
 								<p className="text-[14px] font-[400]">
 									{program?.deviceOverrideTemperatureMin}&deg;C
@@ -331,7 +331,7 @@ const HeatingProgramEntity = ({
 							</div>
 							<div className="w-[15%] flex flex-col justify-center items-start">
 								<p className="text-[12px] text-gray-500 font-[500]">
-									Maximum temperature
+								Höchsttemperatur
 								</p>
 								<p className="text-[14px] font-[400]">
 									{program?.deviceOverrideTemperatureMax}&deg;C
@@ -369,7 +369,7 @@ const HeatingProgramEntity = ({
 									<div className="flex flex-row justify-between gap-4 items-start w-full p-4">
 										<div className="flex flex-col justify-start items-start w-[25%]">
 											<div className="flex w-full pr-[10px] mt-[0px] mb-[10px] flex-row justify-between items-center">
-												<h2 className="text-gray-500 font-[600]">Assigned</h2>
+												<h2 className="text-gray-500 font-[600]">Zugewiesen</h2>
 												<Button
 													onClick={handleAssign}
 													className="bg-[#0BAAC9] text-white py-2 px-3 [&>*]:p-0"

@@ -87,10 +87,10 @@ export function ViewRoomScheduleModal({
                       <>
                         <div className="flex flex-col gap-2">
                           <p className="flex items-center gap-1 font-semibold">
-                            Minimum Temperatur
-                            <Tooltip
+                          Mindesttemperatur
+                          <Tooltip
                               className="px-3 py-1.5 text-center max-w-96"
-                              content="The minimum temperature that can be manually adjusted on the thermometer by physical means."
+                              content="Die Mindesttemperatur, die am Thermostat manuell eingestellt werden kann."
                               style="light"
                             >
                               <IoInformationCircleOutline color="#6B7280" />
@@ -102,10 +102,10 @@ export function ViewRoomScheduleModal({
                         </div>
                         <div className="flex flex-col gap-2">
                           <p className="flex items-center gap-1 font-semibold">
-                            Maximum Temperatur
-                            <Tooltip
+                          Höchsttemperatur
+                          <Tooltip
                               className="px-3 py-1.5 text-center max-w-96"
-                              content="The maximum temperature that can be manually adjusted on the thermometer by physical means."
+                              content="Die Höchsttemperatur, die am Thermostat manuell eingestellt werden kann."
                               style="light"
                             >
                               <IoInformationCircleOutline color="#6B7280" />
@@ -123,7 +123,7 @@ export function ViewRoomScheduleModal({
                         Algorithmus aktivieren
                         <Tooltip
                           className="px-3 py-1.5 text-center max-w-96"
-                          content="The minimum temperature that can be manually adjusted on the thermometer by physical means."
+                          content="Der Algorithmus passt dynamisch den Heizplan an."
                           style="light"
                         >
                           <IoInformationCircleOutline color="#6B7280" />

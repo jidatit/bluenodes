@@ -13,7 +13,7 @@ function GeneralInformation({
 	return (
 		<div className="flex flex-col gap-4 w-full">
 			<h3 className="text-[16px] text-gray-500 font-semibold">
-				General information
+				Einstellungen
 			</h3>
 			{generalErrorMessage && (
 				<div className="text-red-800 p-4 bg-[#FDF2F2] w-fit text-[16px] font-semibold flex items-center gap-2">
@@ -30,7 +30,7 @@ function GeneralInformation({
 							<Label
 								className=" text-sm text-gray-900"
 								htmlFor="program-name"
-								value="Program name"
+								value="Name des Heizplans"
 							/>
 						</div>
 						<TextInput
@@ -38,7 +38,7 @@ function GeneralInformation({
 							type="text"
 							onBlur={checkName}
 							sizing="sm"
-							placeholder="Program name"
+							placeholder="Namen eingeben"
 							className="w-[250px]"
 							onChange={handleChange}
 							required
@@ -46,7 +46,7 @@ function GeneralInformation({
 							helperText={
 								errorMessages.programName && (
 									<>
-										<span className="font-medium">Oops!</span>{" "}
+										<span className="font-medium">Ups!</span>{" "}
 										{errorMessages.programName}
 									</>
 								)
@@ -60,7 +60,7 @@ function GeneralInformation({
 							<Label
 								className=" text-sm text-gray-900"
 								htmlFor="child-safety"
-								value="Child Safety"
+								value="Kindersicherung"
 							/>
 						</div>
 						<div className="flex items-center gap-2">
@@ -77,7 +77,7 @@ function GeneralInformation({
 									className="text-sm text-gray-900"
 									htmlFor="childSafetyYes"
 								>
-									Yes
+									Ja
 								</Label>
 							</div>
 							<div className="flex items-center gap-2">
@@ -93,7 +93,7 @@ function GeneralInformation({
 									className="text-sm text-gray-900"
 									htmlFor="childSafetyNo"
 								>
-									No
+									Nein
 								</Label>
 							</div>
 						</div>
@@ -116,11 +116,11 @@ function GeneralInformation({
 									<Label
 										className=" text-sm text-gray-900"
 										htmlFor="min-temp"
-										value="Minimum temperature"
+										value="Mindesttemperatur"
 									/>
 									<Tooltip
 										className="px-3 py-1.5 text-center max-w-96"
-										content="The minimum temperature that can be manually adjusted on the thermometer by physical means."
+										content="Die Mindesttemperatur, die am Thermostat manuell eingestellt werden kann."
 										style="light"
 									>
 										<IoInformationCircleOutline color="#6B7280" />
@@ -130,7 +130,7 @@ function GeneralInformation({
 									id="minTemp"
 									type="text"
 									sizing="sm"
-									placeholder="Minimum temperature"
+									placeholder="Mindesttemperatur eingeben"
 									className="w-[250px]"
 									onChange={handleChange}
 									required
@@ -152,11 +152,11 @@ function GeneralInformation({
 									<Label
 										className=" text-sm text-gray-900"
 										htmlFor="max-temp"
-										value="Maximum temperature"
+										value="Höchsttemperatur"
 									/>
 									<Tooltip
 										className="px-3 py-1.5 text-center max-w-96"
-										content="The maximum temperature that can be manually adjusted on the thermometer by physical means."
+										content="Die Höchsttemperatur, die am Thermostat manuell eingestellt werden kann."
 										style="light"
 									>
 										<IoInformationCircleOutline color="#6B7280" />
@@ -166,7 +166,7 @@ function GeneralInformation({
 									id="maxTemp"
 									type="text"
 									sizing="sm"
-									placeholder="Maximum temperature"
+									placeholder="Höchsttemperatur eingeben"
 									className="w-[250px]"
 									onChange={handleChange}
 									required
@@ -174,7 +174,7 @@ function GeneralInformation({
 									helperText={
 										errorMessages.maxTemp && (
 											<>
-												<span className="font-medium">Oops!</span>{" "}
+												<span className="font-medium">Ups!</span>{" "}
 												{errorMessages.maxTemp}
 											</>
 										)
@@ -191,11 +191,11 @@ function GeneralInformation({
 							<Label
 								className=" text-sm text-gray-900"
 								htmlFor="apply-algorithm"
-								value="Apply algorithm?"
+								value="Algorithmus aktivieren"
 							/>
 							<Tooltip
 								className="px-3 py-1.5 text-center max-w-96"
-								content="The minimum temperature that can be manually adjusted on the thermometer by physical means."
+								content="Der Algorithmus passt dynamisch den Heizplan an."
 								style="light"
 							>
 								<IoInformationCircleOutline color="#6B7280" />
@@ -216,7 +216,7 @@ function GeneralInformation({
 										className="text-sm text-gray-900"
 										htmlFor="applyAlgorithmYes"
 									>
-										Yes
+										Ja
 									</Label>
 								</div>
 								<div className="flex items-center gap-2">
@@ -232,7 +232,7 @@ function GeneralInformation({
 										className="text-sm text-gray-900"
 										htmlFor="applyAlgorithmNo"
 									>
-										No
+										Nein
 									</Label>
 								</div>
 							</div>

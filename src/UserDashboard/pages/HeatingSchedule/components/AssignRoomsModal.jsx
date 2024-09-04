@@ -380,13 +380,13 @@ function AssignRoomsModal({
 				onClose={handleAssign}
 			>
 				<Modal.Header className=" text-lg text-gray-900 [&>*]:font-semibold">
-					Assign rooms - {program?.templateName}
+					Räume zuweisen - {program?.templateName}
 				</Modal.Header>
 				<Modal.Body className="p-5 overflow-hidden  h-auto">
 					<div className="flex flex-col gap-4 w-full">
 						<div className="flex flex-col gap-0 w-full">
 							<h3 className="text-[16px] text-gray-500 font-semibold flex items-center gap-2">
-								Heating program assignment
+								Wählen Sie die Räume aus.
 							</h3>
 							<div className="w-full flex justify-end">
 								{!viewAll ? (
@@ -394,14 +394,14 @@ function AssignRoomsModal({
 										onClick={handleViewSelected}
 										className=" hover:!bg-transparent hover:opacity-80 border-none text-primary bg-transparent pr-2 py-0 [&>*]:p-0 focus:ring-transparent"
 									>
-										View Selected
+										Auswahl anzeigen
 									</Button>
 								) : (
 									<Button
 										onClick={handleViewAll}
 										className=" hover:!bg-transparent hover:opacity-80 border-none text-primary bg-transparent pr-2 py-0 [&>*]:p-0 focus:ring-transparent"
 									>
-										View All
+										Alle anzeigen
 									</Button>
 								)}
 							</div>
@@ -414,16 +414,16 @@ function AssignRoomsModal({
 						</div>
 						<div className=" flex items-center justify-between w-full">
 							<div className=" flex items-center gap-1.5">
-								<p className=" text-sm font-semibold text-black">Filter by:</p>
+								<p className=" text-sm font-semibold text-black">Filtern nach:</p>
 								<Select
 									id="roomFilter"
 									required
 									value={filter}
 									onChange={(e) => setFilter(e.target.value)}
 								>
-									<option value="All">All</option>
-									<option value="Assigned">Assigned</option>
-									<option value="Unassigned">Unassigned</option>
+									<option value="All">Alle</option>
+									<option value="Assigned">Zugewiesen</option>
+									<option value="Unassigned">Nicht zugewiesen</option>
 								</Select>
 							</div>
 							<form
@@ -436,7 +436,7 @@ function AssignRoomsModal({
 									htmlFor="default-search"
 									className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"
 								>
-									Search
+									Suche
 								</label>
 								<div className="relative">
 									<div className="absolute inset-y-0 start-0 flex items-center ps-4 pointer-events-none">
@@ -475,7 +475,7 @@ function AssignRoomsModal({
 								onClick={resetAssignments}
 								className=" hover:!bg-transparent hover:opacity-80 border-none text-red-600 bg-transparent pr-2 py-0 [&>*]:p-0 focus:ring-transparent"
 							>
-								Reset Selections
+								Auswahl zurücksetzen
 							</Button>
 						</div>
 						<div className=" flex flex-col gap-0 max-h-[400px] overflow-y-auto">
@@ -494,7 +494,7 @@ function AssignRoomsModal({
 															className={`text-xs font-normal py-0.5 px-2.5 ml-1 ${building.roomsAssigned === building.totalRooms ? "text-primary" : "text-indigo-800"} ${building.roomsAssigned === building.totalRooms ? "bg-primary-200" : "bg-indigo-100"} rounded-md`}
 														>
 															{building.roomsAssigned}/{building.totalRooms}{" "}
-															rooms assigned
+															Räume zugewiesen
 														</span>
 													</p>
 												</Accordion.Title>
@@ -513,7 +513,7 @@ function AssignRoomsModal({
 																			className={`text-xs font-normal py-0.5 px-2.5 ml-1 ${floor.roomsAssigned === floor.totalRooms ? "text-primary" : "text-indigo-800"} ${floor.roomsAssigned === floor.totalRooms ? "bg-primary-200" : "bg-indigo-100"} rounded-md`}
 																		>
 																			{floor.roomsAssigned}/{floor.totalRooms}{" "}
-																			rooms assigned
+																			Räume zugewiesen
 																		</span>
 																	</p>
 																</Accordion.Title>
@@ -540,15 +540,15 @@ function AssignRoomsModal({
 																						}
 																					/>
 																				</Table.HeadCell>
-																				<Table.HeadCell>Room</Table.HeadCell>
+																				<Table.HeadCell>Räume</Table.HeadCell>
 																				<Table.HeadCell>
-																					Algorithm On?
+																				Algorithmus
 																				</Table.HeadCell>
 																				<Table.HeadCell>
-																					Program Assigned
+																				Aktiver Heizplan
 																				</Table.HeadCell>
 																				<Table.HeadCell>
-																					Current Temperature
+																				Raumtemperatur
 																				</Table.HeadCell>
 																				{/* <Table.HeadCell>Assignment</Table.HeadCell> */}
 																			</Table.Head>
@@ -625,7 +625,7 @@ function AssignRoomsModal({
 																className={`text-xs font-normal py-0.5 px-2.5 ml-1 ${building.roomsAssigned === building.totalRooms ? "text-primary" : "text-indigo-800"} ${building.roomsAssigned === building.totalRooms ? "bg-primary-200" : "bg-indigo-100"} rounded-md`}
 															>
 																{building.roomsAssigned}/{building.totalRooms}{" "}
-																rooms assigned
+																Räume zugewiesen
 															</span>
 														</p>
 													</Accordion.Title>
@@ -644,7 +644,7 @@ function AssignRoomsModal({
 																				className={`text-xs font-normal py-0.5 px-2.5 ml-1 ${floor.roomsAssigned === floor.totalRooms ? "text-primary" : "text-indigo-800"} ${floor.roomsAssigned === floor.totalRooms ? "bg-primary-200" : "bg-indigo-100"} rounded-md`}
 																			>
 																				{floor.roomsAssigned}/{floor.totalRooms}{" "}
-																				rooms assigned
+																				Räume zugewiesen
 																			</span>
 																		</p>
 																	</Accordion.Title>
@@ -673,15 +673,15 @@ function AssignRoomsModal({
 																							}
 																						/>
 																					</Table.HeadCell>
-																					<Table.HeadCell>Rooms</Table.HeadCell>
-																					<Table.HeadCell>
-																						Algorithm On?
-																					</Table.HeadCell>
-																					<Table.HeadCell>
-																						Program Assigned
-																					</Table.HeadCell>
-																					<Table.HeadCell>
-																						Current Temperature
+																					<Table.HeadCell>Räume</Table.HeadCell>
+																				<Table.HeadCell>
+																				Algorithmus
+																				</Table.HeadCell>
+																				<Table.HeadCell>
+																				Aktiver Heizplan
+																				</Table.HeadCell>
+																				<Table.HeadCell>
+																				Raumtemperatur
 																					</Table.HeadCell>
 																					{/* <Table.HeadCell>Assignment</Table.HeadCell> */}
 																				</Table.Head>
@@ -760,7 +760,7 @@ function AssignRoomsModal({
 						color="gray"
 						onClick={handleCloseModal}
 					>
-						Close
+						Schließen
 					</Button>
 				</Modal.Footer>
 				{showToast && (
