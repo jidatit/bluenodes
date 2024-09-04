@@ -24,7 +24,7 @@ const getDateRange = (option) => {
       startDate = startOfWeek;
       endDate = now;
       break;
-    case "Last30days":
+    case "Last 30 days":
       startDate = new Date(now);
       startDate.setDate(now.getDate() - 30);
       endDate = now;
@@ -34,8 +34,14 @@ const getDateRange = (option) => {
       startDate.setFullYear(now.getFullYear() - 1);
       endDate = now;
       break;
+    case "AllDates":
+      startDate = new Date(1900, 0, 1); // Arbitrary far past date
+      endDate = new Date(2100, 11, 31); // Arbitrary far future date
+      break;
     default:
-      return [null, null];
+      startDate = new Date(now); // Default to today
+      endDate = new Date(now);
+      break;
   }
 
   // Ensure endDate is at the end of the day
@@ -44,7 +50,7 @@ const getDateRange = (option) => {
   return [startDate, endDate];
 };
 
-const DateFilter = ({ onDatesChange }) => {
+const DateFilter = ({ onDatesChange, closeDropdown, setCloseDateFilter }) => {
   const [selectedOption, setSelectedOption] = useState("last30Days");
   const [showCalendar, setShowCalendar] = useState(false);
   const [subDropdownValue, setSubDropdownValue] = useState(null);
@@ -62,45 +68,58 @@ const DateFilter = ({ onDatesChange }) => {
     { key: "Last30days", label: "Last 30 days" },
     { key: "LastYear", label: "Last year" },
   ];
-
+  useEffect(() => {
+    console.log("close", closeDropdown);
+    if (closeDropdown) {
+      resetToDefault();
+    }
+  }, [closeDropdown]);
   const toggleDropdown = () => {
-    if (dropdownOpen === false) {
+    if (!dropdownOpen) {
       setDropdownOpen(true);
       setSubDropdownOpen(false);
     } else {
-      setDropdownOpen(false);
-      setSubDropdownOpen(false);
-      setShowCalendar(false);
-      setSelectedDropdownOption("All Dates");
-      const [startDate, endDate] = getDateRange("Last30Days");
-      setDates([startDate, endDate]);
-      onDatesChange([startDate, endDate]);
+      resetToDefault();
     }
+  };
+
+  const resetToDefault = () => {
+    setDropdownOpen(false);
+    setCloseDateFilter(false);
+    setSubDropdownOpen(false);
+    setShowCalendar(false);
+    setSelectedDropdownOption("All Dates");
+    let startDate = null,
+      endDate = null;
+    setDates(startDate, endDate);
+    onDatesChange(startDate, endDate);
   };
 
   const handleDropdownChange = (event) => {
     const selectedValue = event.target.value;
     setSelectedDropdownOption(selectedValue);
-    setDropdownOpen(true); // Keep the first dropdown open
+
+    setDropdownOpen(true);
 
     if (selectedValue === "Last30days") {
       setSubDropdownOpen(true);
       setShowCalendar(false);
-      setDates(null);
-      onDatesChange(null);
+      setDates(null); // Reset dates for the specific date range
     } else {
-      onDatesChange(null);
       setSubDropdownOpen(false);
       setShowCalendar(true);
+      setSubDropdownValue(null); // Reset sub-dropdown value
+      setDates(null); // Ensure dates are reset
     }
 
     setSelectedOption(selectedValue);
   };
 
   const handleSubDropdownChange = (e) => {
-    setSubDropdownValue(e.value);
-
-    const [startDate, endDate] = getDateRange(e.value);
+    const value = e.value;
+    setSubDropdownValue(value);
+    console.log(value);
+    const [startDate, endDate] = getDateRange(value);
     setDates([startDate, endDate]);
     onDatesChange([startDate, endDate]);
   };
@@ -110,8 +129,8 @@ const DateFilter = ({ onDatesChange }) => {
       setDates(e.value);
       onDatesChange(e.value); // Notify parent component
     } else {
-      setDates([null, null]); // Reset or handle accordingly
-    } // Notify parent component
+      setDates(null); // Reset or handle accordingly
+    }
   };
 
   return (
