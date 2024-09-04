@@ -73,12 +73,16 @@ function HeatingSchedulePage() {
 		setResponse(!response);
 
 		setShowToast(true);
+		fetchAllHeatingSchedules();
 
 		// Hide the toast after 4 seconds
 		setTimeout(() => {
 			setShowToast(false);
 		}, 4000);
 	};
+
+	const [key, setKey] = useState(0);
+	
 
 	const handleRoomUpdate = (data) => {
 		if (data) {
@@ -93,10 +97,11 @@ function HeatingSchedulePage() {
 			setToastMessage(errorMessages.roomAssignFailed);
 			setIsSuccess(false);
 		}
-		setResponse(!response);
+		// setResponse(!response);
 		setResponse2(!response2);
 		setShowToast(true);
 		fetchAllHeatingSchedules();
+		setKey(prevKey => prevKey + 1);
 		// Hide the toast after 4 seconds
 		setTimeout(() => {
 			setShowToast(false);
@@ -118,6 +123,7 @@ function HeatingSchedulePage() {
 		}
 		setResponse(!response);
 		setShowToast(true);
+		fetchAllHeatingSchedules();
 
 		// Hide the toast after 4 seconds
 		setTimeout(() => {
@@ -324,7 +330,8 @@ function HeatingSchedulePage() {
 					</Button>
 				</div>
 			</div>
-			{filteredPrograms.length > 0 &&
+			<div key={key} className="flex flex-col gap-6">
+			{filteredPrograms && filteredPrograms.length > 0 &&
 				filteredPrograms
 					.sort((a, b) => b.assignedRooms - a.assignedRooms)
 					.map((program, index) => (
@@ -340,6 +347,7 @@ function HeatingSchedulePage() {
 							initialData={initialData}
 						/>
 					))}
+			</div>
 			{Loader && (
 				<div className="w-full flex flex-col justify-center items-center">
 					<Spinner aria-label="Extra large spinner example" size="xl" />

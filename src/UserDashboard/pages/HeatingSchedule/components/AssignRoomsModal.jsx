@@ -308,11 +308,11 @@ function AssignRoomsModal({
 			),
 		);
 
-		if (!anyRoomSelected && ButtonText !== "Confirm") {
-			setNoRoomsError(true);
-			setError(errorMessages.roomSelectionMust);
-			setButtonText("Confirm");
-		} else {
+		// if (!anyRoomSelected && ButtonText !== "Confirm") {
+		// 	setNoRoomsError(true);
+		// 	setError(errorMessages.roomSelectionMust);
+		// 	setButtonText("Confirm");
+		// } else {
 			setError("");
 
 			// onUpdate(data)
@@ -349,7 +349,7 @@ function AssignRoomsModal({
 						setShowToast(false);
 					}, 4000);
 				});
-		}
+		// }
 	}, [data, setNoRoomsError, setError, ButtonText]); // Dependency array
 
 	useEffect(() => {

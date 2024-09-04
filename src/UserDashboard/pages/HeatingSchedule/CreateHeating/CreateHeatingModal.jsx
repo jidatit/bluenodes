@@ -370,9 +370,9 @@ export function CreateHeatingModal({
 					),
 			);
 
-			if (!anyRoomSelected && buttonText === "Create") {
-				setButtonText("Confirm");
-			} else {
+			// if (!anyRoomSelected && buttonText === "Create") {
+			// 	setButtonText("Confirm");
+			// } else {
 				handleAssignmentData();
 				// onCreate(combinedData);
 
@@ -456,11 +456,12 @@ export function CreateHeatingModal({
 					days: convertScheduleData(combinedData.finalScheduleData),
 				};
 
+
 				if (combinedData.formData.childSafety !== "Yes") {
-					finalObj.deviceOverrideTemperatureMin = parseFloat(
+					finalObj.deviceOverrideTemperatureMin = parseInt(
 						combinedData.formData.minTemp,
 					);
-					finalObj.deviceOverrideTemperatureMax = parseFloat(
+					finalObj.deviceOverrideTemperatureMax = parseInt(
 						combinedData.formData.maxTemp,
 					);
 				}
@@ -487,7 +488,7 @@ export function CreateHeatingModal({
 							console.error("Error:", error);
 						}
 					});
-			}
+			// }
 		} else {
 			console.error("handleAssignmentRef.current is not defined");
 		}

@@ -247,23 +247,23 @@ export function CloneHeatingModal({
 				const templateNames =
 					data.length > 0 ? data.map((template) => template.templateName) : [];
 				setCreatedHeatingScheduleNames(templateNames);
+				const nameExistsInCreatedSchedules =
+					createdHeatingScheduleNames?.includes(formData.programName);
+
+				return nameExistsInCreatedSchedules;
 			} catch (error) {
 				console.error("Error:", error);
 			}
 		};
-		fetchHeatingSchedules();
-
+		const nameExistsInCreatedSchedules = fetchHeatingSchedules();
 		const programName = formData.programName;
-		const isSameAsTemplateName = program.templateName === programName;
-
-		if (!isSameAsTemplateName) {
+		if (nameExistsInCreatedSchedules) {
 			createdHeatingScheduleNames?.forEach((name) => {
 				if (programName === name) {
 					newErrors.programName = errors.ProgramWithNameAlreadyCreated;
 				}
 			});
 		}
-
 		// Validate temperature fields
 		const minTemp = parseFloat(formData.minTemp);
 		const maxTemp = parseFloat(formData.maxTemp);
@@ -387,9 +387,9 @@ export function CloneHeatingModal({
 					),
 			);
 
-			if (!anyRoomSelected && buttonText === "Create") {
-				setButtonText("Confirm");
-			} else {
+			// if (!anyRoomSelected && buttonText === "Create") {
+			// 	setButtonText("Confirm");
+			// } else {
 				handleAssignmentData();
 				// onCreate(combinedData);
 				// Get rooms IDs from the entire Data
@@ -472,10 +472,10 @@ export function CloneHeatingModal({
 					days: convertScheduleData(combinedData.finalScheduleData),
 				};
 				if (combinedData.formData.childSafety !== "Yes") {
-					finalObj.deviceOverrideTemperatureMin = parseFloat(
+					finalObj.deviceOverrideTemperatureMin = parseInt(
 						combinedData.formData.minTemp,
 					);
-					finalObj.deviceOverrideTemperatureMax = parseFloat(
+					finalObj.deviceOverrideTemperatureMax = parseInt(
 						combinedData.formData.maxTemp,
 					);
 				}
@@ -506,7 +506,7 @@ export function CloneHeatingModal({
 							setShowToast(false);
 						}, 4000);
 					});
-			}
+			// }
 		} else {
 			console.error("handleAssignmentRef.current is not defined");
 		}
@@ -562,10 +562,8 @@ export function CloneHeatingModal({
 				const nameExistsInCreatedSchedules =
 					createdHeatingScheduleNames &&
 					createdHeatingScheduleNames.includes(formData.programName);
-				const isSameAsTemplateName =
-					program.templateName === formData.programName;
 
-				if (!isSameAsTemplateName && nameExistsInCreatedSchedules) {
+				if (nameExistsInCreatedSchedules) {
 					setErrorMessages((prev) => ({
 						...prev,
 						programName: errors.ProgramWithNameAlreadyCreated,
@@ -582,6 +580,7 @@ export function CloneHeatingModal({
 		};
 		fetchHeatingSchedules();
 	};
+
 
 	const [initialData, setInitialData] = useState({});
 

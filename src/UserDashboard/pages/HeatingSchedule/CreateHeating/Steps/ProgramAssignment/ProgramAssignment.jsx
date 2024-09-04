@@ -188,13 +188,13 @@ const ProgramAssignment = ({ formData, assignmentData,setHandleAssignmentRef, ha
         )
       );
 
-      if (!anyRoomSelected) {
-        setNoRoomsError(true);
-        setError(errorMessages.noRoomSelected);
-      } else {
-        setError('');
-        // Submit the form or perform other actions
-      }
+      // if (!anyRoomSelected) {
+      //   setNoRoomsError(true);
+      //   setError(errorMessages.noRoomSelected);
+      // } else {
+      //   setError('');
+      //   // Submit the form or perform other actions
+      // }
     }, [data, setNoRoomsError, setError]); // Dependency array
 
     // Set the handleCheck function in the ref passed from the parent

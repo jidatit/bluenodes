@@ -412,10 +412,10 @@ export function EditHeatingModal({
 				};
 
 				if (combinedData.formData.childSafety !== "Yes") {
-					finalObj.deviceOverrideTemperatureMin = parseFloat(
+					finalObj.deviceOverrideTemperatureMin = parseInt(
 						combinedData.formData.minTemp,
 					);
-					finalObj.deviceOverrideTemperatureMax = parseFloat(
+					finalObj.deviceOverrideTemperatureMax = parseInt(
 						combinedData.formData.maxTemp,
 					);
 				}

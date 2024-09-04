@@ -324,7 +324,7 @@ function HeatingScheduleTable({ locationDetails, props }) {
 								}}
 							>
 								<GridLayout
-									className="layout pt-[6px] z-10"
+									className="layout pt-[8px] z-10"
 									compactType={null}
 									layout={initialLayouts[day]}
 									cols={1}

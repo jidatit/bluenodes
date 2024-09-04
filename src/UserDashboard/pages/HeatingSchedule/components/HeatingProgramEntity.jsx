@@ -40,7 +40,6 @@ const HeatingProgramEntity = ({
 		setOpenAssignModal(!openAssignModal);
 		setResponse(!response);
 		fetchDetails();
-		fetchAll();
 	};
 
 	const [showToast, setShowToast] = useState(false);
@@ -103,18 +102,18 @@ const HeatingProgramEntity = ({
 
 	const [response, setResponse] = useState(false);
 
-	useEffect(() => {
-		if (response2) {
-			fetchDetails();
-		}
-	}, [response2]);
+	// useEffect(() => {
+	// 	if (response2) {
+	// 		fetchDetails();
+	// 	}
+	// }, [response2]);
 
 	const handleUpdateRoomsAssigned = (data) => {
 		if (data) {
 			onUpdateRooms(data);
-			fetchAll();
-			fetchDetails();
 		}
+		// fetchAll();
+		// fetchDetails();
 		setResponse(!response);
 	};
 
@@ -379,7 +378,7 @@ const HeatingProgramEntity = ({
 												</Button>
 											</div>
 
-											{locationDetails?.assignedRooms?.map(
+											{locationDetails && locationDetails.assignedRooms?.map(
 												(building, index) => (
 													<Accordion
 														key={building.id}
@@ -477,6 +476,7 @@ const HeatingProgramEntity = ({
 				<AlertDeleteModal
 					openAlertDeleteModal={openAlertDeleteModal}
 					setOpenAlertDeleteModal={setOpenAlertDeleteModal}
+					setOpenDeleteModal={setOpenDeleteModal}
 				/>
 				{openAssignModal && (
 					<AssignRoomsModal
@@ -596,6 +596,7 @@ const DeleteModal = ({ openDeleteModal, setOpenDeleteModal, handleDelete }) => {
 const AlertDeleteModal = ({
 	openAlertDeleteModal,
 	setOpenAlertDeleteModal,
+	setOpenDeleteModal,
 }) => {
 	return (
 		<Modal
@@ -622,6 +623,7 @@ const AlertDeleteModal = ({
 							color="gray"
 							onClick={() => {
 								setOpenAlertDeleteModal(false);
+								setOpenDeleteModal(false);
 							}}
 						>
 							Cancel
