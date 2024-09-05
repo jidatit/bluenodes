@@ -666,12 +666,12 @@ const AssignProgramModal = ({
 				{room && (
 					<>
 						<Modal.Header className=" text-lg text-gray-900 [&>*]:font-semibold">
-							Assign Program - {room.name}
+						Heizplan zuweisen - {room.name}
 						</Modal.Header>
 						<Modal.Body className="p-5 overflow-y-auto h-auto">
 							<div className="w-full flex flex-col justify-center items-start">
-								<p>Select Program</p>
-								{/* <p className="font-semibold mt-3 ">Select action</p> */}
+							<p>Heizplan auswählen</p>
+							{/* <p className="font-semibold mt-3 ">Select action</p> */}
 								{/* <div className="w-full flex mt-2 gap-4 flex-row justify-start items-center">
 									<div
 										onClick={() => handleActionChange("edit-room")}
@@ -766,16 +766,16 @@ const AssignProgramModal = ({
 							{selectedAction === "edit-room" ? (
 								currentStep < 2 ? (
 									<Button className="bg-primary" onClick={handleNext}>
-										Next
+										Weiter
 									</Button>
 								) : (
 									<Button className="bg-primary" onClick={handleCreate}>
-										Save
+										Speichern
 									</Button>
 								)
 							) : (
 								<Button className="bg-primary" onClick={handleDone}>
-									Done
+									Fertig
 								</Button>
 							)}
 							<Button
@@ -783,7 +783,7 @@ const AssignProgramModal = ({
 								color="gray"
 								onClick={handleCloseModal}
 							>
-								Close
+								Schließen
 							</Button>
 						</Modal.Footer>
 					</>
@@ -916,8 +916,8 @@ const ReplaceProgram = ({
 
 				{showError && (
 					<p className="text-red-500 text-sm mt-1">
-						A program has to be selected
-					</p>
+						Ein Programm muss ausgewählt werden.
+						</p>
 				)}
 			</div>
 			<div className="flex flex-col justify-start items-start w-full md:w-2/3">
@@ -925,11 +925,11 @@ const ReplaceProgram = ({
 					<Label
 						className="text-sm font-semibold text-gray-700"
 						htmlFor="apply-algorithm"
-						value="Apply algorithm?"
+						value="Algorithmus aktivieren"
 					/>
 					<Tooltip
 						className="px-3 py-1.5 text-center max-w-96"
-						content="The minimum temperature that can be manually adjusted on the thermometer by physical means."
+						content="TDer Algorithmus passt dynamisch den Heizplan an."
 						style="light"
 					>
 						<IoInformationCircleOutline color="#6B7280" className="w-5 h-5" />
@@ -948,7 +948,7 @@ const ReplaceProgram = ({
 								className="text-sm text-gray-900"
 								htmlFor="applyAlgorithmYes"
 							>
-								Yes
+								Ja
 							</Label>
 						</div>
 						<div className="flex items-center gap-2">
@@ -962,7 +962,7 @@ const ReplaceProgram = ({
 								className="text-sm text-gray-900"
 								htmlFor="applyAlgorithmNo"
 							>
-								No
+								Nein
 							</Label>
 						</div>
 					</div>
@@ -1009,23 +1009,23 @@ const ViewTableComponent = ({ selectedProgram }) => {
 					</h3>
 					<div className="flex flex-col gap-2 text-sm text-gray-900 font-normal">
 						<div className="flex flex-col gap-2">
-												<p className="font-semibold">Kindersicherung</p>
-							<p>{temperatureDetails?.templateName || "N/A"}</p>{" "}
+						<p className="font-semibold">Name des Heizplans</p>
+						<p>{temperatureDetails?.templateName || "N/A"}</p>{" "}
 							{/* Replace hardcoded value */}
 						</div>
 						<div className="flex flex-col gap-2">
-							<p className="font-semibold">Child Safety</p>
-							<p>{temperatureDetails?.allowDeviceOverride ? "No" : "Yes"}</p>{" "}
+						<p className="font-semibold">Kindersicherung</p>
+						<p>{temperatureDetails?.allowDeviceOverride ? "No" : "Yes"}</p>{" "}
 							{/* Replace hardcoded value */}
 						</div>
 						{temperatureDetails?.allowDeviceOverride && (
 							<>
 								<div className="flex flex-col gap-2">
 									<p className="font-semibold flex items-center gap-1">
-										Minimum Temperature
-										<Tooltip
+									Mindesttemperatur
+									<Tooltip
 											className="px-3 py-1.5 text-center max-w-96"
-											content="The minimum temperature that can be manually adjusted on the thermometer by physical means."
+											content="Die Mindesttemperatur, die am Thermostat manuell eingestellt werden kann."
 											style="light"
 										>
 											<IoInformationCircleOutline color="#6B7280" />
@@ -1039,10 +1039,10 @@ const ViewTableComponent = ({ selectedProgram }) => {
 								</div>
 								<div className="flex flex-col gap-2">
 									<p className="font-semibold flex items-center gap-1">
-										Maximum Temperature
-										<Tooltip
+									Höchsttemperatur
+									<Tooltip
 											className="px-3 py-1.5 text-center max-w-96"
-											content="The maximum temperature that can be manually adjusted on the thermometer by physical means."
+											content="Die Höchsttemperatur, die am Thermostat manuell eingestellt werden kann."
 											style="light"
 										>
 											<IoInformationCircleOutline color="#6B7280" />
@@ -1059,10 +1059,10 @@ const ViewTableComponent = ({ selectedProgram }) => {
 
 						<div className="flex flex-col gap-2">
 							<p className="font-semibold flex items-center gap-1">
-								Apply Algorithm?
-								<Tooltip
+							Algorithmus aktivieren
+							<Tooltip
 									className="px-3 py-1.5 text-center max-w-96"
-									content="The minimum temperature that can be manually adjusted on the thermometer by physical means."
+									content="Der Algorithmus passt dynamisch den Heizplan an."
 									style="light"
 								>
 									<IoInformationCircleOutline color="#6B7280" />
@@ -1091,7 +1091,7 @@ const ConfirmReplaceModal = ({ show, onClose, onConfirm }) => {
 		<Modal show={show} onClose={onClose} size="lg">
 			<Modal.Header className="flex justify-between items-center">
 				<span className="text-lg font-semibold text-gray-900">
-					Confirm Program Assignment
+				Zuweisung des Programms bestätigen
 				</span>
 				<button
 					onClick={onClose}
@@ -1100,17 +1100,18 @@ const ConfirmReplaceModal = ({ show, onClose, onConfirm }) => {
 			</Modal.Header>
 			<Modal.Body className="text-[#6B7280]">
 				<p>
-					Assigning a program will remove all information of the previous program,
-					including the algorithm existed.
+				Das Zuweisen eines Programms wird alle Informationen des vorherigen Programms entfernen.
+
 				</p>
-				<p className="mt-2">Are you sure you want to continue?</p>
+				<p className="mt-2">Sind Sie sicher, dass Sie fortfahren möchten?</p>
 			</Modal.Body>
 			<Modal.Footer>
 				<Button onClick={onConfirm} className="bg-primary">
-					Confirm
+				Ja
 				</Button>
 				<Button color="gray" onClick={onClose}>
-					Cancel
+				Abbrechen
+
 				</Button>
 			</Modal.Footer>
 		</Modal>
