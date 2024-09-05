@@ -10,7 +10,15 @@ const getDateRange = (option) => {
 
   switch (option) {
     case "Today":
-      startDate = endDate = now;
+      startDate = new Date(now);
+      endDate = new Date(now);
+
+      // Subtract one day from the start date
+      startDate.setDate(startDate.getDate() - 1);
+
+      // Add one day to the end date
+      endDate.setDate(endDate.getDate() + 1);
+
       break;
     case "Yesterday":
       startDate = endDate = new Date(now.setDate(now.getDate() - 1));

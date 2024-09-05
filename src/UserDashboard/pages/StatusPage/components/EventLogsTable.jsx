@@ -26,7 +26,11 @@ const EventLogsTable = () => {
   const [closeDateFilter, setCloseDateFilter] = useState(false);
   const [FirstApiStatus, setFirstApiStatus] = useState(false);
   const [treeSelectOpen, setTreeSelectOpen] = useState(false);
+  const handleTreeSelectClick = () => {
+    setCloseDateFilter(true);
 
+    // Additional logic for TreeSelect click if needed
+  };
   const handleMultiSelectClick = () => {
     console.log("heyy");
     setCloseDateFilter(true);
@@ -39,9 +43,7 @@ const EventLogsTable = () => {
     { name: "Warning", code: "warn" },
     { name: "Behoben", code: "beh" },
   ];
-
   const [LocationsData, setLocationsData] = useState([]);
-
   const transformData = (nodes) => {
     return nodes.map((node) => {
       const key =
@@ -59,7 +61,6 @@ const EventLogsTable = () => {
       return transformedNode;
     });
   };
-
   const getAllLocations = async () => {
     try {
       const data = await axios.get(ApiUrls.SMARTHEATING_LOCATIONS.LIST);
@@ -73,17 +74,11 @@ const EventLogsTable = () => {
   useEffect(() => {
     getAllLocations();
   }, []);
-
   const [tableData, setTableData] = useState([]);
-  // const [selectedFilter, setSelectedFilter] = useState("Last Year");
-  // const [selectedEvent, setSelectedEvent] = useState("All events");
-  // const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [totalRows, setTotalRows] = useState(0);
-
   const [selectedKeys, setSelectedKeys] = useState({});
   const [selectedRoomIds, setSelectedRoomIds] = useState(new Set());
-
   const getAllKeys = (node) => {
     let keys = [node.key];
     if (node.children) {
@@ -161,7 +156,7 @@ const EventLogsTable = () => {
 
   const onNodeSelectChange = (e) => {
     const newSelectedKeys = e.value;
-
+    setCloseDateFilter(false);
     updateSelection(newSelectedKeys);
   };
 
@@ -203,10 +198,7 @@ const EventLogsTable = () => {
 
   const [dateTo, setdateTo] = useState(null);
   const [dateFrom, setdateFrom] = useState(null);
-
-  useEffect(() => {
-    getData();
-  }, [currentPage]);
+  console.log(tableData);
 
   useEffect(() => {
     getData(ApiLocationsToBeSend);
@@ -302,6 +294,7 @@ const EventLogsTable = () => {
               value={selectedKeys}
               options={filteredLocations} // Use filteredLocations here
               onChange={onNodeSelectChange}
+              onClick={handleTreeSelectClick}
               selectionMode="multiple"
               placeholder="All Buildings"
               filter
