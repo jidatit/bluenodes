@@ -58,6 +58,8 @@ function HeatingSchedule({
 		return acc;
 	}, {});
 
+	const invalidInputString = "Bitte eine Temperatur zwischen 10 und 30 °C eintragen."
+
 	const initialLayouts =
 		clone && locationDetails
 			? {
@@ -304,7 +306,7 @@ function HeatingSchedule({
 					}));
 					setEditableBoxes({});
 				} else {
-					alert("Bitte eine Temperatur zwischen 10 und 30 °C eintragen.");
+					alert(invalidInputString);
 				}
 			}
 			return;
@@ -427,7 +429,7 @@ function HeatingSchedule({
 			// Check if input is a number and within the range 10 to 30
 			if (!isNaN(inputValue) && inputValue >= 10 && inputValue <= 30) {
 			} else {
-				alert("Bitte eine Temperatur zwischen 10 und 30 °C eintragen.");
+				alert(invalidInputString);
 				return;
 			}
 
@@ -442,6 +444,10 @@ function HeatingSchedule({
 			setEditableBoxes({});
 		}
 	};
+
+	useEffect(()=>{
+		console.log(editableBoxes)
+	},[editableBoxes])
 
 	// Set Box colour change depending on Temperature change here
 	const handleHoverColour = (temp) => {
@@ -565,7 +571,7 @@ function HeatingSchedule({
 						// Set the newly copied box as editable
 						setEditableBoxes((prevEditable) => ({
 							...prevEditable,
-							[newBoxId]: true, // Enter editing mode on the newly copied box
+							[newBoxId]: false, // Enter editing mode on the newly copied box
 						}));
 
 						// Set temperature for copied boxes
@@ -705,7 +711,7 @@ function HeatingSchedule({
 
 		// If any invalid input is found, alert once
         if (invalidInput) {
-            alert("Bitte eine Temperatur zwischen 10 und 30 °C eintragen.");
+            alert(invalidInputString);
             newCheck = true;
 			onUpdateCheck(newCheck);
         }
