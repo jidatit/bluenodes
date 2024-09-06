@@ -89,8 +89,8 @@ padding: 10px !important;
   padding-right: 10px;
 }
 .p-treenode-leaf .p-treenode-label{
-background-color: #0bb8db33; 
-border: 2px solid #14d8ff;
+
+border: 1px solid #14d8ff;
 padding: 12px;
 border-radius: 10px;
 color: #00515f;
@@ -151,4 +151,11 @@ border-radius: 10px;
 }
 .p-calendar{
     height: 40px !important;
+}
+.p-treenode-content{
+  border: none !important;
+  
+}
+.p-treenode-content:focus{
+  border: none;
 }

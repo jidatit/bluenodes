@@ -2,8 +2,10 @@ import React, { useEffect, useRef, useState } from "react";
 import { Dropdown } from "primereact/dropdown";
 import { Calendar } from "primereact/calendar";
 import { RadioButton } from "primereact/radiobutton";
+import { CiCircleRemove } from "react-icons/ci";
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
 import "../../../../../index.css";
+import { Tooltip } from "flowbite-react";
 const getDateRange = (option) => {
   const now = new Date();
   let startDate, endDate;
@@ -18,37 +20,58 @@ const getDateRange = (option) => {
 
       // Add one day to the end date
       endDate.setDate(endDate.getDate() + 1);
+      break;
 
-      break;
     case "Yesterday":
-      startDate = endDate = new Date(now.setDate(now.getDate() - 1));
+      startDate = new Date(now);
+      startDate.setDate(now.getDate() - 2); // Subtract two days to get the day before yesterday
+      endDate = new Date(now);
+      endDate.setDate(now.getDate() - 1); // Yesterday + 1 day = Today
       break;
+
     case "ThisWeek":
       const currentDay = now.getDay();
       const startOfWeek = new Date(now);
+
+      // Set to Monday, then subtract one more day
       startOfWeek.setDate(
-        now.getDate() - currentDay + (currentDay === 0 ? -6 : 1)
-      ); // Set to Monday
-      startDate = startOfWeek;
-      endDate = now;
+        now.getDate() - currentDay + (currentDay === 0 ? -7 : 0) - 1
+      );
+      startDate = new Date(startOfWeek);
+
+      // Set to the last day of the current week (Sunday) and add one day
+      endDate = new Date(now);
+      endDate.setDate(startDate.getDate() + 7);
+      endDate.setDate(endDate.getDate() + 1);
       break;
+
     case "Last 30 days":
       startDate = new Date(now);
-      startDate.setDate(now.getDate() - 30);
-      endDate = now;
+      startDate.setDate(now.getDate() - 31); // Subtract 31 days to include the previous day before the 30-day range
+      endDate = new Date(now);
+      endDate.setDate(endDate.getDate() + 1); // Add one day to include tomorrow
       break;
+
     case "LastYear":
       startDate = new Date(now);
       startDate.setFullYear(now.getFullYear() - 1);
-      endDate = now;
+      startDate.setDate(startDate.getDate() - 1); // Subtract one more day for the year
+      endDate = new Date(now);
+      endDate.setDate(endDate.getDate() + 1); // Add one day to include tomorrow
       break;
+
     case "AllDates":
       startDate = new Date(1900, 0, 1); // Arbitrary far past date
       endDate = new Date(2100, 11, 31); // Arbitrary far future date
+
+      // No need to adjust since we're already covering all possible dates
       break;
+
     default:
-      startDate = new Date(now); // Default to today
+      startDate = new Date(now);
+      startDate.setDate(now.getDate() - 1); // Default to include the previous day
       endDate = new Date(now);
+      endDate.setDate(endDate.getDate() + 1); // Default to include the next day
       break;
   }
 
@@ -63,6 +86,7 @@ const DateFilter = ({
   closeDropdown,
   setCloseDateFilter,
   setApiLocationsToBeSend,
+  selectedLocationFilter,
 }) => {
   const [selectedOption, setSelectedOption] = useState("last30Days");
   const [showCalendar, setShowCalendar] = useState(false);
@@ -90,7 +114,10 @@ const DateFilter = ({
   }, [closeDropdown]);
   const toggleDropdown = () => {
     if (dropdownOpen === false) {
-      setApiLocationsToBeSend(null);
+      if (selectedLocationFilter === 0) {
+        setApiLocationsToBeSend(null);
+      }
+
       setDropdownOpen(true);
       setSubDropdownOpen(false);
       setCloseDateFilter(false);
@@ -183,10 +210,16 @@ const DateFilter = ({
         </button>
         {dropdownOpen && (
           <button
-            className="bg-red-500 p-2.5 text-white shadow-lg rounded-lg"
+            className="bg-red-500 px-4 py-2 text-white shadow-lg rounded-lg"
             onClick={clearFilter}
           >
-            Remove Filter
+            <Tooltip
+              content={"remove Filter"}
+              style="light"
+              className="-mt-12 ml-24 bg-white shadow-lg"
+            >
+              <CiCircleRemove size={30} />
+            </Tooltip>
           </button>
         )}
 
