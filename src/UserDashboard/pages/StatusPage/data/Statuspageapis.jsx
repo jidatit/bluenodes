@@ -43,8 +43,8 @@ export const fetchEventLogsData = async (
   dateTo,
   dateFrom
 ) => {
-  if (eventTypeLevel === null) {
-    console.log("do bar ", locations);
+  console.log(eventTypeLevel);
+  if (eventTypeLevel === null || eventTypeLevel === "Error") {
     try {
       const data = await axios.get(
         ApiUrls.SMARTHEATING_STATUSPAGE.EVENT_LOGS(
@@ -61,7 +61,6 @@ export const fetchEventLogsData = async (
       console.log(error);
     }
   } else if (eventTypeLevel !== null && locations === null) {
-    console.log("teen bar ");
     locations = null;
     try {
       const data = await axios.get(

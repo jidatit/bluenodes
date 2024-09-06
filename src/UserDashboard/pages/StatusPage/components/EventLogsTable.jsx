@@ -24,16 +24,19 @@ const EventLogsTable = () => {
   const [apiLocationsToBeSendCounter, setApiLocationsToBeSendCounter] =
     useState(null);
   const [closeDateFilter, setCloseDateFilter] = useState(false);
-  const [FirstApiStatus, setFirstApiStatus] = useState(false);
-  const [treeSelectOpen, setTreeSelectOpen] = useState(false);
+
   const handleTreeSelectClick = () => {
-    setCloseDateFilter(true);
+    if (closeDateFilter === false) {
+      setCloseDateFilter(true);
+    } else if (closeDateFilter === true) {
+      setCloseDateFilter(false);
+    }
 
     // Additional logic for TreeSelect click if needed
   };
   const handleMultiSelectClick = () => {
-    console.log("heyy");
     setCloseDateFilter(true);
+    setApiLocationsToBeSend(null);
     setdateFrom(null);
     setdateTo(null);
   };
@@ -198,7 +201,6 @@ const EventLogsTable = () => {
 
   const [dateTo, setdateTo] = useState(null);
   const [dateFrom, setdateFrom] = useState(null);
-  console.log(tableData);
 
   useEffect(() => {
     getData(ApiLocationsToBeSend);
@@ -206,8 +208,6 @@ const EventLogsTable = () => {
 
   useEffect(() => {
     if (selectedEventFilters !== null) {
-      setApiLocationsToBeSend(null);
-      setApiLocationsToBeSendCounter(0);
       getData(ApiLocationsToBeSend);
     }
   }, [selectedEventFilters]);
@@ -248,7 +248,6 @@ const EventLogsTable = () => {
   };
 
   const handleDatesChange = (newDates) => {
-    console.log(newDates);
     if (!newDates || !newDates[0]) {
       setdateFrom(null);
       setdateTo(null);
@@ -365,6 +364,7 @@ const EventLogsTable = () => {
               closeDropdown={closeDateFilter}
               setCloseDateFilter={setCloseDateFilter}
               onDatesChange={handleDatesChange}
+              setApiLocationsToBeSend={setApiLocationsToBeSend}
             />
           </div>
         </div>

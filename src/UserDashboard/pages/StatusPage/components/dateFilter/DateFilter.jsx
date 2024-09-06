@@ -58,7 +58,12 @@ const getDateRange = (option) => {
   return [startDate, endDate];
 };
 
-const DateFilter = ({ onDatesChange, closeDropdown, setCloseDateFilter }) => {
+const DateFilter = ({
+  onDatesChange,
+  closeDropdown,
+  setCloseDateFilter,
+  setApiLocationsToBeSend,
+}) => {
   const [selectedOption, setSelectedOption] = useState("last30Days");
   const [showCalendar, setShowCalendar] = useState(false);
   const [subDropdownValue, setSubDropdownValue] = useState(null);
@@ -77,17 +82,28 @@ const DateFilter = ({ onDatesChange, closeDropdown, setCloseDateFilter }) => {
     { key: "LastYear", label: "Last year" },
   ];
   useEffect(() => {
-    console.log("close", closeDropdown);
-    if (closeDropdown) {
-      resetToDefault();
+    if (closeDropdown === true) {
+      setDropdownOpen(false);
+      setSubDropdownOpen(false);
+      setShowCalendar(false);
     }
   }, [closeDropdown]);
   const toggleDropdown = () => {
-    if (!dropdownOpen) {
+    if (dropdownOpen === false) {
+      setApiLocationsToBeSend(null);
       setDropdownOpen(true);
       setSubDropdownOpen(false);
+      setCloseDateFilter(false);
+      if (selectedDropdownOption === "Last30days") {
+        setSubDropdownOpen(true);
+      } else if (selectedDropdownOption === "SpecificDateRange") {
+        setShowCalendar(true);
+      }
     } else {
-      resetToDefault();
+      setDropdownOpen(false);
+
+      setSubDropdownOpen(false);
+      setShowCalendar(false);
     }
   };
 
@@ -126,7 +142,7 @@ const DateFilter = ({ onDatesChange, closeDropdown, setCloseDateFilter }) => {
   const handleSubDropdownChange = (e) => {
     const value = e.value;
     setSubDropdownValue(value);
-    console.log(value);
+
     const [startDate, endDate] = getDateRange(value);
     setDates([startDate, endDate]);
     onDatesChange([startDate, endDate]);
@@ -140,10 +156,21 @@ const DateFilter = ({ onDatesChange, closeDropdown, setCloseDateFilter }) => {
       setDates(null); // Reset or handle accordingly
     }
   };
-
+  const clearFilter = () => {
+    setDropdownOpen(false);
+    setSubDropdownOpen(false);
+    setCloseDateFilter(false);
+    setSelectedDropdownOption("All Dates");
+    setShowCalendar(false);
+    setSubDropdownValue(null);
+    let startDate = null,
+      endDate = null;
+    setDates(startDate, endDate);
+    onDatesChange(startDate, endDate);
+  };
   return (
-    <div className="relative flex flex-col items-start space-y-2 z-50">
-      <div className="relative">
+    <div className="relative flex w-full items-start space-y-2 z-50">
+      <div className="relative w-[90rem] flex gap-x-2">
         <button
           onClick={toggleDropdown}
           className="flex justify-between text-gray-500 items-center text-[15px] w-40 min-w-60 px-4 py-2.5 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -154,6 +181,15 @@ const DateFilter = ({ onDatesChange, closeDropdown, setCloseDateFilter }) => {
           </span>{" "}
           {/* Down arrow */}
         </button>
+        {dropdownOpen && (
+          <button
+            className="bg-red-500 p-2.5 text-white shadow-lg rounded-lg"
+            onClick={clearFilter}
+          >
+            Remove Filter
+          </button>
+        )}
+
         {dropdownOpen && (
           <div className="absolute top-full mt-2 py-2 bg-[#ffffff] border border-gray-300 rounded-md shadow-lg w-[23rem] z-20">
             <div className="p-2 flex gap-x-3 justify-center items-center">
@@ -184,6 +220,7 @@ const DateFilter = ({ onDatesChange, closeDropdown, setCloseDateFilter }) => {
             </div>
           </div>
         )}
+
         {subDropdownOpen && (
           <div className="absolute top-full mt-[4rem] py-2 px-4 bg-[#ffffff] border border-gray-300 rounded-md shadow-lg w-[23rem] z-50">
             {subDropdownOptions.map((category) => (

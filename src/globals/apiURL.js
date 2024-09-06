@@ -16,6 +16,7 @@ const ApiUrls = {
 			if (eventTypeLevel) {
 				url += `&eventTypeLevel=${eventTypeLevel}`;
 			}
+
 			if (dateTo && dateFrom) {
 				url += `&dateTo=${dateTo}&dateFrom=${dateFrom}`;
 			}

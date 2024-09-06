@@ -2,7 +2,7 @@
 /* eslint-disable react/prop-types */
 import { useState, useEffect } from "react";
 import { Select, Tooltip } from "flowbite-react";
-import { IoChevronBackOutline } from "react-icons/io5";
+import { IoChevronBackOutline, IoSearch } from "react-icons/io5";
 import { IoChevronForwardOutline } from "react-icons/io5";
 import { MdOutlineAccessTimeFilled } from "react-icons/md";
 import { FaCircleInfo, FaRegCircleCheck } from "react-icons/fa6";
@@ -41,6 +41,10 @@ const getBatteryImage = (battery_level) => {
 const OfflineTable = () => {
   const [selectedEventFilters, setSelectedEventFilters] = useState(null);
   const [ApiLocationsToBeSend, setApiLocationsToBeSend] = useState(null);
+  const [LocationsData, setLocationsData] = useState([]);
+  const [apiLocationsToBeSendCounter, setApiLocationsToBeSendCounter] =
+    useState(null);
+  const [closeDateFilter, setCloseDateFilter] = useState(false);
   const eventFilterOptions = [
     { name: "Information", code: "info" },
     { name: "Error", code: "err" },
@@ -48,8 +52,11 @@ const OfflineTable = () => {
     { name: "Behoben", code: "beh" },
   ];
 
-  const [LocationsData, setLocationsData] = useState([]);
+  const handleTreeSelectClick = () => {
+    setCloseDateFilter(true);
 
+    // Additional logic for TreeSelect click if needed
+  };
   const transformData = (nodes) => {
     return nodes.map((node) => {
       const key =
@@ -72,11 +79,13 @@ const OfflineTable = () => {
     try {
       const data = await axios.get(ApiUrls.SMARTHEATING_LOCATIONS.LIST);
       const transformedData = transformData(data.data);
+      setFilteredLocations(transformedData);
       setLocationsData(transformedData);
     } catch (error) {
       console.log(error);
     }
   };
+
   useEffect(() => {
     getAllLocations();
   }, []);
@@ -162,6 +171,7 @@ const OfflineTable = () => {
     if (transformedArray.length > 0) {
       const sep_locations = transformedArray.join(",");
       setApiLocationsToBeSend(sep_locations);
+      setApiLocationsToBeSendCounter(apiLocationsToBeSendCounter + 1);
     } else {
       getData(); // no locations to send thats why empty parameter.
     }
@@ -169,6 +179,7 @@ const OfflineTable = () => {
 
   const onNodeSelectChange = (e) => {
     const newSelectedKeys = e.value;
+    setCloseDateFilter(false);
     updateSelection(newSelectedKeys);
   };
 
@@ -217,7 +228,14 @@ const OfflineTable = () => {
 
   useEffect(() => {
     getData(ApiLocationsToBeSend, selectedEventFilters);
-  }, [ApiLocationsToBeSend, selectedEventFilters, dateTo, dateFrom]);
+  }, [
+    ApiLocationsToBeSend,
+    selectedEventFilters,
+
+    apiLocationsToBeSendCounter,
+    dateTo,
+    dateFrom,
+  ]);
 
   const totalItems = totalRows;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
@@ -257,7 +275,25 @@ const OfflineTable = () => {
       setdateTo(to);
     }
   };
+  const [filterValue, setFilterValue] = useState("");
+  const [filteredLocations, setFilteredLocations] = useState(LocationsData); // Initialize with LocationsData
 
+  const handleFilterChange = (event) => {
+    const filterText = event.target.value.toLowerCase();
+    setFilterValue(filterText);
+    let filteredData = []; // Clear the filteredData array
+    const searchInChildren = (node) => {
+      if (node.label.toLowerCase().includes(filterText)) {
+        filteredData.push(node);
+      } else if (node.children) {
+        node.children.forEach((child) => searchInChildren(child));
+        // Remove child filters from filteredData if they don't match the search query
+        filteredData = filteredData.filter((item) => item.key !== node.key);
+      }
+    };
+    LocationsData.forEach((location) => searchInChildren(location));
+    setFilteredLocations(filteredData);
+  };
   return (
     <div className=" flex flex-col gap-4 w-full">
       <div className="flex flex-col justify-center items-start w-full">
@@ -269,14 +305,58 @@ const OfflineTable = () => {
           <div className="flex flex-row justify-center items-center gap-1">
             <TreeSelect
               value={selectedKeys}
-              options={LocationsData}
+              options={filteredLocations} // Use filteredLocations here
               onChange={onNodeSelectChange}
-              className="md:w-20rem w-full"
+              onClick={handleTreeSelectClick}
               selectionMode="multiple"
               placeholder="All Buildings"
-              display="chip"
               filter
-              filterPlaceholder="Search"
+              filterBy="label"
+              filterValue={filterValue}
+              className="w-full md:w-20rem"
+              closeIcon="false"
+              panelStyle={{
+                border: "0.5px solid #bababa",
+                borderRadius: "4px",
+              }}
+              filterTemplate={({ filterInputProps }) => (
+                <div
+                  style={{
+                    backgroundColor: "#f5f5f5",
+                    padding: "10px",
+                    display: "flex",
+                    width: "100%",
+                    alignItems: "center",
+                    borderRadius: "6px",
+                    border: "1px solid #d5ddde",
+                  }}
+                >
+                  <span
+                    style={{
+                      marginLeft: "8px",
+                      marginRight: "8px",
+                      color: "#9e9e9e",
+                      fontSize: "18px",
+                    }}
+                  >
+                    <IoSearch />
+                  </span>
+                  <input
+                    {...filterInputProps}
+                    value={filterValue}
+                    onChange={handleFilterChange} // Ensures the filter input is correctly connected
+                    style={{
+                      border: "none",
+                      width: "100%",
+                      backgroundColor: "transparent",
+                      outline: "none",
+
+                      color: "#6e6e6e",
+                    }}
+                    placeholder="Search" // Optional: you can add a placeholder
+                  />
+                </div>
+              )}
             />
             {/* <MultiSelect value={selectedEventFilters} onChange={(e) => setSelectedEventFilters(e.value)} showSelectAll={false} options={eventFilterOptions} optionLabel="name"
                             filter placeholder="All Events" display="chip" className="w-full md:w-20rem" />
@@ -285,7 +365,7 @@ const OfflineTable = () => {
           </div>
         </div>
         {/* Table */}
-        <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+        <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 min-h-[10rem]">
           <thead className="text-xs font-semibold text-gray-500 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
             <tr className="uppercase">
               <th scope="col" className="p-4">
