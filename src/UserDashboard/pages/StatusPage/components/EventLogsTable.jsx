@@ -14,6 +14,7 @@ import { GiTireIronCross } from "react-icons/gi";
 import { fetchEventLogsData } from "../data/Statuspageapis";
 import { TreeSelect } from "primereact/treeselect";
 import axios from "axios";
+import { CiCircleRemove } from "react-icons/ci";
 import ApiUrls from "../../../../globals/apiURL";
 import { MultiSelect } from "primereact/multiselect";
 import DateFilter from "./dateFilter/DateFilter";
@@ -24,8 +25,8 @@ const EventLogsTable = () => {
   const [apiLocationsToBeSendCounter, setApiLocationsToBeSendCounter] =
     useState(null);
   const [closeDateFilter, setCloseDateFilter] = useState(false);
-  const [FirstApiStatus, setFirstApiStatus] = useState(false);
-  const [treeSelectOpen, setTreeSelectOpen] = useState(false);
+  const [filtersSelected, setFiltersSelected] = useState(false);
+  const [selectedLocationFilter, setSelectedLocationFilter] = useState(0);
   const handleTreeSelectClick = () => {
     setCloseDateFilter(true);
     setdateFrom(null);
@@ -33,8 +34,11 @@ const EventLogsTable = () => {
     // Additional logic for TreeSelect click if needed
   };
   const handleMultiSelectClick = () => {
-    console.log("heyy");
+    if (selectedLocationFilter === 0) {
+      setApiLocationsToBeSend(null);
+    }
     setCloseDateFilter(true);
+
     setdateFrom(null);
     setdateTo(null);
   };
@@ -76,9 +80,8 @@ const EventLogsTable = () => {
     }
   };
   useEffect(() => {
-    getAllLocations();
-  }, []);
-
+    if (filtersSelected === false) getAllLocations();
+  }, [filtersSelected]);
   const [tableData, setTableData] = useState([]);
   // const [selectedFilter, setSelectedFilter] = useState("Last Year");
   // const [selectedEvent, setSelectedEvent] = useState("All events");
@@ -98,9 +101,12 @@ const EventLogsTable = () => {
     }
     return keys;
   };
-
-	const updateSelection = (newSelectedKeys) => {
-		let newSelectedRoomIds = new Set([...selectedRoomIds]);
+  console.log(
+    "location " + ApiLocationsToBeSend,
+    "events" + selectedEventFilters
+  );
+  const updateSelection = (newSelectedKeys) => {
+    let newSelectedRoomIds = new Set([...selectedRoomIds]);
 
 		// Update selection state
 		const updatedKeys = { ...selectedKeys };
@@ -148,21 +154,24 @@ const EventLogsTable = () => {
 			}
 		});
 
-		setSelectedKeys(updatedKeys);
-		setSelectedRoomIds(newSelectedRoomIds);
-		const locations = Array.from(newSelectedRoomIds);
-		const transformedArray =
-			locations &&
-			locations.map((item) => parseInt(item.replace("room", ""), 10));
-		if (transformedArray.length > 0) {
-			const sep_locations = transformedArray.join(",");
-
-			setApiLocationsToBeSend(sep_locations);
-			setApiLocationsToBeSendCounter(apiLocationsToBeSendCounter + 1);
-		} else {
-			getData();
-		}
-	};
+    setSelectedKeys(updatedKeys);
+    setSelectedRoomIds(newSelectedRoomIds);
+    const locations = Array.from(newSelectedRoomIds);
+    const transformedArray =
+      locations &&
+      locations.map((item) => parseInt(item.replace("room", ""), 10));
+    if (transformedArray.length > 0) {
+      const sep_locations = transformedArray.join(",");
+      setFiltersSelected(true);
+      setSelectedLocationFilter(transformedArray.length);
+      setApiLocationsToBeSend(sep_locations);
+      setApiLocationsToBeSendCounter(apiLocationsToBeSendCounter + 1);
+    } else {
+      setSelectedLocationFilter(0);
+      setFiltersSelected(false);
+      getData();
+    }
+  };
 
   const onNodeSelectChange = (e) => {
     const newSelectedKeys = e.value;
@@ -210,17 +219,20 @@ const EventLogsTable = () => {
   const [dateFrom, setdateFrom] = useState(null);
 
   useEffect(() => {
-    getData();
-  }, [currentPage]);
-
-	useEffect(() => {
-		getData(ApiLocationsToBeSend);
-	}, [ApiLocationsToBeSend, apiLocationsToBeSendCounter, dateTo, dateFrom]);
+    console.log(ApiLocationsToBeSend);
+    console.log("chali bhai 1st use eefect");
+    getData(ApiLocationsToBeSend);
+  }, [
+    ApiLocationsToBeSend,
+    apiLocationsToBeSendCounter,
+    dateTo,
+    dateFrom,
+    currentPage,
+  ]);
 
   useEffect(() => {
     if (selectedEventFilters !== null) {
-      setApiLocationsToBeSend(null);
-      setApiLocationsToBeSendCounter(0);
+      console.log("chali bhai 2nd use eefect");
       getData(ApiLocationsToBeSend);
     }
   }, [selectedEventFilters]);
@@ -379,6 +391,7 @@ const EventLogsTable = () => {
 							setCloseDateFilter={setCloseDateFilter}
 							onDatesChange={handleDatesChange}
               setApiLocationsToBeSend={setApiLocationsToBeSend}
+              selectedLocationFilter={selectedLocationFilter}
 						/>
 					</div>
 				</div>

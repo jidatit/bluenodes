@@ -61,8 +61,27 @@ export const fetchEventLogsData = async (
       console.log(error);
     }
   } else if (eventTypeLevel !== null && locations === null) {
+    console.log("hey 1", locations);
     locations = null;
     try {
+      const data = await axios.get(
+        ApiUrls.SMARTHEATING_STATUSPAGE.EVENT_LOGS(
+          page,
+          limit,
+          locations,
+          eventTypeLevel,
+          dateTo,
+          dateFrom
+        )
+      );
+      return data.data;
+    } catch (error) {
+      console.log(error);
+    }
+  } else if (eventTypeLevel !== null && locations !== null) {
+    try {
+      console.log("hey 2");
+
       const data = await axios.get(
         ApiUrls.SMARTHEATING_STATUSPAGE.EVENT_LOGS(
           page,
