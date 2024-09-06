@@ -280,8 +280,10 @@ const TemperatureSchedule = ({
 	useEffect(() => {
 		fetchSchedules();
 		setaccordianOpened2(false);
-		// console.log("call1");
+		// console.log("call1", accordianOpened, accordianOpened2);
 	}, [accordianOpened2]);
+
+
 
 	return (
 		<>

@@ -6,6 +6,7 @@
 
 .box {
   width: 100% !important;
+  /* transform: translateY(10px) !important; */
 }
 
 .react-grid-item > .react-resizable-handle::after {

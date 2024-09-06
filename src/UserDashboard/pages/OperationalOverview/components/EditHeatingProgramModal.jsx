@@ -91,12 +91,12 @@ const EditHeatingProgramModal = ({
 				// Hide the toast after 4 seconds
 				setTimeout(() => {
 					setShowToast(false);
-				}, 4000);
+				}, 2000);
 			});
 
 		setTimeout(() => {
 			handleCloseModal();
-		}, 4000);
+		}, 2000);
 	};
 
 	// if (updatedR !== null && updatedR) {
@@ -586,17 +586,17 @@ const EditHeatingProgramModal = ({
 						handleCloseModal();
 						updateReplaced();
 						resetModalState();
-					}, 4000);
+					}, 2000);
 
 					if (room) {
 						fetchFloorDetails(room.parentId);
 					}
 					setTimeout(() => {
 						setShowToast(false);
-					}, 4000);
+					}, 2000);
 					setTimeout(() => {
 						handleCloseModal();
-					}, 4000);
+					}, 2000);
 
 					fetchHeatingSchedules();
 				} else {
@@ -605,7 +605,7 @@ const EditHeatingProgramModal = ({
 					setShowToast(true);
 					setTimeout(() => {
 						setShowToast(false);
-					}, 4000);
+					}, 2000);
 				}
 			} catch (error) {
 				setIsSuccess(false);
@@ -614,7 +614,7 @@ const EditHeatingProgramModal = ({
 				console.error("Error during fetch operation:", error);
 				setTimeout(() => {
 					setShowToast(false);
-				}, 4000);
+				},2000);
 			}
 		}
 	};

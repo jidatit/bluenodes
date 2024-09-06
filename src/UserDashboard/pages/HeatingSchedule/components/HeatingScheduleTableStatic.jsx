@@ -32,7 +32,7 @@ function HeatingScheduleTableStatic({ locationDetails, props }) {
 		"Saturday",
 		"Sunday",
 	];
-	const rowHeight = 7.3; // Each row represents 20 pixels
+	const rowHeight = 7; // Each row represents 20 pixels
 
 	// Helper function to convert time to units
 	const convertTimeToUnits = (time) => {
@@ -202,26 +202,28 @@ function HeatingScheduleTableStatic({ locationDetails, props }) {
 		}
 	};
 
-	const timeLabels = Array.from({ length: 24 * 4 }, (_, index) => {
-		const totalMinutes = index * 15;
+	const timeLabels = Array.from({ length: 24 * 4 + 1 }, (_, index) => {
+		const totalMinutes = (index % (24 * 4)) * 15;
 		const hours = Math.floor(totalMinutes / 60);
 		const minutes = totalMinutes % 60;
 		const isFullHour = minutes === 0; // Check if it's a complete hour
-
+		const isLastChild = index === 24 * 4; // Check if it is the last child
+	
 		return (
 			<div
 				key={index}
 				style={{
-					height: `${rowHeight}px`,
-					margin: "4px 0",
+					height: `${rowHeight}px`, // Consistent height
+					margin: "0",
 					display: "flex",
 					alignItems: "flex-start",
 					justifyContent: "flex-start",
+					fontSize: "12px",
+					marginBottom: (index + 1) % 4 === 0 ? "2px" : "0px", // Apply mb 2px on every 4th child
+					marginTop: isLastChild ? "-6px" : (index + 1) % 4 === 0 ? "-2px" : "0px", // Apply mt -6px for the last child
 				}}
 			>
-				{isFullHour
-					? `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}`
-					: ""}
+				<p className={` ${isFullHour? 'mt-[-6px]':''}`}>{isFullHour ? `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}` : ""}</p>
 			</div>
 		);
 	});
@@ -285,9 +287,9 @@ function HeatingScheduleTableStatic({ locationDetails, props }) {
 					))}
 				</div>
 				<div style={{ display: "flex", zIndex: "10" }}>
-					<div style={{ width: "60px" }} className=" pt-1">
-						{timeLabels}
-					</div>
+        <div style={{ width: "50px", gap: `${rowHeight}px` }} className=" flex flex-col">
+          {timeLabels}
+        </div>
 					<div
 						style={{
 							display: "flex",
@@ -298,19 +300,19 @@ function HeatingScheduleTableStatic({ locationDetails, props }) {
 							zIndex: "10",
 						}}
 					>
-						<div
-							style={{
-								gap: `${zoomGap}rem`,
-							}}
-							className={`  absolute top-[16px] left-0 bottom-0 right-0 w-full h-full flex flex-col gap-[9px] z-10`}
-						>
+          <div
+            className="absolute top-[0] left-0 bottom-0 right-0 w-full h-full flex flex-col"
+            style={{
+              gap: `${rowHeight}px`, // Use rowHeight to match the height of labels
+              zIndex: "10",
+            }}
+          >
 							{Array.from({ length: 25 * 4 }).map((_, index) => (
-								<div
-									key={index}
-									className="w-full border-t-2 border-[#E8E8E8] border-dotted z-10"
-								>
-									{" "}
-								</div>
+              <div
+								key={index}
+								className="w-full border-t-2 border-[#E8E8E8] border-dotted z-10"
+								style={{ height: `${rowHeight}px` }} // Consistent height with labels
+							></div>
 							))}
 						</div>
 						{daysOfWeek.map((day) => (
@@ -324,11 +326,11 @@ function HeatingScheduleTableStatic({ locationDetails, props }) {
 								}}
 							>
 								<GridLayout
-									className="layout pt-[6px] z-10"
+									className="layout mt-[-6px] w-full z-10"
 									compactType={null}
 									layout={initialLayouts[day]}
 									cols={1}
-									rowHeight={1.5}
+									rowHeight={4}
 									width={150}
 									isDraggable={false}
 									isResizable={false}

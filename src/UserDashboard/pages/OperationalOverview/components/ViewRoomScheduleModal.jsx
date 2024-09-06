@@ -170,7 +170,7 @@ export function ViewRoomScheduleModal({
                     </label>
                   </div>
                   {!isChecked ? (
-                    <div className="max-h-[400px] overflow-y-auto overflow-x-hidden">
+                    <div className="max-h-[400px] overflow-y-auto overflow-x-hidden pr-2">
                       {locationDetails && (
                         <HeatingScheduleTableStatic
                           locationDetails={locationDetails}
