@@ -105,32 +105,32 @@ export const fetchDeviceManagementList = async (
 		throw error;
 	}
 };
-export const fetchDeviceManagementList = async (
-	page = 1,
-	limit = 10,
-	batteryLevel = [],
-	status,
-	locationId = [],
-) => {
-	try {
-		const params = {
-			page,
-			limit,
-			batteryLevel: batteryLevel.length ? batteryLevel.join(",") : undefined,
-			status,
-			locationId: locationId.length ? locationId.join(",") : undefined,
-		};
+// export const fetchDeviceManagementList = async (
+// 	page = 1,
+// 	limit = 10,
+// 	batteryLevel = [],
+// 	status,
+// 	locationId = [],
+// ) => {
+// 	try {
+// 		const params = {
+// 			page,
+// 			limit,
+// 			batteryLevel: batteryLevel.length ? batteryLevel.join(",") : undefined,
+// 			status,
+// 			locationId: locationId.length ? locationId.join(",") : undefined,
+// 		};
 
-		const { data } = await axios.get(
-			ApiUrls.SMARTHEATING_STATUSPAGE.DEVICE_MANAGEMENT_LIST,
-			{ params },
-		);
-		return data;
-	} catch (error) {
-		console.error("Error fetching device management list:", error);
-		throw error;
-	}
-};
+// 		const { data } = await axios.get(
+// 			ApiUrls.SMARTHEATING_STATUSPAGE.DEVICE_MANAGEMENT_LIST,
+// 			{ params },
+// 		);
+// 		return data;
+// 	} catch (error) {
+// 		console.error("Error fetching device management list:", error);
+// 		throw error;
+// 	}
+// };
 
 export const fetchDevicesOfflineData = async (
 	page = 1,
