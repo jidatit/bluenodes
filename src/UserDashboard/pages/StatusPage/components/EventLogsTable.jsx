@@ -19,38 +19,38 @@ import { MultiSelect } from "primereact/multiselect";
 import DateFilter from "./dateFilter/DateFilter";
 import "../../../../index.css";
 const EventLogsTable = () => {
-	const [selectedEventFilters, setSelectedEventFilters] = useState(null);
-	const [ApiLocationsToBeSend, setApiLocationsToBeSend] = useState(null);
-	const [apiLocationsToBeSendCounter, setApiLocationsToBeSendCounter] =
-		useState(null);
-	const [closeDateFilter, setCloseDateFilter] = useState(false);
-	const [FirstApiStatus, setFirstApiStatus] = useState(false);
-	const [treeSelectOpen, setTreeSelectOpen] = useState(false);
-	const handleTreeSelectClick = () => {
-		setCloseDateFilter(true);
-		setdateFrom(null);
-		setdateTo(null);
-		// Additional logic for TreeSelect click if needed
-	};
-	const handleMultiSelectClick = () => {
-		console.log("heyy");
-		setCloseDateFilter(true);
-		setdateFrom(null);
-		setdateTo(null);
-	};
-	const eventFilterOptions = [
-		{ name: "Information", code: "info" },
-		{ name: "Error", code: "err" },
-		{ name: "Warning", code: "warn" },
-		{ name: "Behoben", code: "beh" },
-	];
+  const [selectedEventFilters, setSelectedEventFilters] = useState(null);
+  const [ApiLocationsToBeSend, setApiLocationsToBeSend] = useState(null);
+  const [apiLocationsToBeSendCounter, setApiLocationsToBeSendCounter] =
+    useState(null);
+  const [closeDateFilter, setCloseDateFilter] = useState(false);
+  const [FirstApiStatus, setFirstApiStatus] = useState(false);
+  const [treeSelectOpen, setTreeSelectOpen] = useState(false);
+  const handleTreeSelectClick = () => {
+    setCloseDateFilter(true);
+    setdateFrom(null);
+    setdateTo(null);
+    // Additional logic for TreeSelect click if needed
+  };
+  const handleMultiSelectClick = () => {
+    console.log("heyy");
+    setCloseDateFilter(true);
+    setdateFrom(null);
+    setdateTo(null);
+  };
+  const eventFilterOptions = [
+    { name: "Information", code: "info" },
+    { name: "Error", code: "err" },
+    { name: "Warning", code: "warn" },
+    { name: "Behoben", code: "beh" },
+  ];
 
-	const [LocationsData, setLocationsData] = useState([]);
+  const [LocationsData, setLocationsData] = useState([]);
 
-	const transformData = (nodes) => {
-		return nodes.map((node) => {
-			const key =
-				node.children.length > 0 ? node.id.toString() : `room${node.id}`;
+  const transformData = (nodes) => {
+    return nodes.map((node) => {
+      const key =
+        node.children.length > 0 ? node.id.toString() : `room${node.id}`;
 
 			const transformedNode = {
 				key: key,
@@ -61,43 +61,43 @@ const EventLogsTable = () => {
 				transformedNode.children = transformData(node.children);
 			}
 
-			return transformedNode;
-		});
-	};
+      return transformedNode;
+    });
+  };
 
-	const getAllLocations = async () => {
-		try {
-			const data = await axios.get(ApiUrls.SMARTHEATING_LOCATIONS.LIST);
-			const transformedData = transformData(data.data);
-			setFilteredLocations(transformedData);
-			setLocationsData(transformedData);
-		} catch (error) {
-			console.log(error);
-		}
-	};
-	useEffect(() => {
-		getAllLocations();
-	}, []);
+  const getAllLocations = async () => {
+    try {
+      const data = await axios.get(ApiUrls.SMARTHEATING_LOCATIONS.LIST);
+      const transformedData = transformData(data.data);
+      setFilteredLocations(transformedData);
+      setLocationsData(transformedData);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  useEffect(() => {
+    getAllLocations();
+  }, []);
 
-	const [tableData, setTableData] = useState([]);
-	// const [selectedFilter, setSelectedFilter] = useState("Last Year");
-	// const [selectedEvent, setSelectedEvent] = useState("All events");
-	// const [searchQuery, setSearchQuery] = useState("");
-	const [currentPage, setCurrentPage] = useState(1);
-	const [totalRows, setTotalRows] = useState(0);
+  const [tableData, setTableData] = useState([]);
+  // const [selectedFilter, setSelectedFilter] = useState("Last Year");
+  // const [selectedEvent, setSelectedEvent] = useState("All events");
+  // const [searchQuery, setSearchQuery] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalRows, setTotalRows] = useState(0);
 
-	const [selectedKeys, setSelectedKeys] = useState({});
-	const [selectedRoomIds, setSelectedRoomIds] = useState(new Set());
+  const [selectedKeys, setSelectedKeys] = useState({});
+  const [selectedRoomIds, setSelectedRoomIds] = useState(new Set());
 
-	const getAllKeys = (node) => {
-		let keys = [node.key];
-		if (node.children) {
-			for (const child of node.children) {
-				keys = [...keys, ...getAllKeys(child)];
-			}
-		}
-		return keys;
-	};
+  const getAllKeys = (node) => {
+    let keys = [node.key];
+    if (node.children) {
+      for (const child of node.children) {
+        keys = [...keys, ...getAllKeys(child)];
+      }
+    }
+    return keys;
+  };
 
 	const updateSelection = (newSelectedKeys) => {
 		let newSelectedRoomIds = new Set([...selectedRoomIds]);
@@ -164,11 +164,11 @@ const EventLogsTable = () => {
 		}
 	};
 
-	const onNodeSelectChange = (e) => {
-		const newSelectedKeys = e.value;
+  const onNodeSelectChange = (e) => {
+    const newSelectedKeys = e.value;
 
-		updateSelection(newSelectedKeys);
-	};
+    updateSelection(newSelectedKeys);
+  };
 
 	const findNodeByKey = (key, nodes) => {
 		for (const node of nodes) {
@@ -206,27 +206,27 @@ const EventLogsTable = () => {
 		}
 	};
 
-	const [dateTo, setdateTo] = useState(null);
-	const [dateFrom, setdateFrom] = useState(null);
+  const [dateTo, setdateTo] = useState(null);
+  const [dateFrom, setdateFrom] = useState(null);
 
-	useEffect(() => {
-		getData();
-	}, [currentPage]);
+  useEffect(() => {
+    getData();
+  }, [currentPage]);
 
 	useEffect(() => {
 		getData(ApiLocationsToBeSend);
 	}, [ApiLocationsToBeSend, apiLocationsToBeSendCounter, dateTo, dateFrom]);
 
-	useEffect(() => {
-		if (selectedEventFilters !== null) {
-			setApiLocationsToBeSend(null);
-			setApiLocationsToBeSendCounter(0);
-			getData(ApiLocationsToBeSend);
-		}
-	}, [selectedEventFilters]);
-	const itemsPerPage = 10;
-	const totalItems = totalRows && totalRows;
-	const totalPages = Math.ceil(totalItems / itemsPerPage);
+  useEffect(() => {
+    if (selectedEventFilters !== null) {
+      setApiLocationsToBeSend(null);
+      setApiLocationsToBeSendCounter(0);
+      getData(ApiLocationsToBeSend);
+    }
+  }, [selectedEventFilters]);
+  const itemsPerPage = 10;
+  const totalItems = totalRows && totalRows;
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
 
 	const handlePageChange = (page) => {
 		setCurrentPage(page);
@@ -260,22 +260,22 @@ const EventLogsTable = () => {
 			.join("-");
 	};
 
-	const handleDatesChange = (newDates) => {
-		console.log(newDates);
-		if (!newDates || !newDates[0]) {
-			setdateFrom(null);
-			setdateTo(null);
-			return;
-		}
-		if (newDates[0] && newDates[1]) {
-			let from = newDates[0] && formatDateforApitosend(new Date(newDates[0]));
-			setdateFrom(from);
-			let to = newDates[1] && formatDateforApitosend(new Date(newDates[1]));
-			setdateTo(to);
-		}
-	};
-	const [filterValue, setFilterValue] = useState("");
-	const [filteredLocations, setFilteredLocations] = useState(LocationsData); // Initialize with LocationsData
+  const handleDatesChange = (newDates) => {
+    console.log(newDates);
+    if (!newDates || !newDates[0]) {
+      setdateFrom(null);
+      setdateTo(null);
+      return;
+    }
+    if (newDates[0] && newDates[1]) {
+      let from = newDates[0] && formatDateforApitosend(new Date(newDates[0]));
+      setdateFrom(from);
+      let to = newDates[1] && formatDateforApitosend(new Date(newDates[1]));
+      setdateTo(to);
+    }
+  };
+  const [filterValue, setFilterValue] = useState("");
+  const [filteredLocations, setFilteredLocations] = useState(LocationsData); // Initialize with LocationsData
 
 	const handleFilterChange = (event) => {
 		const filterText = event.target.value.toLowerCase();
@@ -378,6 +378,7 @@ const EventLogsTable = () => {
 							closeDropdown={closeDateFilter}
 							setCloseDateFilter={setCloseDateFilter}
 							onDatesChange={handleDatesChange}
+              setApiLocationsToBeSend={setApiLocationsToBeSend}
 						/>
 					</div>
 				</div>
