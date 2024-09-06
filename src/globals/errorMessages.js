@@ -4,7 +4,8 @@ export const errorMessages = {
 	missingSelectionOrInformation: "Auswahl oder Informationen fehlen",
 	minTempInvalid: "Die Mindesttemperatur muss zwischen 10°C und 29°C liegen",
 	maxTempInvalid: "Die Höchsttemperatur muss zwischen 11°C und 30°C liegen",
-	maxTempLowerThanMinTemp: "Die Höchsttemperatur darf nicht niedriger als die Mindesttemperatur sein",
+	maxTempLowerThanMinTemp:
+		"Die Höchsttemperatur darf nicht niedriger als die Mindesttemperatur sein",
 	successfulCreation: "Programm erfolgreich erstellt.",
 	FailedCreation: "Erstellung des Programms fehlgeschlagen.",
 	batteryLifeAlert: "Akkulaufzeit-Warnung",
@@ -24,8 +25,10 @@ export const errorMessages = {
 	heatingScheduleEditedFailed: "Bearbeitung des Heizplans fehlgeschlagen",
 	ProgramReplacedSuccessfully: "Programm erfolgreich ersetzt",
 	ProgramReplacedFailed: "Ersetzung des Programms fehlgeschlagen",
-	ProgramWithNameAlreadyCreated: "Ein Programm mit diesem Namen wurde bereits erstellt",
+	ProgramWithNameAlreadyCreated:
+		"Ein Programm mit diesem Namen wurde bereits erstellt",
 	PorgramAssignedSuccessfully: "Programm erfolgreich zugewiesen",
 	PorgramAssignedFailed: "Zuweisung des Programms fehlgeschlagen",
-	
+	DeviceNameUpdatedSuccessfully: "Device Name Updated Successfully",
+	DeviceNameUpdatedFailed: "Device Name Updated Failed",
 };
