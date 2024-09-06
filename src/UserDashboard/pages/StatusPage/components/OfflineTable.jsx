@@ -24,14 +24,14 @@ import { TreeSelect } from "primereact/treeselect";
 import DateFilter from "./dateFilter/DateFilter";
 
 const getBatteryImage = (battery_level) => {
-	const level = parseInt(battery_level);
-	if (level === 100) {
+	const level = battery_level;
+	if (level === "full") {
 		return BatteryFull;
-	} else if (level >= 76) {
+	} else if (level === "high") {
 		return BatteryHigh;
-	} else if (level >= 51) {
+	} else if (level === "medium") {
 		return BatteryMedium;
-	} else if (level >= 26) {
+	} else if (level === "low") {
 		return BatteryLow;
 	} else {
 		return BatteryEmpty;
@@ -215,6 +215,7 @@ const OfflineTable = () => {
 
 			setTotalRows(data.count);
 			setTableData(data.rows);
+			console.log(data.rows)
 		} catch (error) {
 			console.log(error);
 		}
@@ -295,6 +296,18 @@ const OfflineTable = () => {
 		LocationsData.forEach((location) => searchInChildren(location));
 		setFilteredLocations(filteredData);
 	};
+
+	const formatDate = (dateString) => {
+		const options = {
+			year: "numeric",
+			month: "long",
+			day: "numeric",
+			hour: "2-digit",
+			minute: "2-digit",
+		};
+		return new Date(dateString).toLocaleDateString("de-DE", options);
+	};
+
 	return (
 		<div className=" flex flex-col gap-4 w-full">
 			<div className="flex flex-col justify-center items-start w-full">
@@ -402,33 +415,36 @@ const OfflineTable = () => {
 									<td className="px-4 py-4 truncate">{item.deviceId}</td>
 									<td className="px-4 py-4 truncate">{item.deviceType}</td>
 									<td className="px-4 py-4">
-										Gebäude {item.building} -<span> Etage {item.floor}</span>
+										{item.building_floor_string}
 									</td>
 
-									<td className="px-4 py-4">{item.room}</td>
+									<td className="px-4 py-4">{item.roomName}</td>
 									<td className="px-4 py-4">
-										{item.date} -<span> {item.time}</span>
+										{item.lastSeen ? formatDate(item.lastSeen) : "-"}
 									</td>
 									<td className="px-4 py-4 truncate">
-										<Tooltip
-											className="p-3"
-											content={`${item.batteryLevel}%`}
-											style="light"
-											animation="duration-500"
-										>
-											<div className="flex items-center gap-1">
-												<img
-													src={getBatteryImage(item.batteryLevel)}
-													alt="Battery Level"
-													className="w-4 h-4 mr-2"
-												/>
-												{parseInt(item.batteryLevel) < 26 && (
-													<p className="text-base font-bold text-red-500">
-														Low Battery
-													</p>
-												)}
-											</div>
-										</Tooltip>
+									<Tooltip
+												className="p-3"
+												content={`${
+													item?.batteryLevel.charAt(0).toUpperCase() +
+													item?.batteryLevel.slice(1)
+												}`}
+												style="light"
+												animation="duration-500"
+											>
+												<div className="flex items-center gap-1">
+													<img
+														src={getBatteryImage(item?.batteryLevel)}
+														alt="Battery Level"
+														className="w-4 h-4 mr-2"
+													/>
+													{item.batteryLevel === "low" && (
+														<p className="text-sm font-bold text-red-500">
+															Low Battery
+														</p>
+													)}
+												</div>
+											</Tooltip>
 									</td>
 									<td className="px-4 py-4 truncate">
 										<div
