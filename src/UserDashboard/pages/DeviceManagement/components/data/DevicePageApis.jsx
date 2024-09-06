@@ -4,18 +4,18 @@ import ApiUrls from "../../../../../globals/apiURL";
 export const fetchDeviceManagementList = async (
 	page = 1,
 	limit = 10,
-	batteryLevel = [],
+	batteryLevel,
 	status,
-	locationId = [],
+	locationId,
 ) => {
 	try {
 		// Construct the URL using the ApiUrls.SMARTHEATING_DEVICEMANAGEMENT.LIST function
 		const url = ApiUrls.SMARTHEATING_DEVICEMANAGEMENT.LIST(
 			page,
 			limit,
-			batteryLevel.length ? batteryLevel.join(",") : undefined,
+			batteryLevel,
 			status,
-			locationId.length ? locationId.join(",") : undefined,
+			locationId,
 		);
 
 		const { data } = await axios.get(url);

@@ -41,10 +41,10 @@ const getBatteryImage = (battery_level) => {
 const OfflineTable = () => {
 	const [selectedEventFilters, setSelectedEventFilters] = useState(null);
 	const [ApiLocationsToBeSend, setApiLocationsToBeSend] = useState(null);
-  const [LocationsData, setLocationsData] = useState([]);
-  const [apiLocationsToBeSendCounter, setApiLocationsToBeSendCounter] =
-    useState(null);
-  const [closeDateFilter, setCloseDateFilter] = useState(false);
+	const [LocationsData, setLocationsData] = useState([]);
+	const [apiLocationsToBeSendCounter, setApiLocationsToBeSendCounter] =
+		useState(null);
+	const [closeDateFilter, setCloseDateFilter] = useState(false);
 	const eventFilterOptions = [
 		{ name: "Information", code: "info" },
 		{ name: "Error", code: "err" },
@@ -53,10 +53,10 @@ const OfflineTable = () => {
 	];
 
 	const handleTreeSelectClick = () => {
-    setCloseDateFilter(true);
+		setCloseDateFilter(true);
 
-    // Additional logic for TreeSelect click if needed
-  };
+		// Additional logic for TreeSelect click if needed
+	};
 	const transformData = (nodes) => {
 		return nodes.map((node) => {
 			const key =
@@ -79,7 +79,7 @@ const OfflineTable = () => {
 		try {
 			const data = await axios.get(ApiUrls.SMARTHEATING_LOCATIONS.LIST);
 			const transformedData = transformData(data.data);
-      setFilteredLocations(transformedData);
+			setFilteredLocations(transformedData);
 			setLocationsData(transformedData);
 		} catch (error) {
 			console.log(error);
@@ -171,7 +171,7 @@ const OfflineTable = () => {
 		if (transformedArray.length > 0) {
 			const sep_locations = transformedArray.join(",");
 			setApiLocationsToBeSend(sep_locations);
-      setApiLocationsToBeSendCounter(apiLocationsToBeSendCounter + 1);
+			setApiLocationsToBeSendCounter(apiLocationsToBeSendCounter + 1);
 		} else {
 			getData(); // no locations to send thats why empty parameter.
 		}
@@ -179,7 +179,7 @@ const OfflineTable = () => {
 
 	const onNodeSelectChange = (e) => {
 		const newSelectedKeys = e.value;
-    setCloseDateFilter(false);
+		setCloseDateFilter(false);
 		updateSelection(newSelectedKeys);
 	};
 
@@ -230,13 +230,13 @@ const OfflineTable = () => {
 	useEffect(() => {
 		getData(ApiLocationsToBeSend, selectedEventFilters);
 	}, [
-    ApiLocationsToBeSend,
-    selectedEventFilters,
+		ApiLocationsToBeSend,
+		selectedEventFilters,
 
-    apiLocationsToBeSendCounter,
-    dateTo,
-    dateFrom,
-  ]);
+		apiLocationsToBeSendCounter,
+		dateTo,
+		dateFrom,
+	]);
 
 	const totalItems = totalRows;
 	const totalPages = Math.ceil(totalItems / itemsPerPage);
@@ -262,104 +262,104 @@ const OfflineTable = () => {
 			.join("-");
 	};
 
-  const handleDatesChange = (newDates) => {
-    if (!newDates || !newDates[0]) {
-      console.log("cleared");
-      setdateFrom(null);
-      setdateTo(null);
-      return;
-    }
-    if (newDates[0] && newDates[1]) {
-      let from = newDates[0] && formatDateforApitosend(new Date(newDates[0]));
-      setdateFrom(from);
-      let to = newDates[1] && formatDateforApitosend(new Date(newDates[1]));
-      setdateTo(to);
-    }
-  };
-  const [filterValue, setFilterValue] = useState("");
-  const [filteredLocations, setFilteredLocations] = useState(LocationsData); // Initialize with LocationsData
+	const handleDatesChange = (newDates) => {
+		if (!newDates || !newDates[0]) {
+			console.log("cleared");
+			setdateFrom(null);
+			setdateTo(null);
+			return;
+		}
+		if (newDates[0] && newDates[1]) {
+			let from = newDates[0] && formatDateforApitosend(new Date(newDates[0]));
+			setdateFrom(from);
+			let to = newDates[1] && formatDateforApitosend(new Date(newDates[1]));
+			setdateTo(to);
+		}
+	};
+	const [filterValue, setFilterValue] = useState("");
+	const [filteredLocations, setFilteredLocations] = useState(LocationsData); // Initialize with LocationsData
 
-  const handleFilterChange = (event) => {
-    const filterText = event.target.value.toLowerCase();
-    setFilterValue(filterText);
-    let filteredData = []; // Clear the filteredData array
-    const searchInChildren = (node) => {
-      if (node.label.toLowerCase().includes(filterText)) {
-        filteredData.push(node);
-      } else if (node.children) {
-        node.children.forEach((child) => searchInChildren(child));
-        // Remove child filters from filteredData if they don't match the search query
-        filteredData = filteredData.filter((item) => item.key !== node.key);
-      }
-    };
-    LocationsData.forEach((location) => searchInChildren(location));
-    setFilteredLocations(filteredData);
-  };
-  return (
-    <div className=" flex flex-col gap-4 w-full">
-      <div className="flex flex-col justify-center items-start w-full">
-        <h1 className=" font-[500] text-lg text-gray-900">Devices Offline</h1>
-      </div>
-      <div className="relative w-full overflow-x-auto bg-white shadow-md sm:rounded-lg">
-        <div className="flex flex-column my-2 bg-transparent mx-2 sm:flex-row flex-wrap space-y-4 sm:space-y-0 items-center justify-between">
-          {/* Filter buttons */}
-          <div className="flex flex-row justify-center items-center gap-1">
-            <TreeSelect
-              value={selectedKeys}
-              options={filteredLocations} // Use filteredLocations here
-              onChange={onNodeSelectChange}
-              onClick={handleTreeSelectClick}
-              selectionMode="multiple"
-              placeholder="All Buildings"
-              filter
-              filterBy="label"
-              filterValue={filterValue}
-              className="w-full md:w-20rem"
-              closeIcon="false"
-              panelStyle={{
-                border: "0.5px solid #bababa",
-                borderRadius: "4px",
-              }}
-              filterTemplate={({ filterInputProps }) => (
-                <div
-                  style={{
-                    backgroundColor: "#f5f5f5",
-                    padding: "10px",
-                    display: "flex",
-                    width: "100%",
-                    alignItems: "center",
-                    borderRadius: "6px",
-                    border: "1px solid #d5ddde",
-                  }}
-                >
-                  <span
-                    style={{
-                      marginLeft: "8px",
-                      marginRight: "8px",
-                      color: "#9e9e9e",
-                      fontSize: "18px",
-                    }}
-                  >
-                    <IoSearch />
-                  </span>
-                  <input
-                    {...filterInputProps}
-                    value={filterValue}
-                    onChange={handleFilterChange} // Ensures the filter input is correctly connected
-                    style={{
-                      border: "none",
-                      width: "100%",
-                      backgroundColor: "transparent",
-                      outline: "none",
+	const handleFilterChange = (event) => {
+		const filterText = event.target.value.toLowerCase();
+		setFilterValue(filterText);
+		let filteredData = []; // Clear the filteredData array
+		const searchInChildren = (node) => {
+			if (node.label.toLowerCase().includes(filterText)) {
+				filteredData.push(node);
+			} else if (node.children) {
+				node.children.forEach((child) => searchInChildren(child));
+				// Remove child filters from filteredData if they don't match the search query
+				filteredData = filteredData.filter((item) => item.key !== node.key);
+			}
+		};
+		LocationsData.forEach((location) => searchInChildren(location));
+		setFilteredLocations(filteredData);
+	};
+	return (
+		<div className=" flex flex-col gap-4 w-full">
+			<div className="flex flex-col justify-center items-start w-full">
+				<h1 className=" font-[500] text-lg text-gray-900">Devices Offline</h1>
+			</div>
+			<div className="relative w-full overflow-x-auto bg-white shadow-md sm:rounded-lg">
+				<div className="flex flex-column my-2 bg-transparent mx-2 sm:flex-row flex-wrap space-y-4 sm:space-y-0 items-center justify-between">
+					{/* Filter buttons */}
+					<div className="flex flex-row justify-center items-center gap-1">
+						<TreeSelect
+							value={selectedKeys}
+							options={filteredLocations} // Use filteredLocations here
+							onChange={onNodeSelectChange}
+							onClick={handleTreeSelectClick}
+							selectionMode="multiple"
+							placeholder="All Buildings"
+							filter
+							filterBy="label"
+							filterValue={filterValue}
+							className="w-full md:w-20rem"
+							closeIcon="false"
+							panelStyle={{
+								border: "0.5px solid #bababa",
+								borderRadius: "4px",
+							}}
+							filterTemplate={({ filterInputProps }) => (
+								<div
+									style={{
+										backgroundColor: "#f5f5f5",
+										padding: "10px",
+										display: "flex",
+										width: "100%",
+										alignItems: "center",
+										borderRadius: "6px",
+										border: "1px solid #d5ddde",
+									}}
+								>
+									<span
+										style={{
+											marginLeft: "8px",
+											marginRight: "8px",
+											color: "#9e9e9e",
+											fontSize: "18px",
+										}}
+									>
+										<IoSearch />
+									</span>
+									<input
+										{...filterInputProps}
+										value={filterValue}
+										onChange={handleFilterChange} // Ensures the filter input is correctly connected
+										style={{
+											border: "none",
+											width: "100%",
+											backgroundColor: "transparent",
+											outline: "none",
 
-                      color: "#6e6e6e",
-                    }}
-                    placeholder="Search" // Optional: you can add a placeholder
-                  />
-                </div>
-              )}
-            />
-            {/* <MultiSelect value={selectedEventFilters} onChange={(e) => setSelectedEventFilters(e.value)} showSelectAll={false} options={eventFilterOptions} optionLabel="name"
+											color: "#6e6e6e",
+										}}
+										placeholder="Search" // Optional: you can add a placeholder
+									/>
+								</div>
+							)}
+						/>
+						{/* <MultiSelect value={selectedEventFilters} onChange={(e) => setSelectedEventFilters(e.value)} showSelectAll={false} options={eventFilterOptions} optionLabel="name"
                             filter placeholder="All Events" display="chip" className="w-full md:w-20rem" />
 
                         <DateFilter onDatesChange={handleDatesChange} /> */}
@@ -399,8 +399,8 @@ const OfflineTable = () => {
 									key={index}
 									className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
 								>
-									<td className="px-4 py-4 truncate">{item.device_id}</td>
-									<td className="px-4 py-4 truncate">{item.type}</td>
+									<td className="px-4 py-4 truncate">{item.deviceId}</td>
+									<td className="px-4 py-4 truncate">{item.deviceType}</td>
 									<td className="px-4 py-4">
 										Gebäude {item.building} -<span> Etage {item.floor}</span>
 									</td>
@@ -412,17 +412,17 @@ const OfflineTable = () => {
 									<td className="px-4 py-4 truncate">
 										<Tooltip
 											className="p-3"
-											content={`${item.battery_level}%`}
+											content={`${item.batteryLevel}%`}
 											style="light"
 											animation="duration-500"
 										>
 											<div className="flex items-center gap-1">
 												<img
-													src={getBatteryImage(item.battery_level)}
+													src={getBatteryImage(item.batteryLevel)}
 													alt="Battery Level"
 													className="w-4 h-4 mr-2"
 												/>
-												{parseInt(item.battery_level) < 26 && (
+												{parseInt(item.batteryLevel) < 26 && (
 													<p className="text-base font-bold text-red-500">
 														Low Battery
 													</p>

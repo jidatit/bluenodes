@@ -74,22 +74,21 @@ const OfflineTable = () => {
 		useState(null);
 	useState(null);
 	const [showToast, setShowToast] = useState(false);
+	const [status, setStatus] = useState(null);
 	const [isSuccess, setIsSuccess] = useState(true);
 	const [toastMessage, setToastMessage] = useState("");
+	const [selectedBatteryLevels, setSelectedBatteryLevels] = useState([]);
+	const [batteryLevel, setBatteryLevel] = useState("");
 	const handleTreeSelectClick = () => {
 		setCloseDateFilter(true);
 
 		// Additional logic for TreeSelect click if needed
 	};
 	const handleMultiSelectClick = () => {
-		console.log("heyy");
 		setCloseDateFilter(true);
 	};
-	const eventFilterOptions = [
-		{ name: "Offline", code: "offline" },
-		{ name: "Online", code: "online" },
-	];
-
+	const eventFilterOptions = ["offline", "online"];
+	const batteryLevelOptions = ["low", "medium", "high"];
 	const transformData = (nodes) => {
 		return nodes.map((node) => {
 			const key =
@@ -114,7 +113,6 @@ const OfflineTable = () => {
 
 			setFilteredLocations(transformedData);
 			setLocationsData(transformedData);
-			console.log("locations", data);
 		} catch (error) {
 			console.log(error);
 		}
@@ -205,20 +203,56 @@ const OfflineTable = () => {
 			locations.map((item) => parseInt(item.replace("room", ""), 10));
 		if (transformedArray.length > 0) {
 			const sep_locations = transformedArray.join(",");
-			console.log("sap loca", sep_locations);
+
 			setApiLocationsToBeSend(sep_locations);
 			setApiLocationsToBeSendCounter(apiLocationsToBeSendCounter + 1);
 		} else {
 			getData();
 		}
 	};
+	const handleBatteryLevelChange = (e) => {
+		// Get the selected values
+		const selectedValues = e.value;
+
+		// Update the state with the selected values
+		setSelectedBatteryLevels(selectedValues);
+
+		// Convert the array to a comma-delimited string for API
+		const formattedBatteryLevel = selectedValues.join(",");
+
+		setBatteryLevel(formattedBatteryLevel);
+	};
+	const handleStatusChange = (e) => {
+		const selectedOption = e.value;
+
+		// Ensure only one option is selected
+		if (selectedOption && selectedOption.length > 0) {
+			const singleSelection = selectedOption[selectedOption.length - 1]; // Keep only the last selected value
+			setSelectedStatusFilter([singleSelection]);
+			setStatus(singleSelection);
+		} else {
+			setSelectedStatusFilter(null);
+			setStatus("");
+		}
+	};
+	useEffect(() => {
+		if (status !== null) {
+			// Your API call here, for example:
+			getData();
+		}
+	}, [status]);
+	useEffect(() => {
+		if (batteryLevel !== null) {
+			getData(); // Call the API with the selected battery levels
+		}
+	}, [batteryLevel]);
 	const getData = async (locations) => {
 		try {
 			// const batteryLevel =
 			// 	selectedFilter !== null
 			// 		? selectedFilter.map((filter) => filter.name).join(",")
 			// 		: null;
-			const batteryLevel = "";
+
 			const data = await fetchDeviceManagementList(
 				currentPage,
 				itemsPerPage,
@@ -229,7 +263,6 @@ const OfflineTable = () => {
 
 			setTotalRows(data.count);
 			setTableData(data.rows);
-			console.log("data", tableData);
 		} catch (error) {
 			console.log("Error fetching data:", error);
 		}
@@ -318,7 +351,6 @@ const OfflineTable = () => {
 				const data = await getDeviceInfo(deviceId); // Fetch device data
 				setDeviceData(data); // Store fetched data in state
 				setExpandedRow(index); // Expand the row
-				console.log("Device Data:", data); // Log data to console
 			} catch (error) {
 				console.error("Error fetching device info:", error);
 			}
@@ -386,7 +418,7 @@ const OfflineTable = () => {
 
 	const findDeviceName = (id) => {
 		const device = tableData?.find((item) => item?.id === id);
-		console.log("edit name", device.deviceName);
+
 		return device ? device.deviceName : "";
 	};
 	const [filterValue, setFilterValue] = useState("");
@@ -470,7 +502,7 @@ const OfflineTable = () => {
 								</div>
 							)}
 						/>
-						<MultiSelect
+						{/* <MultiSelect
 							value={selectedStatusFilter}
 							onShow={handleMultiSelectClick}
 							onChange={(e) => setSelectedStatusFilter(e.value)}
@@ -485,6 +517,37 @@ const OfflineTable = () => {
 								border: "0.5px solid #bababa",
 								borderRadius: "4px",
 							}}
+						/> */}
+						<MultiSelect
+							value={selectedStatusFilter}
+							onShow={handleMultiSelectClick}
+							onChange={handleStatusChange}
+							showSelectAll={false}
+							options={eventFilterOptions}
+							placeholder="Status"
+							display="chip"
+							className="w-full md:w-20rem"
+							panelStyle={{
+								border: "0.5px solid #bababa",
+								borderRadius: "4px",
+							}}
+							maxSelectedLabels={1} // Ensure only one option can be selected
+							optionLabel={(option) => option} // Display string value directly
+						/>
+						<MultiSelect
+							value={selectedBatteryLevels}
+							onShow={handleMultiSelectClick}
+							onChange={handleBatteryLevelChange}
+							showSelectAll={false}
+							options={batteryLevelOptions}
+							placeholder="Battery Levels"
+							display="chip"
+							className="w-full md:w-20rem"
+							panelStyle={{
+								border: "0.5px solid #bababa",
+								borderRadius: "4px",
+							}}
+							optionLabel={(option) => option} // Display string value directly
 						/>
 					</div>
 					{/* Search bar */}
@@ -598,7 +661,6 @@ const OfflineTable = () => {
 													<FaEdit
 														onClick={() => {
 															handleEditClick(item?.id);
-															console.log("Editing device ID:", item?.id);
 														}}
 														className="absolute p-[2px] hover:rounded-md hover:shadow-md hover:bg-gray-300 w-5 h-5 top-1/2 bottom-1/2 right-0 transform -translate-y-1/2"
 													/>
@@ -616,7 +678,10 @@ const OfflineTable = () => {
 										<td className="px-4 py-4 truncate">
 											<Tooltip
 												className="p-3"
-												content={`${item?.batteryLevel.charAt(0).toUpperCase() + item?.batteryLevel.slice(1)}`}
+												content={`${
+													item?.batteryLevel.charAt(0).toUpperCase() +
+													item?.batteryLevel.slice(1)
+												}`}
 												style="light"
 												animation="duration-500"
 											>

@@ -184,6 +184,7 @@ const TemperatureSchedule = ({
 	const [scheduleDetails, setscheduleDetails] = useState([]);
 	const [roomName, setroomName] = useState("");
 	const isFirstRender = useRef(true);
+	const isFirstRender2 = useRef(true);
 
 	const handleOpenModal = (roomSchedId) => {
 		setSelectedRoomSchedId(roomSchedId);
@@ -214,10 +215,10 @@ const TemperatureSchedule = ({
 	const [fetch1, setfetch1] = useState(false);
 	const updateReplacedF = async () => {
 		// check = update;
-		await getFloorDetails(floorId);
+		// await getFloorDetails(floorId);
 		setfetch1(true);
 		// fetchHeatingScheduleForRoom();
-		await fetchSchedules();
+		// await fetchSchedules();
 		// console.log("call 1");
 	};
 
@@ -229,28 +230,27 @@ const TemperatureSchedule = ({
 				getFloorDetails(floorId);
 				fetchSchedules();
 				setfetch1(false);
+
 				// console.log("call 2");
 			}
 		}
 	}, [fetch1]);
 
 	const fetchSchedules = async () => {
-		if (RoomsDetail.length > 0) {
-			const updatedRooms = await Promise.all(
-				RoomsDetail.map(async (room) => {
-					if (room.heatingSchedule) {
-						const schedule = await fetchHeatingScheduleForRoom(
-							room.heatingSchedule?.id,
-						);
-						return { ...room, schedule };
-					}
-					return room;
-				}),
-			);
-			setscheduleDetails(updatedRooms);
-		}
+		if (!RoomsDetail.length) return;
+		const updatedRooms = await Promise.all(
+			RoomsDetail.map(async (room) => {
+				if (room.heatingSchedule) {
+					const schedule = await fetchHeatingScheduleForRoom(
+						room.heatingSchedule?.id,
+					);
+					return { ...room, schedule };
+				}
+				return room;
+			}),
+		);
+		setscheduleDetails(updatedRooms);
 	};
-
 	const getFloorDetails = async (id) => {
 		try {
 			const resp = await axios.get(
@@ -272,18 +272,28 @@ const TemperatureSchedule = ({
 				getFloorDetails(floorId);
 				fetchSchedules();
 				setaccordianOpened(false);
+
 				// console.log("call 4");
 			}
 		}
 	}, [accordianOpened]);
 
 	useEffect(() => {
-		fetchSchedules();
-		setaccordianOpened2(false);
+		if (isFirstRender2.current) {
+			isFirstRender2.current = false;
+		} else {
+			if (accordianOpened2 === true) {
+				fetchSchedules();
+				setaccordianOpened2(false);
+				// console.log("called twice");
+				// console.log("call 4");
+			}
+		}
+		// fetchSchedules();
+		// setaccordianOpened2(false);
+		// console.log("called twice");
 		// console.log("call1", accordianOpened, accordianOpened2);
 	}, [accordianOpened2]);
-
-
 
 	return (
 		<>
@@ -376,7 +386,10 @@ const TemperatureSchedule = ({
 									>
 										{scheduleDetails[index]?.schedule?.templateName
 											? scheduleDetails[index].schedule.templateName.length > 20
-												? `${scheduleDetails[index].schedule.templateName.slice(0, 20)}...`
+												? `${scheduleDetails[index].schedule.templateName.slice(
+														0,
+														20,
+													)}...`
 												: scheduleDetails[index].schedule.templateName
 											: "None"}
 									</p>
