@@ -235,14 +235,20 @@ const TemperatureSchedule = ({
 			}
 		}
 	}, [fetch1]);
-
+	const fetchedScheduleIds = new Set();
 	const fetchSchedules = async () => {
 		if (!RoomsDetail.length) return;
+
 		const updatedRooms = await Promise.all(
 			RoomsDetail.map(async (room) => {
-				if (room.heatingSchedule) {
+				if (
+					room.heatingSchedule &&
+					!fetchedScheduleIds.has(room.heatingSchedule.id)
+				) {
+					// Fetch schedule only if it hasn't been fetched before
+					fetchedScheduleIds.add(room.heatingSchedule.id); // Mark ID as fetched
 					const schedule = await fetchHeatingScheduleForRoom(
-						room.heatingSchedule?.id,
+						room.heatingSchedule.id,
 					);
 					return { ...room, schedule };
 				}
