@@ -313,42 +313,41 @@ function AssignRoomsModal({
 		// 	setError(errorMessages.roomSelectionMust);
 		// 	setButtonText("Confirm");
 		// } else {
-			setError("");
+		setError("");
 
-			// onUpdate(data)
+		// onUpdate(data)
 
-			// API call
-			const locationstosend = anyRoomSelected
-				? getRoomIdsByProgram(data.buildings)
-				: [];
+		// API call
+		const locationstosend = anyRoomSelected
+			? getRoomIdsByProgram(data.buildings)
+			: [];
 
+		axios
+			.post(ApiUrls.SMARTHEATING_HEATINGSCHEDULE.ASSIGN_ROOM(program.id), {
+				locations: locationstosend,
+			})
+			.then((response) => {
+				const { data, status } = response;
+				setShowToast(true);
+				setToastMessage(errorMessages.roomAssignFailed);
+				setIsSuccess(false);
+				onUpdate(data);
 
-			axios
-				.post(ApiUrls.SMARTHEATING_HEATINGSCHEDULE.ASSIGN_ROOM(program.id), {
-					locations: locationstosend,
-				})
-				.then((response) => {
-					const { data, status } = response;
-					setShowToast(true);
-					setToastMessage(errorMessages.roomAssignFailed);
-					setIsSuccess(false);
-					onUpdate(data);
-
-					handleAssign();
-					setTimeout(() => {
-						setShowToast(false);
-					}, 4000);
-				})
-				.catch((error) => {
-					setShowToast(true);
-					console.error("Error:", error);
-					onUpdate("Error");
-					setToastMessage(errorMessages.roomAssignFailed);
-					setIsSuccess(false);
-					setTimeout(() => {
-						setShowToast(false);
-					}, 4000);
-				});
+				handleAssign();
+				setTimeout(() => {
+					setShowToast(false);
+				}, 1000);
+			})
+			.catch((error) => {
+				setShowToast(true);
+				console.error("Error:", error);
+				onUpdate("Error");
+				setToastMessage(errorMessages.roomAssignFailed);
+				setIsSuccess(false);
+				setTimeout(() => {
+					setShowToast(false);
+				}, 1000);
+			});
 		// }
 	}, [data, setNoRoomsError, setError, ButtonText]); // Dependency array
 
@@ -414,7 +413,9 @@ function AssignRoomsModal({
 						</div>
 						<div className=" flex items-center justify-between w-full">
 							<div className=" flex items-center gap-1.5">
-								<p className=" text-sm font-semibold text-black">Filtern nach:</p>
+								<p className=" text-sm font-semibold text-black">
+									Filtern nach:
+								</p>
 								<Select
 									id="roomFilter"
 									required
@@ -542,13 +543,13 @@ function AssignRoomsModal({
 																				</Table.HeadCell>
 																				<Table.HeadCell>Räume</Table.HeadCell>
 																				<Table.HeadCell>
-																				Algorithmus
+																					Algorithmus
 																				</Table.HeadCell>
 																				<Table.HeadCell>
-																				Aktiver Heizplan
+																					Aktiver Heizplan
 																				</Table.HeadCell>
 																				<Table.HeadCell>
-																				Raumtemperatur
+																					Raumtemperatur
 																				</Table.HeadCell>
 																				{/* <Table.HeadCell>Assignment</Table.HeadCell> */}
 																			</Table.Head>
@@ -674,14 +675,14 @@ function AssignRoomsModal({
 																						/>
 																					</Table.HeadCell>
 																					<Table.HeadCell>Räume</Table.HeadCell>
-																				<Table.HeadCell>
-																				Algorithmus
-																				</Table.HeadCell>
-																				<Table.HeadCell>
-																				Aktiver Heizplan
-																				</Table.HeadCell>
-																				<Table.HeadCell>
-																				Raumtemperatur
+																					<Table.HeadCell>
+																						Algorithmus
+																					</Table.HeadCell>
+																					<Table.HeadCell>
+																						Aktiver Heizplan
+																					</Table.HeadCell>
+																					<Table.HeadCell>
+																						Raumtemperatur
 																					</Table.HeadCell>
 																					{/* <Table.HeadCell>Assignment</Table.HeadCell> */}
 																				</Table.Head>

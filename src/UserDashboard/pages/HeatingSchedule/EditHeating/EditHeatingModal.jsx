@@ -439,7 +439,7 @@ export function EditHeatingModal({
 						resetModalState();
 						setTimeout(() => {
 							setShowToast(false);
-						}, 4000);
+						}, 1000);
 					})
 					.catch((error) => {
 						setShowToast(true);
@@ -448,7 +448,7 @@ export function EditHeatingModal({
 						console.error("Error:", error);
 						setTimeout(() => {
 							setShowToast(false);
-						}, 4000);
+						}, 1000);
 					});
 
 				// Save button clicked

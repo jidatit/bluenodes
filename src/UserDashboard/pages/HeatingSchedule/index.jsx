@@ -14,6 +14,8 @@ function HeatingSchedulePage() {
 	// Adding use state React Hooks here
 	const [programList, setProgramList] = useState([]);
 	const [filteredPrograms, setFilteredPrograms] = useState([]);
+	const [isFiltered, setIsFiltered] = useState(false);
+
 	const [searchQuery, setSearchQuery] = useState("");
 	const [selectedFilter, setSelectedFilter] = useState("Filter");
 	const [isDropdownOpen, setDropdownOpen] = useState(false); // Define state to manage dropdown visibility
@@ -26,6 +28,7 @@ function HeatingSchedulePage() {
 	const handleDropdownToggle = () => setDropdownOpen(!isDropdownOpen);
 
 	const handleFilterChange = (filter) => {
+		setIsFiltered(true);
 		setSelectedFilter(filter);
 		setDropdownOpen(false);
 
@@ -78,11 +81,10 @@ function HeatingSchedulePage() {
 		// Hide the toast after 4 seconds
 		setTimeout(() => {
 			setShowToast(false);
-		}, 4000);
+		}, 1000);
 	};
 
 	const [key, setKey] = useState(0);
-	
 
 	const handleRoomUpdate = (data) => {
 		if (data) {
@@ -101,11 +103,11 @@ function HeatingSchedulePage() {
 		setResponse2(!response2);
 		setShowToast(true);
 		fetchAllHeatingSchedules();
-		setKey(prevKey => prevKey + 1);
+		setKey((prevKey) => prevKey + 1);
 		// Hide the toast after 4 seconds
 		setTimeout(() => {
 			setShowToast(false);
-		}, 4000);
+		}, 1000);
 	};
 
 	const handleCloneProgram = (data) => {
@@ -128,7 +130,7 @@ function HeatingSchedulePage() {
 		// Hide the toast after 4 seconds
 		setTimeout(() => {
 			setShowToast(false);
-		}, 4000);
+		}, 1000);
 	};
 
 	const handleDeleteProgram = () => {
@@ -156,7 +158,7 @@ function HeatingSchedulePage() {
 		// Hide the toast after 4 seconds
 		setTimeout(() => {
 			setShowToast(false);
-		}, 4000);
+		}, 1000);
 	};
 	const [Loader, setLoader] = useState(true);
 
@@ -331,22 +333,31 @@ function HeatingSchedulePage() {
 				</div>
 			</div>
 			<div key={key} className="flex flex-col gap-6">
-			{filteredPrograms && filteredPrograms.length > 0 &&
-				filteredPrograms
-					.sort((a, b) => b.assignedRooms - a.assignedRooms)
-					.map((program, index) => (
-						<HeatingProgramEntity
-							key={index}
-							onUpdateRooms={handleRoomUpdate}
-							onCloneProgram={handleCloneProgram}
-							onEditProgram={handleEditProgram}
-							onDeleteProgram={handleDeleteProgram}
-							program={program}
-							fetchAll={fetchAllHeatingSchedules}
-							response2={response2}
-							initialData={initialData}
-						/>
-					))}
+				{filteredPrograms &&
+					filteredPrograms.length > 0 &&
+					filteredPrograms
+						.sort((a, b) => {
+							// If no filter is applied, prioritize assignedPrograms at the top
+							if (!isFiltered && selectedFilter !== "No filter") {
+								// Sort to put assignedPrograms at the top
+								return b.assignedRooms - a.assignedRooms;
+							} else {
+								return 0;
+							}
+						})
+						.map((program, index) => (
+							<HeatingProgramEntity
+								key={index}
+								onUpdateRooms={handleRoomUpdate}
+								onCloneProgram={handleCloneProgram}
+								onEditProgram={handleEditProgram}
+								onDeleteProgram={handleDeleteProgram}
+								program={program}
+								fetchAll={fetchAllHeatingSchedules}
+								response2={response2}
+								initialData={initialData}
+							/>
+						))}
 			</div>
 			{Loader && (
 				<div className="w-full flex flex-col justify-center items-center">

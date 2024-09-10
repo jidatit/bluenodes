@@ -43,7 +43,7 @@ const getBatteryImage = (battery_level) => {
 	if (level === "full") {
 		return BatteryFull;
 	} else if (level === "high") {
-		return BatteryHigh;
+		return BatteryFull;
 	} else if (level === "medium") {
 		return BatteryMedium;
 	} else if (level === "low") {
@@ -53,7 +53,7 @@ const getBatteryImage = (battery_level) => {
 	}
 };
 
-const OfflineTable = () => {
+const DeviceManagementTable = () => {
 	const [selectedFilter, setSelectedFilter] = useState("Last Year");
 	const [selectedStatusFilter, setSelectedStatusFilter] = useState(null);
 	const [selectedEvent, setSelectedEvent] = useState("All events");
@@ -382,7 +382,7 @@ const OfflineTable = () => {
 
 				setTimeout(() => {
 					setShowToast(false);
-				}, 3000);
+				}, 1000);
 			} else {
 				setEditMode(false);
 				setEditingItemId(null);
@@ -391,7 +391,7 @@ const OfflineTable = () => {
 				setIsSuccess(false);
 				setTimeout(() => {
 					setShowToast(false);
-				}, 3000);
+				}, 1000);
 				alert("Failed to update device name.");
 			}
 		} catch (error) {
@@ -639,7 +639,7 @@ const OfflineTable = () => {
 													</button>
 													<button
 														onClick={() => handleSave(item?.id)}
-														className="p-1 text-green-800 hover:bg-gray-300 hover:shadow-md hover:rounded-md"
+														className="p-1 text-green-800  hover:bg-gray-300 hover:shadow-md hover:rounded-md"
 													>
 														<Tooltip
 															placement="left"
@@ -719,112 +719,195 @@ const OfflineTable = () => {
 									{expandedRow === index && (
 										<tr className="w-full bg-gray-100 dark:bg-gray-700">
 											<td colSpan="9" className="w-full p-6">
-												{item?.deviceType === "Heizthermostat" && (
-													<div className="flex flex-row items-start justify-around gap-24 px-2">
-														<div className="flex flex-col items-start justify-start gap-2">
-															<img
-																src={ThermometerIcon}
-																alt="Thermometer Icon"
-															/>
-															<h2> Target Temperature </h2>
-															<h1 className="text-base font-medium text-black">
-																{deviceData.targetTemperature || "--"}
-															</h1>
-															<h2> Current Temperature </h2>
-															<h1 className="text-base font-medium text-black">
-																{deviceData.currentTemperature || "--"}
-															</h1>
-														</div>
-														<div className="flex flex-col items-start justify-start gap-2">
-															<img src={HumidityIcon} alt="Humidity Icon" />
-															<h2> Current Humidity </h2>
-															<h1 className="text-base font-medium text-black">
-																{deviceData.currentHumidity || "--"}
-															</h1>
-														</div>
-														<div className="flex flex-col items-start justify-start gap-2">
-															<img
-																src={LightIntensityIcon}
-																alt="Light Intensity Icon"
-															/>
-															<h2> Light Intensity </h2>
-															<h1 className="text-base font-medium text-black">
-																{deviceData.lightIntensity || "--"}
-															</h1>
-														</div>
-														<div className="flex flex-col items-start justify-start gap-2">
-															<img src={MovementIcon} alt="Movement Icon" />
-															<h2> Movement Detected </h2>
-															<h1 className="text-base font-medium text-black">
-																{deviceData.movementDetected || "--"}
-															</h1>
-														</div>
-														<div className="flex flex-col items-start justify-start gap-2">
-															<img src={ErrorIcon} alt="Error Icon" />
-															<h2> Error </h2>
-															<h1 className="text-base font-medium text-black">
-																{deviceData.error || "--"}
-															</h1>
-															<h2> Date/Time of Data Packet </h2>
-															<h1 className="text-base font-medium text-black">
-																{formatTimestamp(deviceData.timestamp)}
-															</h1>
-														</div>
-													</div>
-												)}
-
 												{item?.deviceType === "Wandthermostat" && (
 													<div className="flex flex-row items-start justify-around gap-24 px-2">
 														<div className="flex flex-col items-start justify-start gap-2">
 															<img
 																src={ThermometerIcon}
 																alt="Thermometer Icon"
+																className={`${deviceData.targetTemperature ? "opacity-100" : "opacity-0"}`}
 															/>
-															<h2> Target Temperature </h2>
-															<h1 className="text-base font-medium text-black">
-																{deviceData.targetTemperature || "--"}
+															<h2
+																className={`${deviceData.targetTemperature ? "opacity-100" : "opacity-0"}`}
+															>
+																{" "}
+																Target Temperature{" "}
+															</h2>
+															<h1
+																className={`text-base font-medium text-black ${deviceData.targetTemperature ? "opacity-100" : "opacity-0"}`}
+															>
+																{`${deviceData.targetTemperature}°C` || "--"}
 															</h1>
-															<h2> Current Temperature </h2>
-															<h1 className="text-base font-medium text-black">
-																{deviceData.currentTemperature || "--"}
+															<h2
+																className={`${deviceData.currentTemperature ? "opacity-100" : "opacity-0"}`}
+															>
+																{" "}
+																Current Temperature{" "}
+															</h2>
+															<h1
+																className={`text-base font-medium text-black ${deviceData.currentTemperature ? "opacity-100" : "opacity-0"} `}
+															>
+																{`${deviceData.currentTemperature}°C` || "--"}
 															</h1>
 														</div>
-														<div className="flex flex-col items-start justify-start gap-2">
+														<div
+															className={`flex flex-col items-start justify-start gap-2 ${deviceData.currentHumidity ? "opacity-100" : "opacity-0"}`}
+														>
 															<img src={HumidityIcon} alt="Humidity Icon" />
 															<h2> Current Humidity </h2>
 															<h1 className="text-base font-medium text-black">
-																{deviceData.currentHumidity || "--"}
+																{`${deviceData.currentHumidity}%` || "--"}
 															</h1>
 														</div>
+														<div
+															className={`flex flex-col items-start justify-start gap-2 ${deviceData.lightIntensity ? "opacity-100" : "opacity-0"}`}
+														>
+															<img
+																src={LightIntensityIcon}
+																alt="Light Intensity Icon"
+															/>
+															<h2> Light Intensity </h2>
+															<h1 className="text-base font-medium text-black">
+																{`${deviceData.lightIntensity}lux` || "--"}
+															</h1>
+														</div>
+														<div
+															className={`flex flex-col items-start justify-start gap-2 ${deviceData.movementDetected ? "opacity-100" : "opacity-0"}`}
+														>
+															<img src={MovementIcon} alt="Movement Icon" />
+															<h2> Movement Detected </h2>
+															<h1 className="text-base font-medium text-black">
+																{deviceData.movementDetected || "--"}
+															</h1>
+														</div>
+														<div
+															className={`flex flex-col items-start justify-start gap-2 `}
+														>
+															<img
+																className={`${deviceData.error ? "opacity-100" : "opacity-0"}`}
+																src={ErrorIcon}
+																alt="Error Icon"
+															/>
+															<h2
+																className={`${deviceData.error ? "opacity-100" : "opacity-0"}`}
+															>
+																{" "}
+																Error{" "}
+															</h2>
+															<h1
+																className={`text-base font-medium text-black ${deviceData.error ? "opacity-100" : "opacity-0"}`}
+															>
+																{deviceData.error || "--"}
+															</h1>
+															<h2
+																className={`${deviceData.timestamp ? "opacity-100" : "opacity-0"}`}
+															>
+																{" "}
+																Date/Time of Data Packet{" "}
+															</h2>
+															<h1
+																className={`text-base font-medium text-black ${deviceData.timestamp ? "opacity-100" : "opacity-0"}`}
+															>
+																{formatTimestamp(deviceData.timestamp)}
+															</h1>
+														</div>
+													</div>
+												)}
+
+												{item?.deviceType === "Heizthermostat" && (
+													<div className="flex flex-row items-start justify-around gap-24 px-2">
 														<div className="flex flex-col items-start justify-start gap-2">
+															<img
+																src={ThermometerIcon}
+																alt="Thermometer Icon"
+																className={`${deviceData.targetTemperature ? "opacity-100" : "opacity-0"}`}
+															/>
+															<h2
+																className={`${deviceData.targetTemperature ? "opacity-100" : "opacity-0"}`}
+															>
+																{" "}
+																Target Temperature{" "}
+															</h2>
+															<h1
+																className={`text-base font-medium text-black ${deviceData.targetTemperature ? "opacity-100" : "opacity-0"}`}
+															>
+																{`${deviceData.targetTemperature}°C` || "--"}
+															</h1>
+															<h2
+																className={`${deviceData.currentTemperature ? "opacity-100" : "opacity-0"}`}
+															>
+																{" "}
+																Current Temperature{" "}
+															</h2>
+															<h1
+																className={`text-base font-medium text-black ${deviceData.currentTemperature ? "opacity-100" : "opacity-0"} `}
+															>
+																{`${deviceData.currentTemperature}°C` || "--"}
+															</h1>
+														</div>
+														<div
+															className={`flex flex-col items-start justify-start gap-2 ${deviceData.currentHumidity ? "opacity-100" : "opacity-0"}`}
+														>
+															<img src={HumidityIcon} alt="Humidity Icon" />
+															<h2> Current Humidity </h2>
+															<h1 className="text-base font-medium text-black">
+																{`${deviceData.currentHumidity}%` || "--"}
+															</h1>
+														</div>
+														<div
+															className={`flex flex-col items-start justify-start gap-2 ${deviceData.valvePositionInProcent ? "opacity-100" : "opacity-0"}`}
+														>
 															<img
 																src={ValvePositionIcon}
 																alt="Valve Position Icon"
 															/>
 															<h2> Valve Position in % </h2>
 															<h1 className="text-base font-medium text-black">
-																{deviceData.valvePositionPercent || "--"}
+																{`${deviceData.valvePositionInProcent}%` ||
+																	"--"}
 															</h1>
-															<h2> Valve Position in Steps </h2>
+															{/* <h2> Valve Position in Steps </h2>
 															<h1 className="text-base font-medium text-black">
 																{deviceData.valvePositionSteps || "--"}
-															</h1>
+															</h1> */}
 														</div>
-														<div className="flex flex-col items-start justify-start gap-2">
+														<div
+															className={`flex flex-col items-start justify-start gap-2  ${deviceData.childLock !== null ? "opacity-100" : "opacity-0"}`}
+														>
 															<img src={ChildLockIcon} alt="Child Lock Icon" />
 															<h2> Child Lock </h2>
 															<h1 className="text-base font-medium text-black">
-																{deviceData.childLock ? "Yes" : "--"}
+																{deviceData.childLock ? "Yes" : "No"}
 															</h1>
 														</div>
-														<div className="flex flex-col items-start justify-start gap-2">
-															<img src={ErrorIcon} alt="Error Icon" />
-															<h2> Error </h2>
-															<h1 className="text-base font-medium text-black">
+														<div
+															className={`flex flex-col items-start justify-start gap-2 `}
+														>
+															<img
+																className={`${deviceData.error ? "opacity-100" : "opacity-0"}`}
+																src={ErrorIcon}
+																alt="Error Icon"
+															/>
+															<h2
+																className={`${deviceData.error ? "opacity-100" : "opacity-0"}`}
+															>
+																{" "}
+																Error{" "}
+															</h2>
+															<h1
+																className={`text-base font-medium text-black ${deviceData.error ? "opacity-100" : "opacity-0"}`}
+															>
 																{deviceData.error || "--"}
 															</h1>
-															<h2> Date/Time of Data Packet </h2>
-															<h1 className="text-base font-medium text-black">
+															<h2
+																className={`${deviceData.timestamp ? "opacity-100" : "opacity-0"}`}
+															>
+																{" "}
+																Date/Time of Data Packet{" "}
+															</h2>
+															<h1
+																className={`text-base font-medium text-black ${deviceData.timestamp ? "opacity-100" : "opacity-0"}`}
+															>
 																{formatTimestamp(deviceData.timestamp)}
 															</h1>
 														</div>
@@ -1014,4 +1097,4 @@ const OfflineTable = () => {
 	);
 };
 
-export default OfflineTable;
+export default DeviceManagementTable;

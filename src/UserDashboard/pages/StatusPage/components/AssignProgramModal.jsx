@@ -19,7 +19,7 @@ const AssignProgramModal = ({
 	handleOpenModal,
 	room,
 	fetchList,
-	assignSuccess
+	assignSuccess,
 	// fetchFloorDetails,
 	// updateReplaced,
 }) => {
@@ -35,7 +35,7 @@ const AssignProgramModal = ({
 		handleOpenModal();
 		setSelectedProgram("");
 		resetModalState();
-		fetchList()
+		fetchList();
 	};
 
 	const handleProgramChange = (event) => {
@@ -109,7 +109,7 @@ const AssignProgramModal = ({
 		setTimeout(() => {
 			setShowToast(false);
 			// handleCloseModal();
-		}, 4000);
+		}, 1000);
 	};
 	// if (updatedR !== null && updatedR) {
 	// 	replaced = true;
@@ -589,7 +589,7 @@ const AssignProgramModal = ({
 					// }
 					setTimeout(() => {
 						setShowToast(false);
-					}, 4000);
+					}, 1000);
 					handleCloseModal();
 					fetchHeatingSchedules();
 				} else {
@@ -598,7 +598,7 @@ const AssignProgramModal = ({
 					setShowToast(true);
 					setTimeout(() => {
 						setShowToast(false);
-					}, 4000);
+					}, 1000);
 				}
 			} catch (error) {
 				console.error("Error during fetch operation:", error);
@@ -666,12 +666,12 @@ const AssignProgramModal = ({
 				{room && (
 					<>
 						<Modal.Header className=" text-lg text-gray-900 [&>*]:font-semibold">
-						Heizplan zuweisen - {room.name}
+							Heizplan zuweisen - {room.name}
 						</Modal.Header>
 						<Modal.Body className="p-5 overflow-y-auto h-auto">
 							<div className="w-full flex flex-col justify-center items-start">
-							<p>Heizplan auswählen</p>
-							{/* <p className="font-semibold mt-3 ">Select action</p> */}
+								<p>Heizplan auswählen</p>
+								{/* <p className="font-semibold mt-3 ">Select action</p> */}
 								{/* <div className="w-full flex mt-2 gap-4 flex-row justify-start items-center">
 									<div
 										onClick={() => handleActionChange("edit-room")}
@@ -917,7 +917,7 @@ const ReplaceProgram = ({
 				{showError && (
 					<p className="text-red-500 text-sm mt-1">
 						Ein Programm muss ausgewählt werden.
-						</p>
+					</p>
 				)}
 			</div>
 			<div className="flex flex-col justify-start items-start w-full md:w-2/3">
@@ -1009,21 +1009,21 @@ const ViewTableComponent = ({ selectedProgram }) => {
 					</h3>
 					<div className="flex flex-col gap-2 text-sm text-gray-900 font-normal">
 						<div className="flex flex-col gap-2">
-						<p className="font-semibold">Name des Heizplans</p>
-						<p>{temperatureDetails?.templateName || "N/A"}</p>{" "}
+							<p className="font-semibold">Name des Heizplans</p>
+							<p>{temperatureDetails?.templateName || "N/A"}</p>{" "}
 							{/* Replace hardcoded value */}
 						</div>
 						<div className="flex flex-col gap-2">
-						<p className="font-semibold">Kindersicherung</p>
-						<p>{temperatureDetails?.allowDeviceOverride ? "No" : "Yes"}</p>{" "}
+							<p className="font-semibold">Kindersicherung</p>
+							<p>{temperatureDetails?.allowDeviceOverride ? "No" : "Yes"}</p>{" "}
 							{/* Replace hardcoded value */}
 						</div>
 						{temperatureDetails?.allowDeviceOverride && (
 							<>
 								<div className="flex flex-col gap-2">
 									<p className="font-semibold flex items-center gap-1">
-									Mindesttemperatur
-									<Tooltip
+										Mindesttemperatur
+										<Tooltip
 											className="px-3 py-1.5 text-center max-w-96"
 											content="Die Mindesttemperatur, die am Thermostat manuell eingestellt werden kann."
 											style="light"
@@ -1039,8 +1039,8 @@ const ViewTableComponent = ({ selectedProgram }) => {
 								</div>
 								<div className="flex flex-col gap-2">
 									<p className="font-semibold flex items-center gap-1">
-									Höchsttemperatur
-									<Tooltip
+										Höchsttemperatur
+										<Tooltip
 											className="px-3 py-1.5 text-center max-w-96"
 											content="Die Höchsttemperatur, die am Thermostat manuell eingestellt werden kann."
 											style="light"
@@ -1059,8 +1059,8 @@ const ViewTableComponent = ({ selectedProgram }) => {
 
 						<div className="flex flex-col gap-2">
 							<p className="font-semibold flex items-center gap-1">
-							Algorithmus aktivieren
-							<Tooltip
+								Algorithmus aktivieren
+								<Tooltip
 									className="px-3 py-1.5 text-center max-w-96"
 									content="Der Algorithmus passt dynamisch den Heizplan an."
 									style="light"
@@ -1091,7 +1091,7 @@ const ConfirmReplaceModal = ({ show, onClose, onConfirm }) => {
 		<Modal show={show} onClose={onClose} size="lg">
 			<Modal.Header className="flex justify-between items-center">
 				<span className="text-lg font-semibold text-gray-900">
-				Zuweisung des Programms bestätigen
+					Zuweisung des Programms bestätigen
 				</span>
 				<button
 					onClick={onClose}
@@ -1100,18 +1100,17 @@ const ConfirmReplaceModal = ({ show, onClose, onConfirm }) => {
 			</Modal.Header>
 			<Modal.Body className="text-[#6B7280]">
 				<p>
-				Das Zuweisen eines Programms wird alle Informationen des vorherigen Programms entfernen.
-
+					Das Zuweisen eines Programms wird alle Informationen des vorherigen
+					Programms entfernen.
 				</p>
 				<p className="mt-2">Sind Sie sicher, dass Sie fortfahren möchten?</p>
 			</Modal.Body>
 			<Modal.Footer>
 				<Button onClick={onConfirm} className="bg-primary">
-				Ja
+					Ja
 				</Button>
 				<Button color="gray" onClick={onClose}>
-				Abbrechen
-
+					Abbrechen
 				</Button>
 			</Modal.Footer>
 		</Modal>

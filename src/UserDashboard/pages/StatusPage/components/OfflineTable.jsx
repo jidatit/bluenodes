@@ -28,7 +28,7 @@ const getBatteryImage = (battery_level) => {
 	if (level === "full") {
 		return BatteryFull;
 	} else if (level === "high") {
-		return BatteryHigh;
+		return BatteryFull;
 	} else if (level === "medium") {
 		return BatteryMedium;
 	} else if (level === "low") {
@@ -215,7 +215,7 @@ const OfflineTable = () => {
 
 			setTotalRows(data.count);
 			setTableData(data.rows);
-			console.log(data.rows)
+			console.log(data.rows);
 		} catch (error) {
 			console.log(error);
 		}
@@ -412,39 +412,37 @@ const OfflineTable = () => {
 									key={index}
 									className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
 								>
-									<td className="px-4 py-4 truncate">{item.deviceId}</td>
+									<td className="px-4 py-4 truncate">{item.deviceName}</td>
 									<td className="px-4 py-4 truncate">{item.deviceType}</td>
-									<td className="px-4 py-4">
-										{item.building_floor_string}
-									</td>
+									<td className="px-4 py-4">{item.building_floor_string}</td>
 
 									<td className="px-4 py-4">{item.roomName}</td>
 									<td className="px-4 py-4">
 										{item.lastSeen ? formatDate(item.lastSeen) : "-"}
 									</td>
 									<td className="px-4 py-4 truncate">
-									<Tooltip
-												className="p-3"
-												content={`${
-													item?.batteryLevel.charAt(0).toUpperCase() +
-													item?.batteryLevel.slice(1)
-												}`}
-												style="light"
-												animation="duration-500"
-											>
-												<div className="flex items-center gap-1">
-													<img
-														src={getBatteryImage(item?.batteryLevel)}
-														alt="Battery Level"
-														className="w-4 h-4 mr-2"
-													/>
-													{item.batteryLevel === "low" && (
-														<p className="text-sm font-bold text-red-500">
-															Low Battery
-														</p>
-													)}
-												</div>
-											</Tooltip>
+										<Tooltip
+											className="p-3"
+											content={`${
+												item?.batteryLevel.charAt(0).toUpperCase() +
+												item?.batteryLevel.slice(1)
+											}`}
+											style="light"
+											animation="duration-500"
+										>
+											<div className="flex items-center gap-1">
+												<img
+													src={getBatteryImage(item?.batteryLevel)}
+													alt="Battery Level"
+													className="w-4 h-4 mr-2"
+												/>
+												{item.batteryLevel === "low" && (
+													<p className="text-sm font-bold text-red-500">
+														Low Battery
+													</p>
+												)}
+											</div>
+										</Tooltip>
 									</td>
 									<td className="px-4 py-4 truncate">
 										<div

@@ -390,122 +390,122 @@ export function CloneHeatingModal({
 			// if (!anyRoomSelected && buttonText === "Create") {
 			// 	setButtonText("Confirm");
 			// } else {
-				handleAssignmentData();
-				// onCreate(combinedData);
-				// Get rooms IDs from the entire Data
-				function getRoomIdsByProgram(data) {
-					const programName = combinedData.formData.programName;
-					const roomIds = [];
+			handleAssignmentData();
+			// onCreate(combinedData);
+			// Get rooms IDs from the entire Data
+			function getRoomIdsByProgram(data) {
+				const programName = combinedData.formData.programName;
+				const roomIds = [];
 
-					// Loop through each building
-					data.forEach((building) => {
-						// Loop through each floor in the building
-						building.floors.forEach((floor) => {
-							// Loop through each room on the floor
-							floor.rooms.forEach((room) => {
-								// Check if the programAssigned matches the programName
-								if (room.programAssigned === programName) {
-									roomIds.push(room.id);
-								}
-							});
-						});
-					});
-
-					return roomIds;
-				}
-
-				// Convert schedule data into API format
-				function convertScheduleData(data) {
-					const dayMapping = {
-						Monday: 1,
-						Tuesday: 2,
-						Wednesday: 3,
-						Thursday: 4,
-						Friday: 5,
-						Saturday: 6,
-						Sunday: 7,
-					};
-
-					const result = { days: [] };
-
-					const normalizeTime = (value) => {
-						const hours = Math.floor((value * 24) / 96);
-						const minutes = Math.floor(((value * 24 * 60) / 96) % 60);
-						return `${hours.toString().padStart(2, "0")}:${minutes
-							.toString()
-							.padStart(2, "0")}`;
-					};
-
-					for (const [dayName, entries] of Object.entries(data)) {
-						const day = dayMapping[dayName];
-						entries.forEach((entry) => {
-							const from = normalizeTime(entry.y);
-							let to = normalizeTime(entry.y + entry.h);
-							const targetTemperature = parseFloat(entry.temperature, 10);
-
-							if (to === "24:00") {
-								to = "23:59";
+				// Loop through each building
+				data.forEach((building) => {
+					// Loop through each floor in the building
+					building.floors.forEach((floor) => {
+						// Loop through each room on the floor
+						floor.rooms.forEach((room) => {
+							// Check if the programAssigned matches the programName
+							if (room.programAssigned === programName) {
+								roomIds.push(room.id);
 							}
-
-							result.days.push({
-								day,
-								from,
-								to,
-								targetTemperature,
-							});
 						});
-					}
-
-					return result.days;
-				}
-
-				//Manipulating for API
-				const finalObj = {
-					templateName: combinedData.formData.programName,
-					allowDeviceOverride:
-						combinedData.formData.childSafety === "No" ? true : false,
-					...(anyRoomSelected && {
-						locations: getRoomIdsByProgram(
-							combinedData.heatingAssignmentData.buildings,
-						),
-					}),
-					days: convertScheduleData(combinedData.finalScheduleData),
-				};
-				if (combinedData.formData.childSafety !== "Yes") {
-					finalObj.deviceOverrideTemperatureMin = parseInt(
-						combinedData.formData.minTemp,
-					);
-					finalObj.deviceOverrideTemperatureMax = parseInt(
-						combinedData.formData.maxTemp,
-					);
-				}
-
-				// Submit the form or perform other actions
-
-				axios
-					.post(ApiUrls.SMARTHEATING_HEATINGSCHEDULE.HEATINGSCHEDULE, finalObj)
-					.then((response) => {
-						setShowToast(true);
-						const { data, status } = response;
-						setToastMessage(errors.cloneSuccessfull);
-						setIsSuccess(true);
-						onCreate(combinedData);
-						handleCloneModal();
-						resetModalState();
-						setTimeout(() => {
-							setShowToast(false);
-						}, 4000);
-					})
-					.catch((error) => {
-						setShowToast(true);
-						setToastMessage(errors.cloneFailed);
-						setIsSuccess(false);
-						console.error("Error:", error);
-						onCreate("Error");
-						setTimeout(() => {
-							setShowToast(false);
-						}, 4000);
 					});
+				});
+
+				return roomIds;
+			}
+
+			// Convert schedule data into API format
+			function convertScheduleData(data) {
+				const dayMapping = {
+					Monday: 1,
+					Tuesday: 2,
+					Wednesday: 3,
+					Thursday: 4,
+					Friday: 5,
+					Saturday: 6,
+					Sunday: 7,
+				};
+
+				const result = { days: [] };
+
+				const normalizeTime = (value) => {
+					const hours = Math.floor((value * 24) / 96);
+					const minutes = Math.floor(((value * 24 * 60) / 96) % 60);
+					return `${hours.toString().padStart(2, "0")}:${minutes
+						.toString()
+						.padStart(2, "0")}`;
+				};
+
+				for (const [dayName, entries] of Object.entries(data)) {
+					const day = dayMapping[dayName];
+					entries.forEach((entry) => {
+						const from = normalizeTime(entry.y);
+						let to = normalizeTime(entry.y + entry.h);
+						const targetTemperature = parseFloat(entry.temperature, 10);
+
+						if (to === "24:00") {
+							to = "23:59";
+						}
+
+						result.days.push({
+							day,
+							from,
+							to,
+							targetTemperature,
+						});
+					});
+				}
+
+				return result.days;
+			}
+
+			//Manipulating for API
+			const finalObj = {
+				templateName: combinedData.formData.programName,
+				allowDeviceOverride:
+					combinedData.formData.childSafety === "No" ? true : false,
+				...(anyRoomSelected && {
+					locations: getRoomIdsByProgram(
+						combinedData.heatingAssignmentData.buildings,
+					),
+				}),
+				days: convertScheduleData(combinedData.finalScheduleData),
+			};
+			if (combinedData.formData.childSafety !== "Yes") {
+				finalObj.deviceOverrideTemperatureMin = parseInt(
+					combinedData.formData.minTemp,
+				);
+				finalObj.deviceOverrideTemperatureMax = parseInt(
+					combinedData.formData.maxTemp,
+				);
+			}
+
+			// Submit the form or perform other actions
+
+			axios
+				.post(ApiUrls.SMARTHEATING_HEATINGSCHEDULE.HEATINGSCHEDULE, finalObj)
+				.then((response) => {
+					setShowToast(true);
+					const { data, status } = response;
+					setToastMessage(errors.cloneSuccessfull);
+					setIsSuccess(true);
+					onCreate(combinedData);
+					handleCloneModal();
+					resetModalState();
+					setTimeout(() => {
+						setShowToast(false);
+					}, 1000);
+				})
+				.catch((error) => {
+					setShowToast(true);
+					setToastMessage(errors.cloneFailed);
+					setIsSuccess(false);
+					console.error("Error:", error);
+					onCreate("Error");
+					setTimeout(() => {
+						setShowToast(false);
+					}, 1000);
+				});
 			// }
 		} else {
 			console.error("handleAssignmentRef.current is not defined");
@@ -580,7 +580,6 @@ export function CloneHeatingModal({
 		};
 		fetchHeatingSchedules();
 	};
-
 
 	const [initialData, setInitialData] = useState({});
 

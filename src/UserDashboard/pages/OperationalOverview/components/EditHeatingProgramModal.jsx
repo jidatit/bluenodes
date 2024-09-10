@@ -91,12 +91,12 @@ const EditHeatingProgramModal = ({
 				// Hide the toast after 4 seconds
 				setTimeout(() => {
 					setShowToast(false);
-				}, 2000);
+				}, 1000);
 			});
 
 		setTimeout(() => {
 			handleCloseModal();
-		}, 2000);
+		}, 1000);
 	};
 
 	// if (updatedR !== null && updatedR) {
@@ -586,17 +586,17 @@ const EditHeatingProgramModal = ({
 						handleCloseModal();
 						updateReplaced();
 						resetModalState();
-					}, 2000);
+					}, 1000);
 
 					if (room) {
 						fetchFloorDetails(room.parentId);
 					}
 					setTimeout(() => {
 						setShowToast(false);
-					}, 2000);
+					}, 1000);
 					setTimeout(() => {
 						handleCloseModal();
-					}, 2000);
+					}, 1000);
 
 					fetchHeatingSchedules();
 				} else {
@@ -605,7 +605,7 @@ const EditHeatingProgramModal = ({
 					setShowToast(true);
 					setTimeout(() => {
 						setShowToast(false);
-					}, 2000);
+					}, 1000);
 				}
 			} catch (error) {
 				setIsSuccess(false);
@@ -614,7 +614,7 @@ const EditHeatingProgramModal = ({
 				console.error("Error during fetch operation:", error);
 				setTimeout(() => {
 					setShowToast(false);
-				},2000);
+				}, 1000);
 			}
 		}
 	};
@@ -920,9 +920,9 @@ const ReplaceProgram = ({
 							value={program.id}
 							disabled={program.id === room.heatingSchedule.id}
 						>
-      {program.templateName.length > 50
-        ? `${program.templateName.slice(0, 50)}...`
-        : program.templateName}
+							{program.templateName.length > 50
+								? `${program.templateName.slice(0, 50)}...`
+								: program.templateName}
 						</option>
 					))}
 				</select>
@@ -1022,7 +1022,7 @@ const ViewTableComponent = ({ selectedProgram }) => {
 					</h3>
 					<div className="flex flex-col gap-2 text-sm font-normal text-gray-900">
 						<div className="flex flex-col gap-2">
-												<p className="font-semibold">Kindersicherung</p>
+							<p className="font-semibold">Kindersicherung</p>
 							<p>{temperatureDetails?.templateName || "N/A"}</p>{" "}
 							{/* Replace hardcoded value */}
 						</div>
@@ -1035,7 +1035,7 @@ const ViewTableComponent = ({ selectedProgram }) => {
 							<>
 								<div className="flex flex-col gap-2">
 									<p className="flex items-center gap-1 font-semibold">
-									Mindesttemperatur
+										Mindesttemperatur
 										<Tooltip
 											className="px-3 py-1.5 text-center max-w-96"
 											content="Die Mindesttemperatur, die am Thermostat manuell eingestellt werden kann.."
@@ -1052,8 +1052,8 @@ const ViewTableComponent = ({ selectedProgram }) => {
 								</div>
 								<div className="flex flex-col gap-2">
 									<p className="flex items-center gap-1 font-semibold">
-									Höchsttemperatur
-									<Tooltip
+										Höchsttemperatur
+										<Tooltip
 											className="px-3 py-1.5 text-center max-w-96"
 											content="Die Höchsttemperatur, die am Thermostat manuell eingestellt werden kann."
 											style="light"
@@ -1072,8 +1072,8 @@ const ViewTableComponent = ({ selectedProgram }) => {
 
 						<div className="flex flex-col gap-2">
 							<p className="flex items-center gap-1 font-semibold">
-							Algorithmus aktivieren
-							<Tooltip
+								Algorithmus aktivieren
+								<Tooltip
 									className="px-3 py-1.5 text-center max-w-96"
 									content="Der Algorithmus passt dynamisch den Heizplan an."
 									style="light"
@@ -1104,7 +1104,7 @@ const ConfirmReplaceModal = ({ show, onClose, onConfirm }) => {
 		<Modal show={show} onClose={onClose} size="lg">
 			<Modal.Header className="flex items-center justify-between">
 				<span className="text-lg font-semibold text-gray-900">
-				Ersetzen des Programms bestätigen
+					Ersetzen des Programms bestätigen
 				</span>
 				<button
 					onClick={onClose}
@@ -1113,17 +1113,17 @@ const ConfirmReplaceModal = ({ show, onClose, onConfirm }) => {
 			</Modal.Header>
 			<Modal.Body className="text-[#6B7280]">
 				<p>
-				Das Ersetzen des Programms wird alle Informationen des vorherigen Programms entfernen.
-
+					Das Ersetzen des Programms wird alle Informationen des vorherigen
+					Programms entfernen.
 				</p>
 				<p className="mt-2">Sind Sie sicher, dass Sie fortfahren möchten?</p>
 			</Modal.Body>
 			<Modal.Footer>
 				<Button onClick={onConfirm} className="bg-primary">
-				Ja
+					Ja
 				</Button>
 				<Button color="gray" onClick={onClose}>
-				Abbrechen
+					Abbrechen
 				</Button>
 			</Modal.Footer>
 		</Modal>

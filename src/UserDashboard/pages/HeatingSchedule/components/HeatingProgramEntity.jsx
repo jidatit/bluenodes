@@ -97,7 +97,7 @@ const HeatingProgramEntity = ({
 		setShowToast(true);
 		setTimeout(() => {
 			setShowToast(false);
-		}, 4000);
+		}, 1000);
 	};
 
 	const [response, setResponse] = useState(false);
@@ -310,7 +310,7 @@ const HeatingProgramEntity = ({
 					<div className="w-[25%] flex flex-col justify-center items-start">
 						<p className="text-[16px] font-[700]">{program?.templateName}</p>
 						<p className="text-[12px] font-[400] text-gray-500">
-						Zuletzt aktualisiert: {getDate()}
+							Zuletzt aktualisiert: {getDate()}
 						</p>
 					</div>
 					<div className="w-[15%] flex flex-col justify-center items-start">
@@ -323,7 +323,7 @@ const HeatingProgramEntity = ({
 						<>
 							<div className="w-[15%] flex flex-col justify-center items-start">
 								<p className="text-[12px] text-gray-500 font-[500]">
-								Mindesttemperatur
+									Mindesttemperatur
 								</p>
 								<p className="text-[14px] font-[400]">
 									{program?.deviceOverrideTemperatureMin}&deg;C
@@ -331,7 +331,7 @@ const HeatingProgramEntity = ({
 							</div>
 							<div className="w-[15%] flex flex-col justify-center items-start">
 								<p className="text-[12px] text-gray-500 font-[500]">
-								Höchsttemperatur
+									Höchsttemperatur
 								</p>
 								<p className="text-[14px] font-[400]">
 									{program?.deviceOverrideTemperatureMax}&deg;C
@@ -378,70 +378,73 @@ const HeatingProgramEntity = ({
 												</Button>
 											</div>
 
-											{locationDetails && locationDetails.assignedRooms?.map(
-												(building, index) => (
-													<Accordion
-														key={building.id}
-														className="w-full border-none"
-														collapseAll
-													>
-														<Accordion.Panel>
-															<Accordion.Title className="p-2 mb-1 flex-row-reverse items-center justify-end gap-3 border-none hover:bg-white focus:ring-none focus:ring-white bg-white focus:bg-white outline-0">
-																<p className="text-[12px] text-gray-900 font-bold">
-																	{building.name}
-																	<span
-																		className={`text-[12px] py-0.5 px-2.5 ml-1 bg-[#E5EDFF] text-[#42389D] font-[500] rounded-md`}
-																	>
-																		{countRooms(building)}{" "}
-																		{countRooms(building) > 1
-																			? "rooms"
-																			: "room"}
-																	</span>
-																</p>
-															</Accordion.Title>
-															<Accordion.Content className=" px-4 pt-0 pb-4 border-none">
-																{building.children.map((floor, floorIndex) => (
-																	<Accordion
-																		key={floor.id}
-																		className="w-full border-none"
-																		collapseAll
-																	>
-																		<Accordion.Panel>
-																			<Accordion.Title className="p-2 mb-1 flex-row-reverse items-center justify-end gap-3 border-none hover:bg-white focus:ring-none focus:ring-white bg-white focus:bg-white outline-0">
-																				<p className="text-[12px] text-gray-900 font-bold">
-																					{floor.name}
-																					<span
-																						className={`text-[12px] py-0.5 px-2.5 ml-1 bg-[#E5EDFF] text-[#42389D] font-[500] rounded-md`}
-																					>
-																						{floor.children.length}{" "}
-																						{floor.children.length > 1
-																							? "rooms"
-																							: "room"}
-																					</span>
-																				</p>
-																			</Accordion.Title>
-																			<Accordion.Content className=" pl-10 pt-2 pb-4 border-none">
-																				<ul>
-																					{floor.children.map((room) => (
-																						<li
-																							key={room.id}
-																							className="room-item mb-2"
-																						>
-																							<p className="text-black text-[12px] font-semibold">
-																								{room.name}
-																							</p>
-																						</li>
-																					))}
-																				</ul>
-																			</Accordion.Content>
-																		</Accordion.Panel>
-																	</Accordion>
-																))}
-															</Accordion.Content>
-														</Accordion.Panel>
-													</Accordion>
-												),
-											)}
+											{locationDetails &&
+												locationDetails.assignedRooms?.map(
+													(building, index) => (
+														<Accordion
+															key={building.id}
+															className="w-full border-none"
+															collapseAll
+														>
+															<Accordion.Panel>
+																<Accordion.Title className="p-2 mb-1 flex-row-reverse items-center justify-end gap-3 border-none hover:bg-white focus:ring-none focus:ring-white bg-white focus:bg-white outline-0">
+																	<p className="text-[12px] text-gray-900 font-bold">
+																		{building.name}
+																		<span
+																			className={`text-[12px] py-0.5 px-2.5 ml-1 bg-[#E5EDFF] text-[#42389D] font-[500] rounded-md`}
+																		>
+																			{countRooms(building)}{" "}
+																			{countRooms(building) > 1
+																				? "rooms"
+																				: "room"}
+																		</span>
+																	</p>
+																</Accordion.Title>
+																<Accordion.Content className=" px-4 pt-0 pb-4 border-none">
+																	{building.children.map(
+																		(floor, floorIndex) => (
+																			<Accordion
+																				key={floor.id}
+																				className="w-full border-none"
+																				collapseAll
+																			>
+																				<Accordion.Panel>
+																					<Accordion.Title className="p-2 mb-1 flex-row-reverse items-center justify-end gap-3 border-none hover:bg-white focus:ring-none focus:ring-white bg-white focus:bg-white outline-0">
+																						<p className="text-[12px] text-gray-900 font-bold">
+																							{floor.name}
+																							<span
+																								className={`text-[12px] py-0.5 px-2.5 ml-1 bg-[#E5EDFF] text-[#42389D] font-[500] rounded-md`}
+																							>
+																								{floor.children.length}{" "}
+																								{floor.children.length > 1
+																									? "rooms"
+																									: "room"}
+																							</span>
+																						</p>
+																					</Accordion.Title>
+																					<Accordion.Content className=" pl-10 pt-2 pb-4 border-none">
+																						<ul>
+																							{floor.children.map((room) => (
+																								<li
+																									key={room.id}
+																									className="room-item mb-2"
+																								>
+																									<p className="text-black text-[12px] font-semibold">
+																										{room.name}
+																									</p>
+																								</li>
+																							))}
+																						</ul>
+																					</Accordion.Content>
+																				</Accordion.Panel>
+																			</Accordion>
+																		),
+																	)}
+																</Accordion.Content>
+															</Accordion.Panel>
+														</Accordion>
+													),
+												)}
 										</div>
 										<div className="flex flex-col border-l-2 border-l-[#E5E7EB] pl-2 justify-center items-center w-[75%]">
 											{locationDetails && (
