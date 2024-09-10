@@ -56,14 +56,14 @@ const EventLogsTable = () => {
       const key =
         node.children.length > 0 ? node.id.toString() : `room${node.id}`;
 
-			const transformedNode = {
-				key: key,
-				label: node.name,
-			};
+      const transformedNode = {
+        key: key,
+        label: node.name,
+      };
 
-			if (node.children.length > 0) {
-				transformedNode.children = transformData(node.children);
-			}
+      if (node.children.length > 0) {
+        transformedNode.children = transformData(node.children);
+      }
 
       return transformedNode;
     });
@@ -85,13 +85,14 @@ const EventLogsTable = () => {
   const [tableData, setTableData] = useState([]);
   // const [selectedFilter, setSelectedFilter] = useState("Last Year");
   // const [selectedEvent, setSelectedEvent] = useState("All events");
-  // const [searchQuery, setSearchQuery] = useState("");
+
   const [currentPage, setCurrentPage] = useState(1);
   const [totalRows, setTotalRows] = useState(0);
 
   const [selectedKeys, setSelectedKeys] = useState({});
   const [selectedRoomIds, setSelectedRoomIds] = useState(new Set());
-
+  const [Deselectedkeys, setDeselectedKeys] = useState({});
+  const [permanentKeys, setPermanentKeys] = useState([]);
   const getAllKeys = (node) => {
     let keys = [node.key];
     if (node.children) {
@@ -101,65 +102,97 @@ const EventLogsTable = () => {
     }
     return keys;
   };
-  console.log(
-    "location " + ApiLocationsToBeSend,
-    "events" + selectedEventFilters
-  );
+
   const updateSelection = (newSelectedKeys) => {
     let newSelectedRoomIds = new Set([...selectedRoomIds]);
+    let updatedKeys = { ...selectedKeys };
+    let updatedDeselectedKeys = { ...Deselectedkeys };
 
-		// Update selection state
-		const updatedKeys = { ...selectedKeys };
+    console.log("Current Deselectedkeys", updatedDeselectedKeys);
 
-		// Add new selections
-		Object.keys(newSelectedKeys).forEach((key) => {
-			const node = findNodeByKey(key, LocationsData);
-			if (node) {
-				const allKeys = getAllKeys(node);
-				allKeys.forEach((childKey) => {
-					updatedKeys[childKey] = true;
-					if (childKey.startsWith("room")) {
-						newSelectedRoomIds.add(childKey);
-					}
-				});
-			}
-		});
+    // Add newly selected keys and their children
+    Object.keys(newSelectedKeys).forEach((key) => {
+      const node = findNodeByKey(key, LocationsData);
+      if (node) {
+        const allKeys = getAllKeys(node); // Get all children keys
+        allKeys.forEach((childKey) => {
+          updatedKeys[childKey] = true; // Mark all children as selected
+          if (childKey.startsWith("room")) {
+            newSelectedRoomIds.add(childKey); // Add room ID
+          }
+        });
 
-		// Remove unselected keys
-		Object.keys(selectedKeys).forEach((key) => {
-			if (!newSelectedKeys[key]) {
-				const node = findNodeByKey(key, LocationsData);
-				if (node) {
-					const allKeys = getAllKeys(node);
-					allKeys.forEach((childKey) => {
-						delete updatedKeys[childKey];
-						if (childKey.startsWith("room")) {
-							newSelectedRoomIds.delete(childKey);
-						}
-					});
-				}
-			}
-		});
+        // If key was previously deselected, remove it from updatedDeselectedKeys
+        if (updatedDeselectedKeys[key]) {
+          delete updatedDeselectedKeys[key];
+        }
+      }
+    });
 
-		// Check if any children are still selected for a parent
-		Object.keys(updatedKeys).forEach((key) => {
-			const node = findNodeByKey(key, LocationsData);
-			if (node && node.children) {
-				const anyChildSelected = node.children.some(
-					(child) => updatedKeys[child.key],
-				);
-				if (!anyChildSelected) {
-					delete updatedKeys[node.key];
-				}
-			}
-		});
+    // Remove unselected keys and their children
+    Object.keys(selectedKeys).forEach((key) => {
+      if (!newSelectedKeys[key]) {
+        const node = findNodeByKey(key, LocationsData);
+        if (node) {
+          const allKeys = getAllKeys(node); // Get all children keys
+          allKeys.forEach((childKey) => {
+            delete updatedKeys[childKey]; // Remove selection for child keys
+            if (childKey.startsWith("room")) {
+              newSelectedRoomIds.delete(childKey); // Remove room ID from selection
+            }
+          });
+        }
+        // Add to deselected keys
+        updatedDeselectedKeys[key] = true;
+      }
+    });
 
+    // Ensure deselected nodes stay deselected and remove from updatedKeys
+    Object.keys(updatedKeys).forEach((key) => {
+      if (updatedDeselectedKeys[key]) {
+        delete updatedKeys[key]; // Remove from updatedKeys
+        const node = findNodeByKey(key, LocationsData);
+        if (node && node.children) {
+          const anyChildSelected = node.children.some(
+            (child) => updatedKeys[child.key]
+          );
+          if (!anyChildSelected) {
+            delete updatedKeys[node.key]; // Deselect parent if no children are selected
+          }
+        }
+      }
+    });
+
+    // Ensure room IDs in updatedKeys are included in newSelectedRoomIds
+    Object.keys(updatedKeys).forEach((key) => {
+      if (key.startsWith("room")) {
+        newSelectedRoomIds.add(key);
+      }
+    });
+
+    // Remove room IDs from newSelectedRoomIds that are in updatedDeselectedKeys
+    Object.keys(updatedDeselectedKeys).forEach((key) => {
+      if (key.startsWith("room")) {
+        newSelectedRoomIds.delete(key);
+      }
+    });
+
+    // Update state
     setSelectedKeys(updatedKeys);
     setSelectedRoomIds(newSelectedRoomIds);
+    setDeselectedKeys(updatedDeselectedKeys); // Update the state for deselected keys
+
+    console.log("Updated Keys", updatedKeys);
+    console.log("Permanent Keys", permanentKeys);
+    console.log("Room IDs", newSelectedRoomIds);
+    console.log("Updated Deselected Keys", updatedDeselectedKeys);
+
+    // Handle selected room IDs and filters
     const locations = Array.from(newSelectedRoomIds);
-    const transformedArray =
-      locations &&
-      locations.map((item) => parseInt(item.replace("room", ""), 10));
+    const transformedArray = locations.map((item) =>
+      parseInt(item.replace("room", ""), 10)
+    );
+
     if (transformedArray.length > 0) {
       const sep_locations = transformedArray.join(",");
       setFiltersSelected(true);
@@ -179,48 +212,48 @@ const EventLogsTable = () => {
     updateSelection(newSelectedKeys);
   };
 
-	const findNodeByKey = (key, nodes) => {
-		for (const node of nodes) {
-			if (node.key === key) {
-				return node;
-			}
-			if (node.children) {
-				const childNode = findNodeByKey(key, node.children);
-				if (childNode) {
-					return childNode;
-				}
-			}
-		}
-		return null;
-	};
+  const findNodeByKey = (key, nodes) => {
+    for (const node of nodes) {
+      if (node.key === key) {
+        return node;
+      }
+      if (node.children) {
+        const childNode = findNodeByKey(key, node.children);
+        if (childNode) {
+          return childNode;
+        }
+      }
+    }
+    return null;
+  };
 
-	const getData = async (locations) => {
-		try {
-			const eventTypeLevel =
-				(selectedEventFilters !== null &&
-					selectedEventFilters.map((filter) => filter.name).join(",")) ||
-				null;
-			const data = await fetchEventLogsData(
-				currentPage,
-				itemsPerPage,
-				locations,
-				eventTypeLevel,
-				dateTo,
-				dateFrom,
-			);
-			setTotalRows(data.count);
-			setTableData(data.rows);
-		} catch (error) {
-			console.log(error);
-		}
-	};
+  const getData = async (locations) => {
+    try {
+      const eventTypeLevel =
+        (selectedEventFilters !== null &&
+          selectedEventFilters.map((filter) => filter.name).join(",")) ||
+        null;
+
+      const data = await fetchEventLogsData(
+        currentPage,
+        itemsPerPage,
+        locations,
+        eventTypeLevel,
+        dateTo,
+        dateFrom
+      );
+
+      setTotalRows(data.count);
+      setTableData(data.rows);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const [dateTo, setdateTo] = useState(null);
   const [dateFrom, setdateFrom] = useState(null);
 
   useEffect(() => {
-    console.log(ApiLocationsToBeSend);
-    console.log("chali bhai 1st use eefect");
     getData(ApiLocationsToBeSend);
   }, [
     ApiLocationsToBeSend,
@@ -232,7 +265,6 @@ const EventLogsTable = () => {
 
   useEffect(() => {
     if (selectedEventFilters !== null) {
-      console.log("chali bhai 2nd use eefect");
       getData(ApiLocationsToBeSend);
     }
   }, [selectedEventFilters]);
@@ -240,37 +272,37 @@ const EventLogsTable = () => {
   const totalItems = totalRows && totalRows;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
 
-	const handlePageChange = (page) => {
-		setCurrentPage(page);
-	};
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
 
-	const startIndex = (currentPage - 1) * itemsPerPage + 1;
-	const endIndex = Math.min(currentPage * itemsPerPage, totalItems);
+  const startIndex = (currentPage - 1) * itemsPerPage + 1;
+  const endIndex = Math.min(currentPage * itemsPerPage, totalItems);
 
-	const paginationRange = 1;
+  const paginationRange = 1;
 
-	let startPage = Math.max(1, currentPage - paginationRange);
-	let endPage = Math.min(totalPages, currentPage + paginationRange);
+  let startPage = Math.max(1, currentPage - paginationRange);
+  let endPage = Math.min(totalPages, currentPage + paginationRange);
 
-	const formatDate = (dateString) => {
-		const options = {
-			year: "numeric",
-			month: "long",
-			day: "numeric",
-			hour: "2-digit",
-			minute: "2-digit",
-		};
-		return new Date(dateString).toLocaleDateString("de-DE", options);
-	};
+  const formatDate = (dateString) => {
+    const options = {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    };
+    return new Date(dateString).toLocaleDateString("de-DE", options);
+  };
 
-	const formatDateforApitosend = (date) => {
-		const options = { year: "numeric", month: "2-digit", day: "2-digit" };
-		return new Intl.DateTimeFormat("en-GB", options)
-			.format(date)
-			.split("/")
-			.reverse()
-			.join("-");
-	};
+  const formatDateforApitosend = (date) => {
+    const options = { year: "numeric", month: "2-digit", day: "2-digit" };
+    return new Intl.DateTimeFormat("en-GB", options)
+      .format(date)
+      .split("/")
+      .reverse()
+      .join("-");
+  };
 
   const handleDatesChange = (newDates) => {
     console.log(newDates);
@@ -289,281 +321,281 @@ const EventLogsTable = () => {
   const [filterValue, setFilterValue] = useState("");
   const [filteredLocations, setFilteredLocations] = useState(LocationsData); // Initialize with LocationsData
 
-	const handleFilterChange = (event) => {
-		const filterText = event.target.value.toLowerCase();
-		setFilterValue(filterText);
-		let filteredData = []; // Clear the filteredData array
-		const searchInChildren = (node) => {
-			if (node.label.toLowerCase().includes(filterText)) {
-				filteredData.push(node);
-			} else if (node.children) {
-				node.children.forEach((child) => searchInChildren(child));
-				// Remove child filters from filteredData if they don't match the search query
-				filteredData = filteredData.filter((item) => item.key !== node.key);
-			}
-		};
-		LocationsData.forEach((location) => searchInChildren(location));
-		setFilteredLocations(filteredData);
-	};
+  const handleFilterChange = (event) => {
+    const filterText = event.target.value.toLowerCase();
+    setFilterValue(filterText);
+    let filteredData = []; // Clear the filteredData array
+    const searchInChildren = (node) => {
+      if (node.label.toLowerCase().includes(filterText)) {
+        filteredData.push(node);
+      } else if (node.children) {
+        node.children.forEach((child) => searchInChildren(child));
+        // Remove child filters from filteredData if they don't match the search query
+        filteredData = filteredData.filter((item) => item.key !== node.key);
+      }
+    };
+    LocationsData.forEach((location) => searchInChildren(location));
+    setFilteredLocations(filteredData);
+  };
 
-	return (
-		<div className=" flex flex-col gap-4 w-full">
-			<div className="flex flex-col justify-center items-start w-full">
-				<h1 className=" font-[500] text-lg text-gray-900">Event Übersicht</h1>
-			</div>
-			<div className="relative w-full overflow-x-auto bg-white shadow-md sm:rounded-lg z-10">
-				<div className="flex flex-column my-2 bg-transparent mx-2 sm:flex-row flex-wrap space-y-4 sm:space-y-0 items-center justify-between z-10">
-					{/* Filter buttons */}
-					<div className="flex flex-row justify-center items-center gap-1">
-						<TreeSelect
-							value={selectedKeys}
-							options={filteredLocations} // Use filteredLocations here
-							onChange={onNodeSelectChange}
-							onClick={handleTreeSelectClick}
-							selectionMode="multiple"
-							placeholder="Alle Gebäude"
-							filter
-							filterBy="label"
-							filterValue={filterValue}
-							className="w-full md:w-20rem"
-							closeIcon="false"
-							panelStyle={{
-								border: "0.5px solid #bababa",
-								borderRadius: "4px",
-							}}
-							filterTemplate={({ filterInputProps }) => (
-								<div
-									style={{
-										backgroundColor: "#f5f5f5",
-										padding: "10px",
-										display: "flex",
-										width: "100%",
-										alignItems: "center",
-										borderRadius: "6px",
-										border: "1px solid #d5ddde",
-									}}
-								>
-									<span
-										style={{
-											marginLeft: "8px",
-											marginRight: "8px",
-											color: "#9e9e9e",
-											fontSize: "18px",
-										}}
-									>
-										<IoSearch />
-									</span>
-									<input
-										{...filterInputProps}
-										value={filterValue}
-										onChange={handleFilterChange} // Ensures the filter input is correctly connected
-										style={{
-											border: "none",
-											width: "100%",
-											backgroundColor: "transparent",
-											outline: "none",
+  return (
+    <div className=" flex flex-col gap-4 w-full">
+      <div className="flex flex-col justify-center items-start w-full">
+        <h1 className=" font-[500] text-lg text-gray-900">Event Übersicht</h1>
+      </div>
+      <div className="relative w-full overflow-x-auto bg-white shadow-md sm:rounded-lg z-10">
+        <div className="flex flex-column my-2 bg-transparent mx-2 sm:flex-row flex-wrap space-y-4 sm:space-y-0 items-center justify-between z-10">
+          {/* Filter buttons */}
+          <div className="flex flex-row justify-center items-center gap-1">
+            <TreeSelect
+              value={selectedKeys}
+              options={filteredLocations} // Use filteredLocations here
+              onChange={onNodeSelectChange}
+              onClick={handleTreeSelectClick}
+              selectionMode="multiple"
+              placeholder="Alle Gebäude"
+              filter
+              filterBy="label"
+              filterValue={filterValue}
+              className="w-full md:w-20rem"
+              closeIcon="false"
+              panelStyle={{
+                border: "0.5px solid #bababa",
+                borderRadius: "4px",
+              }}
+              filterTemplate={({ filterInputProps }) => (
+                <div
+                  style={{
+                    backgroundColor: "#f5f5f5",
+                    padding: "10px",
+                    display: "flex",
+                    width: "100%",
+                    alignItems: "center",
+                    borderRadius: "6px",
+                    border: "1px solid #d5ddde",
+                  }}
+                >
+                  <span
+                    style={{
+                      marginLeft: "8px",
+                      marginRight: "8px",
+                      color: "#9e9e9e",
+                      fontSize: "18px",
+                    }}
+                  >
+                    <IoSearch />
+                  </span>
+                  <input
+                    {...filterInputProps}
+                    value={filterValue}
+                    onChange={handleFilterChange} // Ensures the filter input is correctly connected
+                    style={{
+                      border: "none",
+                      width: "100%",
+                      backgroundColor: "transparent",
+                      outline: "none",
 
-											color: "#6e6e6e",
-										}}
-										placeholder="Suche" // Optional: you can add a placeholder
-									/>
-								</div>
-							)}
-						/>
-						<MultiSelect
-							value={selectedEventFilters}
-							onShow={handleMultiSelectClick}
-							onChange={(e) => setSelectedEventFilters(e.value)}
-							showSelectAll={false}
-							options={eventFilterOptions}
-							optionLabel="name"
-							filter
-							placeholder="All Events"
-							display="chip"
-							className="w-full md:w-20rem"
-							panelStyle={{
-								border: "0.5px solid #bababa",
-								borderRadius: "4px",
-							}}
-						/>
-						<DateFilter
-							closeDropdown={closeDateFilter}
-							setCloseDateFilter={setCloseDateFilter}
-							onDatesChange={handleDatesChange}
+                      color: "#6e6e6e",
+                    }}
+                    placeholder="Suche" // Optional: you can add a placeholder
+                  />
+                </div>
+              )}
+            />
+            <MultiSelect
+              value={selectedEventFilters}
+              onShow={handleMultiSelectClick}
+              onChange={(e) => setSelectedEventFilters(e.value)}
+              showSelectAll={false}
+              options={eventFilterOptions}
+              optionLabel="name"
+              filter
+              placeholder="All Events"
+              display="chip"
+              className="w-full md:w-20rem"
+              panelStyle={{
+                border: "0.5px solid #bababa",
+                borderRadius: "4px",
+              }}
+            />
+            <DateFilter
+              closeDropdown={closeDateFilter}
+              setCloseDateFilter={setCloseDateFilter}
+              onDatesChange={handleDatesChange}
               setApiLocationsToBeSend={setApiLocationsToBeSend}
               selectedLocationFilter={selectedLocationFilter}
-						/>
-					</div>
-				</div>
-				{/* Table */}
-				<table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 z-10 min-h-[10rem]">
-					<thead className="text-xs font-semibold text-gray-500 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-						<tr>
-							<th scope="col" className="p-4">
-								EVENT ID
-							</th>
-							<th scope="col" className="p-4">
-								RAUM
-							</th>
-							<th scope="col" className="p-4">
-								GEBÄUDE - ETAGE
-							</th>
-							<th scope="col" className="p-4">
-								DATUM - UHRZEIT
-							</th>
-							<th scope="col" className="p-4">
-								EVENT
-							</th>
-							<th scope="col" className="p-4">
-								NACHRICHT
-							</th>
-						</tr>
-					</thead>
-					<tbody>
-						{tableData.length > 0 &&
-							tableData.map((item, index) => (
-								<tr
-									key={index}
-									className="text-sm bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
-								>
-									<td className="px-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white w-full md:w-[6%]">
-										{item.id ? item.id : "-"}
-									</td>
-									<td className="px-4 py-4 font-medium text-gray-900 break-words dark:text-white w-full md:w-[15%]">
-										{item.roomName ? item.roomName : "-"}{" "}
-										<span className="text-[10px] py-0.5 px-2.5 font-semibold bg-gray-100 rounded-[80px] p-1">
-											{item.roomTag ? item.roomTag : "-"}
-										</span>
-									</td>
-									<td className="px-4 py-4 w-full md:w-[15%]">
-										{item.building_floor_string
-											? item.building_floor_string
-											: "-"}
-									</td>
-									<td className="px-4 py-4 w-full md:w-[15%]">
-										{item.createdAt ? formatDate(item.createdAt) : "-"}
-									</td>
-									<td className="px-4 py-4 w-full md:w-[13%]">
-										<Tooltip content={item.eventTypeLevel} style="light">
-											<div className="flex items-center gap-x-2">
-												{item.eventTypeLevel === "Information" ? (
-													<FaCircleInfo />
-												) : item.eventTypeLevel === "Warning" ? (
-													<RiErrorWarningFill className="text-yellow-500" />
-												) : (
-													<IoIosWarning className="text-red-700" />
-												)}
-												<span className="text-sm">
-													{item.eventTypeMessage ? item.eventTypeMessage : "-"}
-												</span>
-											</div>
-										</Tooltip>
-									</td>
+            />
+          </div>
+        </div>
+        {/* Table */}
+        <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 z-10 min-h-[10rem]">
+          <thead className="text-xs font-semibold text-gray-500 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+            <tr>
+              <th scope="col" className="p-4">
+                EVENT ID
+              </th>
+              <th scope="col" className="p-4">
+                RAUM
+              </th>
+              <th scope="col" className="p-4">
+                GEBÄUDE - ETAGE
+              </th>
+              <th scope="col" className="p-4">
+                DATUM - UHRZEIT
+              </th>
+              <th scope="col" className="p-4">
+                EVENT
+              </th>
+              <th scope="col" className="p-4">
+                NACHRICHT
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {tableData.length > 0 &&
+              tableData.map((item, index) => (
+                <tr
+                  key={index}
+                  className="text-sm bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
+                >
+                  <td className="px-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white w-full md:w-[6%]">
+                    {item.id ? item.id : "-"}
+                  </td>
+                  <td className="px-4 py-4 font-medium text-gray-900 break-words dark:text-white w-full md:w-[15%]">
+                    {item.roomName ? item.roomName : "-"}{" "}
+                    <span className="text-[10px] py-0.5 px-2.5 font-semibold bg-gray-100 rounded-[80px] p-1">
+                      {item.roomTag ? item.roomTag : "-"}
+                    </span>
+                  </td>
+                  <td className="px-4 py-4 w-full md:w-[15%]">
+                    {item.building_floor_string
+                      ? item.building_floor_string
+                      : "-"}
+                  </td>
+                  <td className="px-4 py-4 w-full md:w-[15%]">
+                    {item.createdAt ? formatDate(item.createdAt) : "-"}
+                  </td>
+                  <td className="px-4 py-4 w-full md:w-[13%]">
+                    <Tooltip content={item.eventTypeLevel} style="light">
+                      <div className="flex items-center gap-x-2">
+                        {item.eventTypeLevel === "Information" ? (
+                          <FaCircleInfo />
+                        ) : item.eventTypeLevel === "Warning" ? (
+                          <RiErrorWarningFill className="text-yellow-500" />
+                        ) : (
+                          <IoIosWarning className="text-red-700" />
+                        )}
+                        <span className="text-sm">
+                          {item.eventTypeMessage ? item.eventTypeMessage : "-"}
+                        </span>
+                      </div>
+                    </Tooltip>
+                  </td>
 
-									<td className="px-4 py-4 w-full md:w-[40%]">
-										<Tooltip content={item.message} style="light">
-											{item.message ? `${item.message.slice(0, 70)}...` : "-"}
-										</Tooltip>
-									</td>
-								</tr>
-							))}
-					</tbody>
-				</table>
+                  <td className="px-4 py-4 w-full md:w-[40%]">
+                    <Tooltip content={item.message} style="light">
+                      {item.message ? `${item.message.slice(0, 70)}...` : "-"}
+                    </Tooltip>
+                  </td>
+                </tr>
+              ))}
+          </tbody>
+        </table>
 
-				{tableData.length === 0 && (
-					<>
-						<div className="w-full bg-slate-100 flex flex-col justify-center items-center">
-							<p className="w-full text-center italic py-2 font-semibold">
-								Keine Ergebnisse
-							</p>
-						</div>
-					</>
-				)}
+        {tableData.length === 0 && (
+          <>
+            <div className="w-full bg-slate-100 flex flex-col justify-center items-center">
+              <p className="w-full text-center italic py-2 font-semibold">
+                Keine Ergebnisse
+              </p>
+            </div>
+          </>
+        )}
 
-				<div className="w-full p-3 flex flex-row justify-between items-center">
-					{tableData && (
-						<p className="font-light text-sm text-gray-500">
-							{" "}
-							<span className="font-bold text-black">
-								{startIndex}-{endIndex}
-							</span>{" "}
-							von <span className="font-bold text-black">{totalItems}</span>
-						</p>
-					)}
+        <div className="w-full p-3 flex flex-row justify-between items-center">
+          {tableData && (
+            <p className="font-light text-sm text-gray-500">
+              {" "}
+              <span className="font-bold text-black">
+                {startIndex}-{endIndex}
+              </span>{" "}
+              von <span className="font-bold text-black">{totalItems}</span>
+            </p>
+          )}
 
-					{/* Pagination */}
-					<div className="flex justify-end border rounded-md border-gray-200 w-fit">
-						<button
-							onClick={() => handlePageChange(currentPage - 1)}
-							className={`inline-flex items-center px-4 py-2 text-sm font-medium rounded-sm ${
-								currentPage === 1
-									? "text-gray-300 cursor-not-allowed"
-									: "text-primary bg-[#CFF4FB] hover:bg-primary-300"
-							}`}
-							disabled={currentPage === 1}
-						>
-							<IoChevronBackOutline />
-						</button>
-						{startPage > 1 && (
-							<button
-								onClick={() => handlePageChange(1)}
-								className="inline-flex items-center px-4 py-2 text-sm font-medium rounded-sm text-gray-500 bg-white hover:bg-gray-100"
-							>
-								1
-							</button>
-						)}
-						{startPage > 2 && (
-							<span className="inline-flex items-center px-4 py-2 text-sm font-medium rounded-sm text-gray-500 bg-white">
-								...
-							</span>
-						)}
-						{Array.from({ length: endPage - startPage + 1 }, (_, index) => (
-							<button
-								key={startPage + index}
-								onClick={() => handlePageChange(startPage + index)}
-								className={`inline-flex items-center px-4 py-2 text-sm font-medium rounded-sm ${
-									currentPage === startPage + index
-										? "text-primary bg-[#CFF4FB] hover:bg-primary-300"
-										: "text-gray-500 bg-white hover:bg-gray-100"
-								}`}
-							>
-								{startPage + index}
-							</button>
-						))}
-						{endPage < totalPages - 1 && (
-							<span className="inline-flex items-center px-4 py-2 text-sm font-medium rounded-sm text-gray-500 bg-white">
-								...
-							</span>
-						)}
-						{endPage < totalPages && (
-							<button
-								onClick={() => handlePageChange(totalPages)}
-								className={`inline-flex items-center px-4 py-2 text-sm font-medium rounded-sm ${
-									currentPage === totalPages
-										? "text-gray-300 cursor-not-allowed"
-										: "text-gray-500 bg-white hover:bg-gray-100"
-								}`}
-								disabled={currentPage === totalPages}
-							>
-								{totalPages}
-							</button>
-						)}
-						<button
-							onClick={() => handlePageChange(currentPage + 1)}
-							className={`inline-flex items-center px-4 py-2 text-sm font-medium rounded-sm ${
-								currentPage === totalPages
-									? "text-gray-300 cursor-not-allowed"
-									: "text-primary bg-[#CFF4FB] hover:bg-primary-300"
-							}`}
-							disabled={currentPage === totalPages}
-						>
-							<IoChevronForwardOutline />
-						</button>
-					</div>
-				</div>
-			</div>
-		</div>
-	);
+          {/* Pagination */}
+          <div className="flex justify-end border rounded-md border-gray-200 w-fit">
+            <button
+              onClick={() => handlePageChange(currentPage - 1)}
+              className={`inline-flex items-center px-4 py-2 text-sm font-medium rounded-sm ${
+                currentPage === 1
+                  ? "text-gray-300 cursor-not-allowed"
+                  : "text-primary bg-[#CFF4FB] hover:bg-primary-300"
+              }`}
+              disabled={currentPage === 1}
+            >
+              <IoChevronBackOutline />
+            </button>
+            {startPage > 1 && (
+              <button
+                onClick={() => handlePageChange(1)}
+                className="inline-flex items-center px-4 py-2 text-sm font-medium rounded-sm text-gray-500 bg-white hover:bg-gray-100"
+              >
+                1
+              </button>
+            )}
+            {startPage > 2 && (
+              <span className="inline-flex items-center px-4 py-2 text-sm font-medium rounded-sm text-gray-500 bg-white">
+                ...
+              </span>
+            )}
+            {Array.from({ length: endPage - startPage + 1 }, (_, index) => (
+              <button
+                key={startPage + index}
+                onClick={() => handlePageChange(startPage + index)}
+                className={`inline-flex items-center px-4 py-2 text-sm font-medium rounded-sm ${
+                  currentPage === startPage + index
+                    ? "text-primary bg-[#CFF4FB] hover:bg-primary-300"
+                    : "text-gray-500 bg-white hover:bg-gray-100"
+                }`}
+              >
+                {startPage + index}
+              </button>
+            ))}
+            {endPage < totalPages - 1 && (
+              <span className="inline-flex items-center px-4 py-2 text-sm font-medium rounded-sm text-gray-500 bg-white">
+                ...
+              </span>
+            )}
+            {endPage < totalPages && (
+              <button
+                onClick={() => handlePageChange(totalPages)}
+                className={`inline-flex items-center px-4 py-2 text-sm font-medium rounded-sm ${
+                  currentPage === totalPages
+                    ? "text-gray-300 cursor-not-allowed"
+                    : "text-gray-500 bg-white hover:bg-gray-100"
+                }`}
+                disabled={currentPage === totalPages}
+              >
+                {totalPages}
+              </button>
+            )}
+            <button
+              onClick={() => handlePageChange(currentPage + 1)}
+              className={`inline-flex items-center px-4 py-2 text-sm font-medium rounded-sm ${
+                currentPage === totalPages
+                  ? "text-gray-300 cursor-not-allowed"
+                  : "text-primary bg-[#CFF4FB] hover:bg-primary-300"
+              }`}
+              disabled={currentPage === totalPages}
+            >
+              <IoChevronForwardOutline />
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default EventLogsTable;
