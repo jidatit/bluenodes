@@ -31,7 +31,7 @@ function OverviewPage() {
   return (
     <>
       <div className="flex flex-col gap-6 ">
-        <h2 className="text-[24px] text-gray-900">Operational Overview</h2>
+        <h2 className="text-[24px] text-gray-900">Betriebsübersicht</h2>
         <div className="flex items-center justify-between ">
           <div className="flex items-center gap-4 ">
             <form className="w-[380px] ">

@@ -150,7 +150,7 @@ const ExampleSidebar = () => {
                       : ""
                   }
                 >
-                  Heating Schedule
+                  Heizpläne
                 </Sidebar.Item>
                 <Sidebar.Item
                   as={NavLink}
@@ -162,7 +162,7 @@ const ExampleSidebar = () => {
                       : ""
                   }
                 >
-                  Device management
+                  Geräteverwaltung
                 </Sidebar.Item>
               </Sidebar.ItemGroup>
             </Sidebar.Items>

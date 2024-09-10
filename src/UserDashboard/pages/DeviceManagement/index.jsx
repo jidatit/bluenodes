@@ -6,7 +6,7 @@ const index = () => {
 	return (
 		<>
 			<div className="flex flex-col gap-6">
-				<h2 className="text-[24px] text-gray-900">Device Management</h2>
+				<h2 className="text-[24px] text-gray-900">Geräteverwaltung</h2>
 				<div className="flex flex-col items-center justify-center w-full">
 					{deviceData && <DeviceManagementTable />}
 				</div>

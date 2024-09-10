@@ -558,28 +558,28 @@ const OfflineTable = () => {
 						<tr className="uppercase">
 							<th></th>
 							<th scope="col" className="p-4">
-								device id
+								ID
 							</th>
 							<th scope="col" className="p-4">
-								device name
+								GERÄTENAME
 							</th>
 							<th scope="col" className="p-4">
-								device type
+								TYP
 							</th>
 							<th scope="col" className="p-4">
-								BUILDING - FLOOR
+								GEBÄUDE - ETAGE
 							</th>
 							<th scope="col" className="p-4">
-								ROOM
+								RAUM
 							</th>
 							<th scope="col" className="p-4">
-								DATE - TIME occurred
+								DATUM - UHRZEIT
 							</th>
 							<th scope="col" className="p-4">
-								battery level
+								BATTERIE
 							</th>
 							<th scope="col" className="p-4">
-								status
+								STATUS
 							</th>
 						</tr>
 					</thead>
