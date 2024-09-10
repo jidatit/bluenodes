@@ -31,4 +31,5 @@ export const errorMessages = {
 	PorgramAssignedFailed: "Zuweisung des Programms fehlgeschlagen",
 	DeviceNameUpdatedSuccessfully: "Device Name Updated Successfully",
 	DeviceNameUpdatedFailed: "Device Name Updated Failed",
+	TempDecimalNotAllowed: "Decimal Not Allowed",
 };

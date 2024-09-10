@@ -3,18 +3,15 @@ const formatTimestamp = (timestamp) => {
 
 	const date = new Date(timestamp);
 
-	// Options for formatting
-	const options = {
-		year: "numeric",
-		month: "long",
-		day: "numeric",
-		hour: "2-digit",
-		minute: "2-digit",
-		second: "2-digit",
-		// timeZoneName: "short",
-	};
+	// Get individual components for formatting
+	const day = String(date.getDate()).padStart(2, "0"); // DD
+	const month = String(date.getMonth() + 1).padStart(2, "0"); // MM (month is zero-based)
+	const year = String(date.getFullYear()).slice(-2); // YY
+	const hours = String(date.getHours()).padStart(2, "0"); // HH
+	const minutes = String(date.getMinutes()).padStart(2, "0"); // MM
 
-	return date.toLocaleDateString("en-US", options);
+	// Format the timestamp as DD.MM.YY HH:MM
+	return `${day}.${month}.${year} ${hours}:${minutes}`;
 };
 
 export default formatTimestamp;

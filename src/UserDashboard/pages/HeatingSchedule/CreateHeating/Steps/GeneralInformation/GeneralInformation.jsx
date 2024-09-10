@@ -12,9 +12,7 @@ function GeneralInformation({
 }) {
 	return (
 		<div className="flex flex-col gap-4 w-full">
-			<h3 className="text-[16px] text-gray-500 font-semibold">
-				Einstellungen
-			</h3>
+			<h3 className="text-[16px] text-gray-500 font-semibold">Einstellungen</h3>
 			{generalErrorMessage && (
 				<div className="text-red-800 p-4 bg-[#FDF2F2] w-fit text-[16px] font-semibold flex items-center gap-2">
 					<FaCircleCheck />

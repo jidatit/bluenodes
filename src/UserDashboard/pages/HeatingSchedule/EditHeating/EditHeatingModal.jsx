@@ -152,10 +152,25 @@ export function EditHeatingModal({
 	useEffect(() => {
 		const minTemp = parseFloat(formData.minTemp);
 		const maxTemp = parseFloat(formData.maxTemp);
-		// Cross-validate minTemp and maxTemp
-		if (minTemp !== "" && maxTemp !== "") {
-			if (minTemp >= maxTemp) {
-				// error = errors.maxTempLowerThanMinTemp;
+
+		// Convert minTemp and maxTemp to strings to safely use .includes
+		const minTempStr = formData.minTemp?.toString() || "";
+		const maxTempStr = formData.maxTemp?.toString() || "";
+
+		// Check if input is a decimal
+		const isMinTempDecimal = minTempStr.includes(".");
+		const isMaxTempDecimal = maxTempStr.includes(".");
+
+		// Validate minTemp and maxTemp
+		if (minTempStr !== "" && maxTempStr !== "") {
+			if (isMinTempDecimal || isMaxTempDecimal) {
+				// Show error if any input is a decimal
+				setErrorMessages((prev) => ({
+					...prev,
+					minTemp: isMinTempDecimal ? errors.TempDecimalNotAllowed : "",
+					maxTemp: isMaxTempDecimal ? errors.TempDecimalNotAllowed : "",
+				}));
+			} else if (minTemp >= maxTemp) {
 				// Update error state for maxTemp when cross-validation fails
 				setErrorMessages((prev) => ({
 					...prev,
@@ -166,6 +181,7 @@ export function EditHeatingModal({
 				setErrorMessages((prev) => ({
 					...prev,
 					maxTemp: "", // Clear the error message for maxTemp
+					minTemp: "", // Clear the error message for minTemp
 				}));
 			}
 		}
@@ -267,14 +283,33 @@ export function EditHeatingModal({
 		const minTemp = parseFloat(formData.minTemp);
 		const maxTemp = parseFloat(formData.maxTemp);
 
-		if (!isNaN(minTemp) && (minTemp < 10 || minTemp > 29)) {
-			newErrors.minTemp = errors.minTempInvalid;
+		// Check if input is a decimal
+		const minTempStr = formData.minTemp?.toString() || "";
+		const maxTempStr = formData.maxTemp?.toString() || "";
+
+		// Check if input is a decimal
+		const isMinTempDecimal = minTempStr.includes(".");
+		const isMaxTempDecimal = maxTempStr.includes(".");
+
+		// Check for decimal values
+		if (isMinTempDecimal) {
+			newErrors.minTemp = errors.TempDecimalNotAllowed;
 		}
-		if (!isNaN(maxTemp) && (maxTemp < 11 || maxTemp > 30)) {
-			newErrors.maxTemp = errors.maxTempInvalid;
+		if (isMaxTempDecimal) {
+			newErrors.maxTemp = errors.TempDecimalNotAllowed;
 		}
-		if (!isNaN(minTemp) && !isNaN(maxTemp) && maxTemp <= minTemp) {
-			newErrors.maxTemp = errors.maxTempLowerThanMinTemp;
+
+		// Validate the temperature range only if there are no decimal errors
+		if (!isMinTempDecimal && !isMaxTempDecimal) {
+			if (!isNaN(minTemp) && (minTemp < 10 || minTemp > 29)) {
+				newErrors.minTemp = errors.minTempInvalid;
+			}
+			if (!isNaN(maxTemp) && (maxTemp < 11 || maxTemp > 30)) {
+				newErrors.maxTemp = errors.maxTempInvalid;
+			}
+			if (!isNaN(minTemp) && !isNaN(maxTemp) && maxTemp <= minTemp) {
+				newErrors.maxTemp = errors.maxTempLowerThanMinTemp;
+			}
 		}
 
 		if (Object.keys(newErrors).length > 0 || !allFieldsFilled) {

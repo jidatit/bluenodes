@@ -137,10 +137,21 @@ export function CreateHeatingModal({
 	useEffect(() => {
 		const minTemp = parseFloat(formData.minTemp);
 		const maxTemp = parseFloat(formData.maxTemp);
-		// Cross-validate minTemp and maxTemp
+
+		// Check if input is a decimal
+		const isMinTempDecimal = formData.minTemp.includes(".");
+		const isMaxTempDecimal = formData.maxTemp.includes(".");
+
+		// Validate minTemp and maxTemp
 		if (minTemp !== "" && maxTemp !== "") {
-			if (minTemp >= maxTemp) {
-				// error = errors.maxTempLowerThanMinTemp;
+			if (isMinTempDecimal || isMaxTempDecimal) {
+				// Show error if any input is a decimal
+				setErrorMessages((prev) => ({
+					...prev,
+					minTemp: isMinTempDecimal ? errors.TempDecimalNotAllowed : "",
+					maxTemp: isMaxTempDecimal ? errors.TempDecimalNotAllowed : "",
+				}));
+			} else if (minTemp >= maxTemp) {
 				// Update error state for maxTemp when cross-validation fails
 				setErrorMessages((prev) => ({
 					...prev,
@@ -151,6 +162,7 @@ export function CreateHeatingModal({
 				setErrorMessages((prev) => ({
 					...prev,
 					maxTemp: "", // Clear the error message for maxTemp
+					minTemp: "", // Clear the error message for minTemp
 				}));
 			}
 		}
@@ -252,14 +264,29 @@ export function CreateHeatingModal({
 		const minTemp = parseFloat(formData.minTemp);
 		const maxTemp = parseFloat(formData.maxTemp);
 
-		if (!isNaN(minTemp) && (minTemp < 10 || minTemp > 29)) {
-			newErrors.minTemp = errors.minTempInvalid;
+		// Check if input is a decimal
+		const isMinTempDecimal = formData.minTemp.includes(".");
+		const isMaxTempDecimal = formData.maxTemp.includes(".");
+
+		// Check for decimal values
+		if (isMinTempDecimal) {
+			newErrors.minTemp = errors.TempDecimalNotAllowed;
 		}
-		if (!isNaN(maxTemp) && (maxTemp < 11 || maxTemp > 30)) {
-			newErrors.maxTemp = errors.maxTempInvalid;
+		if (isMaxTempDecimal) {
+			newErrors.maxTemp = errors.TempDecimalNotAllowed;
 		}
-		if (!isNaN(minTemp) && !isNaN(maxTemp) && maxTemp <= minTemp) {
-			newErrors.maxTemp = errors.maxTempLowerThanMinTemp;
+
+		// Validate the temperature range only if there are no decimal errors
+		if (!isMinTempDecimal && !isMaxTempDecimal) {
+			if (!isNaN(minTemp) && (minTemp < 10 || minTemp > 29)) {
+				newErrors.minTemp = errors.minTempInvalid;
+			}
+			if (!isNaN(maxTemp) && (maxTemp < 11 || maxTemp > 30)) {
+				newErrors.maxTemp = errors.maxTempInvalid;
+			}
+			if (!isNaN(minTemp) && !isNaN(maxTemp) && maxTemp <= minTemp) {
+				newErrors.maxTemp = errors.maxTempLowerThanMinTemp;
+			}
 		}
 
 		if (Object.keys(newErrors).length > 0 || !allFieldsFilled) {
@@ -373,121 +400,120 @@ export function CreateHeatingModal({
 			// if (!anyRoomSelected && buttonText === "Create") {
 			// 	setButtonText("Confirm");
 			// } else {
-				handleAssignmentData();
-				// onCreate(combinedData);
+			handleAssignmentData();
+			// onCreate(combinedData);
 
-				// Get rooms IDs from the entire Data
-				function getRoomIdsByProgram(data) {
-					const programName = combinedData.formData.programName;
-					const roomIds = [];
+			// Get rooms IDs from the entire Data
+			function getRoomIdsByProgram(data) {
+				const programName = combinedData.formData.programName;
+				const roomIds = [];
 
-					// Loop through each building
-					data.forEach((building) => {
-						// Loop through each floor in the building
-						building.floors.forEach((floor) => {
-							// Loop through each room on the floor
-							floor.rooms.forEach((room) => {
-								// Check if the programAssigned matches the programName
-								if (room.programAssigned === programName) {
-									roomIds.push(room.id);
-								}
-							});
+				// Loop through each building
+				data.forEach((building) => {
+					// Loop through each floor in the building
+					building.floors.forEach((floor) => {
+						// Loop through each room on the floor
+						floor.rooms.forEach((room) => {
+							// Check if the programAssigned matches the programName
+							if (room.programAssigned === programName) {
+								roomIds.push(room.id);
+							}
 						});
 					});
+				});
 
-					return roomIds;
-				}
+				return roomIds;
+			}
 
-				// Convert schedule data into API format
-				function convertScheduleData(data) {
-					const dayMapping = {
-						Monday: 1,
-						Tuesday: 2,
-						Wednesday: 3,
-						Thursday: 4,
-						Friday: 5,
-						Saturday: 6,
-						Sunday: 7,
-					};
-
-					const result = { days: [] };
-
-					const normalizeTime = (value) => {
-						const hours = Math.floor((value * 24) / 96);
-						const minutes = Math.floor(((value * 24 * 60) / 96) % 60);
-						return `${hours.toString().padStart(2, "0")}:${minutes
-							.toString()
-							.padStart(2, "0")}`;
-					};
-
-					for (const [dayName, entries] of Object.entries(data)) {
-						const day = dayMapping[dayName];
-						entries.forEach((entry) => {
-							const from = normalizeTime(entry.y);
-							let to = normalizeTime(entry.y + entry.h);
-							const targetTemperature = parseFloat(entry.temperature, 10);
-
-							if (to === "24:00") {
-								to = "23:59";
-							}
-
-							result.days.push({
-								day,
-								from,
-								to,
-								targetTemperature,
-							});
-						});
-					}
-
-					return result.days;
-				}
-
-				//Manipulating for API
-				const finalObj = {
-					templateName: combinedData.formData.programName,
-					allowDeviceOverride:
-						combinedData.formData.childSafety === "No" ? true : false,
-					...(anyRoomSelected && {
-						locations: getRoomIdsByProgram(
-							combinedData.heatingAssignmentData.buildings,
-						),
-					}),
-					days: convertScheduleData(combinedData.finalScheduleData),
+			// Convert schedule data into API format
+			function convertScheduleData(data) {
+				const dayMapping = {
+					Monday: 1,
+					Tuesday: 2,
+					Wednesday: 3,
+					Thursday: 4,
+					Friday: 5,
+					Saturday: 6,
+					Sunday: 7,
 				};
 
+				const result = { days: [] };
 
-				if (combinedData.formData.childSafety !== "Yes") {
-					finalObj.deviceOverrideTemperatureMin = parseInt(
-						combinedData.formData.minTemp,
-					);
-					finalObj.deviceOverrideTemperatureMax = parseInt(
-						combinedData.formData.maxTemp,
-					);
-				}
-				// console.log(finalObj,"finalObj")
+				const normalizeTime = (value) => {
+					const hours = Math.floor((value * 24) / 96);
+					const minutes = Math.floor(((value * 24 * 60) / 96) % 60);
+					return `${hours.toString().padStart(2, "0")}:${minutes
+						.toString()
+						.padStart(2, "0")}`;
+				};
 
-				// Submit the form or perform other actions
+				for (const [dayName, entries] of Object.entries(data)) {
+					const day = dayMapping[dayName];
+					entries.forEach((entry) => {
+						const from = normalizeTime(entry.y);
+						let to = normalizeTime(entry.y + entry.h);
+						const targetTemperature = parseFloat(entry.temperature, 10);
 
-				axios
-					.post(ApiUrls.SMARTHEATING_HEATINGSCHEDULE.HEATINGSCHEDULE, finalObj)
-					.then((response) => {
-						const { data } = response;
-						if (data.status >= 400) {
-							onCreate("Error");
-						} else {
-							onCreate(combinedData);
-							handleOpenModal();
-							resetModalState();
+						if (to === "24:00") {
+							to = "23:59";
 						}
-					})
-					.catch((error) => {
-						if (error.response && error.response.status >= 400) {
-							onCreate("Error");
-						} else {
-							console.error("Error:", error);
-						}
+
+						result.days.push({
+							day,
+							from,
+							to,
+							targetTemperature,
+						});
 					});
+				}
+
+				return result.days;
+			}
+
+			//Manipulating for API
+			const finalObj = {
+				templateName: combinedData.formData.programName,
+				allowDeviceOverride:
+					combinedData.formData.childSafety === "No" ? true : false,
+				...(anyRoomSelected && {
+					locations: getRoomIdsByProgram(
+						combinedData.heatingAssignmentData.buildings,
+					),
+				}),
+				days: convertScheduleData(combinedData.finalScheduleData),
+			};
+
+			if (combinedData.formData.childSafety !== "Yes") {
+				finalObj.deviceOverrideTemperatureMin = parseInt(
+					combinedData.formData.minTemp,
+				);
+				finalObj.deviceOverrideTemperatureMax = parseInt(
+					combinedData.formData.maxTemp,
+				);
+			}
+			// console.log(finalObj,"finalObj")
+
+			// Submit the form or perform other actions
+
+			axios
+				.post(ApiUrls.SMARTHEATING_HEATINGSCHEDULE.HEATINGSCHEDULE, finalObj)
+				.then((response) => {
+					const { data } = response;
+					if (data.status >= 400) {
+						onCreate("Error");
+					} else {
+						onCreate(combinedData);
+						handleOpenModal();
+						resetModalState();
+					}
+				})
+				.catch((error) => {
+					if (error.response && error.response.status >= 400) {
+						onCreate("Error");
+					} else {
+						console.error("Error:", error);
+					}
+				});
 			// }
 		} else {
 			console.error("handleAssignmentRef.current is not defined");

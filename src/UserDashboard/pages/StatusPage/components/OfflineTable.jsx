@@ -22,6 +22,7 @@ import { MultiSelect } from "primereact/multiselect";
 import axios from "axios";
 import { TreeSelect } from "primereact/treeselect";
 import DateFilter from "./dateFilter/DateFilter";
+import formatTimestamp from "../../../../utils/formatTimeStamp";
 
 const getBatteryImage = (battery_level) => {
 	const level = battery_level;
@@ -418,7 +419,7 @@ const OfflineTable = () => {
 
 									<td className="px-4 py-4">{item.roomName}</td>
 									<td className="px-4 py-4">
-										{item.lastSeen ? formatDate(item.lastSeen) : "-"}
+										{item.lastSeen ? formatTimestamp(item?.lastSeen) : "-"}
 									</td>
 									<td className="px-4 py-4 truncate">
 										<Tooltip
