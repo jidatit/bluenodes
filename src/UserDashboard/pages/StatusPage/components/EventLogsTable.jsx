@@ -479,14 +479,15 @@ const EventLogsTable = () => {
                 borderRadius: "4px",
               }}
             />
-            <DateFilter
-              ref={dateFilterRef}
-              closeDropdown={closeDateFilter}
-              setCloseDateFilter={setCloseDateFilter}
-              onDatesChange={handleDatesChange}
-              setApiLocationsToBeSend={setApiLocationsToBeSend}
-              selectedLocationFilter={selectedLocationFilter}
-            />
+            <div>
+              <DateFilter
+                closeDropdown={closeDateFilter}
+                setCloseDateFilter={setCloseDateFilter}
+                onDatesChange={handleDatesChange}
+                setApiLocationsToBeSend={setApiLocationsToBeSend}
+                selectedLocationFilter={selectedLocationFilter}
+              />
+            </div>
           </div>
         </div>
         {/* Table */}
