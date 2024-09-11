@@ -160,3 +160,12 @@ border-radius: 10px;
 .p-treenode-content:focus{
   border: none;
 }
+.p-treeselect .p-treeselect-label-container {
+  outline: none !important; /* Removes the blue focus border */
+  box-shadow: none !important; /* Ensures no shadow is applied */
+}
+
+.p-treeselect .p-treeselect-label-container:focus {
+  outline: none !important; /* Removes the outline when focused */
+  box-shadow: none !important;
+}

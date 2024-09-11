@@ -16,10 +16,10 @@ const getDateRange = (option) => {
       endDate = new Date(now);
 
       // Subtract one day from the start date
-      startDate.setDate(startDate.getDate() - 1);
+      startDate.setDate(startDate.getDate());
 
       // Add one day to the end date
-      endDate.setDate(endDate.getDate() + 1);
+      endDate.setDate(endDate.getDate());
       break;
 
     case "Yesterday":

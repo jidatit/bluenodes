@@ -1,20 +1,15 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable react/prop-types */
 import { useState, useEffect } from "react";
-import { Select, Tooltip } from "flowbite-react";
+import { Tooltip } from "flowbite-react";
 import { IoChevronBackOutline } from "react-icons/io5";
 import { IoChevronForwardOutline } from "react-icons/io5";
-import { MdOutlineAccessTimeFilled } from "react-icons/md";
 import { FaCircleInfo } from "react-icons/fa6";
 import { RiErrorWarningFill } from "react-icons/ri";
 import { IoSearch } from "react-icons/io5";
 import { IoIosWarning } from "react-icons/io";
-import { FaSearch } from "react-icons/fa";
-import { GiTireIronCross } from "react-icons/gi";
+
 import { fetchEventLogsData } from "../data/Statuspageapis";
 import { TreeSelect } from "primereact/treeselect";
 import axios from "axios";
-import { CiCircleRemove } from "react-icons/ci";
 import ApiUrls from "../../../../globals/apiURL";
 import { MultiSelect } from "primereact/multiselect";
 import DateFilter from "./dateFilter/DateFilter";
@@ -29,9 +24,6 @@ const EventLogsTable = () => {
   const [selectedLocationFilter, setSelectedLocationFilter] = useState(0);
   const handleTreeSelectClick = () => {
     setCloseDateFilter(true);
-    setdateFrom(null);
-    setdateTo(null);
-    // Additional logic for TreeSelect click if needed
   };
   const handleMultiSelectClick = () => {
     if (selectedLocationFilter === 0) {
@@ -92,7 +84,7 @@ const EventLogsTable = () => {
   const [selectedKeys, setSelectedKeys] = useState({});
   const [selectedRoomIds, setSelectedRoomIds] = useState(new Set());
   const [Deselectedkeys, setDeselectedKeys] = useState({});
-  const [permanentKeys, setPermanentKeys] = useState([]);
+
   const getAllKeys = (node) => {
     let keys = [node.key];
     if (node.children) {
@@ -103,15 +95,16 @@ const EventLogsTable = () => {
     return keys;
   };
 
+  const [expandedKeys, setExpandedKeys] = useState({});
+  console.log(expandedKeys);
   const updateSelection = (newSelectedKeys) => {
-    let newSelectedRoomIds = new Set([...selectedRoomIds]);
-    let updatedKeys = { ...selectedKeys };
-    let updatedDeselectedKeys = { ...Deselectedkeys };
+    const newSelectedRoomIds = new Set([...selectedRoomIds]);
+    const updatedKeys = { ...selectedKeys };
+    const updatedDeselectedKeys = { ...Deselectedkeys };
+    const newExpandedKeys = { ...expandedKeys };
 
-    console.log("Current Deselectedkeys", updatedDeselectedKeys);
-
-    // Add newly selected keys and their children
-    Object.keys(newSelectedKeys).forEach((key) => {
+    // Helper function to select a node and all its children
+    const selectNodeAndChildren = (key) => {
       const node = findNodeByKey(key, LocationsData);
       if (node) {
         const allKeys = getAllKeys(node); // Get all children keys
@@ -121,11 +114,17 @@ const EventLogsTable = () => {
             newSelectedRoomIds.add(childKey); // Add room ID
           }
         });
+        newExpandedKeys[key] = true; // Expand the node
+      }
+    };
 
-        // If key was previously deselected, remove it from updatedDeselectedKeys
-        if (updatedDeselectedKeys[key]) {
-          delete updatedDeselectedKeys[key];
-        }
+    // Add newly selected keys and their children
+    Object.keys(newSelectedKeys).forEach((key) => {
+      selectNodeAndChildren(key);
+
+      // Remove from deselected keys if previously deselected
+      if (updatedDeselectedKeys[key]) {
+        delete updatedDeselectedKeys[key];
       }
     });
 
@@ -144,6 +143,21 @@ const EventLogsTable = () => {
         }
         // Add to deselected keys
         updatedDeselectedKeys[key] = true;
+
+        // Ensure that the node stays expanded even when deselected
+        if (node.children && node.children.length > 0) {
+          newExpandedKeys[key] = true; // Keep the node expanded
+        }
+
+        // Deselect parent ONLY IF ALL children are deselected
+        if (node.children && node.children.length > 0) {
+          const allChildrenDeselected = node.children.every(
+            (child) => updatedDeselectedKeys[child.key]
+          );
+          if (allChildrenDeselected) {
+            delete updatedKeys[node.key]; // Deselect parent if all children are deselected
+          }
+        }
       }
     });
 
@@ -180,12 +194,10 @@ const EventLogsTable = () => {
     // Update state
     setSelectedKeys(updatedKeys);
     setSelectedRoomIds(newSelectedRoomIds);
-    setDeselectedKeys(updatedDeselectedKeys); // Update the state for deselected keys
+    setDeselectedKeys(updatedDeselectedKeys);
+    setExpandedKeys(newExpandedKeys); // Update expanded keys
 
-    console.log("Updated Keys", updatedKeys);
-    console.log("Permanent Keys", permanentKeys);
-    console.log("Room IDs", newSelectedRoomIds);
-    console.log("Updated Deselected Keys", updatedDeselectedKeys);
+    console.log("Deselected Keys", updatedDeselectedKeys);
 
     // Handle selected room IDs and filters
     const locations = Array.from(newSelectedRoomIds);
@@ -211,15 +223,18 @@ const EventLogsTable = () => {
 
     updateSelection(newSelectedKeys);
   };
-
+  const [parentNodes, setParentNodes] = useState(null);
+  console.log("parent nodes", parentNodes);
   const findNodeByKey = (key, nodes) => {
     for (const node of nodes) {
       if (node.key === key) {
         return node;
       }
+      console.log("node", node);
       if (node.children) {
         const childNode = findNodeByKey(key, node.children);
         if (childNode) {
+          setParentNodes(childNode);
           return childNode;
         }
       }
@@ -349,11 +364,13 @@ const EventLogsTable = () => {
           <div className="flex flex-row justify-center items-center gap-1">
             <TreeSelect
               value={selectedKeys}
-              options={filteredLocations} // Use filteredLocations here
+              options={filteredLocations}
               onChange={onNodeSelectChange}
               onClick={handleTreeSelectClick}
               selectionMode="multiple"
               placeholder="Alle Gebäude"
+              expandedKeys={expandedKeys}
+              onToggle={(e) => setExpandedKeys(e.value)}
               filter
               filterBy="label"
               filterValue={filterValue}
@@ -362,6 +379,10 @@ const EventLogsTable = () => {
               panelStyle={{
                 border: "0.5px solid #bababa",
                 borderRadius: "4px",
+              }}
+              style={{
+                outline: "none", // Removes the blue border from the component
+                boxShadow: "none", // Removes the focus shadow if applied
               }}
               filterTemplate={({ filterInputProps }) => (
                 <div
@@ -388,20 +409,20 @@ const EventLogsTable = () => {
                   <input
                     {...filterInputProps}
                     value={filterValue}
-                    onChange={handleFilterChange} // Ensures the filter input is correctly connected
+                    onChange={handleFilterChange}
                     style={{
                       border: "none",
                       width: "100%",
                       backgroundColor: "transparent",
-                      outline: "none",
-
+                      outline: "none", // Removes the focus outline from the input
                       color: "#6e6e6e",
                     }}
-                    placeholder="Suche" // Optional: you can add a placeholder
+                    placeholder="Suche"
                   />
                 </div>
               )}
             />
+
             <MultiSelect
               value={selectedEventFilters}
               onShow={handleMultiSelectClick}
