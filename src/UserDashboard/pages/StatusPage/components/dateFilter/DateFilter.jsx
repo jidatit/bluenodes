@@ -277,7 +277,7 @@ const DateFilter = ({
               onChange={handleCalendarChange}
               selectionMode="range"
               readOnlyInput={true}
-              dateFormat="dd/mm/yy"
+              dateFormat="dd.mm.yy"
               hideOnRangeSelection
               showIcon
             />

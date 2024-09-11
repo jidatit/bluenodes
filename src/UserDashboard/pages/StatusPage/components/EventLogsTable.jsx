@@ -14,6 +14,7 @@ import ApiUrls from "../../../../globals/apiURL";
 import { MultiSelect } from "primereact/multiselect";
 import DateFilter from "./dateFilter/DateFilter";
 import "../../../../index.css";
+import formatTimestamp from "../../../../utils/formatTimeStamp";
 const EventLogsTable = () => {
   const [selectedEventFilters, setSelectedEventFilters] = useState(null);
   const [ApiLocationsToBeSend, setApiLocationsToBeSend] = useState(null);
@@ -342,17 +343,6 @@ const EventLogsTable = () => {
   let startPage = Math.max(1, currentPage - paginationRange);
   let endPage = Math.min(totalPages, currentPage + paginationRange);
 
-  const formatDate = (dateString) => {
-    const options = {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    };
-    return new Date(dateString).toLocaleDateString("de-DE", options);
-  };
-
   const formatDateforApitosend = (date) => {
     const options = { year: "numeric", month: "2-digit", day: "2-digit" };
     return new Intl.DateTimeFormat("en-GB", options)
@@ -539,17 +529,17 @@ const EventLogsTable = () => {
                       {item.roomTag ? item.roomTag : "-"}
                     </span>
                   </td>
-                  <td className="px-4 py-4 w-full md:w-[15%]">
+                  <td className="px-4 py-4 w-full md:w-[19%]">
                     {item.building_floor_string
                       ? item.building_floor_string
                       : "-"}
                   </td>
                   <td className="px-4 py-4 w-full md:w-[15%]">
-                    {item.createdAt ? formatDate(item.createdAt) : "-"}
+                    {item.createdAt ? formatTimestamp(item.createdAt) : "-"}
                   </td>
-                  <td className="px-4 py-4 w-full md:w-[13%]">
-                    <Tooltip content={item.eventTypeLevel} style="light">
-                      <div className="flex items-center gap-x-2">
+                  <td className="px-4 py-4 w-full md:w-[12.9%]">
+                    <div className="flex items-center gap-x-2">
+                      <Tooltip content={item.eventTypeLevel} style="light">
                         {item.eventTypeLevel === "Information" ? (
                           <FaCircleInfo />
                         ) : item.eventTypeLevel === "Warning" ? (
@@ -557,16 +547,16 @@ const EventLogsTable = () => {
                         ) : (
                           <IoIosWarning className="text-red-700" />
                         )}
-                        <span className="text-sm">
-                          {item.eventTypeMessage ? item.eventTypeMessage : "-"}
-                        </span>
-                      </div>
-                    </Tooltip>
+                      </Tooltip>
+                      <span className="text-sm">
+                        {item.eventTypeMessage ? item.eventTypeMessage : "-"}
+                      </span>
+                    </div>
                   </td>
 
                   <td className="px-4 py-4 w-full md:w-[40%]">
                     <Tooltip content={item.message} style="light">
-                      {item.message ? `${item.message.slice(0, 70)}...` : "-"}
+                      {item.message ? `${item.message}` : "-"}
                     </Tooltip>
                   </td>
                 </tr>

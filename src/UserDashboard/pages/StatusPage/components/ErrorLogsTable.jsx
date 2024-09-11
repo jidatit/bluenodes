@@ -1,11 +1,11 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Tooltip } from "flowbite-react";
 import {
-	IoChevronBackOutline,
-	IoChevronForwardOutline,
-	IoSearch,
+  IoChevronBackOutline,
+  IoChevronForwardOutline,
+  IoSearch,
 } from "react-icons/io5";
 import { MdOutlineAccessTimeFilled } from "react-icons/md";
 import axios from "axios";
@@ -16,462 +16,600 @@ import { fetchEventLogsData } from "../data/Statuspageapis";
 import formatTimestamp from "../../../../utils/formatTimeStamp";
 
 const ErrorLogsTable = () => {
-	const [selectedEventFilters] = useState([{ name: "Error", code: "err" }]); // Predefined filter for errors
-	const [ApiLocationsToBeSend, setApiLocationsToBeSend] = useState(null);
-	const [LocationsData, setLocationsData] = useState([]);
-	const [apiLocationsToBeSendCounter, setApiLocationsToBeSendCounter] =
-		useState(null);
-	const [closeDateFilter, setCloseDateFilter] = useState(false);
-	const handleTreeSelectClick = () => {
-		setCloseDateFilter(true);
+  const [selectedEventFilters] = useState([{ name: "Error", code: "err" }]); // Predefined filter for errors
 
-		// Additional logic for TreeSelect click if needed
-	};
-	// Transform data for TreeSelect
-	const transformData = (nodes) => {
-		return nodes.map((node) => {
-			const key =
-				node.children.length > 0 ? node.id.toString() : `room${node.id}`;
+  const [ApiLocationsToBeSend, setApiLocationsToBeSend] = useState(null);
+  const [apiLocationsToBeSendCounter, setApiLocationsToBeSendCounter] =
+    useState(null);
 
-			const transformedNode = {
-				key: key,
-				label: node.name,
-			};
+  const [filtersSelected, setFiltersSelected] = useState(false);
+  const [selectedLocationFilter, setSelectedLocationFilter] = useState(0);
 
-			if (node.children.length > 0) {
-				transformedNode.children = transformData(node.children);
-			}
+  const [closeDateFilter, setCloseDateFilter] = useState(false); // State to manage dropdown visibility
+  const [LocationsData, setLocationsData] = useState([]);
+  const dateFilterRef = useRef(null);
+  const [floors, setFloors] = useState([]);
+  // Function to handle click outside of the DateFilter
+  useEffect(() => {
+    // Function to handle click outside of the DateFilter
+    const handleClickOutside = (event) => {
+      if (
+        dateFilterRef.current &&
+        !dateFilterRef.current.contains(event.target)
+      ) {
+        setCloseDateFilter(true); // Close dropdown if clicked outside
+      }
+    };
 
-			return transformedNode;
-		});
-	};
+    // Attach the event listener
+    document.addEventListener("mousedown", handleClickOutside);
 
-	const getAllLocations = async () => {
-		try {
-			const data = await axios.get(ApiUrls.SMARTHEATING_LOCATIONS.LIST);
-			const transformedData = transformData(data.data);
-			setFilteredLocations(transformedData);
-			setLocationsData(transformedData);
-		} catch (error) {
-			console.log(error);
-		}
-	};
+    // Clean up the event listener on component unmount
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [dateFilterRef]);
+  const handleTreeSelectClick = () => {
+    setCloseDateFilter(true);
+  };
+  // Transform data for TreeSelect
+  const transformData = (nodes) => {
+    return nodes.map((node) => {
+      const key =
+        node.children.length > 0 ? node.id.toString() : `room${node.id}`;
 
-	useEffect(() => {
-		getAllLocations();
-	}, []);
+      const transformedNode = {
+        key: key,
+        label: node.name,
+      };
 
-	const [tableData, setTableData] = useState([]);
-	const [currentPage, setCurrentPage] = useState(1);
-	const [totalRows, setTotalRows] = useState(0);
+      if (node.children.length > 0) {
+        transformedNode.children = transformData(node.children);
+      }
 
-	const [selectedKeys, setSelectedKeys] = useState({});
-	const [selectedRoomIds, setSelectedRoomIds] = useState(new Set());
+      return transformedNode;
+    });
+  };
 
-	const getAllKeys = (node) => {
-		let keys = [node.key];
-		if (node.children) {
-			for (const child of node.children) {
-				keys = [...keys, ...getAllKeys(child)];
-			}
-		}
-		return keys;
-	};
+  const getAllLocations = async () => {
+    try {
+      const data = await axios.get(ApiUrls.SMARTHEATING_LOCATIONS.LIST);
+      const transformedData = transformData(data.data);
 
-	const updateSelection = (newSelectedKeys) => {
-		let newSelectedRoomIds = new Set([...selectedRoomIds]);
-		const updatedKeys = { ...selectedKeys };
+      setFilteredLocations(transformedData);
+      setLocationsData(transformedData);
+      const extractedFloors = LocationsData.map(
+        (location) => location.children
+      ).flat();
 
-		Object.keys(newSelectedKeys).forEach((key) => {
-			const node = findNodeByKey(key, LocationsData);
-			if (node) {
-				const allKeys = getAllKeys(node);
-				allKeys.forEach((childKey) => {
-					updatedKeys[childKey] = true;
-					if (childKey.startsWith("room")) {
-						newSelectedRoomIds.add(childKey);
-					}
-				});
-			}
-		});
+      // Update the floors state with the extracted children
+      setFloors(extractedFloors);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
-		Object.keys(selectedKeys).forEach((key) => {
-			if (!newSelectedKeys[key]) {
-				const node = findNodeByKey(key, LocationsData);
-				if (node) {
-					const allKeys = getAllKeys(node);
-					allKeys.forEach((childKey) => {
-						delete updatedKeys[childKey];
-						if (childKey.startsWith("room")) {
-							newSelectedRoomIds.delete(childKey);
-						}
-					});
-				}
-			}
-		});
+  useEffect(() => {
+    if (filtersSelected === false) getAllLocations();
+  }, [filtersSelected]);
+  const [tableData, setTableData] = useState([]);
+  // const [selectedFilter, setSelectedFilter] = useState("Last Year");
+  // const [selectedEvent, setSelectedEvent] = useState("All events");
 
-		Object.keys(updatedKeys).forEach((key) => {
-			const node = findNodeByKey(key, LocationsData);
-			if (node && node.children) {
-				const anyChildSelected = node.children.some(
-					(child) => updatedKeys[child.key],
-				);
-				if (!anyChildSelected) {
-					delete updatedKeys[node.key];
-				}
-			}
-		});
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalRows, setTotalRows] = useState(0);
 
-		setSelectedKeys(updatedKeys);
-		setSelectedRoomIds(newSelectedRoomIds);
-		const locations = Array.from(newSelectedRoomIds);
-		const transformedArray = locations.map((item) =>
-			parseInt(item.replace("room", ""), 10),
-		);
-		if (transformedArray.length > 0) {
-			const sep_locations = transformedArray.join(",");
+  const [selectedKeys, setSelectedKeys] = useState({});
+  const [selectedRoomIds, setSelectedRoomIds] = useState(new Set());
+  const [Deselectedkeys, setDeselectedKeys] = useState({});
 
-			setApiLocationsToBeSend(sep_locations);
-			setApiLocationsToBeSendCounter(apiLocationsToBeSendCounter + 1);
-		} else {
-			getData();
-		}
-	};
+  const getAllKeys = (node) => {
+    let keys = [node.key];
+    if (node.children) {
+      for (const child of node.children) {
+        keys = [...keys, ...getAllKeys(child)];
+      }
+    }
+    return keys;
+  };
 
-	const onNodeSelectChange = (e) => {
-		const newSelectedKeys = e.value;
-		setCloseDateFilter(false);
-		updateSelection(newSelectedKeys);
-	};
+  const [expandedKeys, setExpandedKeys] = useState({});
 
-	const findNodeByKey = (key, nodes) => {
-		for (const node of nodes) {
-			if (node.key === key) {
-				return node;
-			}
-			if (node.children) {
-				const childNode = findNodeByKey(key, node.children);
-				if (childNode) {
-					return childNode;
-				}
-			}
-		}
-		return null;
-	};
+  const updateSelection = (newSelectedKeys) => {
+    const newSelectedRoomIds = new Set([...selectedRoomIds]);
+    const updatedKeys = { ...selectedKeys };
+    const updatedDeselectedKeys = { ...Deselectedkeys };
+    const newExpandedKeys = { ...expandedKeys };
 
-	const getData = async (locations) => {
-		try {
-			const eventTypeLevel =
-				(selectedEventFilters !== null &&
-					selectedEventFilters.map((filter) => filter.name).join(",")) ||
-				null;
-			const data = await fetchEventLogsData(
-				currentPage,
-				itemsPerPage,
-				locations,
-				eventTypeLevel,
-				dateTo,
-				dateFrom,
-			);
-			console.log(data, "datatt");
-			setTotalRows(data.count);
-			setTableData(data.rows);
-		} catch (error) {
-			console.log(error);
-		}
-	};
+    // Helper function to select a node and all its children
+    const selectNodeAndChildren = (key) => {
+      const node = findNodeByKey(key, LocationsData);
+      if (node) {
+        selectNodeAndChildrenRecursive(node);
+      }
+    };
 
-	const [dateTo, setdateTo] = useState(null);
-	const [dateFrom, setdateFrom] = useState(null);
+    const selectNodeAndChildrenRecursive = (node) => {
+      updatedKeys[node.key] = true; // Mark node as selected
 
-	useEffect(() => {
-		getData();
-	}, [currentPage]);
+      // Ensure that previously deselected rooms/children get reselected
+      if (updatedDeselectedKeys[node.key]) {
+        delete updatedDeselectedKeys[node.key];
+      }
 
-	useEffect(() => {
-		getData(ApiLocationsToBeSend);
-	}, [ApiLocationsToBeSend, apiLocationsToBeSendCounter, dateTo, dateFrom]);
+      if (node.key.startsWith("room")) {
+        newSelectedRoomIds.add(node.key); // Add room ID back to selected rooms
+      }
+      newExpandedKeys[node.key] = true; // Expand the node
 
-	const itemsPerPage = 10;
-	const totalItems = totalRows;
-	const totalPages = Math.ceil(totalItems / itemsPerPage);
+      if (node.children && node.children.length > 0) {
+        node.children.forEach((child) => {
+          selectNodeAndChildrenRecursive(child); // Select all child nodes
+        });
+      }
+    };
 
-	const handlePageChange = (page) => {
-		setCurrentPage(page);
-	};
+    // Helper function to deselect a node and all its children
+    const deselectNodeAndChildren = (key) => {
+      const node = findNodeByKey(key, LocationsData);
+      if (node) {
+        const allKeys = getAllKeys(node); // Get all children keys
+        allKeys.forEach((childKey) => {
+          delete updatedKeys[childKey]; // Remove selection for child keys
+          if (childKey.startsWith("room")) {
+            newSelectedRoomIds.delete(childKey); // Remove room ID from selection
+          }
+          updatedDeselectedKeys[childKey] = true; // Add to deselected keys
+        });
+      }
+    };
 
-	const startIndex = (currentPage - 1) * itemsPerPage + 1;
-	const endIndex = Math.min(currentPage * itemsPerPage, totalItems);
+    // Add newly selected keys and their children
+    Object.keys(newSelectedKeys).forEach((key) => {
+      if (!updatedKeys[key]) {
+        // Select all children if parent is selected for the first time or reselected
+        selectNodeAndChildren(key);
+      } else {
+        // If the parent is already selected, just select the node
+        updatedKeys[key] = true;
 
-	const paginationRange = 1;
+        // Remove from deselected keys if previously deselected
+        if (updatedDeselectedKeys[key]) {
+          delete updatedDeselectedKeys[key];
+        }
+      }
+    });
 
-	let startPage = Math.max(1, currentPage - paginationRange);
-	let endPage = Math.min(totalPages, currentPage + paginationRange);
+    // Remove unselected keys and their children
+    Object.keys(selectedKeys).forEach((key) => {
+      if (!newSelectedKeys[key]) {
+        deselectNodeAndChildren(key); // Deselect node and its children
 
-	const formatDate = (dateString) => {
-		const options = {
-			year: "numeric",
-			month: "long",
-			day: "numeric",
-			hour: "2-digit",
-			minute: "2-digit",
-		};
-		return new Date(dateString).toLocaleDateString("de-DE", options);
-	};
+        // Add to deselected keys
+        updatedDeselectedKeys[key] = true;
 
-	const formatDateforApitosend = (date) => {
-		const options = { year: "numeric", month: "2-digit", day: "2-digit" };
-		return new Intl.DateTimeFormat("en-GB", options)
-			.format(date)
-			.split("/")
-			.reverse()
-			.join("-");
-	};
+        const node = findNodeByKey(key, LocationsData); // Define node
+        if (node && node.children && node.children.length > 0) {
+          newExpandedKeys[key] = true; // Keep parent node expanded
 
-	const handleDatesChange = (newDates) => {
-		if (!newDates || !newDates[0]) {
-			setdateFrom(null);
-			setdateTo(null);
-			return;
-		}
-		if (newDates[0] && newDates[1]) {
-			const from = formatDateforApitosend(new Date(newDates[0]));
-			setdateFrom(from);
-			const to = formatDateforApitosend(new Date(newDates[1]));
-			setdateTo(to);
-		}
-	};
-	const [filterValue, setFilterValue] = useState("");
-	const [filteredLocations, setFilteredLocations] = useState(LocationsData); // Initialize with LocationsData
+          // Deselect parent ONLY IF all children are deselected
+          const allChildrenDeselected = node.children.every(
+            (child) => updatedDeselectedKeys[child.key]
+          );
+          if (allChildrenDeselected) {
+            delete updatedKeys[key]; // Deselect parent if all children are deselected
+          }
+        }
+      }
+    });
 
-	const handleFilterChange = (event) => {
-		const filterText = event.target.value.toLowerCase();
-		setFilterValue(filterText);
-		let filteredData = []; // Clear the filteredData array
-		const searchInChildren = (node) => {
-			if (node.label.toLowerCase().includes(filterText)) {
-				filteredData.push(node);
-			} else if (node.children) {
-				node.children.forEach((child) => searchInChildren(child));
-				// Remove child filters from filteredData if they don't match the search query
-				filteredData = filteredData.filter((item) => item.key !== node.key);
-			}
-		};
-		LocationsData.forEach((location) => searchInChildren(location));
-		setFilteredLocations(filteredData);
-	};
-	return (
-		<div className="flex flex-col gap-4 w-full">
-			<div className="flex flex-col justify-center items-start w-full">
-				<h1 className="font-[500] text-lg text-gray-900">Error Übersicht</h1>
-			</div>
-			<div className="relative w-full overflow-x-auto bg-white shadow-md sm:rounded-lg">
-				<div className="flex flex-column my-2 bg-transparent mx-2 sm:flex-row flex-wrap space-y-4 sm:space-y-0 items-center justify-between">
-					<div className="flex flex-row justify-center items-center gap-1">
-						<TreeSelect
-							value={selectedKeys}
-							options={filteredLocations} // Use filteredLocations here
-							onChange={onNodeSelectChange}
-							onClick={handleTreeSelectClick}
-							selectionMode="multiple"
-							placeholder="All Buildings"
-							filter
-							filterBy="label"
-							filterValue={filterValue}
-							className="w-full md:w-20rem"
-							closeIcon="false"
-							panelStyle={{
-								border: "0.5px solid #bababa",
-								borderRadius: "4px",
-							}}
-							filterTemplate={({ filterInputProps }) => (
-								<div
-									style={{
-										backgroundColor: "#f5f5f5",
-										padding: "10px",
-										display: "flex",
-										width: "100%",
-										alignItems: "center",
-										borderRadius: "6px",
-										border: "1px solid #d5ddde",
-									}}
-								>
-									<span
-										style={{
-											marginLeft: "8px",
-											marginRight: "8px",
-											color: "#9e9e9e",
-											fontSize: "18px",
-										}}
-									>
-										<IoSearch />
-									</span>
-									<input
-										{...filterInputProps}
-										value={filterValue}
-										onChange={handleFilterChange} // Ensures the filter input is correctly connected
-										style={{
-											border: "none",
-											width: "100%",
-											backgroundColor: "transparent",
-											outline: "none",
+    // Ensure room IDs in updatedKeys are included in newSelectedRoomIds
+    Object.keys(updatedKeys).forEach((key) => {
+      if (key.startsWith("room")) {
+        newSelectedRoomIds.add(key);
+      }
+    });
 
-											color: "#6e6e6e",
-										}}
-										placeholder="Search" // Optional: you can add a placeholder
-									/>
-								</div>
-							)}
-						/>
-						<DateFilter
-							closeDropdown={closeDateFilter}
-							setCloseDateFilter={setCloseDateFilter}
-							onDatesChange={handleDatesChange}
-							setApiLocationsToBeSend={setApiLocationsToBeSend}
-						/>
-					</div>
-				</div>
-				<table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 min-h-[10rem]">
-					<thead className="text-xs font-semibold text-gray-500 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-						<tr>
-							<th scope="col" className="p-4">
-								RAUM
-							</th>
-							<th scope="col" className="p-4">
-								GEBÄUDE - ETAGE
-							</th>
-							<th scope="col" className="p-4">
-								DATUM - UHRZEIT
-							</th>
-							<th scope="col" className="p-4">
-								Fehlermeldung
-							</th>
-						</tr>
-					</thead>
-					<tbody>
-						{tableData.map((item, index) => (
-							<tr
-								key={index}
-								className=" text-sm bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
-							>
-								<td className="px-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-									{item.roomName ? item.roomName : "N/A"}{" "}
-									<span className="text-[12px] py-0.5 px-2.5 font-semibold bg-gray-100 rounded-[80px] p-1">
-										{item.roomTag ? item.roomTag : "N/A"}
-									</span>
-								</td>
-								<td className="px-4 py-4">
-									{item.building_floor_string
-										? item.building_floor_string
-										: "N/A"}
-								</td>
-								<td className="px-4 py-4">
-									{item.createdAt ? formatTimestamp(item?.createdAt) : "N/A"}
-								</td>
-								<td className="px-4 py-4">
-									<Tooltip content={item.message} style="light">
-										{item.message ? `${item.message.slice(0, 25)}...` : "N/A"}
-									</Tooltip>
-								</td>
-							</tr>
-						))}
-					</tbody>
-				</table>
-				{/* Pagination */}
-				{tableData.length === 0 && (
-					<>
-						<div className="w-full bg-slate-100 flex flex-col justify-center items-center">
-							<p className="w-full text-center italic py-2 font-semibold">
-								Keine Ergebnisse
-							</p>
-						</div>
-					</>
-				)}
+    // Remove room IDs from newSelectedRoomIds that are in updatedDeselectedKeys
+    Object.keys(updatedDeselectedKeys).forEach((key) => {
+      if (key.startsWith("room")) {
+        newSelectedRoomIds.delete(key);
+      }
+    });
 
-				<div className="w-full p-3 flex flex-row justify-between items-center">
-					{tableData && (
-						<p className="font-light text-sm text-gray-500">
-							{" "}
-							<span className="font-bold text-black">
-								{startIndex}-{endIndex}
-							</span>{" "}
-							von <span className="font-bold text-black">{totalItems}</span>
-						</p>
-					)}
+    // Update state
+    setSelectedKeys(updatedKeys);
+    setSelectedRoomIds(newSelectedRoomIds);
+    setDeselectedKeys(updatedDeselectedKeys);
+    setExpandedKeys(newExpandedKeys); // Update expanded keys
 
-					{/* Pagination */}
-					<div className="flex justify-end border rounded-md border-gray-200 w-fit">
-						<button
-							onClick={() => handlePageChange(currentPage - 1)}
-							className={`inline-flex items-center px-4 py-2 text-sm font-medium rounded-sm ${
-								currentPage === 1
-									? "text-gray-300 cursor-not-allowed"
-									: "text-primary bg-[#CFF4FB] hover:bg-primary-300"
-							}`}
-							disabled={currentPage === 1}
-						>
-							<IoChevronBackOutline />
-						</button>
-						{startPage > 1 && (
-							<button
-								onClick={() => handlePageChange(1)}
-								className="inline-flex items-center px-4 py-2 text-sm font-medium rounded-sm text-gray-500 bg-white hover:bg-gray-100"
-							>
-								1
-							</button>
-						)}
-						{startPage > 2 && (
-							<span className="inline-flex items-center px-4 py-2 text-sm font-medium rounded-sm text-gray-500 bg-white">
-								...
-							</span>
-						)}
-						{Array.from({ length: endPage - startPage + 1 }, (_, index) => (
-							<button
-								key={startPage + index}
-								onClick={() => handlePageChange(startPage + index)}
-								className={`inline-flex items-center px-4 py-2 text-sm font-medium rounded-sm ${
-									currentPage === startPage + index
-										? "text-primary bg-[#CFF4FB] hover:bg-primary-300"
-										: "text-gray-500 bg-white hover:bg-gray-100"
-								}`}
-							>
-								{startPage + index}
-							</button>
-						))}
-						{endPage < totalPages - 1 && (
-							<span className="inline-flex items-center px-4 py-2 text-sm font-medium rounded-sm text-gray-500 bg-white">
-								...
-							</span>
-						)}
-						{endPage < totalPages && (
-							<button
-								onClick={() => handlePageChange(totalPages)}
-								className={`inline-flex items-center px-4 py-2 text-sm font-medium rounded-sm ${
-									currentPage === totalPages
-										? "text-gray-300 cursor-not-allowed"
-										: "text-gray-500 bg-white hover:bg-gray-100"
-								}`}
-								disabled={currentPage === totalPages}
-							>
-								{totalPages}
-							</button>
-						)}
-						<button
-							onClick={() => handlePageChange(currentPage + 1)}
-							className={`inline-flex items-center px-4 py-2 text-sm font-medium rounded-sm ${
-								currentPage === totalPages
-									? "text-gray-300 cursor-not-allowed"
-									: "text-primary bg-[#CFF4FB] hover:bg-primary-300"
-							}`}
-							disabled={currentPage === totalPages}
-						>
-							<IoChevronForwardOutline />
-						</button>
-					</div>
-				</div>
-			</div>
-		</div>
-	);
+    console.log("Deselected Keys", updatedDeselectedKeys);
+    console.log("Selected Keys", updatedKeys);
+
+    // Handle selected room IDs and filters
+    const locations = Array.from(newSelectedRoomIds);
+    const transformedArray = locations.map((item) =>
+      parseInt(item.replace("room", ""), 10)
+    );
+
+    if (transformedArray.length > 0) {
+      const sep_locations = transformedArray.join(",");
+      setFiltersSelected(true);
+      setSelectedLocationFilter(transformedArray.length);
+      setApiLocationsToBeSend(sep_locations);
+      setApiLocationsToBeSendCounter(apiLocationsToBeSendCounter + 1);
+    } else {
+      setSelectedLocationFilter(0);
+      setFiltersSelected(false);
+      getData();
+    }
+  };
+
+  const onNodeSelectChange = (e) => {
+    const newSelectedKeys = e.value;
+
+    updateSelection(newSelectedKeys);
+    setExpandedKeys((prevExpandedKeys) => ({
+      ...prevExpandedKeys,
+      // Optionally include additional logic to ensure the tree stays expanded as needed
+    }));
+  };
+
+  const [parentNodes, setParentNodes] = useState(null);
+
+  const findNodeByKey = (key, nodes) => {
+    for (const node of nodes) {
+      if (node.key === key) {
+        return node;
+      }
+
+      if (node.children) {
+        const childNode = findNodeByKey(key, node.children);
+        if (childNode) {
+          setParentNodes(childNode);
+          return childNode;
+        }
+      }
+    }
+    return null;
+  };
+
+  const getData = async (locations) => {
+    try {
+      const eventTypeLevel =
+        (selectedEventFilters !== null &&
+          selectedEventFilters.map((filter) => filter.name).join(",")) ||
+        null;
+
+      const data = await fetchEventLogsData(
+        currentPage,
+        itemsPerPage,
+        locations,
+        eventTypeLevel,
+        dateTo,
+        dateFrom
+      );
+
+      setTotalRows(data.count);
+      setTableData(data.rows);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const [dateTo, setdateTo] = useState(null);
+  const [dateFrom, setdateFrom] = useState(null);
+
+  useEffect(() => {
+    getData(ApiLocationsToBeSend);
+  }, [
+    ApiLocationsToBeSend,
+    apiLocationsToBeSendCounter,
+    dateTo,
+    dateFrom,
+    currentPage,
+  ]);
+
+  useEffect(() => {
+    if (selectedEventFilters !== null) {
+      getData(ApiLocationsToBeSend);
+    }
+  }, [selectedEventFilters]);
+
+  const itemsPerPage = 10;
+  const totalItems = totalRows && totalRows;
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
+  const startIndex = (currentPage - 1) * itemsPerPage + 1;
+  const endIndex = Math.min(currentPage * itemsPerPage, totalItems);
+
+  const paginationRange = 1;
+
+  let startPage = Math.max(1, currentPage - paginationRange);
+  let endPage = Math.min(totalPages, currentPage + paginationRange);
+
+  const formatDate = (dateString) => {
+    const options = {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    };
+    return new Date(dateString).toLocaleDateString("de-DE", options);
+  };
+
+  const formatDateforApitosend = (date) => {
+    const options = { year: "numeric", month: "2-digit", day: "2-digit" };
+    return new Intl.DateTimeFormat("en-GB", options)
+      .format(date)
+      .split("/")
+      .reverse()
+      .join("-");
+  };
+
+  const handleDatesChange = (newDates) => {
+    console.log(newDates);
+    if (!newDates || !newDates[0]) {
+      setdateFrom(null);
+      setdateTo(null);
+      return;
+    }
+    if (newDates[0] && newDates[1]) {
+      let from = newDates[0] && formatDateforApitosend(new Date(newDates[0]));
+      setdateFrom(from);
+      let to = newDates[1] && formatDateforApitosend(new Date(newDates[1]));
+      setdateTo(to);
+    }
+  };
+  const [filterValue, setFilterValue] = useState("");
+  const [filteredLocations, setFilteredLocations] = useState(LocationsData);
+
+  // Initialize with LocationsData
+
+  const handleFilterChange = (event) => {
+    const filterText = event.target.value.toLowerCase();
+    setFilterValue(filterText);
+    let filteredData = []; // Clear the filteredData array
+    const searchInChildren = (node) => {
+      if (node.label.toLowerCase().includes(filterText)) {
+        filteredData.push(node);
+      } else if (node.children) {
+        node.children.forEach((child) => searchInChildren(child));
+        // Remove child filters from filteredData if they don't match the search query
+        filteredData = filteredData.filter((item) => item.key !== node.key);
+      }
+    };
+    LocationsData.forEach((location) => searchInChildren(location));
+    setFilteredLocations(filteredData);
+  };
+
+  return (
+    <div className="flex flex-col gap-4 w-full">
+      <div className="flex flex-col justify-center items-start w-full">
+        <h1 className="font-[500] text-lg text-gray-900">Error Übersicht</h1>
+      </div>
+      <div className="relative w-full overflow-x-auto bg-white shadow-md sm:rounded-lg">
+        <div className="flex flex-column my-2 bg-transparent mx-2 sm:flex-row flex-wrap space-y-4 sm:space-y-0 items-center justify-between">
+          <div className="flex flex-row justify-center items-center gap-1">
+            <TreeSelect
+              value={selectedKeys}
+              options={filteredLocations}
+              onChange={onNodeSelectChange}
+              onClick={handleTreeSelectClick}
+              selectionMode="multiple"
+              placeholder="Alle Gebäude"
+              expandedKeys={expandedKeys}
+              onToggle={(e) => {
+                const updatedExpandedKeys = { ...expandedKeys, ...e.value };
+                setExpandedKeys(updatedExpandedKeys); // Maintain expanded state
+              }}
+              filter
+              filterBy="label"
+              filterValue={filterValue}
+              className="w-full md:w-20rem"
+              closeIcon="false"
+              panelStyle={{
+                border: "0.5px solid #bababa",
+                borderRadius: "4px",
+                outline: "none", // Ensures no outline is present
+                boxShadow: "none", // Ensures no box-shadow is applied
+              }}
+              style={{
+                outline: "none", // Removes the blue border from the component
+                boxShadow: "none", // Removes the focus shadow if applied
+              }}
+              filterTemplate={({ filterInputProps }) => (
+                <div
+                  style={{
+                    backgroundColor: "#f5f5f5",
+                    padding: "10px",
+                    display: "flex",
+                    width: "100%",
+                    alignItems: "center",
+                    borderRadius: "6px",
+                    border: "1px solid #d5ddde",
+                  }}
+                >
+                  <span
+                    style={{
+                      marginLeft: "8px",
+                      marginRight: "8px",
+                      color: "#9e9e9e",
+                      fontSize: "18px",
+                    }}
+                  >
+                    <IoSearch />
+                  </span>
+                  <input
+                    {...filterInputProps}
+                    value={filterValue}
+                    onChange={handleFilterChange}
+                    style={{
+                      border: "none",
+                      width: "100%",
+                      backgroundColor: "transparent",
+                      outline: "none", // Removes the focus outline from the input
+                      color: "#6e6e6e",
+                    }}
+                    placeholder="Suche"
+                  />
+                </div>
+              )}
+            />
+            <DateFilter
+              closeDropdown={closeDateFilter}
+              setCloseDateFilter={setCloseDateFilter}
+              onDatesChange={handleDatesChange}
+              setApiLocationsToBeSend={setApiLocationsToBeSend}
+            />
+          </div>
+        </div>
+        <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 min-h-[10rem]">
+          <thead className="text-xs font-semibold text-gray-500 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+            <tr>
+              <th scope="col" className="p-4">
+                RAUM
+              </th>
+              <th scope="col" className="p-4">
+                GEBÄUDE - ETAGE
+              </th>
+              <th scope="col" className="p-4">
+                DATUM - UHRZEIT
+              </th>
+              <th scope="col" className="p-4">
+                Fehlermeldung
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {tableData.map((item, index) => (
+              <tr
+                key={index}
+                className=" text-sm bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
+              >
+                <td className="px-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                  {item.roomName ? item.roomName : "N/A"}{" "}
+                  <span className="text-[12px] py-0.5 px-2.5 font-semibold bg-gray-100 rounded-[80px] p-1">
+                    {item.roomTag ? item.roomTag : "N/A"}
+                  </span>
+                </td>
+                <td className="px-4 py-4">
+                  {item.building_floor_string
+                    ? item.building_floor_string
+                    : "N/A"}
+                </td>
+                <td className="px-4 py-4">
+                  {item.createdAt ? formatTimestamp(item?.createdAt) : "N/A"}
+                </td>
+                <td className="px-4 py-4">
+                  <Tooltip content={item.message} style="light">
+                    {item.message ? `${item.message.slice(0, 25)}...` : "N/A"}
+                  </Tooltip>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        {/* Pagination */}
+        {tableData.length === 0 && (
+          <>
+            <div className="w-full bg-slate-100 flex flex-col justify-center items-center">
+              <p className="w-full text-center italic py-2 font-semibold">
+                Keine Ergebnisse
+              </p>
+            </div>
+          </>
+        )}
+
+        <div className="w-full p-3 flex flex-row justify-between items-center">
+          {tableData && (
+            <p className="font-light text-sm text-gray-500">
+              {" "}
+              <span className="font-bold text-black">
+                {startIndex}-{endIndex}
+              </span>{" "}
+              von <span className="font-bold text-black">{totalItems}</span>
+            </p>
+          )}
+
+          {/* Pagination */}
+          <div className="flex justify-end border rounded-md border-gray-200 w-fit">
+            <button
+              onClick={() => handlePageChange(currentPage - 1)}
+              className={`inline-flex items-center px-4 py-2 text-sm font-medium rounded-sm ${
+                currentPage === 1
+                  ? "text-gray-300 cursor-not-allowed"
+                  : "text-primary bg-[#CFF4FB] hover:bg-primary-300"
+              }`}
+              disabled={currentPage === 1}
+            >
+              <IoChevronBackOutline />
+            </button>
+            {startPage > 1 && (
+              <button
+                onClick={() => handlePageChange(1)}
+                className="inline-flex items-center px-4 py-2 text-sm font-medium rounded-sm text-gray-500 bg-white hover:bg-gray-100"
+              >
+                1
+              </button>
+            )}
+            {startPage > 2 && (
+              <span className="inline-flex items-center px-4 py-2 text-sm font-medium rounded-sm text-gray-500 bg-white">
+                ...
+              </span>
+            )}
+            {Array.from({ length: endPage - startPage + 1 }, (_, index) => (
+              <button
+                key={startPage + index}
+                onClick={() => handlePageChange(startPage + index)}
+                className={`inline-flex items-center px-4 py-2 text-sm font-medium rounded-sm ${
+                  currentPage === startPage + index
+                    ? "text-primary bg-[#CFF4FB] hover:bg-primary-300"
+                    : "text-gray-500 bg-white hover:bg-gray-100"
+                }`}
+              >
+                {startPage + index}
+              </button>
+            ))}
+            {endPage < totalPages - 1 && (
+              <span className="inline-flex items-center px-4 py-2 text-sm font-medium rounded-sm text-gray-500 bg-white">
+                ...
+              </span>
+            )}
+            {endPage < totalPages && (
+              <button
+                onClick={() => handlePageChange(totalPages)}
+                className={`inline-flex items-center px-4 py-2 text-sm font-medium rounded-sm ${
+                  currentPage === totalPages
+                    ? "text-gray-300 cursor-not-allowed"
+                    : "text-gray-500 bg-white hover:bg-gray-100"
+                }`}
+                disabled={currentPage === totalPages}
+              >
+                {totalPages}
+              </button>
+            )}
+            <button
+              onClick={() => handlePageChange(currentPage + 1)}
+              className={`inline-flex items-center px-4 py-2 text-sm font-medium rounded-sm ${
+                currentPage === totalPages
+                  ? "text-gray-300 cursor-not-allowed"
+                  : "text-primary bg-[#CFF4FB] hover:bg-primary-300"
+              }`}
+              disabled={currentPage === totalPages}
+            >
+              <IoChevronForwardOutline />
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default ErrorLogsTable;
