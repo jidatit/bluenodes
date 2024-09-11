@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Tooltip } from "flowbite-react";
 import { IoChevronBackOutline } from "react-icons/io5";
 import { IoChevronForwardOutline } from "react-icons/io5";
@@ -19,9 +19,34 @@ const EventLogsTable = () => {
   const [ApiLocationsToBeSend, setApiLocationsToBeSend] = useState(null);
   const [apiLocationsToBeSendCounter, setApiLocationsToBeSendCounter] =
     useState(null);
-  const [closeDateFilter, setCloseDateFilter] = useState(false);
+
   const [filtersSelected, setFiltersSelected] = useState(false);
   const [selectedLocationFilter, setSelectedLocationFilter] = useState(0);
+
+  const [closeDateFilter, setCloseDateFilter] = useState(false); // State to manage dropdown visibility
+
+  const dateFilterRef = useRef(null);
+  const [floors, setFloors] = useState([]);
+  // Function to handle click outside of the DateFilter
+  useEffect(() => {
+    // Function to handle click outside of the DateFilter
+    const handleClickOutside = (event) => {
+      if (
+        dateFilterRef.current &&
+        !dateFilterRef.current.contains(event.target)
+      ) {
+        setCloseDateFilter(true); // Close dropdown if clicked outside
+      }
+    };
+
+    // Attach the event listener
+    document.addEventListener("mousedown", handleClickOutside);
+
+    // Clean up the event listener on component unmount
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [dateFilterRef]);
   const handleTreeSelectClick = () => {
     setCloseDateFilter(true);
   };
@@ -30,9 +55,6 @@ const EventLogsTable = () => {
       setApiLocationsToBeSend(null);
     }
     setCloseDateFilter(true);
-
-    setdateFrom(null);
-    setdateTo(null);
   };
   const eventFilterOptions = [
     { name: "Information", code: "info" },
@@ -65,12 +87,20 @@ const EventLogsTable = () => {
     try {
       const data = await axios.get(ApiUrls.SMARTHEATING_LOCATIONS.LIST);
       const transformedData = transformData(data.data);
+
       setFilteredLocations(transformedData);
       setLocationsData(transformedData);
+      const extractedFloors = LocationsData.map(
+        (location) => location.children
+      ).flat();
+
+      // Update the floors state with the extracted children
+      setFloors(extractedFloors);
     } catch (error) {
       console.log(error);
     }
   };
+
   useEffect(() => {
     if (filtersSelected === false) getAllLocations();
   }, [filtersSelected]);
@@ -96,7 +126,7 @@ const EventLogsTable = () => {
   };
 
   const [expandedKeys, setExpandedKeys] = useState({});
-  console.log(expandedKeys);
+
   const updateSelection = (newSelectedKeys) => {
     const newSelectedRoomIds = new Set([...selectedRoomIds]);
     const updatedKeys = { ...selectedKeys };
@@ -107,71 +137,79 @@ const EventLogsTable = () => {
     const selectNodeAndChildren = (key) => {
       const node = findNodeByKey(key, LocationsData);
       if (node) {
+        selectNodeAndChildrenRecursive(node);
+      }
+    };
+
+    const selectNodeAndChildrenRecursive = (node) => {
+      updatedKeys[node.key] = true; // Mark node as selected
+
+      // Ensure that previously deselected rooms/children get reselected
+      if (updatedDeselectedKeys[node.key]) {
+        delete updatedDeselectedKeys[node.key];
+      }
+
+      if (node.key.startsWith("room")) {
+        newSelectedRoomIds.add(node.key); // Add room ID back to selected rooms
+      }
+      newExpandedKeys[node.key] = true; // Expand the node
+
+      if (node.children && node.children.length > 0) {
+        node.children.forEach((child) => {
+          selectNodeAndChildrenRecursive(child); // Select all child nodes
+        });
+      }
+    };
+
+    // Helper function to deselect a node and all its children
+    const deselectNodeAndChildren = (key) => {
+      const node = findNodeByKey(key, LocationsData);
+      if (node) {
         const allKeys = getAllKeys(node); // Get all children keys
         allKeys.forEach((childKey) => {
-          updatedKeys[childKey] = true; // Mark all children as selected
+          delete updatedKeys[childKey]; // Remove selection for child keys
           if (childKey.startsWith("room")) {
-            newSelectedRoomIds.add(childKey); // Add room ID
+            newSelectedRoomIds.delete(childKey); // Remove room ID from selection
           }
+          updatedDeselectedKeys[childKey] = true; // Add to deselected keys
         });
-        newExpandedKeys[key] = true; // Expand the node
       }
     };
 
     // Add newly selected keys and their children
     Object.keys(newSelectedKeys).forEach((key) => {
-      selectNodeAndChildren(key);
+      if (!updatedKeys[key]) {
+        // Select all children if parent is selected for the first time or reselected
+        selectNodeAndChildren(key);
+      } else {
+        // If the parent is already selected, just select the node
+        updatedKeys[key] = true;
 
-      // Remove from deselected keys if previously deselected
-      if (updatedDeselectedKeys[key]) {
-        delete updatedDeselectedKeys[key];
+        // Remove from deselected keys if previously deselected
+        if (updatedDeselectedKeys[key]) {
+          delete updatedDeselectedKeys[key];
+        }
       }
     });
 
     // Remove unselected keys and their children
     Object.keys(selectedKeys).forEach((key) => {
       if (!newSelectedKeys[key]) {
-        const node = findNodeByKey(key, LocationsData);
-        if (node) {
-          const allKeys = getAllKeys(node); // Get all children keys
-          allKeys.forEach((childKey) => {
-            delete updatedKeys[childKey]; // Remove selection for child keys
-            if (childKey.startsWith("room")) {
-              newSelectedRoomIds.delete(childKey); // Remove room ID from selection
-            }
-          });
-        }
+        deselectNodeAndChildren(key); // Deselect node and its children
+
         // Add to deselected keys
         updatedDeselectedKeys[key] = true;
 
-        // Ensure that the node stays expanded even when deselected
-        if (node.children && node.children.length > 0) {
-          newExpandedKeys[key] = true; // Keep the node expanded
-        }
+        const node = findNodeByKey(key, LocationsData); // Define node
+        if (node && node.children && node.children.length > 0) {
+          newExpandedKeys[key] = true; // Keep parent node expanded
 
-        // Deselect parent ONLY IF ALL children are deselected
-        if (node.children && node.children.length > 0) {
+          // Deselect parent ONLY IF all children are deselected
           const allChildrenDeselected = node.children.every(
             (child) => updatedDeselectedKeys[child.key]
           );
           if (allChildrenDeselected) {
-            delete updatedKeys[node.key]; // Deselect parent if all children are deselected
-          }
-        }
-      }
-    });
-
-    // Ensure deselected nodes stay deselected and remove from updatedKeys
-    Object.keys(updatedKeys).forEach((key) => {
-      if (updatedDeselectedKeys[key]) {
-        delete updatedKeys[key]; // Remove from updatedKeys
-        const node = findNodeByKey(key, LocationsData);
-        if (node && node.children) {
-          const anyChildSelected = node.children.some(
-            (child) => updatedKeys[child.key]
-          );
-          if (!anyChildSelected) {
-            delete updatedKeys[node.key]; // Deselect parent if no children are selected
+            delete updatedKeys[key]; // Deselect parent if all children are deselected
           }
         }
       }
@@ -198,6 +236,7 @@ const EventLogsTable = () => {
     setExpandedKeys(newExpandedKeys); // Update expanded keys
 
     console.log("Deselected Keys", updatedDeselectedKeys);
+    console.log("Selected Keys", updatedKeys);
 
     // Handle selected room IDs and filters
     const locations = Array.from(newSelectedRoomIds);
@@ -224,13 +263,13 @@ const EventLogsTable = () => {
     updateSelection(newSelectedKeys);
   };
   const [parentNodes, setParentNodes] = useState(null);
-  console.log("parent nodes", parentNodes);
+
   const findNodeByKey = (key, nodes) => {
     for (const node of nodes) {
       if (node.key === key) {
         return node;
       }
-      console.log("node", node);
+
       if (node.children) {
         const childNode = findNodeByKey(key, node.children);
         if (childNode) {
@@ -334,7 +373,9 @@ const EventLogsTable = () => {
     }
   };
   const [filterValue, setFilterValue] = useState("");
-  const [filteredLocations, setFilteredLocations] = useState(LocationsData); // Initialize with LocationsData
+  const [filteredLocations, setFilteredLocations] = useState(LocationsData);
+
+  // Initialize with LocationsData
 
   const handleFilterChange = (event) => {
     const filterText = event.target.value.toLowerCase();
@@ -379,6 +420,8 @@ const EventLogsTable = () => {
               panelStyle={{
                 border: "0.5px solid #bababa",
                 borderRadius: "4px",
+                outline: "none", // Ensures no outline is present
+                boxShadow: "none", // Ensures no box-shadow is applied
               }}
               style={{
                 outline: "none", // Removes the blue border from the component
@@ -440,6 +483,7 @@ const EventLogsTable = () => {
               }}
             />
             <DateFilter
+              ref={dateFilterRef}
               closeDropdown={closeDateFilter}
               setCloseDateFilter={setCloseDateFilter}
               onDatesChange={handleDatesChange}

@@ -28,7 +28,6 @@
   position: relative;
   /* other styles as needed */
 }
-
 .react-grid-item > .react-resizable-handle.react-resizable-handle-s {
   bottom: -8px;
   transform: rotate(0deg);
@@ -168,4 +167,19 @@ border-radius: 10px;
 .p-treeselect .p-treeselect-label-container:focus {
   outline: none !important; /* Removes the outline when focused */
   box-shadow: none !important;
+}
+p-treeselect .p-treeview .p-highlight {
+  outline: none;
+  box-shadow: none; /* Removes any box-shadow applied on focus */
+}
+
+/* Remove focus outline from TreeSelect */
+.p-treeselect .p-treeview .p-tree-node {
+  outline: none;
+}
+
+/* Remove default focus styles from input */
+.p-treeselect .p-treeview .p-tree-node:focus {
+  outline: none;
+  box-shadow: none; /* Removes focus shadow if applied */
 }

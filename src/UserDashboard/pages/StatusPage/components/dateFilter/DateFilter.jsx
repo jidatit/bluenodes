@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Dropdown } from "primereact/dropdown";
 import { Calendar } from "primereact/calendar";
 import { RadioButton } from "primereact/radiobutton";
@@ -24,7 +24,7 @@ const getDateRange = (option) => {
 
     case "Yesterday":
       startDate = new Date(now);
-      startDate.setDate(now.getDate() - 2); // Subtract two days to get the day before yesterday
+      startDate.setDate(now.getDate() - 1); // Subtract two days to get the day before yesterday
       endDate = new Date(now);
       endDate.setDate(now.getDate() - 1); // Yesterday + 1 day = Today
       break;
@@ -33,31 +33,39 @@ const getDateRange = (option) => {
       const currentDay = now.getDay();
       const startOfWeek = new Date(now);
 
-      // Set to Monday, then subtract one more day
+      // Calculate the start of the week (Monday)
+      // Adjust if today is Sunday (0) to get the previous Monday
       startOfWeek.setDate(
-        now.getDate() - currentDay + (currentDay === 0 ? -7 : 0) - 1
+        now.getDate() - currentDay + (currentDay === 0 ? -6 : 1)
       );
-      startDate = new Date(startOfWeek);
 
-      // Set to the last day of the current week (Sunday) and add one day
-      endDate = new Date(now);
-      endDate.setDate(startDate.getDate() + 7);
-      endDate.setDate(endDate.getDate() + 1);
+      // Set the time to the start of the day
+      startOfWeek.setHours(0, 0, 0, 0);
+
+      // Calculate the end of the week (Sunday)
+      const endOfWeek = new Date(startOfWeek);
+      endOfWeek.setDate(startOfWeek.getDate() + 6); // Add 6 days to get Sunday
+
+      // Set the time to the end of the day
+      endOfWeek.setHours(23, 59, 59, 999);
+
+      // Set endDate to the end of the week
+      startDate = startOfWeek;
+      endDate = endOfWeek;
       break;
 
     case "Last 30 days":
       startDate = new Date(now);
-      startDate.setDate(now.getDate() - 31); // Subtract 31 days to include the previous day before the 30-day range
+      startDate.setDate(now.getDate() - 30); // 30 days ago
       endDate = new Date(now);
-      endDate.setDate(endDate.getDate() + 1); // Add one day to include tomorrow
+      endDate.setDate(endDate.getDate() + 1); // Include end of the day (next day)
       break;
 
     case "LastYear":
       startDate = new Date(now);
-      startDate.setFullYear(now.getFullYear() - 1);
-      startDate.setDate(startDate.getDate() - 1); // Subtract one more day for the year
+      startDate.setFullYear(now.getFullYear() - 1); // One year ago
       endDate = new Date(now);
-      endDate.setDate(endDate.getDate() + 1); // Add one day to include tomorrow
+      endDate.setDate(endDate.getDate() + 1); // Include end of the day (next day)
       break;
 
     case "AllDates":
@@ -82,20 +90,21 @@ const getDateRange = (option) => {
 };
 
 const DateFilter = ({
+  ref,
   onDatesChange,
   closeDropdown,
   setCloseDateFilter,
   setApiLocationsToBeSend,
   selectedLocationFilter,
 }) => {
-  const [selectedOption, setSelectedOption] = useState("last30Days");
+  const [selectedOption, setSelectedOption] = useState("Quick Select");
   const [showCalendar, setShowCalendar] = useState(false);
   const [subDropdownValue, setSubDropdownValue] = useState(null);
   const [dates, setDates] = useState(null);
 
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [selectedDropdownOption, setSelectedDropdownOption] =
-    useState("All Dates");
+    useState("Quick Select");
   const [subDropdownOpen, setSubDropdownOpen] = useState(false);
 
   const subDropdownOptions = [
@@ -121,7 +130,7 @@ const DateFilter = ({
       setDropdownOpen(true);
       setSubDropdownOpen(false);
       setCloseDateFilter(false);
-      if (selectedDropdownOption === "Last30days") {
+      if (selectedDropdownOption === "Quick Select") {
         setSubDropdownOpen(true);
       } else if (selectedDropdownOption === "SpecificDateRange") {
         setShowCalendar(true);
@@ -134,25 +143,13 @@ const DateFilter = ({
     }
   };
 
-  const resetToDefault = () => {
-    setDropdownOpen(false);
-    setCloseDateFilter(false);
-    setSubDropdownOpen(false);
-    setShowCalendar(false);
-    setSelectedDropdownOption("All Dates");
-    let startDate = null,
-      endDate = null;
-    setDates(startDate, endDate);
-    onDatesChange(startDate, endDate);
-  };
-
   const handleDropdownChange = (event) => {
     const selectedValue = event.target.value;
     setSelectedDropdownOption(selectedValue);
 
     setDropdownOpen(true);
 
-    if (selectedValue === "Last30days") {
+    if (selectedValue === "Quick Select") {
       setSubDropdownOpen(true);
       setShowCalendar(false);
       setDates(null); // Reset dates for the specific date range
@@ -187,7 +184,7 @@ const DateFilter = ({
     setDropdownOpen(false);
     setSubDropdownOpen(false);
     setCloseDateFilter(false);
-    setSelectedDropdownOption("All Dates");
+    setSelectedDropdownOption("Quick Select");
     setShowCalendar(false);
     setSubDropdownValue(null);
     let startDate = null,
@@ -196,11 +193,11 @@ const DateFilter = ({
     onDatesChange(startDate, endDate);
   };
   return (
-    <div className="relative flex w-full items-start space-y-2 z-50">
+    <div className="relative flex w-full items-start space-y-2 z-50" ref={ref}>
       <div className="relative w-[90rem] flex gap-x-2">
         <button
           onClick={toggleDropdown}
-          className="flex justify-between text-gray-500 items-center text-[15px] w-40 min-w-60 px-4 py-2.5 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="flex justify-between text-gray-500 items-center text-[1rem] w-40 min-w-60 px-4 py-[0.623rem] bg-white border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
           {selectedDropdownOption}
           <span className="ml-2">
@@ -228,14 +225,14 @@ const DateFilter = ({
             <div className="p-2 flex gap-x-3 justify-center items-center">
               <div className="flex items-center justify-center">
                 <RadioButton
-                  inputId="Last30days"
+                  inputId="Quick Select"
                   name="dateFilter"
-                  value="Last30days"
+                  value="Quick Select"
                   onChange={handleDropdownChange}
-                  checked={selectedDropdownOption === "Last30days"}
+                  checked={selectedDropdownOption === "Quick Select"}
                 />
                 <label htmlFor="Last30days" className="ml-2">
-                  Last 30 days
+                  Quick Select
                 </label>
               </div>
               <div className="flex items-center justify-center">
