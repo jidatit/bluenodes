@@ -261,6 +261,10 @@ const EventLogsTable = () => {
     const newSelectedKeys = e.value;
 
     updateSelection(newSelectedKeys);
+    setExpandedKeys((prevExpandedKeys) => ({
+      ...prevExpandedKeys,
+      // Optionally include additional logic to ensure the tree stays expanded as needed
+    }));
   };
   const [parentNodes, setParentNodes] = useState(null);
 
@@ -411,7 +415,10 @@ const EventLogsTable = () => {
               selectionMode="multiple"
               placeholder="Alle Gebäude"
               expandedKeys={expandedKeys}
-              onToggle={(e) => setExpandedKeys(e.value)}
+              onToggle={(e) => {
+                const updatedExpandedKeys = { ...expandedKeys, ...e.value };
+                setExpandedKeys(updatedExpandedKeys); // Maintain expanded state
+              }}
               filter
               filterBy="label"
               filterValue={filterValue}
