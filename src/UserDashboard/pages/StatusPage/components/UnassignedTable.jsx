@@ -232,7 +232,17 @@ const UnassignedTable = ({ assignUpdate }) => {
         newSelectedRoomIds.delete(key);
       }
     });
+    Object.keys(newSelectedKeys).forEach((key) => {
+      // ...
+      newExpandedKeys[key] = true; // Expand the node
+    });
 
+    Object.keys(selectedKeys).forEach((key) => {
+      if (!newSelectedKeys[key]) {
+        // ...
+        delete newExpandedKeys[key]; // Collapse the node
+      }
+    });
     // Update state
     setSelectedKeys(updatedKeys);
     setSelectedRoomIds(newSelectedRoomIds);
@@ -424,6 +434,11 @@ const UnassignedTable = ({ assignUpdate }) => {
               onToggle={(e) => {
                 const updatedExpandedKeys = { ...expandedKeys, ...e.value };
                 setExpandedKeys(updatedExpandedKeys); // Maintain expanded state
+              }}
+              onCollapse={(e) => {
+                const updatedExpandedKeys = { ...expandedKeys };
+                delete updatedExpandedKeys[e.value]; // Remove collapsed node from expanded keys
+                setExpandedKeys(updatedExpandedKeys);
               }}
               filter
               filterBy="label"

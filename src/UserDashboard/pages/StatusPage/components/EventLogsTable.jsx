@@ -229,7 +229,17 @@ const EventLogsTable = () => {
         newSelectedRoomIds.delete(key);
       }
     });
+    Object.keys(newSelectedKeys).forEach((key) => {
+      // ...
+      newExpandedKeys[key] = true; // Expand the node
+    });
 
+    Object.keys(selectedKeys).forEach((key) => {
+      if (!newSelectedKeys[key]) {
+        // ...
+        delete newExpandedKeys[key]; // Collapse the node
+      }
+    });
     // Update state
     setSelectedKeys(updatedKeys);
     setSelectedRoomIds(newSelectedRoomIds);
@@ -389,7 +399,7 @@ const EventLogsTable = () => {
   };
 
   return (
-    <div className=" flex flex-col gap-4 w-full">
+    <div className=" flex flex-col gap-4 w-full overflow-hidden">
       <div className="flex flex-col justify-center items-start w-full">
         <h1 className=" font-[500] text-lg text-gray-900">Event Übersicht</h1>
       </div>
@@ -408,6 +418,11 @@ const EventLogsTable = () => {
               onToggle={(e) => {
                 const updatedExpandedKeys = { ...expandedKeys, ...e.value };
                 setExpandedKeys(updatedExpandedKeys); // Maintain expanded state
+              }}
+              onCollapse={(e) => {
+                const updatedExpandedKeys = { ...expandedKeys };
+                delete updatedExpandedKeys[e.value]; // Remove collapsed node from expanded keys
+                setExpandedKeys(updatedExpandedKeys);
               }}
               filter
               filterBy="label"
@@ -491,7 +506,7 @@ const EventLogsTable = () => {
           </div>
         </div>
         {/* Table */}
-        <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 z-10 min-h-[10rem]">
+        <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 z-10 min-h-[10rem] overflow-x-hidden">
           <thead className="text-xs font-semibold text-gray-500 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
             <tr>
               <th scope="col" className="p-4">

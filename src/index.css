@@ -90,11 +90,17 @@ padding: 10px !important;
 }
 .p-treenode-leaf .p-treenode-label{
 
-border: 1px solid #14d8ff;
+
 padding: 12px;
 border-radius: 10px;
-color: #00515f;
+color: #000000;
 }
+/* .p-tree .p-tree-container .p-treenode .p-treenode-leaf .p-treenode-label.p-highlight{
+
+
+background: #004152 !important;
+} */
+
 .p-treenode-leaf .p-treenode-content .p-tree-toggler{
 display: none !important;
   
