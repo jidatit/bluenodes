@@ -38,10 +38,10 @@ const ErrorLogsTable = () => {
   const [floors, setFloors] = useState([]);
 
   const eventFilterOptions = [
-    { name: "Information", code: "info", germanLabel: "Information" },
+    // { name: "Information", code: "info", germanLabel: "Information" },
     { name: "Error", code: "err", germanLabel: "Fehler" },
-    { name: "Warning", code: "warn", germanLabel: "Warnung" },
-    { name: "Behoben", code: "beh", germanLabel: "Behoben" },
+    // { name: "Warning", code: "warn", germanLabel: "Warnung" },
+    // { name: "Behoben", code: "beh", germanLabel: "Behoben" },
   ];
   // Function to handle click outside of the DateFilter
   const handleMultiSelectClick = () => {
