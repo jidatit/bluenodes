@@ -327,7 +327,13 @@ export function CreateHeatingModal({
 	};
 
 	const handlePrevious = () => {
-		if (currentStep === 2 || currentStep === 3) {
+		if (currentStep === 2) {
+			if (handleCheckRef.current) {
+				handleCheckRef.current();
+			}
+			setFinalScheduleData(layoutsRef.current);
+			setCurrentStep((prev) => Math.max(prev - 1, 0));
+		} else if (currentStep===3) {
 			setCurrentStep((prev) => Math.max(prev - 1, 0));
 		}
 	};

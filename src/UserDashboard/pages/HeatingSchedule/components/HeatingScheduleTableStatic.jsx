@@ -301,7 +301,7 @@ function HeatingScheduleTableStatic({ locationDetails, props }) {
 						}}
 					>
           <div
-            className="absolute top-[0] left-0 bottom-0 right-0 w-full h-full flex flex-col"
+            className="absolute top-[1px] left-0 bottom-0 right-0 w-full h-full flex flex-col"
             style={{
               gap: `${rowHeight}px`, // Use rowHeight to match the height of labels
               zIndex: "10",
@@ -338,7 +338,7 @@ function HeatingScheduleTableStatic({ locationDetails, props }) {
 									{initialLayouts[day].map((box) => (
 										<div
 											key={box.i}
-											className={`box relative w-full rounded-md z-10 ${
+											className={`box pb-[50px] relative w-full rounded-md z-10 ${
 												box.temperature === false ? "border border-red-500" : ""
 											}`}
 											style={{
