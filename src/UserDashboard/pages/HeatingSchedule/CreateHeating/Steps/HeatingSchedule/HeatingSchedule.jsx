@@ -60,117 +60,40 @@ function HeatingSchedule({
 
 	const invalidInputString = "Bitte eine Temperatur zwischen 10 und 30 °C eintragen."
 
-	const initialLayouts =
-		clone && locationDetails
-			? {
-					Monday: groupedData[1].map((item, index) => ({
-						w: 1,
-						h: item.to - item.from,
-						x: 0,
-						y: item.from,
-						i: `box-Monday-${index + 1}`,
-						minW: 1,
-						maxW: 2,
-						minH: 4,
-						maxH: 96,
-						moved: false,
-						static: false,
-						temperature: item.targetTemperature.toString(),
-					})),
-					Tuesday: groupedData[2].map((item, index) => ({
-						w: 1,
-						h: item.to - item.from,
-						x: 0,
-						y: item.from,
-						i: `box-Tuesday-${index + 1}`,
-						minW: 1,
-						maxW: 2,
-						minH: 4,
-						maxH: 96,
-						moved: false,
-						static: false,
-						temperature: item.targetTemperature.toString(),
-					})),
-					Wednesday: groupedData[3].map((item, index) => ({
-						w: 1,
-						h: item.to - item.from,
-						x: 0,
-						y: item.from,
-						i: `box-Wednesday-${index + 1}`,
-						minW: 1,
-						maxW: 2,
-						minH: 4,
-						maxH: 96,
-						moved: false,
-						static: false,
-						temperature: item.targetTemperature.toString(),
-					})),
-					Thursday: groupedData[4].map((item, index) => ({
-						w: 1,
-						h: item.to - item.from,
-						x: 0,
-						y: item.from,
-						i: `box-Thursday-${index + 1}`,
-						minW: 1,
-						maxW: 2,
-						minH: 4,
-						maxH: 96,
-						moved: false,
-						static: false,
-						temperature: item.targetTemperature.toString(),
-					})),
-					Friday: groupedData[5].map((item, index) => ({
-						w: 1,
-						h: item.to - item.from,
-						x: 0,
-						y: item.from,
-						i: `box-Friday-${index + 1}`,
-						minW: 1,
-						maxW: 2,
-						minH: 4,
-						maxH: 96,
-						moved: false,
-						static: false,
-						temperature: item.targetTemperature.toString(),
-					})),
-					Saturday: groupedData[6].map((item, index) => ({
-						w: 1,
-						h: item.to - item.from,
-						x: 0,
-						y: item.from,
-						i: `box-Saturday-${index + 1}`,
-						minW: 1,
-						maxW: 2,
-						minH: 4,
-						maxH: 96,
-						moved: false,
-						static: false,
-						temperature: item.targetTemperature.toString(),
-					})),
-					Sunday: groupedData[7].map((item, index) => ({
-						w: 1,
-						h: item.to - item.from,
-						x: 0,
-						y: item.from,
-						i: `box-Sunday-${index + 1}`,
-						minW: 1,
-						maxW: 2,
-						minH: 4,
-						maxH: 96,
-						moved: false,
-						static: false,
-						temperature: item.targetTemperature.toString(),
-					})),
-				}
-			: {
-					Monday: [],
-					Tuesday: [],
-					Wednesday: [],
-					Thursday: [],
-					Friday: [],
-					Saturday: [],
-					Sunday: [],
-				};
+	// Helper function to map data by translated day names
+	const createLayouts = (groupedData, translatedDays) => {
+		const layouts = {};
+		
+		translatedDays.forEach((day, index) => {
+		layouts[day] = groupedData[index + 1].map((item, i) => ({
+			w: 1,
+			h: item.to - item.from,
+			x: 0,
+			y: item.from,
+			i: `box-${day}-${i + 1}`,
+			minW: 1,
+			maxW: 2,
+			minH: 4,
+			maxH: 96,
+			moved: false,
+			static: false,
+			temperature: item.targetTemperature.toString(),
+		}));
+		});
+	
+		return layouts;
+	};
+
+	const initialLayouts = clone && locationDetails ? createLayouts(groupedData, daysOfWeek)
+	: {
+			[daysOfWeek[0]]: [],
+			[daysOfWeek[1]]: [],
+			[daysOfWeek[2]]: [],
+			[daysOfWeek[3]]: [],
+			[daysOfWeek[4]]: [],
+			[daysOfWeek[5]]: [],
+			[daysOfWeek[6]]: [],
+		};
 
 	const rowHeight = 20; // Each row represents 20 pixels
 
@@ -279,7 +202,9 @@ function HeatingSchedule({
 			.filter(Boolean); // Filter out null values (boxes to be removed)
 	};
 
+
 	const handleContainerClick = (event) => {
+		console.log(isResizingOrDragging,Object.keys(editableBoxes).length)
 		if (
 			Object.keys(editableBoxes).length > 0 ||
 			(Object.keys(editableBoxes).length > 0 && isResizingOrDragging)
@@ -312,11 +237,17 @@ function HeatingSchedule({
 			return;
 		} else if (isResizingOrDragging) {
 			// Ignore the click if a resize or drag event is in progress
+		console.log("to3")
+
 			return;
 		} else if (event.target.closest(".box")) {
+		console.log("to4")
+
 			// If the click happened inside a box, do nothing
 			return;
 		}
+
+		console.log("to2")
 
 		const container = event.currentTarget;
 		const rect = container.getBoundingClientRect();
@@ -998,6 +929,7 @@ function HeatingSchedule({
 										});
 										setTimeout(() => {
 											setIsResizingOrDragging(false);
+											setEditableBoxes({})
 										}, 500);
 									}}
 								>
