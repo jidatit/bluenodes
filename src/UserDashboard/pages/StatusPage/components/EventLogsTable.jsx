@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Tooltip } from "flowbite-react";
 import { IoChevronBackOutline } from "react-icons/io5";
 import { IoChevronForwardOutline } from "react-icons/io5";
-import { FaCircleInfo } from "react-icons/fa6";
+import { FaCircleCheck, FaCircleInfo } from "react-icons/fa6";
 import { RiErrorWarningFill } from "react-icons/ri";
 import { IoSearch } from "react-icons/io5";
 import { IoIosWarning } from "react-icons/io";
@@ -382,6 +382,10 @@ const EventLogsTable = () => {
     setFilteredLocations(filteredData);
   };
 
+	const handleNodeToggle = (e) => {
+    setExpandedKeys(e.value); // Update expanded keys state
+  };
+
   return (
     <div className=" flex flex-col gap-4 w-full overflow-hidden">
       <div className="flex flex-col justify-center items-start w-full">
@@ -396,6 +400,8 @@ const EventLogsTable = () => {
               options={filteredLocations}
               onChange={onNodeSelectChange}
               onClick={handleTreeSelectClick}
+							expandedKeys={expandedKeys} // Use expandedKeys to manage expanded nodes
+							onToggle={handleNodeToggle} // Handle node expand/collapse event
               selectionMode="multiple"
               placeholder="Alle Gebäude"
               filter
@@ -528,22 +534,24 @@ const EventLogsTable = () => {
                   <td className="px-4 py-4 w-full md:w-[15%]">
                     {item.createdAt ? formatTimestamp(item.createdAt) : "-"}
                   </td>
-                  <td className="px-4 py-4 w-full md:w-[12.9%]">
-                    <div className="flex items-center gap-x-2">
-                      <Tooltip content={item.eventTypeLevel} style="light">
-                        {item.eventTypeLevel === "Information" ? (
-                          <FaCircleInfo />
-                        ) : item.eventTypeLevel === "Warning" ? (
-                          <RiErrorWarningFill className="text-yellow-500" />
-                        ) : (
-                          <IoIosWarning className="text-red-700" />
-                        )}
-                      </Tooltip>
-                      <span className="text-sm">
-                        {item.eventTypeMessage ? item.eventTypeMessage : "-"}
-                      </span>
-                    </div>
-                  </td>
+									<td className="px-4 py-4 w-full md:w-[12.9%]">
+										<div className="flex items-center gap-x-2">
+											<Tooltip content={item.eventTypeLevel} style="light">
+												{item.eventTypeLevel === "Information" ? (
+													<FaCircleInfo />
+												) : item.eventTypeLevel === "Warning" ? (
+													<RiErrorWarningFill className="text-yellow-500" />
+												) : item.eventTypeLevel === "Behoben" ? (
+													<FaCircleCheck className="text-green-600" />
+												) : (
+													<IoIosWarning className="text-red-700" />
+												)}
+											</Tooltip>
+											<span className="text-sm">
+												{item.eventTypeMessage ? item.eventTypeMessage : "-"}
+											</span>
+										</div>
+									</td>
 
                   <td className="px-4 py-4 w-full md:w-[40%]">
                     <Tooltip content={item.message} style="light">
