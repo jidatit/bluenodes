@@ -13,6 +13,7 @@ import { Dropdown } from "flowbite-react";
 import useHeatingSchedule from "../../../../hooks/useHeatingSchedule";
 import axios from "axios";
 import ApiUrls from "../../../../globals/apiURL.js";
+import { daysOfWeek } from "../../../../globals/daysofWeek.js";
 
 const AssignProgramModal = ({
 	openModal,
@@ -472,13 +473,13 @@ const AssignProgramModal = ({
 	function convertScheduleData(data) {
 		// console.log(data)
 		const dayMapping = {
-			Monday: 1,
-			Tuesday: 2,
-			Wednesday: 3,
-			Thursday: 4,
-			Friday: 5,
-			Saturday: 6,
-			Sunday: 7,
+			[daysOfWeek[0]]: 1,
+			[daysOfWeek[1]]: 2,
+			[daysOfWeek[2]]: 3,
+			[daysOfWeek[3]]: 4,
+			[daysOfWeek[4]]: 5,
+			[daysOfWeek[5]]: 6,
+			[daysOfWeek[6]]: 7,
 		};
 
 		const result = { days: [] };

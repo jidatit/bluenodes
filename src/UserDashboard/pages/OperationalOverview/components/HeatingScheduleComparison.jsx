@@ -2,22 +2,14 @@
 import GridLayout from "react-grid-layout";
 import "react-grid-layout/css/styles.css";
 import "react-resizable/css/styles.css";
+import { daysOfWeek } from "../../../../globals/daysofWeek";
 
 function HeatingScheduleComparison(props) {
-  const daysOfWeek = [
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
-    "Sunday",
-  ];
   const rowHeight = 20; // Each row represents 70 pixels
 
   // Dummy data for initial layouts
   const initialLayouts = {
-    Monday: [
+    [daysOfWeek[0]]: [
       {
         w: 1,
         h: 24,
@@ -33,7 +25,7 @@ function HeatingScheduleComparison(props) {
         temperature: "20",
       },
     ],
-    Tuesday: [
+    [daysOfWeek[1]]: [
       {
         w: 1,
         h: 24,
@@ -49,7 +41,7 @@ function HeatingScheduleComparison(props) {
         temperature: "22",
       },
     ],
-    Wednesday: [
+    [daysOfWeek[2]]: [
       {
         w: 1,
         h: 24,
@@ -65,7 +57,7 @@ function HeatingScheduleComparison(props) {
         temperature: "21",
       },
     ],
-    Thursday: [
+    [daysOfWeek[3]]: [
       {
         w: 1,
         h: 24,
@@ -81,7 +73,7 @@ function HeatingScheduleComparison(props) {
         temperature: "19",
       },
     ],
-    Friday: [
+    [daysOfWeek[4]]: [
       {
         w: 1,
         h: 24,
@@ -97,7 +89,7 @@ function HeatingScheduleComparison(props) {
         temperature: "18",
       },
     ],
-    Saturday: [
+    [daysOfWeek[5]]: [
       {
         w: 1,
         h: 24,
@@ -113,7 +105,7 @@ function HeatingScheduleComparison(props) {
         temperature: "23",
       },
     ],
-    Sunday: [
+    [daysOfWeek[6]]: [
       {
         w: 1,
         h: 24,
@@ -132,7 +124,7 @@ function HeatingScheduleComparison(props) {
   };
 
   const initialLayouts2 = {
-    Monday: [
+    [daysOfWeek[0]]: [
       {
         w: 1,
         h: 24,
@@ -148,7 +140,7 @@ function HeatingScheduleComparison(props) {
         temperature: "21",
       },
     ],
-    Tuesday: [
+    [daysOfWeek[1]]: [
       {
         w: 1,
         h: 24,
@@ -164,7 +156,7 @@ function HeatingScheduleComparison(props) {
         temperature: "16",
       },
     ],
-    Wednesday: [
+    [daysOfWeek[2]]: [
       {
         w: 1,
         h: 24,
@@ -180,7 +172,7 @@ function HeatingScheduleComparison(props) {
         temperature: "24",
       },
     ],
-    Thursday: [
+    [daysOfWeek[3]]: [
       {
         w: 1,
         h: 24,
@@ -196,7 +188,7 @@ function HeatingScheduleComparison(props) {
         temperature: "10",
       },
     ],
-    Friday: [
+    [daysOfWeek[4]]: [
       {
         w: 1,
         h: 24,
@@ -212,7 +204,7 @@ function HeatingScheduleComparison(props) {
         temperature: "26",
       },
     ],
-    Saturday: [
+    [daysOfWeek[5]]: [
       {
         w: 1,
         h: 24,
@@ -228,7 +220,7 @@ function HeatingScheduleComparison(props) {
         temperature: "2",
       },
     ],
-    Sunday: [
+    [daysOfWeek[6]]: [
       {
         w: 1,
         h: 24,
