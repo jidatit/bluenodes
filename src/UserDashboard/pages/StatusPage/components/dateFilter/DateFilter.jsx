@@ -30,14 +30,15 @@ const getDateRange = (option) => {
       break;
 
     case "Last 7 Days":
-      // Set endDate to today (current time)
-      endDate = new Date(now);
-      endDate.setHours(23, 59, 59, 999); // Set to the end of the day
-
-      // Set startDate to 7 days ago
+      // Set startDate to yesterday (previous day from current day)
       startDate = new Date(now);
-      startDate.setDate(now.getDate() - 7); // Subtract 7 days
+      startDate.setDate(now.getDate() - 7); // Subtract 1 day for the previous day
       startDate.setHours(0, 0, 0, 0); // Set to the start of the day
+
+      // Set endDate to 7 days ago
+      endDate = new Date(now);
+      endDate.setDate(now.getDate() - 1); // Subtract 7 days
+      endDate.setHours(23, 59, 59, 999); // Set to the end of the day
 
       break;
 
@@ -49,13 +50,17 @@ const getDateRange = (option) => {
       break;
 
     case "LastYear":
-      // Set startDate to January 1st of the last year
-      startDate = new Date(now.getFullYear() - 1, 0, 1); // Jan 1st of last year
+      // Set startDate to the previous day from the current day of last year
+      startDate = new Date(now);
+      startDate.setFullYear(now.getFullYear()); // Set to last year
+      startDate.setDate(now.getDate()); // Previous day from today
       startDate.setHours(0, 0, 0, 0); // Set to the start of the day
 
-      // Set endDate to December 31st of the last year
-      endDate = new Date(now.getFullYear() - 1, 11, 31); // Dec 31st of last year
+      // Set endDate to the current day of last year
+      endDate = new Date(now);
+      endDate.setFullYear(now.getFullYear() - 1); // Set to last year
       endDate.setHours(23, 59, 59, 999); // Set to the end of the day
+
       break;
 
     case "AllDates":
@@ -87,22 +92,22 @@ const DateFilter = ({
   setApiLocationsToBeSend,
   selectedLocationFilter,
 }) => {
-  const [selectedOption, setSelectedOption] = useState("Quick Select");
+  const [selectedOption, setSelectedOption] = useState("Schnellauswahl");
   const [showCalendar, setShowCalendar] = useState(false);
   const [subDropdownValue, setSubDropdownValue] = useState(null);
   const [dates, setDates] = useState(null);
 
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [selectedDropdownOption, setSelectedDropdownOption] =
-    useState("Quick Select");
+    useState("Schnellauswahl");
   const [subDropdownOpen, setSubDropdownOpen] = useState(false);
 
   const subDropdownOptions = [
-    { key: "Today", label: "Today" },
-    { key: "Yesterday", label: "Yesterday" },
-    { key: "Last 7 Days", label: "Last 7 Days" },
-    { key: "Last30days", label: "Last 30 days" },
-    { key: "LastYear", label: "LastYear" },
+    { key: "Today", label: "Today", germanLabel: "Heute" },
+    { key: "Yesterday", label: "Yesterday", germanLabel: "Gestern" },
+    { key: "Last7Days", label: "Last 7 Days", germanLabel: "Letzte 7 Tage" },
+    { key: "Last30Days", label: "Last 30 days", germanLabel: "Letzte 30 Tage" },
+    { key: "LastYear", label: "Last Year", germanLabel: "Letztes Jahr" },
   ];
   useEffect(() => {
     if (closeDropdown === true) {
@@ -120,9 +125,9 @@ const DateFilter = ({
       setDropdownOpen(true);
       setSubDropdownOpen(false);
       setCloseDateFilter(false);
-      if (selectedDropdownOption === "Quick Select") {
+      if (selectedDropdownOption === "Schnellauswahl") {
         setSubDropdownOpen(true);
-      } else if (selectedDropdownOption === "SpecificDateRange") {
+      } else if (selectedDropdownOption === "Bestimmter Datumsbereich") {
         setShowCalendar(true);
       }
     } else {
@@ -139,7 +144,7 @@ const DateFilter = ({
 
     setDropdownOpen(true);
 
-    if (selectedValue === "Quick Select") {
+    if (selectedValue === "Schnellauswahl") {
       setSubDropdownOpen(true);
       setShowCalendar(false);
       setDates(null); // Reset dates for the specific date range
@@ -174,7 +179,7 @@ const DateFilter = ({
     setDropdownOpen(false);
     setSubDropdownOpen(false);
     setCloseDateFilter(false);
-    setSelectedDropdownOption("Quick Select");
+    setSelectedDropdownOption("Schnellauswahl");
     setShowCalendar(false);
     setSubDropdownValue(null);
     let startDate = null,
@@ -191,7 +196,7 @@ const DateFilter = ({
         <div className=" flex gap-3">
           <button
             onClick={toggleDropdown}
-            className="flex justify-between text-gray-500 items-center text-[1rem] w-40 min-w-60 px-4 py-[0.623rem] bg-white border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="flex justify-between text-gray-500 items-center text-[1rem] w-40 min-w-72 px-4 py-[0.623rem] bg-white border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             {selectedDropdownOption}
             <span className="ml-2">
@@ -216,49 +221,50 @@ const DateFilter = ({
         </div>
         <div className=" flex flex-col gap-2 absolute top-14 ">
           {dropdownOpen && (
-            <div className=" mt-2 py-2 bg-[#ffffff] border border-gray-300 rounded-md shadow-lg w-[23rem] z-20">
+            <div className=" mt-2 py-2 bg-[#ffffff] border border-gray-300 rounded-md shadow-lg w-[28rem] z-20">
               <div className="p-2 flex gap-x-3 justify-center items-center">
                 <div className="flex items-center justify-center">
                   <RadioButton
-                    inputId="Quick Select"
+                    inputId="Schnellauswahl"
                     name="dateFilter"
-                    value="Quick Select"
+                    value="Schnellauswahl"
                     onChange={handleDropdownChange}
-                    checked={selectedDropdownOption === "Quick Select"}
+                    checked={selectedDropdownOption === "Schnellauswahl"}
                   />
-                  <label htmlFor="Last30days" className="ml-2">
-                    Quick Select
+                  <label htmlFor="Schnellauswahl" className="ml-2">
+                    Schnellauswahl
                   </label>
                 </div>
                 <div className="flex items-center justify-center">
                   <RadioButton
-                    inputId="SpecificDateRange"
+                    inputId="Bestimmter Datumsbereich"
                     name="dateFilter"
-                    value="SpecificDateRange"
+                    value="Bestimmter Datumsbereich"
                     onChange={handleDropdownChange}
-                    checked={selectedDropdownOption === "SpecificDateRange"}
+                    checked={
+                      selectedDropdownOption === "Bestimmter Datumsbereich"
+                    }
                   />
-                  <label htmlFor="SpecificDateRange" className="ml-2">
-                    Specific Date Range
+                  <label htmlFor="Bestimmter Datumsbereich" className="ml-2">
+                    Bestimmter Datumsbereich
                   </label>
                 </div>
               </div>
             </div>
           )}
-
           {subDropdownOpen && (
-            <div className=" py-2 px-4 bg-[#ffffff] border border-gray-300 rounded-md shadow-lg w-[23rem] z-50">
+            <div className="py-2 px-4 bg-[#ffffff] border border-gray-300 rounded-md shadow-lg w-[23rem] z-50">
               {subDropdownOptions.map((category) => (
                 <div key={category.key} className="flex items-center mb-2">
                   <RadioButton
                     inputId={category.key}
                     name="category"
-                    value={category.label}
+                    value={category.label} // Keep the English label as the value
                     onChange={handleSubDropdownChange}
                     checked={subDropdownValue === category.label}
                   />
                   <label htmlFor={category.key} className="ml-2">
-                    {category.label}
+                    {category.germanLabel} {/* Show the German label */}
                   </label>
                 </div>
               ))}

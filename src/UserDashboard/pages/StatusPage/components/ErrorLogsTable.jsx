@@ -119,7 +119,6 @@ const ErrorLogsTable = () => {
     const newSelectedRoomIds = new Set([...selectedRoomIds]);
     const updatedKeys = { ...selectedKeys };
     const updatedDeselectedKeys = { ...Deselectedkeys };
-    const newExpandedKeys = { ...expandedKeys };
 
     // Helper function to select a node and all its children
     const selectNodeAndChildren = (key) => {
@@ -140,7 +139,6 @@ const ErrorLogsTable = () => {
       if (node.key.startsWith("room")) {
         newSelectedRoomIds.add(node.key); // Add room ID back to selected rooms
       }
-      newExpandedKeys[node.key] = true; // Expand the node
 
       if (node.children && node.children.length > 0) {
         node.children.forEach((child) => {
@@ -190,8 +188,6 @@ const ErrorLogsTable = () => {
 
         const node = findNodeByKey(key, LocationsData); // Define node
         if (node && node.children && node.children.length > 0) {
-          newExpandedKeys[key] = true; // Keep parent node expanded
-
           // Deselect parent ONLY IF all children are deselected
           const allChildrenDeselected = node.children.every(
             (child) => updatedDeselectedKeys[child.key]
@@ -216,25 +212,11 @@ const ErrorLogsTable = () => {
         newSelectedRoomIds.delete(key);
       }
     });
-    Object.keys(newSelectedKeys).forEach((key) => {
-      // ...
-      newExpandedKeys[key] = true; // Expand the node
-    });
 
-    Object.keys(selectedKeys).forEach((key) => {
-      if (!newSelectedKeys[key]) {
-        // ...
-        delete newExpandedKeys[key]; // Collapse the node
-      }
-    });
     // Update state
     setSelectedKeys(updatedKeys);
     setSelectedRoomIds(newSelectedRoomIds);
     setDeselectedKeys(updatedDeselectedKeys);
-    setExpandedKeys(newExpandedKeys); // Update expanded keys
-
-    console.log("Deselected Keys", updatedDeselectedKeys);
-    console.log("Selected Keys", updatedKeys);
 
     // Handle selected room IDs and filters
     const locations = Array.from(newSelectedRoomIds);
@@ -259,10 +241,6 @@ const ErrorLogsTable = () => {
     const newSelectedKeys = e.value;
 
     updateSelection(newSelectedKeys);
-    setExpandedKeys((prevExpandedKeys) => ({
-      ...prevExpandedKeys,
-      // Optionally include additional logic to ensure the tree stays expanded as needed
-    }));
   };
 
   const [parentNodes, setParentNodes] = useState(null);
@@ -397,7 +375,9 @@ const ErrorLogsTable = () => {
     LocationsData.forEach((location) => searchInChildren(location));
     setFilteredLocations(filteredData);
   };
-
+  const handleNodeToggle = (e) => {
+    setExpandedKeys(e.value); // Update expanded keys state
+  };
   return (
     <div className="flex flex-col gap-4 w-full">
       <div className="flex flex-col justify-center items-start w-full">
@@ -411,18 +391,10 @@ const ErrorLogsTable = () => {
               options={filteredLocations}
               onChange={onNodeSelectChange}
               onClick={handleTreeSelectClick}
+              expandedKeys={expandedKeys} // Use expandedKeys to manage expanded nodes
+              onToggle={handleNodeToggle} // Handle node expand/collapse event
               selectionMode="multiple"
               placeholder="Alle Gebäude"
-              expandedKeys={expandedKeys}
-              onToggle={(e) => {
-                const updatedExpandedKeys = { ...expandedKeys, ...e.value };
-                setExpandedKeys(updatedExpandedKeys); // Maintain expanded state
-              }}
-              onCollapse={(e) => {
-                const updatedExpandedKeys = { ...expandedKeys };
-                delete updatedExpandedKeys[e.value]; // Remove collapsed node from expanded keys
-                setExpandedKeys(updatedExpandedKeys);
-              }}
               filter
               filterBy="label"
               filterValue={filterValue}
@@ -431,12 +403,12 @@ const ErrorLogsTable = () => {
               panelStyle={{
                 border: "0.5px solid #bababa",
                 borderRadius: "4px",
-                outline: "none", // Ensures no outline is present
-                boxShadow: "none", // Ensures no box-shadow is applied
+                outline: "none",
+                boxShadow: "none",
               }}
               style={{
-                outline: "none", // Removes the blue border from the component
-                boxShadow: "none", // Removes the focus shadow if applied
+                outline: "none",
+                boxShadow: "none",
               }}
               filterTemplate={({ filterInputProps }) => (
                 <div
@@ -468,7 +440,7 @@ const ErrorLogsTable = () => {
                       border: "none",
                       width: "100%",
                       backgroundColor: "transparent",
-                      outline: "none", // Removes the focus outline from the input
+                      outline: "none",
                       color: "#6e6e6e",
                     }}
                     placeholder="Suche"
@@ -476,8 +448,9 @@ const ErrorLogsTable = () => {
                 </div>
               )}
             />
-            <div>
+            <div className="dummy" ref={dateFilterRef}>
               <DateFilter
+                dateRef={dateFilterRef}
                 closeDropdown={closeDateFilter}
                 setCloseDateFilter={setCloseDateFilter}
                 onDatesChange={handleDatesChange}
@@ -487,7 +460,7 @@ const ErrorLogsTable = () => {
             </div>
           </div>
         </div>
-        <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 min-h-[10rem]">
+        <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 min-h-[30rem]">
           <thead className="text-xs font-semibold text-gray-500 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
             <tr>
               <th scope="col" className="p-4">

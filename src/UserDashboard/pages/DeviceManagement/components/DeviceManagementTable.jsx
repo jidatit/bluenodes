@@ -114,8 +114,16 @@ const DeviceManagementTable = () => {
   const handleMultiSelectClick = () => {
     setCloseDateFilter(true);
   };
-  const eventFilterOptions = ["offline", "online"];
-  const batteryLevelOptions = ["low", "medium", "high"];
+  const eventFilterOptions = [
+    { key: "offline", germanLabel: "Offline" },
+    { key: "online", germanLabel: "Online" },
+  ];
+
+  const batteryLevelOptions = [
+    { key: "low", germanLabel: "Niedrig" },
+    { key: "medium", germanLabel: "Mittel" },
+    { key: "high", germanLabel: "Hoch" },
+  ];
   const transformData = (nodes) => {
     return nodes.map((node) => {
       const key =
@@ -191,7 +199,6 @@ const DeviceManagementTable = () => {
     const newSelectedRoomIds = new Set([...selectedRoomIds]);
     const updatedKeys = { ...selectedKeys };
     const updatedDeselectedKeys = { ...Deselectedkeys };
-    const newExpandedKeys = { ...expandedKeys };
 
     // Helper function to select a node and all its children
     const selectNodeAndChildren = (key) => {
@@ -212,7 +219,6 @@ const DeviceManagementTable = () => {
       if (node.key.startsWith("room")) {
         newSelectedRoomIds.add(node.key); // Add room ID back to selected rooms
       }
-      newExpandedKeys[node.key] = true; // Expand the node
 
       if (node.children && node.children.length > 0) {
         node.children.forEach((child) => {
@@ -262,8 +268,6 @@ const DeviceManagementTable = () => {
 
         const node = findNodeByKey(key, LocationsData); // Define node
         if (node && node.children && node.children.length > 0) {
-          newExpandedKeys[key] = true; // Keep parent node expanded
-
           // Deselect parent ONLY IF all children are deselected
           const allChildrenDeselected = node.children.every(
             (child) => updatedDeselectedKeys[child.key]
@@ -288,25 +292,11 @@ const DeviceManagementTable = () => {
         newSelectedRoomIds.delete(key);
       }
     });
-    Object.keys(newSelectedKeys).forEach((key) => {
-      // ...
-      newExpandedKeys[key] = true; // Expand the node
-    });
 
-    Object.keys(selectedKeys).forEach((key) => {
-      if (!newSelectedKeys[key]) {
-        // ...
-        delete newExpandedKeys[key]; // Collapse the node
-      }
-    });
     // Update state
     setSelectedKeys(updatedKeys);
     setSelectedRoomIds(newSelectedRoomIds);
     setDeselectedKeys(updatedDeselectedKeys);
-    setExpandedKeys(newExpandedKeys); // Update expanded keys
-
-    console.log("Deselected Keys", updatedDeselectedKeys);
-    console.log("Selected Keys", updatedKeys);
 
     // Handle selected room IDs and filters
     const locations = Array.from(newSelectedRoomIds);
@@ -326,35 +316,36 @@ const DeviceManagementTable = () => {
       getData();
     }
   };
+
   const onNodeSelectChange = (e) => {
     const newSelectedKeys = e.value;
 
     updateSelection(newSelectedKeys);
-    setExpandedKeys((prevExpandedKeys) => ({
-      ...prevExpandedKeys,
-      // Optionally include additional logic to ensure the tree stays expanded as needed
-    }));
   };
   const handleBatteryLevelChange = (e) => {
-    // Get the selected values
-    const selectedValues = e.value;
+    const selectedOptions = e.value;
 
-    // Update the state with the selected values
-    setSelectedBatteryLevels(selectedValues);
+    // Convert selected values to their keys for the API
+    const selectedKeys = selectedOptions.map((option) => option.key);
+    setSelectedBatteryLevels(selectedOptions);
 
-    // Convert the array to a comma-delimited string for API
-    const formattedBatteryLevel = selectedValues.join(",");
-
-    setBatteryLevel(formattedBatteryLevel);
+    // Convert array to a comma-delimited string for API
+    const formattedBatteryLevel = selectedKeys.join(",");
+    setBatteryLevel(formattedBatteryLevel); // Send the English keys to the backend
   };
   const handleStatusChange = (e) => {
-    const selectedOption = e.value;
+    const selectedOptions = e.value;
 
     // Ensure only one option is selected
-    if (selectedOption && selectedOption.length > 0) {
-      const singleSelection = selectedOption[selectedOption.length - 1]; // Keep only the last selected value
-      setSelectedStatusFilter([singleSelection]);
-      setStatus(singleSelection);
+    if (selectedOptions && selectedOptions.length > 0) {
+      const singleSelection = selectedOptions[selectedOptions.length - 1]; // Keep the last selected value
+
+      // Extract the 'key' for backend and 'germanLabel' for display
+      const selectedKey = singleSelection.key;
+      setSelectedStatusFilter([
+        { key: selectedKey, germanLabel: singleSelection.germanLabel },
+      ]);
+      setStatus(selectedKey); // Send the English key to the backend
     } else {
       setSelectedStatusFilter(null);
       setStatus("");
@@ -566,7 +557,9 @@ const DeviceManagementTable = () => {
     LocationsData.forEach((location) => searchInChildren(location));
     setFilteredLocations(filteredData);
   };
-
+  const handleNodeToggle = (e) => {
+    setExpandedKeys(e.value); // Update expanded keys state
+  };
   return (
     <div className="flex flex-col w-full gap-4">
       <div className="relative w-full overflow-x-auto bg-white shadow-md sm:rounded-lg">
@@ -578,18 +571,10 @@ const DeviceManagementTable = () => {
               options={filteredLocations}
               onChange={onNodeSelectChange}
               onClick={handleTreeSelectClick}
+              expandedKeys={expandedKeys} // Use expandedKeys to manage expanded nodes
+              onToggle={handleNodeToggle} // Handle node expand/collapse event
               selectionMode="multiple"
               placeholder="Alle Gebäude"
-              expandedKeys={expandedKeys}
-              onToggle={(e) => {
-                const updatedExpandedKeys = { ...expandedKeys, ...e.value };
-                setExpandedKeys(updatedExpandedKeys); // Maintain expanded state
-              }}
-              onCollapse={(e) => {
-                const updatedExpandedKeys = { ...expandedKeys };
-                delete updatedExpandedKeys[e.value]; // Remove collapsed node from expanded keys
-                setExpandedKeys(updatedExpandedKeys);
-              }}
               filter
               filterBy="label"
               filterValue={filterValue}
@@ -598,12 +583,12 @@ const DeviceManagementTable = () => {
               panelStyle={{
                 border: "0.5px solid #bababa",
                 borderRadius: "4px",
-                outline: "none", // Ensures no outline is present
-                boxShadow: "none", // Ensures no box-shadow is applied
+                outline: "none",
+                boxShadow: "none",
               }}
               style={{
-                outline: "none", // Removes the blue border from the component
-                boxShadow: "none", // Removes the focus shadow if applied
+                outline: "none",
+                boxShadow: "none",
               }}
               filterTemplate={({ filterInputProps }) => (
                 <div
@@ -635,7 +620,7 @@ const DeviceManagementTable = () => {
                       border: "none",
                       width: "100%",
                       backgroundColor: "transparent",
-                      outline: "none", // Removes the focus outline from the input
+                      outline: "none",
                       color: "#6e6e6e",
                     }}
                     placeholder="Suche"
@@ -643,7 +628,6 @@ const DeviceManagementTable = () => {
                 </div>
               )}
             />
-
             {/* <MultiSelect
 							value={selectedStatusFilter}
 							onShow={handleMultiSelectClick}
@@ -673,9 +657,10 @@ const DeviceManagementTable = () => {
                 border: "0.5px solid #bababa",
                 borderRadius: "4px",
               }}
-              maxSelectedLabels={1} // Ensure only one option can be selected
-              optionLabel={(option) => option} // Display string value directly
+              maxSelectedLabels={1}
+              optionLabel={(option) => option.germanLabel} // Display German label in the UI
             />
+
             <MultiSelect
               value={selectedBatteryLevels}
               onShow={handleMultiSelectClick}
@@ -689,7 +674,7 @@ const DeviceManagementTable = () => {
                 border: "0.5px solid #bababa",
                 borderRadius: "4px",
               }}
-              optionLabel={(option) => option} // Display string value directly
+              optionLabel={(option) => option.germanLabel} // Display German label in the UI
             />
           </div>
           {/* Search bar */}
