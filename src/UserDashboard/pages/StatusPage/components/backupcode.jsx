@@ -48,14 +48,7 @@ const EventLogsTable = () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [dateFilterRef]);
-  const closeDate = () => {
-    console.log("closeDate");
-
-    setCloseDateFilter(true);
-
-    console.log("closeDate", closeDateFilter);
-  };
-  const handleTreeSelectClick = (event) => {
+  const handleTreeSelectClick = () => {
     setCloseDateFilter(true);
   };
   const handleMultiSelectClick = () => {
@@ -95,6 +88,7 @@ const EventLogsTable = () => {
     try {
       const data = await axios.get(ApiUrls.SMARTHEATING_LOCATIONS.LIST);
       const transformedData = transformData(data.data);
+
       setFilteredLocations(transformedData);
       setLocationsData(transformedData);
       const extractedFloors = LocationsData.map(
@@ -138,6 +132,7 @@ const EventLogsTable = () => {
     const newSelectedRoomIds = new Set([...selectedRoomIds]);
     const updatedKeys = { ...selectedKeys };
     const updatedDeselectedKeys = { ...Deselectedkeys };
+    const newExpandedKeys = { ...expandedKeys };
 
     // Helper function to select a node and all its children
     const selectNodeAndChildren = (key) => {
@@ -158,6 +153,7 @@ const EventLogsTable = () => {
       if (node.key.startsWith("room")) {
         newSelectedRoomIds.add(node.key); // Add room ID back to selected rooms
       }
+      newExpandedKeys[node.key] = true; // Expand the node
 
       if (node.children && node.children.length > 0) {
         node.children.forEach((child) => {
@@ -207,6 +203,8 @@ const EventLogsTable = () => {
 
         const node = findNodeByKey(key, LocationsData); // Define node
         if (node && node.children && node.children.length > 0) {
+          newExpandedKeys[key] = true; // Keep parent node expanded
+
           // Deselect parent ONLY IF all children are deselected
           const allChildrenDeselected = node.children.every(
             (child) => updatedDeselectedKeys[child.key]
@@ -231,11 +229,25 @@ const EventLogsTable = () => {
         newSelectedRoomIds.delete(key);
       }
     });
+    Object.keys(newSelectedKeys).forEach((key) => {
+      // ...
+      newExpandedKeys[key] = true; // Expand the node
+    });
 
+    Object.keys(selectedKeys).forEach((key) => {
+      if (!newSelectedKeys[key]) {
+        // ...
+        delete newExpandedKeys[key]; // Collapse the node
+      }
+    });
     // Update state
     setSelectedKeys(updatedKeys);
     setSelectedRoomIds(newSelectedRoomIds);
     setDeselectedKeys(updatedDeselectedKeys);
+    setExpandedKeys(newExpandedKeys); // Update expanded keys
+
+    console.log("Deselected Keys", updatedDeselectedKeys);
+    console.log("Selected Keys", updatedKeys);
 
     // Handle selected room IDs and filters
     const locations = Array.from(newSelectedRoomIds);
@@ -260,6 +272,10 @@ const EventLogsTable = () => {
     const newSelectedKeys = e.value;
 
     updateSelection(newSelectedKeys);
+    setExpandedKeys((prevExpandedKeys) => ({
+      ...prevExpandedKeys,
+      // Optionally include additional logic to ensure the tree stays expanded as needed
+    }));
   };
   const [parentNodes, setParentNodes] = useState(null);
 
@@ -388,9 +404,9 @@ const EventLogsTable = () => {
         <h1 className=" font-[500] text-lg text-gray-900">Event Übersicht</h1>
       </div>
       <div className="relative w-full overflow-x-auto bg-white shadow-md sm:rounded-lg z-10">
-        <div className="flex flex-column my-2 bg-transparent mx-2 sm:flex-row flex-wrap space-y-4 sm:space-y-0 items-center justify-between z-10 ">
+        <div className="flex flex-column my-2 bg-transparent mx-2 sm:flex-row flex-wrap space-y-4 sm:space-y-0 items-center justify-between z-10">
           {/* Filter buttons */}
-          <div className="flex flex-row justify-center items-center gap-1 ">
+          <div className="flex flex-row justify-center items-center gap-1">
             <TreeSelect
               value={selectedKeys}
               options={filteredLocations}
@@ -398,6 +414,16 @@ const EventLogsTable = () => {
               onClick={handleTreeSelectClick}
               selectionMode="multiple"
               placeholder="Alle Gebäude"
+              expandedKeys={expandedKeys}
+              onToggle={(e) => {
+                const updatedExpandedKeys = { ...expandedKeys, ...e.value };
+                setExpandedKeys(updatedExpandedKeys); // Maintain expanded state
+              }}
+              onCollapse={(e) => {
+                const updatedExpandedKeys = { ...expandedKeys };
+                delete updatedExpandedKeys[e.value]; // Remove collapsed node from expanded keys
+                setExpandedKeys(updatedExpandedKeys);
+              }}
               filter
               filterBy="label"
               filterValue={filterValue}
@@ -406,12 +432,12 @@ const EventLogsTable = () => {
               panelStyle={{
                 border: "0.5px solid #bababa",
                 borderRadius: "4px",
-                outline: "none",
-                boxShadow: "none",
+                outline: "none", // Ensures no outline is present
+                boxShadow: "none", // Ensures no box-shadow is applied
               }}
               style={{
-                outline: "none",
-                boxShadow: "none",
+                outline: "none", // Removes the blue border from the component
+                boxShadow: "none", // Removes the focus shadow if applied
               }}
               filterTemplate={({ filterInputProps }) => (
                 <div
@@ -443,7 +469,7 @@ const EventLogsTable = () => {
                       border: "none",
                       width: "100%",
                       backgroundColor: "transparent",
-                      outline: "none",
+                      outline: "none", // Removes the focus outline from the input
                       color: "#6e6e6e",
                     }}
                     placeholder="Suche"
@@ -468,9 +494,8 @@ const EventLogsTable = () => {
                 borderRadius: "4px",
               }}
             />
-            <div className="dummy" ref={dateFilterRef}>
+            <div>
               <DateFilter
-                dateRef={dateFilterRef}
                 closeDropdown={closeDateFilter}
                 setCloseDateFilter={setCloseDateFilter}
                 onDatesChange={handleDatesChange}

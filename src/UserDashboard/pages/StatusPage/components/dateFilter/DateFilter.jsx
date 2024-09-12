@@ -90,7 +90,7 @@ const getDateRange = (option) => {
 };
 
 const DateFilter = ({
-  ref,
+  dateRef,
   onDatesChange,
   closeDropdown,
   setCloseDateFilter,
@@ -193,96 +193,107 @@ const DateFilter = ({
     onDatesChange(startDate, endDate);
   };
   return (
-    <div className="relative flex w-full items-start space-y-2 z-50" ref={ref}>
-      <div className="relative w-[90rem] flex gap-x-2">
-        <button
-          onClick={toggleDropdown}
-          className="flex justify-between text-gray-500 items-center text-[1rem] w-40 min-w-60 px-4 py-[0.623rem] bg-white border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-        >
-          {selectedDropdownOption}
-          <span className="ml-2">
-            <MdOutlineKeyboardArrowDown size={29} className="text-gray-400" />
-          </span>{" "}
-          {/* Down arrow */}
-        </button>
-        {dropdownOpen && (
+    <div
+      className="relative flex w-fit items-start space-y-2 z-50"
+      ref={dateRef}
+    >
+      <div className="relative w-full flex flex-col gap-x-2">
+        <div className=" flex gap-3">
           <button
-            className="bg-red-500 px-4 py-2 text-white shadow-lg rounded-lg"
-            onClick={clearFilter}
+            onClick={toggleDropdown}
+            className="flex justify-between text-gray-500 items-center text-[1rem] w-40 min-w-60 px-4 py-[0.623rem] bg-white border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
-            <Tooltip
-              content={"remove Filter"}
-              style="light"
-              className="-mt-12 ml-24 bg-white shadow-lg"
-            >
-              <CiCircleRemove size={30} />
-            </Tooltip>
+            {selectedDropdownOption}
+            <span className="ml-2">
+              <MdOutlineKeyboardArrowDown size={29} className="text-gray-400" />
+            </span>{" "}
+            {/* Down arrow */}
           </button>
-        )}
-
-        {dropdownOpen && (
-          <div className="absolute top-full mt-2 py-2 bg-[#ffffff] border border-gray-300 rounded-md shadow-lg w-[23rem] z-20">
-            <div className="p-2 flex gap-x-3 justify-center items-center">
-              <div className="flex items-center justify-center">
-                <RadioButton
-                  inputId="Quick Select"
-                  name="dateFilter"
-                  value="Quick Select"
-                  onChange={handleDropdownChange}
-                  checked={selectedDropdownOption === "Quick Select"}
-                />
-                <label htmlFor="Last30days" className="ml-2">
-                  Quick Select
-                </label>
-              </div>
-              <div className="flex items-center justify-center">
-                <RadioButton
-                  inputId="SpecificDateRange"
-                  name="dateFilter"
-                  value="SpecificDateRange"
-                  onChange={handleDropdownChange}
-                  checked={selectedDropdownOption === "SpecificDateRange"}
-                />
-                <label htmlFor="SpecificDateRange" className="ml-2">
-                  Specific Date Range
-                </label>
+          {dropdownOpen && (
+            <button
+              className="bg-red-500 px-4 py-2 text-white shadow-lg rounded-lg"
+              onClick={clearFilter}
+            >
+              <Tooltip
+                content={"remove Filter"}
+                style="light"
+                className="-mt-12 ml-24 bg-white shadow-lg"
+              >
+                <CiCircleRemove size={30} />
+              </Tooltip>
+            </button>
+          )}
+        </div>
+        <div className=" flex flex-col gap-2 absolute top-14 ">
+          {dropdownOpen && (
+            <div className=" mt-2 py-2 bg-[#ffffff] border border-gray-300 rounded-md shadow-lg w-[23rem] z-20">
+              <div className="p-2 flex gap-x-3 justify-center items-center">
+                <div className="flex items-center justify-center">
+                  <RadioButton
+                    inputId="Quick Select"
+                    name="dateFilter"
+                    value="Quick Select"
+                    onChange={handleDropdownChange}
+                    checked={selectedDropdownOption === "Quick Select"}
+                  />
+                  <label htmlFor="Last30days" className="ml-2">
+                    Quick Select
+                  </label>
+                </div>
+                <div className="flex items-center justify-center">
+                  <RadioButton
+                    inputId="SpecificDateRange"
+                    name="dateFilter"
+                    value="SpecificDateRange"
+                    onChange={handleDropdownChange}
+                    checked={selectedDropdownOption === "SpecificDateRange"}
+                  />
+                  <label htmlFor="SpecificDateRange" className="ml-2">
+                    Specific Date Range
+                  </label>
+                </div>
               </div>
             </div>
-          </div>
-        )}
+          )}
 
-        {subDropdownOpen && (
-          <div className="absolute top-full mt-[4rem] py-2 px-4 bg-[#ffffff] border border-gray-300 rounded-md shadow-lg w-[23rem] z-50">
-            {subDropdownOptions.map((category) => (
-              <div key={category.key} className="flex items-center mb-2">
-                <RadioButton
-                  inputId={category.key}
-                  name="category"
-                  value={category.label}
-                  onChange={handleSubDropdownChange}
-                  checked={subDropdownValue === category.label}
-                />
-                <label htmlFor={category.key} className="ml-2">
-                  {category.label}
-                </label>
-              </div>
-            ))}
-          </div>
-        )}
+          {subDropdownOpen && (
+            <div className=" py-2 px-4 bg-[#ffffff] border border-gray-300 rounded-md shadow-lg w-[23rem] z-50">
+              {subDropdownOptions.map((category) => (
+                <div key={category.key} className="flex items-center mb-2">
+                  <RadioButton
+                    inputId={category.key}
+                    name="category"
+                    value={category.label}
+                    onChange={handleSubDropdownChange}
+                    checked={subDropdownValue === category.label}
+                  />
+                  <label htmlFor={category.key} className="ml-2">
+                    {category.label}
+                  </label>
+                </div>
+              ))}
+            </div>
+          )}
 
-        {showCalendar && (
-          <div className="absolute top-full p-6 left-0 mt-[4rem] shadow-lg bg-white w-[23rem] rounded-lg border z-50">
-            <Calendar
-              value={dates}
-              onChange={handleCalendarChange}
-              selectionMode="range"
-              readOnlyInput={true}
-              dateFormat="dd.mm.yy"
-              hideOnRangeSelection
-              showIcon
-            />
-          </div>
-        )}
+          {showCalendar && (
+            <div
+              className=" p-6 ccc relative shadow-lg bg-white w-[23rem] rounded-lg border z-50"
+              // ref={dateRef}
+            >
+              <Calendar
+                // dateRef={dateRef}
+                value={dates}
+                onChange={handleCalendarChange}
+                selectionMode="range"
+                readOnlyInput={true}
+                dateFormat="dd.mm.yy"
+                hideOnRangeSelection
+                showIcon
+                appendTo={"self"}
+              />
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
