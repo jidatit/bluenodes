@@ -59,10 +59,10 @@ const EventLogsTable = () => {
     setCloseDateFilter(true);
   };
   const eventFilterOptions = [
-    { name: "Information", code: "info" },
-    { name: "Error", code: "err" },
-    { name: "Warning", code: "warn" },
-    { name: "Behoben", code: "beh" },
+    { name: "Information", code: "info", germanLabel: "Information" },
+    { name: "Error", code: "err", germanLabel: "Fehler" },
+    { name: "Warning", code: "warn", germanLabel: "Warnung" },
+    { name: "Behoben", code: "beh", germanLabel: "Behoben" },
   ];
 
   const [LocationsData, setLocationsData] = useState([]);
@@ -376,7 +376,7 @@ const EventLogsTable = () => {
     setFilteredLocations(filteredData);
   };
 
-	const handleNodeToggle = (e) => {
+  const handleNodeToggle = (e) => {
     setExpandedKeys(e.value); // Update expanded keys state
   };
 
@@ -394,8 +394,8 @@ const EventLogsTable = () => {
               options={filteredLocations}
               onChange={onNodeSelectChange}
               onClick={handleTreeSelectClick}
-							expandedKeys={expandedKeys} // Use expandedKeys to manage expanded nodes
-							onToggle={handleNodeToggle} // Handle node expand/collapse event
+              expandedKeys={expandedKeys} // Use expandedKeys to manage expanded nodes
+              onToggle={handleNodeToggle} // Handle node expand/collapse event
               selectionMode="multiple"
               placeholder="Alle Gebäude"
               filter
@@ -458,9 +458,9 @@ const EventLogsTable = () => {
               onChange={(e) => setSelectedEventFilters(e.value)}
               showSelectAll={false}
               options={eventFilterOptions}
-              optionLabel="name"
+              optionLabel="germanLabel" // Use the German label for the UI
               filter
-              placeholder="All Events"
+              placeholder="Alle Ereignisse" // German translation for "All Events"
               display="chip"
               className="w-full md:w-20rem"
               panelStyle={{
@@ -511,43 +511,42 @@ const EventLogsTable = () => {
                   key={index}
                   className="text-sm bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
                 >
-                  <td className="px-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white w-full md:w-[6%]">
+                  <td className="px-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white w-[6%]">
                     {item.id ? item.id : "-"}
                   </td>
-                  <td className="px-4 py-4 font-medium text-gray-900 break-words dark:text-white w-full md:w-[15%]">
+                  <td className="px-4 py-4 font-medium text-gray-900 break-words dark:text-white w-[15%]">
                     {item.roomName ? item.roomName : "-"}{" "}
                     <span className="text-[10px] py-0.5 px-2.5 font-semibold bg-gray-100 rounded-[80px] p-1">
                       {item.roomTag ? item.roomTag : "-"}
                     </span>
                   </td>
-                  <td className="px-4 py-4 w-full md:w-[19%]">
+                  <td className="px-4 py-4 w-[19%]">
                     {item.building_floor_string
                       ? item.building_floor_string
                       : "-"}
                   </td>
-                  <td className="px-4 py-4 w-full md:w-[15%]">
+                  <td className="px-4 py-4 w-[13%]">
                     {item.createdAt ? formatTimestamp(item.createdAt) : "-"}
                   </td>
-									<td className="px-4 py-4 w-full md:w-[12.9%]">
-										<div className="flex items-center gap-x-2">
-											<Tooltip content={item.eventTypeLevel} style="light">
-												{item.eventTypeLevel === "Information" ? (
-													<FaCircleInfo />
-												) : item.eventTypeLevel === "Warning" ? (
-													<RiErrorWarningFill className="text-yellow-500" />
-												) : item.eventTypeLevel === "Behoben" ? (
-													<FaCircleCheck className="text-green-600" />
-												) : (
-													<IoIosWarning className="text-red-700" />
-												)}
-											</Tooltip>
-											<span className="text-sm">
-												{item.eventTypeMessage ? item.eventTypeMessage : "-"}
-											</span>
-										</div>
-									</td>
-
-                  <td className="px-4 py-4 w-full md:w-[40%]">
+                  <td className="px-4 py-4 w-[12.9%]">
+                    <div className="flex items-center gap-x-2">
+                      <Tooltip content={item.eventTypeLevel} style="light">
+                        {item.eventTypeLevel === "Information" ? (
+                          <FaCircleInfo />
+                        ) : item.eventTypeLevel === "Warning" ? (
+                          <RiErrorWarningFill className="text-yellow-500" />
+                        ) : item.eventTypeLevel === "Behoben" ? (
+                          <FaCircleCheck className="text-green-600" />
+                        ) : (
+                          <IoIosWarning className="text-red-700" />
+                        )}
+                      </Tooltip>
+                      <span className="text-sm">
+                        {item.eventTypeMessage ? item.eventTypeMessage : "-"}
+                      </span>
+                    </div>
+                  </td>
+                  <td className="px-4 py-4 w-[40%]">
                     <Tooltip content={item.message} style="light">
                       {item.message ? `${item.message}` : "-"}
                     </Tooltip>
