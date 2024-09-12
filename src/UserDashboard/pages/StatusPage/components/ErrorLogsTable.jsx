@@ -14,9 +14,16 @@ import DateFilter from "./dateFilter/DateFilter";
 import { TreeSelect } from "primereact/treeselect";
 import { fetchEventLogsData } from "../data/Statuspageapis";
 import formatTimestamp from "../../../../utils/formatTimeStamp";
+import { MultiSelect } from "primereact/multiselect";
+import { FaCircleCheck, FaCircleInfo } from "react-icons/fa6";
+import { RiErrorWarningFill } from "react-icons/ri";
+import { IoIosWarning } from "react-icons/io";
 
 const ErrorLogsTable = () => {
-  const [selectedEventFilters] = useState([{ name: "Error", code: "err" }]); // Predefined filter for errors
+  const [selectedEventFilters, setSelectedEventFilters] = useState([
+    { name: "Error", code: "err", germanLabel: "Fehler" },
+  ]);
+  // Predefined filter for errors
 
   const [ApiLocationsToBeSend, setApiLocationsToBeSend] = useState(null);
   const [apiLocationsToBeSendCounter, setApiLocationsToBeSendCounter] =
@@ -29,7 +36,20 @@ const ErrorLogsTable = () => {
   const [LocationsData, setLocationsData] = useState([]);
   const dateFilterRef = useRef(null);
   const [floors, setFloors] = useState([]);
+
+  const eventFilterOptions = [
+    { name: "Information", code: "info", germanLabel: "Information" },
+    { name: "Error", code: "err", germanLabel: "Fehler" },
+    { name: "Warning", code: "warn", germanLabel: "Warnung" },
+    { name: "Behoben", code: "beh", germanLabel: "Behoben" },
+  ];
   // Function to handle click outside of the DateFilter
+  const handleMultiSelectClick = () => {
+    if (selectedLocationFilter === 0) {
+      setApiLocationsToBeSend(null);
+    }
+    setCloseDateFilter(true);
+  };
   useEffect(() => {
     // Function to handle click outside of the DateFilter
     const handleClickOutside = (event) => {
@@ -95,7 +115,11 @@ const ErrorLogsTable = () => {
   const [tableData, setTableData] = useState([]);
   // const [selectedFilter, setSelectedFilter] = useState("Last Year");
   // const [selectedEvent, setSelectedEvent] = useState("All events");
-
+  useEffect(() => {
+    if (selectedEventFilters !== null) {
+      getData(ApiLocationsToBeSend);
+    }
+  }, [selectedEventFilters]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalRows, setTotalRows] = useState(0);
 
@@ -298,12 +322,6 @@ const ErrorLogsTable = () => {
     currentPage,
   ]);
 
-  useEffect(() => {
-    if (selectedEventFilters !== null) {
-      getData(ApiLocationsToBeSend);
-    }
-  }, [selectedEventFilters]);
-
   const itemsPerPage = 10;
   const totalItems = totalRows && totalRows;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
@@ -448,6 +466,22 @@ const ErrorLogsTable = () => {
                 </div>
               )}
             />
+            <MultiSelect
+              value={selectedEventFilters}
+              onShow={handleMultiSelectClick}
+              onChange={(e) => setSelectedEventFilters(e.value)}
+              showSelectAll={false}
+              options={eventFilterOptions}
+              optionLabel="germanLabel" // Use the German label for the UI
+              filter
+              placeholder="Alle Ereignisse" // German translation for "All Events"
+              display="chip"
+              className="w-full md:w-20rem"
+              panelStyle={{
+                border: "0.5px solid #bababa",
+                borderRadius: "4px",
+              }}
+            />
             <div className="dummy" ref={dateFilterRef}>
               <DateFilter
                 dateRef={dateFilterRef}
@@ -460,7 +494,7 @@ const ErrorLogsTable = () => {
             </div>
           </div>
         </div>
-        <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 min-h-[30rem]">
+        <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 min-h-[20rem]">
           <thead className="text-xs font-semibold text-gray-500 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
             <tr>
               <th scope="col" className="p-4">
@@ -475,29 +509,50 @@ const ErrorLogsTable = () => {
               <th scope="col" className="p-4">
                 Fehlermeldung
               </th>
+              <th scope="col" className="p-4">
+                NACHRICHT
+              </th>
             </tr>
           </thead>
           <tbody>
             {tableData.map((item, index) => (
               <tr
                 key={index}
-                className=" text-sm bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
+                className="text-sm bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
               >
-                <td className="px-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                <td className="px-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white w-[20%]">
                   {item.roomName ? item.roomName : "N/A"}{" "}
                   <span className="text-[12px] py-0.5 px-2.5 font-semibold bg-gray-100 rounded-[80px] p-1">
                     {item.roomTag ? item.roomTag : "N/A"}
                   </span>
                 </td>
-                <td className="px-4 py-4">
+                <td className="px-4 py-4 w-[23%]">
                   {item.building_floor_string
                     ? item.building_floor_string
                     : "N/A"}
                 </td>
-                <td className="px-4 py-4">
+                <td className="px-4 py-4 w-[18%]">
                   {item.createdAt ? formatTimestamp(item?.createdAt) : "N/A"}
                 </td>
-                <td className="px-4 py-4">
+                <td className="px-4 py-4 w-[20%]">
+                  <div className="flex items-center gap-x-2">
+                    <Tooltip content={item.eventTypeLevel} style="light">
+                      {item.eventTypeLevel === "Information" ? (
+                        <FaCircleInfo />
+                      ) : item.eventTypeLevel === "Warning" ? (
+                        <RiErrorWarningFill className="text-yellow-500" />
+                      ) : item.eventTypeLevel === "Behoben" ? (
+                        <FaCircleCheck className="text-green-600" />
+                      ) : (
+                        <IoIosWarning className="text-red-700" />
+                      )}
+                    </Tooltip>
+                    <span className="text-sm">
+                      {item.eventTypeMessage ? item.eventTypeMessage : "-"}
+                    </span>
+                  </div>
+                </td>
+                <td className="px-4 py-4 w-[20%]">
                   <Tooltip content={item.message} style="light">
                     {item.message ? `${item.message.slice(0, 25)}...` : "N/A"}
                   </Tooltip>
