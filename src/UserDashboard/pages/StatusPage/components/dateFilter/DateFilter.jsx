@@ -29,29 +29,16 @@ const getDateRange = (option) => {
       endDate.setDate(now.getDate() - 1); // Yesterday + 1 day = Today
       break;
 
-    case "ThisWeek":
-      const currentDay = now.getDay();
-      const startOfWeek = new Date(now);
+    case "Last 7 Days":
+      // Set endDate to today (current time)
+      endDate = new Date(now);
+      endDate.setHours(23, 59, 59, 999); // Set to the end of the day
 
-      // Calculate the start of the week (Monday)
-      // Adjust if today is Sunday (0) to get the previous Monday
-      startOfWeek.setDate(
-        now.getDate() - currentDay + (currentDay === 0 ? -6 : 1)
-      );
+      // Set startDate to 7 days ago
+      startDate = new Date(now);
+      startDate.setDate(now.getDate() - 7); // Subtract 7 days
+      startDate.setHours(0, 0, 0, 0); // Set to the start of the day
 
-      // Set the time to the start of the day
-      startOfWeek.setHours(0, 0, 0, 0);
-
-      // Calculate the end of the week (Sunday)
-      const endOfWeek = new Date(startOfWeek);
-      endOfWeek.setDate(startOfWeek.getDate() + 6); // Add 6 days to get Sunday
-
-      // Set the time to the end of the day
-      endOfWeek.setHours(23, 59, 59, 999);
-
-      // Set endDate to the end of the week
-      startDate = startOfWeek;
-      endDate = endOfWeek;
       break;
 
     case "Last 30 days":
@@ -62,10 +49,13 @@ const getDateRange = (option) => {
       break;
 
     case "LastYear":
-      startDate = new Date(now);
-      startDate.setFullYear(now.getFullYear() - 1); // One year ago
-      endDate = new Date(now);
-      endDate.setDate(endDate.getDate() + 1); // Include end of the day (next day)
+      // Set startDate to January 1st of the last year
+      startDate = new Date(now.getFullYear() - 1, 0, 1); // Jan 1st of last year
+      startDate.setHours(0, 0, 0, 0); // Set to the start of the day
+
+      // Set endDate to December 31st of the last year
+      endDate = new Date(now.getFullYear() - 1, 11, 31); // Dec 31st of last year
+      endDate.setHours(23, 59, 59, 999); // Set to the end of the day
       break;
 
     case "AllDates":
@@ -110,9 +100,9 @@ const DateFilter = ({
   const subDropdownOptions = [
     { key: "Today", label: "Today" },
     { key: "Yesterday", label: "Yesterday" },
-    { key: "ThisWeek", label: "This Week" },
+    { key: "Last 7 Days", label: "Last 7 Days" },
     { key: "Last30days", label: "Last 30 days" },
-    { key: "LastYear", label: "Last year" },
+    { key: "LastYear", label: "LastYear" },
   ];
   useEffect(() => {
     if (closeDropdown === true) {
