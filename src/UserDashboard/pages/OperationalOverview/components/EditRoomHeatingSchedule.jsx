@@ -7,6 +7,7 @@ import { errorMessages as errors } from "../../../../globals/errorMessages"; // 
 import ProgressStepper from "../../HeatingSchedule/CreateHeating/components/ProgressStepper";
 import GeneralInformation from "../../HeatingSchedule/CreateHeating/Steps/GeneralInformation/GeneralInformation";
 import HeatingSchedule from "../../HeatingSchedule/CreateHeating/Steps/HeatingSchedule/HeatingSchedule";
+import { daysOfWeek } from "../../../../globals/daysofWeek";
 
 export function EditRoomHeatingSchedule({ openEditModal, handleEditModal, onEdit, program, locationDetails }) {
   
@@ -251,7 +252,7 @@ export function EditRoomHeatingSchedule({ openEditModal, handleEditModal, onEdit
       }
 
       // Validate layouts for all days
-      const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+      const days = daysOfWeek
       const allNonEmpty = days.every(day => (day in layoutsRef.current) && layoutsRef.current[day].length > 0);
       if (allNonEmpty) {
         setFinalScheduleData(layoutsRef.current);
