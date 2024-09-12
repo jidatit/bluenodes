@@ -48,14 +48,8 @@ const EventLogsTable = () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [dateFilterRef]);
-  const closeDate = () => {
-    console.log("closeDate");
 
-    setCloseDateFilter(true);
-
-    console.log("closeDate", closeDateFilter);
-  };
-  const handleTreeSelectClick = (event) => {
+  const handleTreeSelectClick = () => {
     setCloseDateFilter(true);
   };
   const handleMultiSelectClick = () => {
