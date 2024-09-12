@@ -136,7 +136,7 @@ function GeneralInformation({
 									helperText={
 										errorMessages.minTemp && (
 											<>
-												<span className="font-medium">Oops!</span>{" "}
+												<span className="font-medium">Ups!</span>{" "}
 												{errorMessages.minTemp}
 											</>
 										)
