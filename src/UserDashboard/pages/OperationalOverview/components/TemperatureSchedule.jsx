@@ -502,7 +502,7 @@ const TemperatureSchedule = ({
 										style={{
 											left: `calc(${parseTimeToPercentage(
 												room.heatingSchedule.currentTargetTemperature.createdAt,
-											)}% - 0.375rem)`,
+											)}% - 0.575rem)`,
 											top: `-28px`,
 											zIndex: "1", // Ensure dots are above the temperature line
 										}}
