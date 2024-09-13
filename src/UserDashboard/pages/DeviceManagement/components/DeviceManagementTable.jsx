@@ -354,12 +354,14 @@ const DeviceManagementTable = () => {
   useEffect(() => {
     if (status !== null) {
       // Your API call here, for example:
+      setExpandedRow(null);
       getData();
     }
   }, [status]);
   useEffect(() => {
     if (batteryLevel !== null) {
       getData(); // Call the API with the selected battery levels
+      setExpandedRow(null);
     }
   }, [batteryLevel]);
   const getData = async (locations) => {
@@ -385,6 +387,7 @@ const DeviceManagementTable = () => {
   };
   useEffect(() => {
     getData(ApiLocationsToBeSend);
+    setExpandedRow(null);
   }, [
     ApiLocationsToBeSend,
     apiLocationsToBeSendCounter,

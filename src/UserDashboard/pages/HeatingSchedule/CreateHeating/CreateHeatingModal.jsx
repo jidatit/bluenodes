@@ -138,10 +138,24 @@ export function CreateHeatingModal({
 	useEffect(() => {
 		const minTemp = parseFloat(formData.minTemp);
 		const maxTemp = parseFloat(formData.maxTemp);
-
+		// Convert minTemp and maxTemp to strings to safely use .includes
+		const minTempStr = formData.minTemp?.toString() || "";
+		const maxTempStr = formData.maxTemp?.toString() || "";
+		const containsInvalidCharacter = (str) => {
+			// Regex to match any character that is not a digit, decimal point, °, C, or F
+			const invalidCharRegex = /[^0-9°CF]/;
+			return invalidCharRegex.test(str);
+		};
 		// Check if input is a decimal
-		const isMinTempDecimal = formData.minTemp.includes(".");
-		const isMaxTempDecimal = formData.maxTemp.includes(".");
+		// const isMinTempDecimal = minTempStr.includes(".");
+		// const isMaxTempDecimal = maxTempStr.includes(".");
+
+		const isMinTempDecimal = containsInvalidCharacter(minTempStr);
+		const isMaxTempDecimal = containsInvalidCharacter(maxTempStr);
+
+		// // Check if input is a decimal
+		// const isMinTempDecimal = formData.minTemp.includes(".");
+		// const isMaxTempDecimal = formData.maxTemp.includes(".");
 
 		// Validate minTemp and maxTemp
 		if (minTemp !== "" && maxTemp !== "") {
@@ -264,11 +278,18 @@ export function CreateHeatingModal({
 		// Validate temperature fields
 		const minTemp = parseFloat(formData.minTemp);
 		const maxTemp = parseFloat(formData.maxTemp);
-
+		const containsInvalidCharacter = (str) => {
+			// Regex to match any character that is not a digit, decimal point, °, C, or F
+			const invalidCharRegex = /[^0-9°CF]/;
+			return invalidCharRegex.test(str);
+		};
 		// Check if input is a decimal
-		const isMinTempDecimal = formData.minTemp.includes(".");
-		const isMaxTempDecimal = formData.maxTemp.includes(".");
-
+		// const isMinTempDecimal = formData.minTemp.includes(".");
+		// const isMaxTempDecimal = formData.maxTemp.includes(".");
+		const minTempStr = formData.minTemp?.toString() || "";
+		const maxTempStr = formData.maxTemp?.toString() || "";
+		const isMinTempDecimal = containsInvalidCharacter(minTempStr);
+		const isMaxTempDecimal = containsInvalidCharacter(maxTempStr);
 		// Check for decimal values
 		if (isMinTempDecimal) {
 			newErrors.minTemp = errors.TempDecimalNotAllowed;
@@ -334,7 +355,7 @@ export function CreateHeatingModal({
 			}
 			setFinalScheduleData(layoutsRef.current);
 			setCurrentStep((prev) => Math.max(prev - 1, 0));
-		} else if (currentStep===3) {
+		} else if (currentStep === 3) {
 			setCurrentStep((prev) => Math.max(prev - 1, 0));
 		}
 	};

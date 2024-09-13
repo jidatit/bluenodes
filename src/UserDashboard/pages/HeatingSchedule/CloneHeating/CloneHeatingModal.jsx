@@ -159,11 +159,17 @@ export function CloneHeatingModal({
 		// Convert minTemp and maxTemp to strings to safely use .includes
 		const minTempStr = formData.minTemp?.toString() || "";
 		const maxTempStr = formData.maxTemp?.toString() || "";
-
+		const containsInvalidCharacter = (str) => {
+			// Regex to match any character that is not a digit, decimal point, °, C, or F
+			const invalidCharRegex = /[^0-9°CF]/;
+			return invalidCharRegex.test(str);
+		};
 		// Check if input is a decimal
-		const isMinTempDecimal = minTempStr.includes(".");
-		const isMaxTempDecimal = maxTempStr.includes(".");
+		// const isMinTempDecimal = minTempStr.includes(".");
+		// const isMaxTempDecimal = maxTempStr.includes(".");
 
+		const isMinTempDecimal = containsInvalidCharacter(minTempStr);
+		const isMaxTempDecimal = containsInvalidCharacter(maxTempStr);
 		// Validate minTemp and maxTemp
 		if (minTempStr !== "" && maxTempStr !== "") {
 			if (isMinTempDecimal || isMaxTempDecimal) {
@@ -289,9 +295,16 @@ export function CloneHeatingModal({
 		const minTempStr = formData.minTemp?.toString() || "";
 		const maxTempStr = formData.maxTemp?.toString() || "";
 
+		const containsInvalidCharacter = (str) => {
+			// Regex to match any character that is not a digit, decimal point, °, C, or F
+			const invalidCharRegex = /[^0-9°CF]/;
+			return invalidCharRegex.test(str);
+		};
+		const isMinTempDecimal = containsInvalidCharacter(minTempStr);
+		const isMaxTempDecimal = containsInvalidCharacter(maxTempStr);
 		// Check if input is a decimal
-		const isMinTempDecimal = minTempStr.includes(".");
-		const isMaxTempDecimal = maxTempStr.includes(".");
+		// const isMinTempDecimal = minTempStr.includes(".");
+		// const isMaxTempDecimal = maxTempStr.includes(".");
 
 		// Check for decimal values
 		if (isMinTempDecimal) {
