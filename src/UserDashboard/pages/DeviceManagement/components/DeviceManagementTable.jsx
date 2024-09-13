@@ -112,9 +112,6 @@ const DeviceManagementTable = () => {
     setCloseDateFilter(true);
   };
   const handleMultiSelectClick = () => {
-    if (selectedLocationFilter === 0) {
-      setApiLocationsToBeSend(null);
-    }
     setCloseDateFilter(true);
   };
   const eventFilterOptions = [
@@ -127,7 +124,6 @@ const DeviceManagementTable = () => {
     { key: "medium", germanLabel: "Mittel" },
     { key: "high", germanLabel: "Hoch" },
   ];
-
   const transformData = (nodes) => {
     return nodes.map((node) => {
       const key =
@@ -355,7 +351,17 @@ const DeviceManagementTable = () => {
       setStatus("");
     }
   };
-
+  useEffect(() => {
+    if (status !== null) {
+      // Your API call here, for example:
+      getData();
+    }
+  }, [status]);
+  useEffect(() => {
+    if (batteryLevel !== null) {
+      getData(); // Call the API with the selected battery levels
+    }
+  }, [batteryLevel]);
   const getData = async (locations) => {
     try {
       // const batteryLevel =

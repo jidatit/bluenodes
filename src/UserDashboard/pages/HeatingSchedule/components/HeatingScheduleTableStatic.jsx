@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import GridLayout from "react-grid-layout";
 import "react-grid-layout/css/styles.css";
 import "react-resizable/css/styles.css";
+import { daysOfWeek } from "../../../../globals/daysofWeek";
 
 function HeatingScheduleTableStatic({ locationDetails, props }) {
 	const [zoomLevel, setZoomLevel] = useState(1);
@@ -23,15 +24,7 @@ function HeatingScheduleTableStatic({ locationDetails, props }) {
 			window.removeEventListener("resize", updateZoomLevel);
 		};
 	}, []);
-	const daysOfWeek = [
-		"Monday",
-		"Tuesday",
-		"Wednesday",
-		"Thursday",
-		"Friday",
-		"Saturday",
-		"Sunday",
-	];
+
 	const rowHeight = 7; // Each row represents 20 pixels
 
 	// Helper function to convert time to units
@@ -62,107 +55,31 @@ function HeatingScheduleTableStatic({ locationDetails, props }) {
 		return acc;
 	}, {});
 
-	// Dummy data for initial layouts
-	const initialLayouts = {
-		Monday: groupedData[1].map((item, index) => ({
+	// Helper function to map data by translated day names
+	const createLayouts = (groupedData, translatedDays) => {
+		const layouts = {};
+		
+		translatedDays.forEach((day, index) => {
+		layouts[day] = groupedData[index + 1].map((item, i) => ({
 			w: 1,
 			h: item.to - item.from,
 			x: 0,
 			y: item.from,
-			i: `box-Monday-${index + 1}`,
+			i: `box-${day}-${i + 1}`,
 			minW: 1,
 			maxW: 2,
-			minH: 1,
-			maxH: 24,
+			minH: 4,
+			maxH: 96,
 			moved: false,
 			static: false,
 			temperature: item.targetTemperature.toString(),
-		})),
-		Tuesday: groupedData[2].map((item, index) => ({
-			w: 1,
-			h: item.to - item.from,
-			x: 0,
-			y: item.from,
-			i: `box-Tuesday-${index + 1}`,
-			minW: 1,
-			maxW: 2,
-			minH: 1,
-			maxH: 24,
-			moved: false,
-			static: false,
-			temperature: item.targetTemperature.toString(),
-		})),
-		Wednesday: groupedData[3].map((item, index) => ({
-			w: 1,
-			h: item.to - item.from,
-			x: 0,
-			y: item.from,
-			i: `box-Wednesday-${index + 1}`,
-			minW: 1,
-			maxW: 2,
-			minH: 1,
-			maxH: 24,
-			moved: false,
-			static: false,
-			temperature: item.targetTemperature.toString(),
-		})),
-		Thursday: groupedData[4].map((item, index) => ({
-			w: 1,
-			h: item.to - item.from,
-			x: 0,
-			y: item.from,
-			i: `box-Thursday-${index + 1}`,
-			minW: 1,
-			maxW: 2,
-			minH: 1,
-			maxH: 24,
-			moved: false,
-			static: false,
-			temperature: item.targetTemperature.toString(),
-		})),
-		Friday: groupedData[5].map((item, index) => ({
-			w: 1,
-			h: item.to - item.from,
-			x: 0,
-			y: item.from,
-			i: `box-Friday-${index + 1}`,
-			minW: 1,
-			maxW: 2,
-			minH: 1,
-			maxH: 24,
-			moved: false,
-			static: false,
-			temperature: item.targetTemperature.toString(),
-		})),
-		Saturday: groupedData[6].map((item, index) => ({
-			w: 1,
-			h: item.to - item.from,
-			x: 0,
-			y: item.from,
-			i: `box-Saturday-${index + 1}`,
-			minW: 1,
-			maxW: 2,
-			minH: 1,
-			maxH: 24,
-			moved: false,
-			static: false,
-			temperature: item.targetTemperature.toString(),
-		})),
-		Sunday: groupedData[7].map((item, index) => ({
-			w: 1,
-			h: item.to - item.from,
-			x: 0,
-			y: item.from,
-			i: `box-Sunday-${index + 1}`,
-			minW: 1,
-			maxW: 2,
-			minH: 1,
-			maxH: 24,
-			moved: false,
-			static: false,
-			temperature: item.targetTemperature.toString(),
-		})),
+		}));
+		});
+	
+		return layouts;
 	};
+
+	const initialLayouts = createLayouts(groupedData, daysOfWeek)
 
 	const handleTempColour = (temp) => {
 		if (temp === null) {
@@ -301,7 +218,7 @@ function HeatingScheduleTableStatic({ locationDetails, props }) {
 						}}
 					>
           <div
-            className="absolute top-[0] left-0 bottom-0 right-0 w-full h-full flex flex-col"
+            className="absolute top-[1px] left-0 bottom-0 right-0 w-full h-full flex flex-col"
             style={{
               gap: `${rowHeight}px`, // Use rowHeight to match the height of labels
               zIndex: "10",
@@ -338,7 +255,7 @@ function HeatingScheduleTableStatic({ locationDetails, props }) {
 									{initialLayouts[day].map((box) => (
 										<div
 											key={box.i}
-											className={`box relative w-full rounded-md z-10 ${
+											className={`box pb-[50px] relative w-full rounded-md z-10 ${
 												box.temperature === false ? "border border-red-500" : ""
 											}`}
 											style={{

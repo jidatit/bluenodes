@@ -524,21 +524,21 @@ const ErrorLogsTable = () => {
                 key={index}
                 className="text-sm bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
               >
-                <td className="px-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white w-[20%]">
+                <td className="px-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white w-[16%]">
                   {item.roomName ? item.roomName : "N/A"}{" "}
                   <span className="text-[12px] py-0.5 px-2.5 font-semibold bg-gray-100 rounded-[80px] p-1">
                     {item.roomTag ? item.roomTag : "N/A"}
                   </span>
                 </td>
-                <td className="px-4 py-4 w-[23%]">
+                <td className="px-4 py-4 w-[18%]">
                   {item.building_floor_string
                     ? item.building_floor_string
                     : "N/A"}
                 </td>
-                <td className="px-4 py-4 w-[18%]">
+                <td className="px-4 py-4 w-[16%]">
                   {item.createdAt ? formatTimestamp(item?.createdAt) : "N/A"}
                 </td>
-                <td className="px-4 py-4 w-[20%]">
+                <td className="px-4 py-4 w-[14%]">
                   <div className="flex items-center gap-x-2">
                     <Tooltip content={item.eventTypeLevel} style="light">
                       {item.eventTypeLevel === "Information" ? (
@@ -556,9 +556,10 @@ const ErrorLogsTable = () => {
                     </span>
                   </div>
                 </td>
-                <td className="px-4 py-4 w-[20%]">
+                <td className="px-4 py-4 w-[36%]">
                   <Tooltip content={item.message} style="light">
-                    {item.message ? `${item.message.slice(0, 25)}...` : "N/A"}
+                    {/* {item.message ? `${item.message.slice(0, 25)}...` : "N/A"} */}
+                    {item.message ? `${item.message}` : "N/A"}
                   </Tooltip>
                 </td>
               </tr>
