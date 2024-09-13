@@ -160,7 +160,7 @@ export function EditHeatingModal({
 
 		const containsInvalidCharacter = (str) => {
 			// Regex to match any character that is not a digit, decimal point, °, C, or F
-			const invalidCharRegex = /[^0-9°CF]/;
+			const invalidCharRegex = /[^0-9°CFa-z]/;
 			return invalidCharRegex.test(str);
 		};
 		// Check if input is a decimal
@@ -298,7 +298,7 @@ export function EditHeatingModal({
 
 		const containsInvalidCharacter = (str) => {
 			// Regex to match any character that is not a digit, decimal point, °, C, or F
-			const invalidCharRegex = /[^0-9°CF]/;
+			const invalidCharRegex = /[^0-9°CFa-z]/;
 			return invalidCharRegex.test(str);
 		};
 		// Check if input is a decimal

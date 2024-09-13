@@ -235,28 +235,39 @@ const TemperatureSchedule = ({
 			}
 		}
 	}, [fetch1]);
+
+	useEffect(() => {
+		if (RoomsDetail.length) {
+			fetchSchedules();  // Trigger fetchSchedules when RoomsDetail updates
+		}
+	}, [RoomsDetail]);  // Use RoomsDetail as a dependency
+	
 	const fetchedScheduleIds = new Set();
+	
 	const fetchSchedules = async () => {
 		if (!RoomsDetail.length) return;
-
+	
 		const updatedRooms = await Promise.all(
 			RoomsDetail.map(async (room) => {
-				if (
-					room.heatingSchedule &&
-					!fetchedScheduleIds.has(room.heatingSchedule.id)
-				) {
-					// Fetch schedule only if it hasn't been fetched before
-					fetchedScheduleIds.add(room.heatingSchedule.id); // Mark ID as fetched
-					const schedule = await fetchHeatingScheduleForRoom(
-						room.heatingSchedule.id,
-					);
-					return { ...room, schedule };
+				if (room.heatingSchedule) {
+					// Check if schedule has already been fetched
+					if (!fetchedScheduleIds.has(room.heatingSchedule.id)) {
+						// Fetch schedule if it hasn't been fetched before
+						const schedule = await fetchHeatingScheduleForRoom(room.heatingSchedule.id);
+						fetchedScheduleIds.add(room.heatingSchedule.id); // Mark ID as fetched
+						// Store schedule with the room's heatingSchedule.id
+						fetchedScheduleIds[room.heatingSchedule.id] = schedule;
+					}
+					// Assign the fetched schedule to the room
+					return { ...room, schedule: fetchedScheduleIds[room.heatingSchedule.id] };
 				}
 				return room;
 			}),
 		);
-		setscheduleDetails(updatedRooms);
+		// console.log(updatedRooms, "up");
+		setscheduleDetails(updatedRooms);  // Update schedule details
 	};
+	
 	const getFloorDetails = async (id) => {
 		try {
 			const resp = await axios.get(
@@ -264,11 +275,13 @@ const TemperatureSchedule = ({
 			);
 			const data = await resp.data;
 			const pdata = processRoomsData(data);
-			setRoomsDetail(pdata);
+			// console.log(pdata);
+			setRoomsDetail(pdata);  // This will automatically trigger fetchSchedules via useEffect
 		} catch (error) {
 			console.log(error);
 		}
 	};
+	
 
 	useEffect(() => {
 		if (isFirstRender.current) {
