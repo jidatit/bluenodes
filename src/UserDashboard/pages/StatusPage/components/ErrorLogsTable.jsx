@@ -302,7 +302,9 @@ const ErrorLogsTable = () => {
         dateFrom
       );
       const filteredData = data.rows.filter(
-        (item) => item.eventTypeLevel !== "Information"
+        (item) =>
+          item.eventTypeLevel !== "Information" &&
+          item.eventTypeLevel !== "Behoben"
       );
 
       console.log(filteredData);
@@ -353,14 +355,14 @@ const ErrorLogsTable = () => {
     return new Date(dateString).toLocaleDateString("de-DE", options);
   };
 
-  const formatDateforApitosend = (date) => {
-    const options = { year: "numeric", month: "2-digit", day: "2-digit" };
-    return new Intl.DateTimeFormat("en-GB", options)
-      .format(date)
-      .split("/")
-      .reverse()
-      .join("-");
-  };
+  // const formatDateforApitosend = (date) => {
+  //   const options = { year: "numeric", month: "2-digit", day: "2-digit" };
+  //   return new Intl.DateTimeFormat("en-GB", options)
+  //     .format(date)
+  //     .split("/")
+  //     .reverse()
+  //     .join("-");
+  // };
 
   const handleDatesChange = (newDates) => {
     console.log(newDates);
@@ -370,9 +372,9 @@ const ErrorLogsTable = () => {
       return;
     }
     if (newDates[0] && newDates[1]) {
-      let from = newDates[0] && formatDateforApitosend(new Date(newDates[0]));
+      let from = newDates[0];
       setdateFrom(from);
-      let to = newDates[1] && formatDateforApitosend(new Date(newDates[1]));
+      let to = newDates[1];
       setdateTo(to);
     }
   };
@@ -498,22 +500,22 @@ const ErrorLogsTable = () => {
             </div>
           </div>
         </div>
-        <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 min-h-[20rem]">
+        <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 min-h-[20rem] table-fixed">
           <thead className="text-xs font-semibold text-gray-500 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
             <tr>
-              <th scope="col" className="p-4">
+              <th scope="col" className="p-4 w-[20%]">
                 RAUM
               </th>
-              <th scope="col" className="p-4">
+              <th scope="col" className="p-4 w-[20%]">
                 GEBÄUDE - ETAGE
               </th>
-              <th scope="col" className="p-4">
+              <th scope="col" className="p-4 w-[20%]">
                 DATUM - UHRZEIT
               </th>
-              <th scope="col" className="p-4">
+              <th scope="col" className="p-4 w-[20%]">
                 Fehlermeldung
               </th>
-              <th scope="col" className="p-4">
+              <th scope="col" className="p-4 w-[20%]">
                 NACHRICHT
               </th>
             </tr>
@@ -524,21 +526,21 @@ const ErrorLogsTable = () => {
                 key={index}
                 className="text-sm bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
               >
-                <td className="px-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white w-[26%]">
+                <td className="px-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                   {item.roomName ? item.roomName : "N/A"}{" "}
                   <span className="text-[12px] py-0.5 px-2.5 font-semibold bg-gray-100 rounded-[80px] p-1">
                     {item.roomTag ? item.roomTag : "N/A"}
                   </span>
                 </td>
-                <td className="px-4 py-4 w-[28%]">
+                <td className="px-4 py-4">
                   {item.building_floor_string
                     ? item.building_floor_string
                     : "N/A"}
                 </td>
-                <td className="px-4 py-4 w-[26%]">
+                <td className="px-4 py-4">
                   {item.createdAt ? formatTimestamp(item?.createdAt) : "N/A"}
                 </td>
-                <td className="px-4 py-4 w-[24%]">
+                <td className="px-4 py-4">
                   <div className="flex items-center gap-x-2">
                     <Tooltip content={item.eventTypeLevel} style="light">
                       {item.eventTypeLevel === "Information" ? (
@@ -556,9 +558,8 @@ const ErrorLogsTable = () => {
                     </span>
                   </div>
                 </td>
-                <td className="px-4 py-4 w-[26%]">
+                <td className="px-4 py-4">
                   <Tooltip content={item.message} style="light">
-                    {/* {item.message ? `${item.message.slice(0, 25)}...` : "N/A"} */}
                     {item.message ? `${item.message}` : "N/A"}
                   </Tooltip>
                 </td>

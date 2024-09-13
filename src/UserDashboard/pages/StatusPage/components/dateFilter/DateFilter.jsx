@@ -264,7 +264,7 @@ const DateFilter = ({
           </button>
           {dropdownOpen && (
             <button
-              className="bg-red-500 px-4 py-2 text-white shadow-lg rounded-lg"
+              className="bg-red-500 px-2 py-2 h-[34%] mt-1.5 text-white shadow-lg rounded-lg"
               onClick={clearFilter}
             >
               <Tooltip
@@ -272,7 +272,7 @@ const DateFilter = ({
                 style="light"
                 className="-mt-12 ml-24 bg-white shadow-lg"
               >
-                <CiCircleRemove size={30} />
+                <CiCircleRemove size={22} />
               </Tooltip>
             </button>
           )}
