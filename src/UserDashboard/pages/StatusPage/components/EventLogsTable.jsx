@@ -23,9 +23,9 @@ const EventLogsTable = () => {
 
   const [filtersSelected, setFiltersSelected] = useState(false);
   const [selectedLocationFilter, setSelectedLocationFilter] = useState(0);
-  const [selectedEventIds, setSelectedEventIds] = useState(new Set()); // Initialize as an empty Set
+  // Initialize as an empty Set
   const [closeDateFilter, setCloseDateFilter] = useState(false); // State to manage dropdown visibility
-  const [groupedEvents, setGroupedEvents] = useState([]);
+
   const dateFilterRef = useRef(null);
   const [floors, setFloors] = useState([]);
   // Function to handle click outside of the DateFilter
@@ -399,16 +399,16 @@ const EventLogsTable = () => {
   };
 
   const handleDatesChange = (newDates) => {
-    console.log(newDates);
+    console.log("newDates", newDates);
     if (!newDates || !newDates[0]) {
       setdateFrom(null);
       setdateTo(null);
       return;
     }
     if (newDates[0] && newDates[1]) {
-      let from = newDates[0] && formatDateforApitosend(new Date(newDates[0]));
+      let from = newDates[0];
       setdateFrom(from);
-      let to = newDates[1] && formatDateforApitosend(new Date(newDates[1]));
+      let to = newDates[1];
       setdateTo(to);
     }
   };
@@ -642,7 +642,7 @@ const EventLogsTable = () => {
                   <td className="px-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white w-[6%]">
                     {item.id ? item.id : "-"}
                   </td>
-                  <td className="px-4 py-4 font-medium text-gray-900 break-words dark:text-white w-[15%]">
+                  <td className="px-4 py-4 font-medium text-gray-900 break-words dark:text-white w-[16%]">
                     {item.roomName ? item.roomName : "-"}{" "}
                     <span className="text-[10px] py-0.5 px-2.5 font-semibold bg-gray-100 rounded-[80px] p-1">
                       {item.roomTag ? item.roomTag : "-"}
@@ -653,7 +653,7 @@ const EventLogsTable = () => {
                       ? item.building_floor_string
                       : "-"}
                   </td>
-                  <td className="px-4 py-4 w-[13%]">
+                  <td className="px-4 py-4 w-[12%]">
                     {item.createdAt ? formatTimestamp(item.createdAt) : "-"}
                   </td>
                   <td className="px-4 py-4 w-[12.9%]">
@@ -674,7 +674,7 @@ const EventLogsTable = () => {
                       </span>
                     </div>
                   </td>
-                  <td className="px-4 py-4 w-[40%]">
+                  <td className="px-4 py-4 w-[59%]">
                     <Tooltip content={item.message} style="light">
                       {item.message ? `${item.message}` : "-"}
                     </Tooltip>

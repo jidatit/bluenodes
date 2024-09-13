@@ -40,7 +40,7 @@ const ErrorLogsTable = () => {
   const eventFilterOptions = [
     // { name: "Information", code: "info", germanLabel: "Information" },
     { name: "Error", code: "err", germanLabel: "Fehler" },
-    // { name: "Warning", code: "warn", germanLabel: "Warnung" },
+    { name: "Warning", code: "warn", germanLabel: "Warnung" },
     // { name: "Behoben", code: "beh", germanLabel: "Behoben" },
   ];
   // Function to handle click outside of the DateFilter
@@ -301,9 +301,13 @@ const ErrorLogsTable = () => {
         dateTo,
         dateFrom
       );
+      const filteredData = data.rows.filter(
+        (item) => item.eventTypeLevel !== "Information"
+      );
 
-      setTotalRows(data.count);
-      setTableData(data.rows);
+      console.log(filteredData);
+      setTotalRows(filteredData.length);
+      setTableData(filteredData);
     } catch (error) {
       console.log(error);
     }

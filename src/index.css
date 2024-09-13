@@ -150,8 +150,9 @@ border-radius: 10px;
   gap: 10px !important;
 } */
  .p-radiobutton-box{
-  border: 1px solid rgb(197, 197, 197) !important;
+  border: 0.2px solid rgb(197, 197, 197) !important;
  }
+
 .p-multiselect-header{
   display: none !important;
 }
@@ -193,3 +194,58 @@ p-treeselect .p-treeview .p-highlight {
 /* .p-datepicker {
   top: 0 !important;
 } */
+
+/* Style for custom radio button */
+input[type="radio"] {
+  appearance: none; /* Removes default styling */
+  -webkit-appearance: none; /* Removes default styling in WebKit browsers */
+  background-color: #ffffff; /* Background color of the radio button */
+  border: 2px solid #cfcfcf; /* Border color of the radio button */
+  border-radius: 50%; /* Make it round */
+  width: 20px; /* Size of the radio button */
+  height: 20px; /* Size of the radio button */
+  cursor: pointer; /* Pointer cursor on hover */
+  position: relative; /* For positioning the inner circle */
+}
+
+/* Inner circle styling when radio button is checked */
+input[type="radio"]:checked::before {
+  content: ""; /* Necessary for ::before pseudo-element */
+  position: absolute; /* Position relative to the radio button */
+  top: 50%; /* Center it vertically */
+  left: 50.2%; /* Center it horizontally */
+  width: 12px; /* Size of the inner circle */
+  height: 11px; /* Size of the inner circle */
+  background-color: #ffffff; /* Color of the inner circle */
+  border-radius: 52%; /* Make it round */
+  transform: translate(-50%, -50%); /* Center the inner circle */
+}
+
+/* Optional: Add hover effect */
+input[type="radio"]:hover {
+  border-color: #a0a0a0; /* Change border color on hover */
+}
+
+
+.radio2{
+   appearance: none; /* Removes default styling */
+  -webkit-appearance: none; /* Removes default styling in WebKit browsers */
+  background-color: #ffffff; /* Background color of the radio button */
+  border: 2px solid #cfcfcf; /* Border color of the radio button */
+  border-radius: 50%; /* Make it round */
+  width: 20px; /* Size of the radio button */
+  height: 20px; /* Size of the radio button */
+  cursor: pointer; /* Pointer cursor on hover */
+  position: relative; /* For positioning the inner circle */
+}
+.radio2:checked::before{
+  content: ""; /* Necessary for ::before pseudo-element */
+  position: absolute; /* Position relative to the radio button */
+  top: 50%; /* Center it vertically */
+  left: 50.2%; /* Center it horizontally */
+  width: 12px; /* Size of the inner circle */
+  height: 11px; /* Size of the inner circle */
+  background-color: #ffffff; /* Color of the inner circle */
+  border-radius: 52%; /* Make it round */
+  transform: translate(-50%, -50%); /* Center the inner circle */
+}

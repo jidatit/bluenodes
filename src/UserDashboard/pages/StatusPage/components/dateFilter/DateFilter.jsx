@@ -9,65 +9,113 @@ import { Tooltip } from "flowbite-react";
 const getDateRange = (option) => {
   const now = new Date();
   let startDate, endDate;
+  function formatDateToISO(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are zero-based
+    const day = String(date.getDate()).padStart(2, "0");
 
+    return `${year}-${month}-${day}`;
+  }
   switch (option) {
     case "Today":
-      startDate = new Date(now);
-      endDate = new Date(now);
+      // Create a UTC date for today
+      let today = new Date(
+        Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate())
+      );
 
-      // Subtract one day from the start date
-      startDate.setDate(startDate.getDate());
+      // Set startDate to the start of today (00:00:00.000Z)
+      startDate = today.toISOString().split("T")[0] + "T00:00:00.000Z";
+      console.log("startDate:", startDate);
 
-      // Add one day to the end date
-      endDate.setDate(endDate.getDate());
+      // Set endDate to the end of today (23:59:59.999Z)
+      endDate = today.toISOString().split("T")[0] + "T23:59:59.999Z";
+      console.log("endDate:", endDate);
+
       break;
 
     case "Yesterday":
-      startDate = new Date(now);
-      startDate.setDate(now.getDate() - 1); // Subtract two days to get the day before yesterday
-      endDate = new Date(now);
-      endDate.setDate(now.getDate() - 1); // Yesterday + 1 day = Today
+      // Create a UTC date for yesterday by subtracting one day
+      let yesterday = new Date(
+        Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() - 1)
+      );
+
+      // Set startDate to the start of yesterday (00:00:00.000Z)
+      startDate = yesterday.toISOString().split("T")[0] + "T00:00:00.000Z";
+      console.log("startDate:", startDate);
+
+      // Set endDate to the end of yesterday (23:59:59.999Z)
+      endDate = yesterday.toISOString().split("T")[0] + "T23:59:59.999Z";
+      console.log("endDate:", endDate);
+
       break;
-
-    case "Last 7 Days":
-      // Set startDate to yesterday (previous day from current day)
+    case "Last 7 days":
+      // Get current date (today)
+      // Set startDate to 7 days ago
+      console.log("hey");
       startDate = new Date(now);
-      startDate.setDate(now.getDate() - 6); // Subtract 1 day for the previous day
-      startDate.setHours(0, 0, 0, 0); // Set to the start of the day
+      startDate.setDate(now.getDate() - 6); // 7 days ago
+      startDate.setHours(0, 0, 0, 0); // Start of the day
 
-      // Set endDate to 7 days ago
+      // Set endDate to yesterday
       endDate = new Date(now);
-      endDate.setDate(now.getDate()); // Subtract 7 days
-      endDate.setHours(23, 59, 59, 999); // Set to the end of the day
+      endDate.setDate(now.getDate()); // Yesterday
+      endDate.setHours(23, 59, 59, 999); // End of the day
+
+      // Format the dates to yyyy-mm-dd format
+      startDate = formatDateToISO(startDate);
+      endDate = formatDateToISO(endDate);
 
       break;
 
     case "Last 30 days":
+      // Set startDate to 30 days ago
       startDate = new Date(now);
       startDate.setDate(now.getDate() - 30); // 30 days ago
+      startDate.setHours(0, 0, 0, 0); // Start of the day
+
+      // Set endDate to the current day
       endDate = new Date(now);
-      endDate.setDate(endDate.getDate() + 1); // Include end of the day (next day)
+      startDate.setDate(now.getDate());
+      endDate.setHours(23, 59, 59, 999); // End of the day
+
+      // Format startDate and endDate
+      startDate = formatDateToISO(startDate);
+      endDate = formatDateToISO(endDate);
+
+      console.log("startDate:", startDate);
+      console.log("endDate:", endDate);
+
       break;
 
     case "LastYear":
-      // Set startDate to the previous day from the current day of last year
+      // Set startDate to the same day last year
       startDate = new Date(now);
-      startDate.setFullYear(now.getFullYear()); // Set to last year
-      startDate.setDate(now.getDate()); // Previous day from today
-      startDate.setHours(0, 0, 0, 0); // Set to the start of the day
+      startDate.setFullYear(now.getFullYear() - 1); // Last year
+      startDate.setHours(0, 0, 0, 0); // Start of the day
 
-      // Set endDate to the current day of last year
+      // Set endDate to the same day of the current year
       endDate = new Date(now);
-      endDate.setFullYear(now.getFullYear() - 1); // Set to last year
-      endDate.setHours(23, 59, 59, 999); // Set to the end of the day
+      endDate.setFullYear(now.getFullYear()); // Last year
+      endDate.setHours(23, 59, 59, 999); // End of the day
+
+      // Format startDate and endDate
+      startDate = formatDateToISO(startDate);
+      endDate = formatDateToISO(endDate);
+
+      console.log("startDate:", startDate);
+      console.log("endDate:", endDate);
 
       break;
 
     case "AllDates":
-      startDate = new Date(1900, 0, 1); // Arbitrary far past date
-      endDate = new Date(2100, 11, 31); // Arbitrary far future date
+      // Set an arbitrary far past and future date
+      startDate = new Date(1900, 0, 1); // January 1, 1900
+      endDate = new Date(2100, 11, 31); // December 31, 2100
 
-      // No need to adjust since we're already covering all possible dates
+      // Format startDate and endDate
+      startDate = formatDateToISO(startDate); // Assign formatted startDate
+      endDate = formatDateToISO(endDate); // Assign formatted endDate
+
       break;
 
     default:
@@ -77,9 +125,6 @@ const getDateRange = (option) => {
       endDate.setDate(endDate.getDate() + 1); // Default to include the next day
       break;
   }
-
-  // Ensure endDate is at the end of the day
-  endDate.setHours(23, 59, 59, 999);
 
   return [startDate, endDate];
 };
@@ -105,7 +150,7 @@ const DateFilter = ({
   const subDropdownOptions = [
     { key: "Today", label: "Today", germanLabel: "Heute" },
     { key: "Yesterday", label: "Yesterday", germanLabel: "Gestern" },
-    { key: "Last7Days", label: "Last 7 Days", germanLabel: "Letzte 7 Tage" },
+    { key: "Last7Days", label: "Last 7 days", germanLabel: "Letzte 7 Tage" },
     { key: "Last30Days", label: "Last 30 days", germanLabel: "Letzte 30 Tage" },
     { key: "LastYear", label: "LastYear", germanLabel: "Letztes Jahr" },
   ];
@@ -159,16 +204,31 @@ const DateFilter = ({
   };
 
   const handleSubDropdownChange = (e) => {
-    const value = e.value;
+    const value = e.target.value;
     setSubDropdownValue(value);
 
     const [startDate, endDate] = getDateRange(value);
     setDates([startDate, endDate]);
     onDatesChange([startDate, endDate]);
+
+    // Update the main dropdown with the German label of the selected sub-option
+    const selectedGermanLabel = subDropdownOptions.find(
+      (option) => option.label === value
+    )?.germanLabel;
+    setSelectedDropdownOption(selectedGermanLabel || "Schnellauswahl");
   };
 
   const handleCalendarChange = (e) => {
     if (e.value) {
+      const formattedDates = e.value.map((date) => {
+        const d = new Date(date);
+        // Format as 'yyyy-MM-dd'
+        const year = d.getFullYear();
+        const month = String(d.getMonth() + 1).padStart(2, "0"); // Months are zero-based
+        const day = String(d.getDate()).padStart(2, "0");
+        return `${year}-${month}-${day}`;
+      });
+      setSelectedDropdownOption(`${formattedDates[0]}, ${formattedDates[1]}`);
       setDates(e.value);
       onDatesChange(e.value); // Notify parent component
     } else {
@@ -224,27 +284,39 @@ const DateFilter = ({
             <div className=" mt-2 py-2 bg-[#ffffff] border border-gray-300 rounded-md shadow-lg w-[28rem] z-20">
               <div className="p-2 flex gap-x-3 justify-center items-center">
                 <div className="flex items-center justify-center">
-                  <RadioButton
+                  <input
+                    type="radio"
+                    name="dateFilter"
+                    id="Schnellauswahl"
+                    value="Schnellauswahl"
+                    className="cursor-pointer p-[9px]"
+                    onChange={handleDropdownChange}
+                    checked={selectedDropdownOption === "Schnellauswahl"}
+                  />
+                  {/* <RadioButton
                     inputId="Schnellauswahl"
                     name="dateFilter"
                     value="Schnellauswahl"
                     onChange={handleDropdownChange}
                     checked={selectedDropdownOption === "Schnellauswahl"}
-                  />
+                  /> */}
                   <label htmlFor="Schnellauswahl" className="ml-2">
                     Schnellauswahl
                   </label>
                 </div>
                 <div className="flex items-center justify-center">
-                  <RadioButton
-                    inputId="Bestimmter Datumsbereich"
+                  <input
+                    type="radio"
                     name="dateFilter"
+                    id="Bestimmter Datumsbereich"
                     value="Bestimmter Datumsbereich"
+                    className="cursor-pointer p-[9px] radio1st"
                     onChange={handleDropdownChange}
                     checked={
                       selectedDropdownOption === "Bestimmter Datumsbereich"
                     }
                   />
+
                   <label htmlFor="Bestimmter Datumsbereich" className="ml-2">
                     Bestimmter Datumsbereich
                   </label>
@@ -253,18 +325,20 @@ const DateFilter = ({
             </div>
           )}
           {subDropdownOpen && (
-            <div className="py-2 px-4 bg-[#ffffff] border border-gray-300 rounded-md shadow-lg w-[23rem] z-50">
+            <div className="py-2 px-4 bg-[#ffffff] border border-gray-300 rounded-md shadow-lg w-[23rem] z-20">
               {subDropdownOptions.map((category) => (
                 <div key={category.key} className="flex items-center mb-2">
-                  <RadioButton
-                    inputId={category.key}
+                  <input
+                    type="radio"
                     name="category"
-                    value={category.label} // Keep the English label as the value
+                    id={category.key}
+                    className="cursor-pointer"
+                    value={category.label}
                     onChange={handleSubDropdownChange}
                     checked={subDropdownValue === category.label}
                   />
                   <label htmlFor={category.key} className="ml-2">
-                    {category.germanLabel} {/* Show the German label */}
+                    {category.germanLabel}
                   </label>
                 </div>
               ))}
