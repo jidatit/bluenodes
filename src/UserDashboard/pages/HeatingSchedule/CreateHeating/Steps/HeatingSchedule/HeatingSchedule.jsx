@@ -11,6 +11,7 @@ import { errorMessages } from "../../../../../../globals/errorMessages";
 import { IoArrowBackCircle } from "react-icons/io5";
 import { Tooltip } from "flowbite-react";
 import { LuGalleryHorizontal } from "react-icons/lu";
+import { daysOfWeek } from "../../../../../../globals/daysofWeek";
 
 function HeatingSchedule({
 	onUpdateLayouts,
@@ -21,15 +22,7 @@ function HeatingSchedule({
 	clone,
 	locationDetails,
 }) {
-	const daysOfWeek = [
-		"Monday",
-		"Tuesday",
-		"Wednesday",
-		"Thursday",
-		"Friday",
-		"Saturday",
-		"Sunday",
-	];
+
 	// Helper function to convert time to units
 	const convertTimeToUnits = (time) => {
 		const [hours, minutes, seconds] = time.split(":").map(Number);
@@ -206,8 +199,7 @@ function HeatingSchedule({
 	const handleContainerClick = (event) => {
 		console.log(isResizingOrDragging,Object.keys(editableBoxes).length)
 		if (
-			Object.keys(editableBoxes).length > 0 ||
-			(Object.keys(editableBoxes).length > 0 && isResizingOrDragging)
+			Object.keys(editableBoxes).length > 0 && Object.values(editableBoxes).some(value => value === true)
 		) {
 			const boxId = Object.keys(editableBoxes)[0];
 			const str = boxId;

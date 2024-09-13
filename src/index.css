@@ -190,6 +190,6 @@ p-treeselect .p-treeview .p-highlight {
   box-shadow: none; /* Removes focus shadow if applied */
 }
 
-/* .p-datepicker {
-  top: 0 !important;
-} */
+.p-tree .p-tree-container .p-treenode:focus > .p-treenode-content {
+  box-shadow: none !important;
+}

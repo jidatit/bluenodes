@@ -11,6 +11,7 @@ import useHeatingSchedule from "../../../../hooks/useHeatingSchedule";
 import axios from "axios";
 import ApiUrls from "../../../../globals/apiURL.js";
 import { Toast } from "flowbite-react";
+import { daysOfWeek } from "../../../../globals/daysofWeek.js";
 
 export function EditHeatingModal({
 	openEditModal,
@@ -157,9 +158,17 @@ export function EditHeatingModal({
 		const minTempStr = formData.minTemp?.toString() || "";
 		const maxTempStr = formData.maxTemp?.toString() || "";
 
+		const containsInvalidCharacter = (str) => {
+			// Regex to match any character that is not a digit, decimal point, °, C, or F
+			const invalidCharRegex = /[^0-9°CF]/;
+			return invalidCharRegex.test(str);
+		};
 		// Check if input is a decimal
-		const isMinTempDecimal = minTempStr.includes(".");
-		const isMaxTempDecimal = maxTempStr.includes(".");
+		// const isMinTempDecimal = minTempStr.includes(".");
+		// const isMaxTempDecimal = maxTempStr.includes(".");
+
+		const isMinTempDecimal = containsInvalidCharacter(minTempStr);
+		const isMaxTempDecimal = containsInvalidCharacter(maxTempStr);
 
 		// Validate minTemp and maxTemp
 		if (minTempStr !== "" && maxTempStr !== "") {
@@ -287,9 +296,17 @@ export function EditHeatingModal({
 		const minTempStr = formData.minTemp?.toString() || "";
 		const maxTempStr = formData.maxTemp?.toString() || "";
 
+		const containsInvalidCharacter = (str) => {
+			// Regex to match any character that is not a digit, decimal point, °, C, or F
+			const invalidCharRegex = /[^0-9°CF]/;
+			return invalidCharRegex.test(str);
+		};
 		// Check if input is a decimal
-		const isMinTempDecimal = minTempStr.includes(".");
-		const isMaxTempDecimal = maxTempStr.includes(".");
+		// const isMinTempDecimal = minTempStr.includes(".");
+		// const isMaxTempDecimal = maxTempStr.includes(".");
+
+		const isMinTempDecimal = containsInvalidCharacter(minTempStr);
+		const isMaxTempDecimal = containsInvalidCharacter(maxTempStr);
 
 		// Check for decimal values
 		if (isMinTempDecimal) {
@@ -396,13 +413,13 @@ export function EditHeatingModal({
 				function convertScheduleData(data) {
 					// console.log(data)
 					const dayMapping = {
-						Monday: 1,
-						Tuesday: 2,
-						Wednesday: 3,
-						Thursday: 4,
-						Friday: 5,
-						Saturday: 6,
-						Sunday: 7,
+						[daysOfWeek[0]]: 1,
+						[daysOfWeek[1]]: 2,
+						[daysOfWeek[2]]: 3,
+						[daysOfWeek[3]]: 4,
+						[daysOfWeek[4]]: 5,
+						[daysOfWeek[5]]: 6,
+						[daysOfWeek[6]]: 7,
 					};
 
 					const result = { days: [] };
