@@ -23,9 +23,9 @@ const EventLogsTable = () => {
 
   const [filtersSelected, setFiltersSelected] = useState(false);
   const [selectedLocationFilter, setSelectedLocationFilter] = useState(0);
-
+  const [selectedEventIds, setSelectedEventIds] = useState(new Set()); // Initialize as an empty Set
   const [closeDateFilter, setCloseDateFilter] = useState(false); // State to manage dropdown visibility
-
+  const [groupedEvents, setGroupedEvents] = useState([]);
   const dateFilterRef = useRef(null);
   const [floors, setFloors] = useState([]);
   // Function to handle click outside of the DateFilter
@@ -89,6 +89,7 @@ const EventLogsTable = () => {
     try {
       const data = await axios.get(ApiUrls.SMARTHEATING_LOCATIONS.LIST);
       const transformedData = transformData(data.data);
+
       setFilteredLocations(transformedData);
       setLocationsData(transformedData);
       const extractedFloors = LocationsData.map(
@@ -106,16 +107,15 @@ const EventLogsTable = () => {
     if (filtersSelected === false) getAllLocations();
   }, [filtersSelected]);
   const [tableData, setTableData] = useState([]);
-  // const [selectedFilter, setSelectedFilter] = useState("Last Year");
-  // const [selectedEvent, setSelectedEvent] = useState("All events");
 
   const [currentPage, setCurrentPage] = useState(1);
   const [totalRows, setTotalRows] = useState(0);
 
   const [selectedKeys, setSelectedKeys] = useState({});
+  // const [eventKeys, setEventKeys] = useState({});
   const [selectedRoomIds, setSelectedRoomIds] = useState(new Set());
   const [Deselectedkeys, setDeselectedKeys] = useState({});
-
+  // const [DeselectedEkeys, setDeselectedEKeys] = useState({});
   const getAllKeys = (node) => {
     let keys = [node.key];
     if (node.children) {
@@ -233,6 +233,7 @@ const EventLogsTable = () => {
 
     // Handle selected room IDs and filters
     const locations = Array.from(newSelectedRoomIds);
+
     const transformedArray = locations.map((item) =>
       parseInt(item.replace("room", ""), 10)
     );
@@ -250,6 +251,36 @@ const EventLogsTable = () => {
     }
   };
 
+  // const getAllEventKeys = (node) => {
+  //   let keys = [node.key];
+  //   if (node.children && node.children.length > 0) {
+  //     node.children.forEach((child) => {
+  //       keys = keys.concat(getAllEventKeys(child));
+  //     });
+  //   }
+  //   return keys;
+  // };
+
+  // const findEventNodeByKey = (key, nodes) => {
+  //   for (const node of nodes) {
+  //     if (node.key === key) {
+  //       return node;
+  //     }
+
+  //     if (node.children) {
+  //       const childNode = findEventNodeByKey(key, node.children);
+  //       if (childNode) {
+  //         return childNode;
+  //       }
+  //     }
+  //   }
+  //   return null;
+  // };
+  // const onEventsChange = (e) => {
+  //   const newSelectedKeys = e.value;
+
+  //   updateEventsSelection(newSelectedKeys);
+  // };
   const onNodeSelectChange = (e) => {
     const newSelectedKeys = e.value;
 
@@ -273,7 +304,33 @@ const EventLogsTable = () => {
     }
     return null;
   };
+  // const groupEventMessages = (data) => {
+  //   const eventGroups = {};
 
+  //   data.forEach((event) => {
+  //     const { eventTypeLevel, eventTypeMessage } = event;
+
+  //     if (!eventGroups[eventTypeLevel]) {
+  //       eventGroups[eventTypeLevel] = {
+  //         key: eventTypeLevel,
+  //         eventTypeLevel,
+  //         children: [],
+  //       };
+  //     }
+
+  //     if (!eventGroups[eventTypeLevel].children.includes(eventTypeMessage)) {
+  //       eventGroups[eventTypeLevel].children.push(eventTypeMessage);
+  //     }
+  //   });
+
+  //   const groupedArray = Object.values(eventGroups);
+  //   setGroupedEvents(groupedArray);
+
+  //   // Transform data for TreeSelect
+  //   const transformedData = transformGroupedEventsForTreeSelect(groupedArray);
+  //   setFilteredEvents(transformedData);
+  // };
+  // console.log("Events Data", groupedEvents);
   const getData = async (locations) => {
     try {
       const eventTypeLevel =
@@ -289,6 +346,7 @@ const EventLogsTable = () => {
         dateTo,
         dateFrom
       );
+      // groupEventMessages(data.rows);
 
       setTotalRows(data.count);
       setTableData(data.rows);
@@ -315,7 +373,7 @@ const EventLogsTable = () => {
       getData(ApiLocationsToBeSend);
     }
   }, [selectedEventFilters]);
-  const itemsPerPage = 10;
+  const itemsPerPage = 50;
   const totalItems = totalRows && totalRows;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
 
@@ -356,7 +414,7 @@ const EventLogsTable = () => {
   };
   const [filterValue, setFilterValue] = useState("");
   const [filteredLocations, setFilteredLocations] = useState(LocationsData);
-
+  // const [filteredEvents, setFilteredEvents] = useState(groupedEvents);
   // Initialize with LocationsData
 
   const handleFilterChange = (event) => {
@@ -379,7 +437,16 @@ const EventLogsTable = () => {
   const handleNodeToggle = (e) => {
     setExpandedKeys(e.value); // Update expanded keys state
   };
-
+  // const transformGroupedEventsForTreeSelect = (groupedEvents) => {
+  //   return groupedEvents.map((group) => ({
+  //     label: group.eventTypeLevel, // Event type as the parent node label
+  //     key: group.key, // Unique key for each parent node
+  //     children: group.children.map((message, index) => ({
+  //       label: message, // Event message as the child node label
+  //       key: `${group.key}-${index}`, // Unique key for each child node
+  //     })),
+  //   }));
+  // };
   return (
     <div className=" flex flex-col gap-4 w-full overflow-hidden">
       <div className="flex flex-col justify-center items-start w-full">
@@ -451,7 +518,68 @@ const EventLogsTable = () => {
                 </div>
               )}
             />
-
+            {/* <TreeSelect
+              value={selectedKeys}
+              options={filteredEvents} // Use transformed data here
+              onChange={onEventsChange}
+              onClick={handleTreeSelectClick}
+              expandedKeys={expandedKeys} // Use expandedKeys to manage expanded nodes
+              onToggle={handleNodeToggle} // Handle node expand/collapse event
+              selectionMode="multiple"
+              placeholder="Alle Gebäude"
+              filter
+              filterBy="label"
+              filterValue={filterValue}
+              className="w-full md:w-20rem"
+              closeIcon="false"
+              panelStyle={{
+                border: "0.5px solid #bababa",
+                borderRadius: "4px",
+                outline: "none",
+                boxShadow: "none",
+              }}
+              style={{
+                outline: "none",
+                boxShadow: "none",
+              }}
+              filterTemplate={({ filterInputProps }) => (
+                <div
+                  style={{
+                    backgroundColor: "#f5f5f5",
+                    padding: "10px",
+                    display: "flex",
+                    width: "100%",
+                    alignItems: "center",
+                    borderRadius: "6px",
+                    border: "1px solid #d5ddde",
+                  }}
+                >
+                  <span
+                    style={{
+                      marginLeft: "8px",
+                      marginRight: "8px",
+                      color: "#9e9e9e",
+                      fontSize: "18px",
+                    }}
+                  >
+                    <IoSearch />
+                  </span>
+                  <input
+                    {...filterInputProps}
+                    value={filterValue}
+                    onChange={handleFilterChange}
+                    style={{
+                      border: "none",
+                      width: "100%",
+                      backgroundColor: "transparent",
+                      outline: "none",
+                      color: "#6e6e6e",
+                    }}
+                    placeholder="Suche"
+                  />
+                </div>
+              )}
+            /> */}
             <MultiSelect
               value={selectedEventFilters}
               onShow={handleMultiSelectClick}

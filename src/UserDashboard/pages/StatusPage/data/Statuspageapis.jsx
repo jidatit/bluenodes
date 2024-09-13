@@ -37,7 +37,7 @@ export const fetchUnassignedRoomsData = async (
 
 export const fetchEventLogsData = async (
   page = 1,
-  limit = 10,
+  limit,
   locations,
   eventTypeLevel,
   dateTo,

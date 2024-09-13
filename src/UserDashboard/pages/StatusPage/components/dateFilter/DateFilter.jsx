@@ -32,12 +32,12 @@ const getDateRange = (option) => {
     case "Last 7 Days":
       // Set startDate to yesterday (previous day from current day)
       startDate = new Date(now);
-      startDate.setDate(now.getDate() - 7); // Subtract 1 day for the previous day
+      startDate.setDate(now.getDate() - 6); // Subtract 1 day for the previous day
       startDate.setHours(0, 0, 0, 0); // Set to the start of the day
 
       // Set endDate to 7 days ago
       endDate = new Date(now);
-      endDate.setDate(now.getDate() - 1); // Subtract 7 days
+      endDate.setDate(now.getDate()); // Subtract 7 days
       endDate.setHours(23, 59, 59, 999); // Set to the end of the day
 
       break;
@@ -107,7 +107,7 @@ const DateFilter = ({
     { key: "Yesterday", label: "Yesterday", germanLabel: "Gestern" },
     { key: "Last7Days", label: "Last 7 Days", germanLabel: "Letzte 7 Tage" },
     { key: "Last30Days", label: "Last 30 days", germanLabel: "Letzte 30 Tage" },
-    { key: "LastYear", label: "Last Year", germanLabel: "Letztes Jahr" },
+    { key: "LastYear", label: "LastYear", germanLabel: "Letztes Jahr" },
   ];
   useEffect(() => {
     if (closeDropdown === true) {
@@ -206,7 +206,7 @@ const DateFilter = ({
           </button>
           {dropdownOpen && (
             <button
-              className="bg-red-500 px-4 py-2 text-white shadow-lg rounded-lg"
+              className="bg-red-500 px-2 py-2 h-[34%] mt-1.5 text-white shadow-lg rounded-lg"
               onClick={clearFilter}
             >
               <Tooltip
@@ -214,7 +214,7 @@ const DateFilter = ({
                 style="light"
                 className="-mt-12 ml-24 bg-white shadow-lg"
               >
-                <CiCircleRemove size={30} />
+                <CiCircleRemove size={22} />
               </Tooltip>
             </button>
           )}
