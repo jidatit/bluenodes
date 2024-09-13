@@ -197,7 +197,6 @@ function HeatingSchedule({
 
 
 	const handleContainerClick = (event) => {
-		console.log(isResizingOrDragging,Object.keys(editableBoxes).length)
 		if (
 			Object.keys(editableBoxes).length > 0 && Object.values(editableBoxes).some(value => value === true)
 		) {
@@ -229,17 +228,14 @@ function HeatingSchedule({
 			return;
 		} else if (isResizingOrDragging) {
 			// Ignore the click if a resize or drag event is in progress
-		console.log("to3")
 
 			return;
 		} else if (event.target.closest(".box")) {
-		console.log("to4")
 
 			// If the click happened inside a box, do nothing
 			return;
 		}
 
-		console.log("to2")
 
 		const container = event.currentTarget;
 		const rect = container.getBoundingClientRect();
@@ -367,10 +363,6 @@ function HeatingSchedule({
 			setEditableBoxes({});
 		}
 	};
-
-	useEffect(()=>{
-		console.log(editableBoxes)
-	},[editableBoxes])
 
 	// Set Box colour change depending on Temperature change here
 	const handleHoverColour = (temp) => {
@@ -921,7 +913,25 @@ function HeatingSchedule({
 										});
 										setTimeout(() => {
 											setIsResizingOrDragging(false);
-											setEditableBoxes({})
+											// Perform temperature submission for the resized box
+											const boxId = newItem.i; // Get the ID of the resized box
+											const inputValue = temperatureInputs[boxId]; // Get the current temperature input for this box
+
+											// Check if the temperature value is valid (between 5 and 30)
+											if (!isNaN(inputValue) && inputValue >= 5 && inputValue <= 30) {
+											setLayouts((prevLayouts) => {
+												const layout = prevLayouts[day];
+												return {
+												...prevLayouts,
+												[day]: layout.map((box) =>
+													box.i === boxId ? { ...box, temperature: inputValue } : box
+												),
+												};
+											});
+											setEditableBoxes({}); // Exit edit mode after submission
+											} else {
+											alert(invalidInputString); // Handle invalid input (optional)
+											}
 										}, 500);
 									}}
 								>
