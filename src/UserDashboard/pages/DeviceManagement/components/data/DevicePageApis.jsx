@@ -10,6 +10,7 @@ export const fetchDeviceManagementList = async (
 ) => {
   try {
     // Construct the URL using the ApiUrls.SMARTHEATING_DEVICEMANAGEMENT.LIST function
+    console.log("location", locationId);
     const url = ApiUrls.SMARTHEATING_DEVICEMANAGEMENT.LIST(
       page,
       limit,

@@ -331,14 +331,14 @@ const EventLogsTable = () => {
   let startPage = Math.max(1, currentPage - paginationRange);
   let endPage = Math.min(totalPages, currentPage + paginationRange);
 
-  const formatDateforApitosend = (date) => {
-    const options = { year: "numeric", month: "2-digit", day: "2-digit" };
-    return new Intl.DateTimeFormat("en-GB", options)
-      .format(date)
-      .split("/")
-      .reverse()
-      .join("-");
-  };
+  // const formatDateforApitosend = (date) => {
+  //   const options = { year: "numeric", month: "2-digit", day: "2-digit" };
+  //   return new Intl.DateTimeFormat("en-GB", options)
+  //     .format(date)
+  //     .split("/")
+  //     .reverse()
+  //     .join("-");
+  // };
 
   const handleDatesChange = (newDates) => {
     console.log(newDates);
@@ -348,9 +348,9 @@ const EventLogsTable = () => {
       return;
     }
     if (newDates[0] && newDates[1]) {
-      let from = newDates[0] && formatDateforApitosend(new Date(newDates[0]));
+      let from = newDates[0];
       setdateFrom(from);
-      let to = newDates[1] && formatDateforApitosend(new Date(newDates[1]));
+      let to = newDates[1];
       setdateTo(to);
     }
   };
@@ -546,7 +546,7 @@ const EventLogsTable = () => {
                       </span>
                     </div>
                   </td>
-                  <td className="px-4 py-4 w-[36%]">
+                  <td className="px-4 py-4 w-[26%]">
                     <Tooltip content={item.message} style="light">
                       {item.message ? `${item.message}` : "-"}
                     </Tooltip>
