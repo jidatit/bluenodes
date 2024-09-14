@@ -492,13 +492,14 @@ function HeatingSchedule({
 						// Set temperature for copied boxes
 						setTemperatureInputs((prevInputs) => ({
 							...prevInputs,
-							[newBoxId]: box.temperature, // Initialize temperature input for the new box
+							[newBoxId]: temperatureInputs[box.i], // Initialize temperature input for the new box
 						}));
 	
 						// Return the new box with the generated ID
 						return {
 							...box,
 							i: newBoxId,
+							temperature:temperatureInputs[box.i]
 						};
 					});
 
@@ -929,7 +930,20 @@ function HeatingSchedule({
 												};
 											});
 											setEditableBoxes({}); // Exit edit mode after submission
-											} else {
+											} 
+											else if(newItem.temperature){
+												setLayouts((prevLayouts) => {
+													const layout = prevLayouts[day];
+													return {
+													...prevLayouts,
+													[day]: layout.map((box) =>
+														box.i === boxId ? { ...box, temperature: newItem.temperature } : box
+													),
+													};
+												});
+												setEditableBoxes({}); // Exit edit mode after submission
+											}
+											else {
 											alert(invalidInputString); // Handle invalid input (optional)
 											}
 										}, 500);
