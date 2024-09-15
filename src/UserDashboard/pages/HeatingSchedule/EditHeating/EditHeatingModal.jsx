@@ -491,7 +491,7 @@ export function EditHeatingModal({
 						resetModalState();
 						setTimeout(() => {
 							setShowToast(false);
-						}, 1000);
+						}, 3000);
 					})
 					.catch((error) => {
 						setShowToast(true);
@@ -500,7 +500,7 @@ export function EditHeatingModal({
 						console.error("Error:", error);
 						setTimeout(() => {
 							setShowToast(false);
-						}, 1000);
+						}, 3000);
 					});
 
 				// Save button clicked
@@ -580,7 +580,7 @@ export function EditHeatingModal({
 				onClose={handleCloseModal}
 			>
 				<Modal.Header className=" text-lg text-gray-900 [&>*]:font-semibold">
-					Edit program - {program.templateName}
+					Heizplan bearbeiten: {program.templateName}
 				</Modal.Header>
 				<Modal.Body>
 					<div className="flex flex-col items-center space-y-6">
@@ -618,11 +618,11 @@ export function EditHeatingModal({
 				<Modal.Footer>
 					{currentStep < 2 ? (
 						<Button className="bg-primary" onClick={handleNext}>
-							Next
+							Weiter
 						</Button>
 					) : (
 						<Button className={` bg-primary`} onClick={handleCreate}>
-							Save
+							Speichern
 						</Button>
 					)}
 					<Button
@@ -630,12 +630,12 @@ export function EditHeatingModal({
 						color="gray"
 						onClick={handleCloseModal}
 					>
-						Cancel
+						Abbrechen
 					</Button>
 				</Modal.Footer>
 				{showToast && (
 					<div
-						className="fixed top-4 right-4 z-50 transition-transform duration-300 ease-in-out transform translate-x-0"
+						className="fixed top-4 right-4 z-50 transition-transform duration-1000 ease-in-out transform translate-x-0"
 						style={{ transition: "transform 0.3s ease-in-out" }}
 					>
 						<Toast className="animate-slideIn">

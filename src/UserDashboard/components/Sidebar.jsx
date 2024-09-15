@@ -90,7 +90,7 @@ const ExampleSidebar = () => {
               >
                 <span className="sr-only">Toggle collapsed state</span>
                 <svg
-                  className={`w-6 h-6 text-gray-800 dark:text-white transform transition-transform duration-300 ${
+                  className={`w-6 h-6 text-gray-800 dark:text-white transform transition-transform duration-1000 ${
                     isCollapsed ||
                     (isSmallScreen() && !isSidebarOpenOnSmallScreens)
                       ? "rotate-0"
@@ -269,14 +269,14 @@ const ConfirmSignOutModal = ({
         <div className="text-center">
           <IoLogOut size={30} className="text-[#9CA3AF] mx-auto mb-4" />
           <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
-            Are you sure you want to sign out?
+            Möchten Sie sich wirklich ausloggen?
           </h3>
           <div className="flex justify-center gap-4">
             <Button color="gray" onClick={() => setIsSignoutModalOpen(false)}>
-              Cancel
+              Abbrechen
             </Button>
             <Button color="failure" onClick={handleSignout}>
-              Sign out
+              Ausloggen
             </Button>
           </div>
         </div>

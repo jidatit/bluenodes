@@ -683,7 +683,7 @@ export function CreateHeatingModal({
 				className="z-40"
 			>
 				<Modal.Header className=" text-lg text-gray-900 [&>*]:font-semibold">
-					Create heating program
+					Heizplan erstellen
 				</Modal.Header>
 				<Modal.Body>
 					<div className="flex flex-col items-center space-y-6">
@@ -733,7 +733,7 @@ export function CreateHeatingModal({
 				<Modal.Footer>
 					{currentStep < 3 ? (
 						<Button className="bg-primary" onClick={handleNext}>
-							Next
+							Weiter
 						</Button>
 					) : (
 						<Button
@@ -752,12 +752,12 @@ export function CreateHeatingModal({
 						color="gray"
 						onClick={handleCloseModal}
 					>
-						Cancel
+						Abbrechen
 					</Button>
 				</Modal.Footer>
 				{showToast && (
 					<div
-						className="fixed top-4 right-4 z-50 transition-transform duration-300 ease-in-out transform translate-x-0"
+						className="fixed top-4 right-4 z-50 transition-transform duration-1000 ease-in-out transform translate-x-0"
 						style={{ transition: "transform 0.3s ease-in-out" }}
 					>
 						<Toast className="animate-slideIn">

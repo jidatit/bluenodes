@@ -369,7 +369,7 @@ const UnassignedTable = ({ assignUpdate }) => {
     setTimeout(() => {
       setShowToast(false);
       // handleCloseModal();
-    }, 1000);
+    }, 3000);
   };
   const [filterValue, setFilterValue] = useState("");
   const [filteredLocations, setFilteredLocations] = useState(LocationsData);
@@ -632,7 +632,7 @@ const UnassignedTable = ({ assignUpdate }) => {
       )}
       {showToast && (
         <div
-          className="fixed top-4 right-4 z-50 transition-transform duration-300 ease-in-out transform translate-x-0"
+          className="fixed top-4 right-4 z-50 transition-transform duration-1000 ease-in-out transform translate-x-0"
           style={{ transition: "transform 0.3s ease-in-out" }}
         >
           <Toast className="animate-slideIn">

@@ -37,12 +37,12 @@ function HeatingSchedulePage() {
 		const parseDate = (dateString) => new Date(dateString);
 
 		switch (filter) {
-			case "Oldest to Newest":
+			case "Älteste zuerst":
 				filtered = [...filteredPrograms].sort(
 					(a, b) => parseDate(a.updatedAt) - parseDate(b.updatedAt),
 				);
 				break;
-			case "Newest to Oldest":
+			case "Neueste zuerst":
 				filtered = [...filteredPrograms].sort(
 					(a, b) => parseDate(b.updatedAt) - parseDate(a.updatedAt),
 				);
@@ -81,7 +81,7 @@ function HeatingSchedulePage() {
 		// Hide the toast after 4 seconds
 		setTimeout(() => {
 			setShowToast(false);
-		}, 1000);
+		}, 3000);
 	};
 
 	const [key, setKey] = useState(0);
@@ -107,7 +107,7 @@ function HeatingSchedulePage() {
 		// Hide the toast after 4 seconds
 		setTimeout(() => {
 			setShowToast(false);
-		}, 1000);
+		}, 3000);
 	};
 
 	const handleCloneProgram = (data) => {
@@ -130,7 +130,7 @@ function HeatingSchedulePage() {
 		// Hide the toast after 4 seconds
 		setTimeout(() => {
 			setShowToast(false);
-		}, 1000);
+		}, 3000);
 	};
 
 	const handleDeleteProgram = () => {
@@ -158,7 +158,7 @@ function HeatingSchedulePage() {
 		// Hide the toast after 4 seconds
 		setTimeout(() => {
 			setShowToast(false);
-		}, 1000);
+		}, 3000);
 	};
 	const [Loader, setLoader] = useState(true);
 
@@ -279,7 +279,7 @@ function HeatingSchedulePage() {
 								type="search"
 								id="default-search"
 								className="block w-full p-4 px-4 ps-10 py-2 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-primary focus:border-primary dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary dark:focus:border-primary"
-								placeholder="Search heating program"
+								placeholder="Heizplan suchen"
 								required
 								value={searchQuery}
 								onChange={(e) => setSearchQuery(e.target.value)}
@@ -300,19 +300,19 @@ function HeatingSchedulePage() {
 								<ul className="list-none p-2">
 									<li
 										className="cursor-pointer block rounded-lg px-4 py-2 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-700"
-										onClick={() => handleFilterChange("Oldest to Newest")}
+										onClick={() => handleFilterChange("Älteste zuerst")}
 									>
 										Älteste zuerst
 									</li>
 									<li
 										className="cursor-pointer block rounded-lg px-4 py-2 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-700"
-										onClick={() => handleFilterChange("Newest to Oldest")}
+										onClick={() => handleFilterChange("Neueste zuerst")}
 									>
 										Neueste zuerst
 									</li>
 									<li
 										className="cursor-pointer block rounded-lg px-4 py-2 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-700"
-										onClick={() => handleFilterChange("No filter")}
+										onClick={() => handleFilterChange("Kein Filter")}
 									>
 										Kein Filter
 									</li>
@@ -338,7 +338,7 @@ function HeatingSchedulePage() {
 					filteredPrograms
 						.sort((a, b) => {
 							// If no filter is applied, prioritize assignedPrograms at the top
-							if (!isFiltered && selectedFilter !== "No filter") {
+							if (!isFiltered && selectedFilter !== "Kein Filter") {
 								// Sort to put assignedPrograms at the top
 								return b.assignedRooms - a.assignedRooms;
 							} else {
@@ -378,7 +378,7 @@ function HeatingSchedulePage() {
 			</div>
 			{showToast && (
 				<div
-					className="fixed top-4 right-4 z-50 transition-transform duration-300 ease-in-out transform translate-x-0"
+					className="fixed top-4 right-4 z-50 transition-transform duration-1000 ease-in-out transform translate-x-0"
 					style={{ transition: "transform 0.3s ease-in-out" }}
 				>
 					<Toast className="animate-slideIn">

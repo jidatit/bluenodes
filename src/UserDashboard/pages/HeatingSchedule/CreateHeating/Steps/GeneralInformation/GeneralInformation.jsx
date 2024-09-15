@@ -75,7 +75,7 @@ function GeneralInformation({
 									className="text-sm text-gray-900"
 									htmlFor="childSafetyYes"
 								>
-									Ja
+									An
 								</Label>
 							</div>
 							<div className="flex items-center gap-2">
@@ -91,7 +91,7 @@ function GeneralInformation({
 									className="text-sm text-gray-900"
 									htmlFor="childSafetyNo"
 								>
-									Nein
+									Aus
 								</Label>
 							</div>
 						</div>

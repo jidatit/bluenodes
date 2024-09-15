@@ -345,44 +345,44 @@ const TemperatureSchedule = ({
 							</div>
 							<div className=" flex  items-center gap-4 justify-between w-auto 2xl:w-[25%] 2xl:gap-10">
 								<Tooltip
-									className={`px-2 py-1.5 text-center w-full max-w-96`}
-									content={`Current Temp: ${
+									className={`px-2 py-1.5 text-center max-w-xs`}
+									content={`Raumtemperatur: ${
 										room.roomTemperature ? `${room.roomTemperature}°C` : "Unset"
 									}`}
 									style="light"
 								>
-									<div className="flex items-center w-full gap-2 text-xl ">
+									<div className="flex items-center gap-2 text-xl ">
 										<img src={thermometer} alt="Thermometer" />
 										<p className="text-sm w-[80px]">
 											{room.roomTemperature
 												? `${room.roomTemperature.toFixed(1)}°C`
-												: "Not set"}
+												: "nicht vorhanden"}
 										</p>
 									</div>
 								</Tooltip>
 
 								<Tooltip
-									className={`px-2 py-1.5 text-center max-w-96`}
-									content={`Window: ${room.windowOpen ? "Yes" : "No"}`}
+									className={`px-2 py-1.5 text-center max-w-xs`}
+									content={`Fenster ist ${room.windowOpen ? "offen" : "zu"}`}
 									style="light"
 								>
 									<div className="flex items-center w-full gap-2 text-xl ">
 										<img src={windowicon} alt="Window" />
 										<p className="text-sm w-[45px]">
-											{room.windowOpen ? "Yes" : "No"}
+											{room.windowOpen ? "offen" : "zu"}
 										</p>
 									</div>
 								</Tooltip>
 
 								<Tooltip
-									className={`px-2 py-1.5 text-center max-w-96`}
-									content={`Algorithm: ${room.algorithm ? "On" : "Off"}`}
+									className={`px-2 py-1.5 text-center max-w-xs`}
+									content={`Algorithmus ist ${room.algorithm ? "an" : "aus"}`}
 									style="light"
 								>
 									<div className="flex items-center w-full gap-2 text-xl ">
 										<img src={algo} alt="Algorithm" />
 										<p className="text-sm w-[45px]">
-											{room.algorithm ? "On" : "Off"}
+											{room.algorithm ? "An" : "Aus"}
 										</p>
 									</div>
 								</Tooltip>
@@ -438,8 +438,8 @@ const TemperatureSchedule = ({
 								</Button>
 
 								<Tooltip
-									className={`px-2 py-1.5 text-center min-w-32 max-w-96`}
-									content={`Edit Schedule`}
+									className={`px-2 py-1.5 text-center whitespace-nowrap max-w-xs`}
+									content={`Heizplan bearbeiten`}
 									style="light"
 								>
 									<div>
@@ -491,8 +491,8 @@ const TemperatureSchedule = ({
 												}}
 											>
 												<Tooltip
-													className={`px-2 py-1.5 text-center w-full min-w-[170px] max-w-96`}
-													content={`Manual Change: ${change.targetTemperature}°C`}
+													className={`px-2 py-1.5 text-center w-full min-w-[170px] max-w-xs`}
+													content={`Raumnutzer änderte Soll-Temperatur auf ${change.targetTemperature}°C`}
 													style="light"
 												>
 													<div
@@ -522,7 +522,7 @@ const TemperatureSchedule = ({
 									>
 										<Tooltip
 											className={`px-2 py-1.5 text-center w-full min-w-[170px] max-w-96`}
-											content={`Target Temp: ${room.heatingSchedule.currentTargetTemperature.targetTemperature}°C`}
+											content={`Soll-Temperatur: ${room.heatingSchedule.currentTargetTemperature.targetTemperature}°C`}
 											style="light"
 										>
 											<div className="flex flex-col items-center justify-center">

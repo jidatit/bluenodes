@@ -102,7 +102,7 @@ const OverviewCard = ({ formData }) => {
 									)} */}
 								</div>
 								<p className="text-[12px] font-[400] text-gray-500">
-									Geräte Online
+									Geräte online
 								</p>
 								<p className="text-[14px] font-[400]">
 									{formData.numberOfDevicesOnline}/{formData.numberOfDevices}

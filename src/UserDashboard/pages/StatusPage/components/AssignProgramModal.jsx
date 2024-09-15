@@ -110,7 +110,7 @@ const AssignProgramModal = ({
 		setTimeout(() => {
 			setShowToast(false);
 			// handleCloseModal();
-		}, 1000);
+		}, 3000);
 	};
 	// if (updatedR !== null && updatedR) {
 	// 	replaced = true;
@@ -590,7 +590,7 @@ const AssignProgramModal = ({
 					// }
 					setTimeout(() => {
 						setShowToast(false);
-					}, 1000);
+					}, 3000);
 					handleCloseModal();
 					fetchHeatingSchedules();
 				} else {
@@ -599,7 +599,7 @@ const AssignProgramModal = ({
 					setShowToast(true);
 					setTimeout(() => {
 						setShowToast(false);
-					}, 1000);
+					}, 3000);
 				}
 			} catch (error) {
 				console.error("Error during fetch operation:", error);
@@ -791,7 +791,7 @@ const AssignProgramModal = ({
 				)}
 				{showToast && (
 					<div
-						className="fixed top-4 right-4 z-50 transition-transform duration-300 ease-in-out transform translate-x-0"
+						className="fixed top-4 right-4 z-50 transition-transform duration-1000 ease-in-out transform translate-x-0"
 						style={{ transition: "transform 0.3s ease-in-out" }}
 					>
 						<Toast className="animate-slideIn">
@@ -896,7 +896,7 @@ const ReplaceProgram = ({
 					value={selectedProgram}
 					onChange={handleProgramChange}
 				>
-					<option value="">Please select Program</option>
+					<option value="">Heizplan auswählen</option>
 					{data.map((program) => (
 						<option
 							// className={`block rounded-lg px-4 py-2 text-sm ${
@@ -1016,7 +1016,7 @@ const ViewTableComponent = ({ selectedProgram }) => {
 						</div>
 						<div className="flex flex-col gap-2">
 							<p className="font-semibold">Kindersicherung</p>
-							<p>{temperatureDetails?.allowDeviceOverride ? "No" : "Yes"}</p>{" "}
+							<p>{temperatureDetails?.allowDeviceOverride ? "Aus" : "An"}</p>{" "}
 							{/* Replace hardcoded value */}
 						</div>
 						{temperatureDetails?.allowDeviceOverride && (
@@ -1069,7 +1069,7 @@ const ViewTableComponent = ({ selectedProgram }) => {
 									<IoInformationCircleOutline color="#6B7280" />
 								</Tooltip>
 							</p>
-							<p>{temperatureDetails?.applyAlgorithm ? "Yes" : "No"}</p>{" "}
+							<p>{temperatureDetails?.applyAlgorithm ? "Ja" : "Nein"}</p>{" "}
 							{/* Replace hardcoded value */}
 						</div>
 					</div>

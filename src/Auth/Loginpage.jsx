@@ -56,33 +56,33 @@ const Loginpage = () => {
 					alt="Blue Node Logo"
 					className="w-[35%] h-auto"
 				/>
-				<h1 className="font-semibold text-4xl mt-3"> Welcome Back </h1>
+				<h1 className="font-semibold text-4xl mt-3"> Willkommen! </h1>
 				<h3 className="text-lg text-gray-700">
 					{" "}
-					Welcome back! Please enter your details.{" "}
+					Bitte nutzen Sie Ihre E-Mail Adresse und Ihr Passwort, um sich einzuloggen.{" "}
 				</h3>
 				<div className="w-full flex gap-2 flex-col justify-start items-start">
 					<label htmlFor="email" className="font-medium pl-2">
 						{" "}
-						Email{" "}
+						E-Mail{" "}
 					</label>
 					<TextInput
 						value={email}
 						id="email"
 						onChange={(e) => setEmail(e.target.value)}
-						placeholder="Enter your email"
+						placeholder="E-Mail-Adresse eingeben"
 						className="w-full outline-none shadow-2xl"
 						type="email"
 					/>
 					<label htmlFor="password" className="font-medium pl-2">
 						{" "}
-						Password{" "}
+						Passwort{" "}
 					</label>
 					<TextInput
 						value={password}
 						id="password"
 						onChange={(e) => setPassword(e.target.value)}
-						placeholder="Enter your password"
+						placeholder="Passwort eingeben"
 						className="w-full outline-none shadow-2xl"
 						type="password"
 					/>

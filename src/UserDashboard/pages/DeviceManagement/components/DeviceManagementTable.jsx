@@ -501,7 +501,7 @@ const DeviceManagementTable = () => {
 
         setTimeout(() => {
           setShowToast(false);
-        }, 1000);
+        }, 3000);
       } else {
         setEditMode(false);
         setEditingItemId(null);
@@ -510,7 +510,7 @@ const DeviceManagementTable = () => {
         setIsSuccess(false);
         setTimeout(() => {
           setShowToast(false);
-        }, 1000);
+        }, 3000);
         alert("Failed to update device name.");
       }
     } catch (error) {
@@ -665,7 +665,7 @@ const DeviceManagementTable = () => {
               onChange={handleBatteryLevelChange}
               showSelectAll={false}
               options={batteryLevelOptions}
-              placeholder="Battery Levels"
+              placeholder="Batteriestand"
               display="chip"
               className="w-full md:w-20rem"
               panelStyle={{
@@ -755,7 +755,7 @@ const DeviceManagementTable = () => {
                           >
                             <Tooltip
                               placement="left"
-                              content={"Cancel"}
+                              content={"Abbrechen"}
                               style="light"
                               animation="duration-500"
                             >
@@ -768,7 +768,7 @@ const DeviceManagementTable = () => {
                           >
                             <Tooltip
                               placement="left"
-                              content={"Save"}
+                              content={"Speichern"}
                               style="light"
                               animation="duration-500"
                             >
@@ -779,7 +779,7 @@ const DeviceManagementTable = () => {
                       ) : (
                         <Tooltip
                           placement="left"
-                          content={"Edit Name"}
+                          content={"Name bearbeiten"}
                           style="light"
                           animation="duration-500"
                         >
@@ -818,7 +818,7 @@ const DeviceManagementTable = () => {
                           />
                           {item.batteryLevel === "low" && (
                             <p className="text-sm font-bold text-red-500">
-                              Low Battery
+                              Bald leer
                             </p>
                           )}
                         </div>
@@ -864,7 +864,7 @@ const DeviceManagementTable = () => {
                                 }`}
                               >
                                 {" "}
-                                Target Temperature{" "}
+                                Soll-Temperatur{" "}
                               </h2>
                               <h1
                                 className={`text-base font-medium text-black ${
@@ -883,7 +883,7 @@ const DeviceManagementTable = () => {
                                 }`}
                               >
                                 {" "}
-                                Current Temperature{" "}
+                                Sensor-Temperatur{" "}
                               </h2>
                               <h1
                                 className={`text-base font-medium text-black ${
@@ -903,7 +903,7 @@ const DeviceManagementTable = () => {
                               }`}
                             >
                               <img src={HumidityIcon} alt="Humidity Icon" />
-                              <h2> Current Humidity </h2>
+                              <h2> Luftfeuchtigkeit </h2>
                               <h1 className="text-base font-medium text-black">
                                 {`${deviceData.currentHumidity}%` || "--"}
                               </h1>
@@ -919,7 +919,7 @@ const DeviceManagementTable = () => {
                                 src={LightIntensityIcon}
                                 alt="Light Intensity Icon"
                               />
-                              <h2> Light Intensity </h2>
+                              <h2> Lichtstärke </h2>
                               <h1 className="text-base font-medium text-black">
                                 {`${deviceData.lightIntensity}lux` || "--"}
                               </h1>
@@ -932,7 +932,7 @@ const DeviceManagementTable = () => {
                               }`}
                             >
                               <img src={MovementIcon} alt="Movement Icon" />
-                              <h2> Movement Detected </h2>
+                              <h2> Anwesenheit erkannt </h2>
                               <h1 className="text-base font-medium text-black">
                                 {deviceData.movementDetected || "--"}
                               </h1>
@@ -953,7 +953,7 @@ const DeviceManagementTable = () => {
                                 }`}
                               >
                                 {" "}
-                                Error{" "}
+                                Fehler{" "}
                               </h2>
                               <h1
                                 className={`text-base font-medium text-black ${
@@ -970,7 +970,7 @@ const DeviceManagementTable = () => {
                                 }`}
                               >
                                 {" "}
-                                Date/Time of Data Packet{" "}
+                                Letztes Datenpaket{" "}
                               </h2>
                               <h1
                                 className={`text-base font-medium text-black ${
@@ -1005,7 +1005,7 @@ const DeviceManagementTable = () => {
                                 }`}
                               >
                                 {" "}
-                                Target Temperature{" "}
+                                Soll-Temperatur{" "}
                               </h2>
                               <h1
                                 className={`text-base font-medium text-black ${
@@ -1024,7 +1024,7 @@ const DeviceManagementTable = () => {
                                 }`}
                               >
                                 {" "}
-                                Current Temperature{" "}
+                                Sensor-Temperatur{" "}
                               </h2>
                               <h1
                                 className={`text-base font-medium text-black ${
@@ -1044,7 +1044,7 @@ const DeviceManagementTable = () => {
                               }`}
                             >
                               <img src={HumidityIcon} alt="Humidity Icon" />
-                              <h2> Current Humidity </h2>
+                              <h2> Luftfeuchtigkeit </h2>
                               <h1 className="text-base font-medium text-black">
                                 {`${deviceData.currentHumidity}%` || "--"}
                               </h1>
@@ -1060,7 +1060,7 @@ const DeviceManagementTable = () => {
                                 src={ValvePositionIcon}
                                 alt="Valve Position Icon"
                               />
-                              <h2> Valve Position in % </h2>
+                              <h2> Ventilöffnung in % </h2>
                               <h1 className="text-base font-medium text-black">
                                 {`${deviceData.valvePositionInProcent}%` ||
                                   "--"}
@@ -1078,9 +1078,9 @@ const DeviceManagementTable = () => {
                               }`}
                             >
                               <img src={ChildLockIcon} alt="Child Lock Icon" />
-                              <h2> Child Lock </h2>
+                              <h2> Kindersicherung </h2>
                               <h1 className="text-base font-medium text-black">
-                                {deviceData.childLock ? "Yes" : "No"}
+                                {deviceData.childLock ? "An" : "Aus"}
                               </h1>
                             </div>
                             <div
@@ -1099,7 +1099,7 @@ const DeviceManagementTable = () => {
                                 }`}
                               >
                                 {" "}
-                                Error{" "}
+                                Fehler{" "}
                               </h2>
                               <h1
                                 className={`text-base font-medium text-black ${
@@ -1116,7 +1116,7 @@ const DeviceManagementTable = () => {
                                 }`}
                               >
                                 {" "}
-                                Date/Time of Data Packet{" "}
+                                Letztes Datenpaket{" "}
                               </h2>
                               <h1
                                 className={`text-base font-medium text-black ${
@@ -1138,21 +1138,21 @@ const DeviceManagementTable = () => {
                                 src={OpenCloseWindowIcon}
                                 alt="Open Close Window Icon"
                               />
-                              <h2> Open/Close </h2>
+                              <h2> Status </h2>
                               <h1 className="text-base font-medium text-black">
                                 {deviceData.openClose || "--"}
                               </h1>
                             </div>
                             <div className="flex flex-col items-start justify-start gap-2">
                               <img src={ErrorIcon} alt="Error Icon" />
-                              <h2> Error </h2>
+                              <h2> Fehler </h2>
                               <h1 className="text-base font-medium text-black">
                                 {deviceData.error || "--"}
                               </h1>
                             </div>
                             <div className="flex flex-col items-start justify-start gap-2">
                               <BsFillCalendarDateFill className="text-2xl" />
-                              <h2> Date/Time of Data Packet </h2>
+                              <h2> Letztes Datenpaket </h2>
                               <h1 className="text-base font-medium text-black">
                                 {formatTimestamp(deviceData.timestamp)}
                               </h1>
@@ -1170,7 +1170,7 @@ const DeviceManagementTable = () => {
         {tableData.length === 0 && (
           <div className="flex flex-col items-center justify-center w-full bg-slate-100">
             <p className="w-full py-2 italic font-semibold text-center">
-              No Results Found
+              Keine Ergebnisse
             </p>
           </div>
         )}
@@ -1178,11 +1178,11 @@ const DeviceManagementTable = () => {
         <div className="flex flex-row items-center justify-between w-full p-3">
           {tableData && (
             <p className="text-sm font-light text-gray-500">
-              Showing{" "}
+              {" "}
               <span className="font-bold text-black">
                 {startIndex}-{endIndex}
               </span>{" "}
-              of <span className="font-bold text-black">{totalItems}</span>
+              von <span className="font-bold text-black">{totalItems}</span>
             </p>
           )}
 
@@ -1259,7 +1259,7 @@ const DeviceManagementTable = () => {
       </div>
       {showToast && (
         <div
-          className="fixed top-4 right-4 z-50 transition-transform duration-300 ease-in-out transform translate-x-0"
+          className="fixed top-4 right-4 z-50 transition-transform duration-1000 ease-in-out transform translate-x-0"
           style={{ transition: "transform 0.3s ease-in-out" }}
         >
           <Toast className="animate-slideIn">

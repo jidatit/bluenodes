@@ -224,7 +224,7 @@ const ProgramAssignment = ({ formData, assignmentData,setHandleAssignmentRef, ha
     <div className="flex flex-col gap-4 w-full">
       <div className="flex flex-col gap-0 w-full">
       <h3 className="text-[16px] text-gray-500 font-semibold flex items-center gap-2">
-          <Tooltip className='min-w-[130px]' content="Go to Previous Step" style="light" animation="duration-500">
+          <Tooltip className='min-w-[130px]' content="Zurück" style="light" animation="duration-500">
             <IoArrowBackCircle onClick={()=> handlePrev()} className=' text-2xl hover:text-primary cursor-pointer' />
           </Tooltip>
           Wählen Sie die Räume aus.
@@ -263,7 +263,7 @@ const ProgramAssignment = ({ formData, assignmentData,setHandleAssignmentRef, ha
                         <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
                     </svg>
                 </div>
-                <input type="search" id="default-search" className="block w-full p-4 px-4 ps-10 py-2 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-primary focus:border-primary dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary dark:focus:border-primary" placeholder="Search" required />
+                <input type="search" id="default-search" className="block w-full p-4 px-4 ps-10 py-2 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-primary focus:border-primary dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary dark:focus:border-primary" placeholder="Suche" required />
                 {/* <button type="submit" className="text-white absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Search</button> */}
             </div>
           </form>
@@ -279,7 +279,7 @@ const ProgramAssignment = ({ formData, assignmentData,setHandleAssignmentRef, ha
               <Accordion.Title className=' p-2 mb-1 flex-row-reverse items-center justify-end gap-3 border-none hover:bg-white focus:ring-none focus:ring-white bg-white'>
                 <p className="text-sm text-gray-900 font-bold">{building.name} 
                   <span className={`text-xs font-normal py-0.5 px-2.5 ml-1 ${building.roomsAssigned === building.totalRooms ? 'text-primary' : 'text-indigo-800'} ${building.roomsAssigned === building.totalRooms ? 'bg-primary-200' : 'bg-indigo-100'} rounded-md`}>
-                    {building.roomsAssigned}/{building.totalRooms} rooms assigned
+                    {building.roomsAssigned}/{building.totalRooms} Räume mit Heizplan
                   </span>
                 </p>
               </Accordion.Title>
@@ -290,7 +290,7 @@ const ProgramAssignment = ({ formData, assignmentData,setHandleAssignmentRef, ha
                       <Accordion.Title className=' p-2 mb-1 flex-row-reverse items-center justify-end gap-3 border-none hover:bg-white focus:ring-none focus:ring-white bg-white'>
                         <p className="text-sm text-gray-900 font-bold">{floor.name} 
                           <span className={`text-xs font-normal py-0.5 px-2.5 ml-1 ${floor.roomsAssigned === floor.totalRooms ? 'text-primary' : 'text-indigo-800'} ${floor.roomsAssigned === floor.totalRooms ? 'bg-primary-200' : 'bg-indigo-100'} rounded-md`}>
-                            {floor.roomsAssigned}/{floor.totalRooms} rooms assigned
+                            {floor.roomsAssigned}/{floor.totalRooms} Räume mit Heizplan
                           </span>
                         </p>
                       </Accordion.Title>
@@ -308,10 +308,10 @@ const ProgramAssignment = ({ formData, assignmentData,setHandleAssignmentRef, ha
                                   onChange={(e) => handleSelectAllRooms(building.id, floor.id, e.target.checked)} 
                                 />
                               </Table.HeadCell>
-                              <Table.HeadCell>Room</Table.HeadCell>
-                              <Table.HeadCell>Algorithm On?</Table.HeadCell>
-                              <Table.HeadCell>Program Assigned</Table.HeadCell>
-                              <Table.HeadCell>Current Temperature</Table.HeadCell>
+                              <Table.HeadCell>Raum</Table.HeadCell>
+                              <Table.HeadCell>Algorithmus</Table.HeadCell>
+                              <Table.HeadCell>Heizplan</Table.HeadCell>
+                              <Table.HeadCell>Raumtemperatur</Table.HeadCell>
                               {/* <Table.HeadCell>Assignment</Table.HeadCell> */}
                             </Table.Head>
                             <Table.Body className="">
@@ -348,7 +348,7 @@ const ProgramAssignment = ({ formData, assignmentData,setHandleAssignmentRef, ha
                 <Accordion.Title className=' p-2 mb-1 flex-row-reverse items-center justify-end gap-3 border-none hover:bg-white focus:ring-none focus:ring-white bg-white'>
                   <p className="text-sm text-gray-900 font-bold">{building.name} 
                     <span className={`text-xs font-normal py-0.5 px-2.5 ml-1 ${building.roomsAssigned === building.totalRooms ? 'text-primary' : 'text-indigo-800'} ${building.roomsAssigned === building.totalRooms ? 'bg-primary-200' : 'bg-indigo-100'} rounded-md`}>
-                      {building.roomsAssigned}/{building.totalRooms} rooms assigned
+                      {building.roomsAssigned}/{building.totalRooms} Räume mit Heizplan
                     </span>
                   </p>
                 </Accordion.Title>
@@ -359,7 +359,7 @@ const ProgramAssignment = ({ formData, assignmentData,setHandleAssignmentRef, ha
                         <Accordion.Title className=' p-2 mb-1 flex-row-reverse items-center justify-end gap-3 border-none hover:bg-white focus:ring-none focus:ring-white bg-white'>
                           <p className="text-sm text-gray-900 font-bold">{floor.name} 
                             <span className={`text-xs font-normal py-0.5 px-2.5 ml-1 ${floor.roomsAssigned === floor.totalRooms ? 'text-primary' : 'text-indigo-800'} ${floor.roomsAssigned === floor.totalRooms ? 'bg-primary-200' : 'bg-indigo-100'} rounded-md`}>
-                              {floor.roomsAssigned}/{floor.totalRooms} rooms assigned
+                              {floor.roomsAssigned}/{floor.totalRooms} Räume mit Heizplan
                             </span>
                           </p>
                         </Accordion.Title>

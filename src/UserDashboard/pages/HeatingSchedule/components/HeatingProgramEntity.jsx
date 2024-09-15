@@ -97,7 +97,7 @@ const HeatingProgramEntity = ({
 		setShowToast(true);
 		setTimeout(() => {
 			setShowToast(false);
-		}, 1000);
+		}, 3000);
 	};
 
 	const [response, setResponse] = useState(false);
@@ -184,24 +184,21 @@ const HeatingProgramEntity = ({
 	const getDate = () => {
 		// Input date string
 		const dateString = program.updatedAt;
-
+	
 		// Parse the date string into a Date object
 		const date = new Date(dateString);
-
-		// Format the date in DD/MM/YYYY HH:MM:SS format
+	
+		// Format the date in DD.MM.YYYY HH:MM format
 		const day = String(date.getDate()).padStart(2, "0");
 		const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are zero-based
 		const year = date.getFullYear();
-		let hours = String(date.getHours()).padStart(2, "0");
+		const hours = String(date.getHours()).padStart(2, "0"); // 24-hour format
 		const minutes = String(date.getMinutes()).padStart(2, "0");
-		const ampm = hours >= 12 ? "PM" : "AM";
-		hours = hours % 12;
-		hours = hours ? hours : 12; // the hour '0' should be '12'
-		const formattedHours = String(hours).padStart(2, "0");
-
+	
 		// Create the formatted date string
-		return `${day}/${month}/${year} ${formattedHours}:${minutes} ${ampm}`;
+		return `${day}.${month}.${year} ${hours}:${minutes}`;
 	};
+	
 
 	// const [initialData, setInitialData] = useState({});
 	// const fetchAllLocations = () => {
@@ -265,13 +262,13 @@ const HeatingProgramEntity = ({
 							<span
 								className={`text-xs font-normal py-0.5 px-2.5 ml-1 bg-green-400 text-white rounded-md`}
 							>
-								Active
+								Aktiv
 							</span>
 						</p>
 					)}
 					<Tooltip
-						className="min-w-[130px]"
-						content="Clone program"
+						className="min-w-[130px] text-center"
+						content="Duplizieren"
 						style="light"
 						animation="duration-500"
 					>
@@ -281,8 +278,8 @@ const HeatingProgramEntity = ({
 						/>
 					</Tooltip>
 					<Tooltip
-						className="min-w-[130px]"
-						content="Edit program"
+						className="min-w-[130px] text-center"
+						content="Bearbeiten"
 						style="light"
 						animation="duration-500"
 					>
@@ -292,8 +289,8 @@ const HeatingProgramEntity = ({
 						/>
 					</Tooltip>
 					<Tooltip
-						className="min-w-[130px]"
-						content="Delete program"
+						className="min-w-[130px] text-center"
+						content="Löschen"
 						style="light"
 						animation="duration-500"
 					>
@@ -314,9 +311,9 @@ const HeatingProgramEntity = ({
 						</p>
 					</div>
 					<div className="w-[15%] flex flex-col justify-center items-start">
-						<p className="text-[12px] text-gray-500 font-[500]">Child safety</p>
+						<p className="text-[12px] text-gray-500 font-[500]">Kindersicherung</p>
 						<p className="text-[14px] font-[400]">
-							{program?.allowDeviceOverride === true ? "No" : "Yes"}
+							{program?.allowDeviceOverride === true ? "Aus" : "An"}
 						</p>
 					</div>
 					{program?.allowDeviceOverride === true && (
@@ -359,8 +356,8 @@ const HeatingProgramEntity = ({
 									<span
 										className={`text-xs font-normal py-0.5 px-2.5 ml-1 bg-gray-200 text-gray-900 rounded-md`}
 									>
-										View details - {program?.assignedRooms}{" "}
-										{program?.assignedRooms > 1 ? "rooms" : "room"}
+										{program?.assignedRooms}{" "}
+										{program?.assignedRooms === 1 ? "Raum" : "Räume"}
 									</span>
 								</p>
 							</Accordion.Title>
@@ -374,7 +371,7 @@ const HeatingProgramEntity = ({
 													onClick={handleAssign}
 													className="bg-[#0BAAC9] text-white py-2 px-3 [&>*]:p-0"
 												>
-													Assign rooms
+													Raum zuweisen
 												</Button>
 											</div>
 
@@ -394,9 +391,7 @@ const HeatingProgramEntity = ({
 																			className={`text-[12px] py-0.5 px-2.5 ml-1 bg-[#E5EDFF] text-[#42389D] font-[500] rounded-md`}
 																		>
 																			{countRooms(building)}{" "}
-																			{countRooms(building) > 1
-																				? "rooms"
-																				: "room"}
+																			{countRooms(building) === 1 ? "Raum" : "Räume"}
 																		</span>
 																	</p>
 																</Accordion.Title>
@@ -416,9 +411,9 @@ const HeatingProgramEntity = ({
 																								className={`text-[12px] py-0.5 px-2.5 ml-1 bg-[#E5EDFF] text-[#42389D] font-[500] rounded-md`}
 																							>
 																								{floor.children.length}{" "}
-																								{floor.children.length > 1
-																									? "rooms"
-																									: "room"}
+																								{floor.children.length === 1
+  																									? "Raum"
+ 																									: "Räume"}
 																							</span>
 																						</p>
 																					</Accordion.Title>
@@ -512,7 +507,7 @@ const HeatingProgramEntity = ({
 
 			{showToast && (
 				<div
-					className="fixed top-4 right-4 z-50 transition-transform duration-300 ease-in-out transform translate-x-0"
+					className="fixed top-4 right-4 z-50 transition-transform duration-1000 ease-in-out transform translate-x-0"
 					style={{ transition: "transform 0.3s ease-in-out" }}
 				>
 					<Toast className="animate-slideIn">
@@ -580,14 +575,14 @@ const DeleteModal = ({ openDeleteModal, setOpenDeleteModal, handleDelete }) => {
 				<div className="text-center">
 					<RiDeleteBin6Line size={30} className="text-[#9CA3AF] mx-auto mb-4" />
 					<h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
-						Are you sure you want to delete this heating program?
+						Möchten Sie diesen Heizplan wirklich löschen?
 					</h3>
 					<div className="flex justify-center gap-4">
 						<Button color="gray" onClick={() => setOpenDeleteModal(false)}>
-							Cancel
+							Abbrechen
 						</Button>
 						<Button color="failure" onClick={handleDelete}>
-							Delete
+							Löschen
 						</Button>
 					</div>
 				</div>
@@ -616,10 +611,10 @@ const AlertDeleteModal = ({
 						className="text-[#9CA3AF] mx-auto mb-4"
 					/>
 					<h3 className="mb-1 text-lg font-normal text-gray-500 dark:text-gray-400">
-						Heating program can’t be deleted as there are rooms assigned to it.
+						Das Heizprogramm kann nicht gelöscht werden, da ihm Räume zugewiesen sind.
 					</h3>
 					<h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
-						Reassign rooms to different program before proceeding with delete.
+						Weisen Sie die Räume einem anderen Programm zu, bevor Sie mit dem Löschen fortfahren.
 					</h3>
 					<div className="flex justify-center gap-4">
 						<Button
@@ -629,7 +624,7 @@ const AlertDeleteModal = ({
 								setOpenDeleteModal(false);
 							}}
 						>
-							Cancel
+							Abbrechen
 						</Button>
 					</div>
 				</div>

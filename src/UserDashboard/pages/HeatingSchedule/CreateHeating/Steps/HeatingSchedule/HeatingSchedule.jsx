@@ -682,7 +682,7 @@ function HeatingSchedule({
 		let alertNeeded = false;
 		Object.keys(layouts).forEach((day) => {
 			const dataArray = layouts[day];
-			if (dataArray.length > 3) {
+			if (dataArray.length > 4) {
 				// console.warn(`Warning: ${day} has more than 2 items.`);
 				alertNeeded = true;
 			}
@@ -727,7 +727,7 @@ function HeatingSchedule({
 			<h3 className="text-[16px] text-gray-500 font-semibold flex items-center gap-2">
 				<Tooltip
 					className="min-w-[130px]"
-					content="Go to Previous Step"
+					content="Zurück"
 					style="light"
 					animation="duration-500"
 				>

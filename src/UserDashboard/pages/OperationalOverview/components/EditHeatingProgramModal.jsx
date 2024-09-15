@@ -92,7 +92,7 @@ const EditHeatingProgramModal = ({
 				// Hide the toast after 4 seconds
 				setTimeout(() => {
 					setShowToast(false);
-				}, 1000);
+				}, 3000);
 			});
 
 		setTimeout(() => {
@@ -645,7 +645,7 @@ const EditHeatingProgramModal = ({
 					}
 					setTimeout(() => {
 						setShowToast(false);
-					}, 1000);
+					}, 3000);
 					setTimeout(() => {
 						handleCloseModal();
 					}, 1000);
@@ -657,7 +657,7 @@ const EditHeatingProgramModal = ({
 					setShowToast(true);
 					setTimeout(() => {
 						setShowToast(false);
-					}, 1000);
+					}, 3000);
 				}
 			} catch (error) {
 				setIsSuccess(false);
@@ -666,7 +666,7 @@ const EditHeatingProgramModal = ({
 				console.error("Error during fetch operation:", error);
 				setTimeout(() => {
 					setShowToast(false);
-				}, 1000);
+				}, 3000);
 			}
 		}
 	};
@@ -735,7 +735,7 @@ const EditHeatingProgramModal = ({
 						</Modal.Header>
 						<Modal.Body className="h-auto p-5 overflow-y-auto">
 							<div className="flex flex-col items-start justify-center w-full">
-								<p>Bearbeiten</p>
+								
 								<p className="mt-3 font-semibold ">Aktion auswählen</p>
 								<div className="flex flex-row items-center justify-start w-full gap-4 mt-2">
 									<div
@@ -855,7 +855,7 @@ const EditHeatingProgramModal = ({
 				)}
 				{showToast && (
 					<div
-						className="fixed z-50 transition-transform duration-300 ease-in-out transform translate-x-0 top-4 right-4"
+						className="fixed z-50 transition-transform duration-1000 ease-in-out transform translate-x-0 top-4 right-4"
 						style={{ transition: "transform 0.3s ease-in-out" }}
 					>
 						<Toast className="animate-slideIn">
@@ -960,7 +960,7 @@ const ReplaceProgram = ({
 					value={selectedProgram}
 					onChange={handleProgramChange}
 				>
-					<option value="">Please select Program</option>
+					<option value="">Heizplan auswählen</option>
 					{data.map((program) => (
 						<option
 							className={`block rounded-lg px-4 py-2 text-sm ${
@@ -981,7 +981,7 @@ const ReplaceProgram = ({
 
 				{showError && (
 					<p className="mt-1 text-sm text-red-500">
-						A program has to be selected
+						Bitte einen Heizplan auswählen.
 					</p>
 				)}
 			</div>
@@ -1079,8 +1079,8 @@ const ViewTableComponent = ({ selectedProgram }) => {
 							{/* Replace hardcoded value */}
 						</div>
 						<div className="flex flex-col gap-2">
-							<p className="font-semibold">Child Safety</p>
-							<p>{temperatureDetails?.allowDeviceOverride ? "No" : "Yes"}</p>{" "}
+							<p className="font-semibold">Kindersicherung</p>
+							<p>{temperatureDetails?.allowDeviceOverride ? "Aus" : "An"}</p>{" "}
 							{/* Replace hardcoded value */}
 						</div>
 						{temperatureDetails?.allowDeviceOverride && (
@@ -1133,7 +1133,7 @@ const ViewTableComponent = ({ selectedProgram }) => {
 									<IoInformationCircleOutline color="#6B7280" />
 								</Tooltip>
 							</p>
-							<p>{temperatureDetails?.applyAlgorithm ? "Yes" : "No"}</p>{" "}
+							<p>{temperatureDetails?.applyAlgorithm ? "Ja" : "Nein"}</p>{" "}
 							{/* Replace hardcoded value */}
 						</div>
 					</div>
@@ -1164,10 +1164,10 @@ const ConfirmReplaceModal = ({ show, onClose, onConfirm }) => {
 				></button>
 			</Modal.Header>
 			<Modal.Body className="text-[#6B7280]">
-				<p>
+				/*<p>
 					Das Ersetzen des Programms wird alle Informationen des vorherigen
 					Programms entfernen.
-				</p>
+				</p>*/
 				<p className="mt-2">Sind Sie sicher, dass Sie fortfahren möchten?</p>
 			</Modal.Body>
 			<Modal.Footer>

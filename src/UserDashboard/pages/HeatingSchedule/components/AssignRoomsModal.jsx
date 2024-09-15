@@ -299,7 +299,7 @@ function AssignRoomsModal({
 	const [noRoomsError, setNoRoomsError] = useState(false);
 	const programAssignmentRef = useRef();
 
-	const [ButtonText, setButtonText] = useState("Done");
+	const [ButtonText, setButtonText] = useState("Fertig");
 	// useCallback to memoize handleSubmit function
 	const handleSubmit = useCallback(() => {
 		const anyRoomSelected = data.buildings.some((building) =>
@@ -336,7 +336,7 @@ function AssignRoomsModal({
 				handleAssign();
 				setTimeout(() => {
 					setShowToast(false);
-				}, 1000);
+				}, 3000);
 			})
 			.catch((error) => {
 				setShowToast(true);
@@ -346,7 +346,7 @@ function AssignRoomsModal({
 				setIsSuccess(false);
 				setTimeout(() => {
 					setShowToast(false);
-				}, 1000);
+				}, 3000);
 			});
 		// }
 	}, [data, setNoRoomsError, setError, ButtonText]); // Dependency array
@@ -385,7 +385,7 @@ function AssignRoomsModal({
 					<div className="flex flex-col gap-4 w-full">
 						<div className="flex flex-col gap-0 w-full">
 							<h3 className="text-[16px] text-gray-500 font-semibold flex items-center gap-2">
-								Wählen Sie die Räume aus.
+								Wählen Sie unten die Räume aus, denen Sie den Heizplan zuweisen möchten.
 							</h3>
 							<div className="w-full flex justify-end">
 								{!viewAll ? (
@@ -461,7 +461,7 @@ function AssignRoomsModal({
 										type="search"
 										id="default-search"
 										className="block w-full p-4 px-4 ps-10 py-2 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-primary focus:border-primary dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary dark:focus:border-primary"
-										placeholder="Search"
+										placeholder="Suche"
 										required
 									/>
 									{/* <button type="submit" className="text-white absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Search</button> */}
@@ -470,7 +470,7 @@ function AssignRoomsModal({
 						</div>
 						<div className=" flex items-center justify-between gap-2">
 							<p className=" text-sm text-gray-500">
-								Select rooms to assign a heating program.
+								
 							</p>
 							<Button
 								onClick={resetAssignments}
@@ -751,7 +751,7 @@ function AssignRoomsModal({
 				<Modal.Footer>
 					<Button
 						onClick={handleSubmit}
-						className={ButtonText === "Done" ? `bg-primary` : `bg-green-500`}
+						className={ButtonText === "Fertig" ? `bg-primary` : `bg-green-500`}
 					>
 						{ButtonText}
 					</Button>
@@ -766,7 +766,7 @@ function AssignRoomsModal({
 				</Modal.Footer>
 				{showToast && (
 					<div
-						className="fixed top-4 right-4 z-50 transition-transform duration-300 ease-in-out transform translate-x-0"
+						className="fixed top-4 right-4 z-50 transition-transform duration-1000 ease-in-out transform translate-x-0"
 						style={{ transition: "transform 0.3s ease-in-out" }}
 					>
 						<Toast className="animate-slideIn">

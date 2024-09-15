@@ -79,7 +79,7 @@ export function ViewRoomScheduleModal({
                     <div className="flex flex-col gap-2">
                       <p className="font-semibold ">Kindersicherung</p>
                       <p className="">
-                        {locationDetails.allowDeviceOverride ? "No" : "Yes"}
+                        {locationDetails.allowDeviceOverride ? "Aus" : "An"}
                       </p>
                     </div>
 
