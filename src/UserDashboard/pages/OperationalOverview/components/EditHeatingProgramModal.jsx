@@ -127,7 +127,7 @@ const EditHeatingProgramModal = ({
 		childSafety: "",
 		minTemp: "",
 		maxTemp: "",
-		applyAlgorithm: "",
+		applyAlgorithm: "Yes",
 	});
 	const [locationDetails, setLocationDetails] = useState([]);
 	const [formDataApi, setFormDataApi] = useState();
@@ -678,7 +678,7 @@ const EditHeatingProgramModal = ({
 			childSafety: "",
 			minTemp: "",
 			maxTemp: "",
-			applyAlgorithm: "",
+			applyAlgorithm: "Yes",
 		});
 		setErrorMessages({
 			programName: "",
@@ -985,7 +985,7 @@ const ReplaceProgram = ({
 					</p>
 				)}
 			</div>
-			<div className="flex flex-col items-start justify-start w-full md:w-2/3">
+			{/* <div className="flex flex-col items-start justify-start w-full md:w-2/3">
 				<div className="flex items-center gap-2 mb-2">
 					<Label
 						className="text-sm font-semibold text-gray-700"
@@ -1032,7 +1032,7 @@ const ReplaceProgram = ({
 						</div>
 					</div>
 				</div>
-			</div>
+			</div> */}
 		</div>
 	);
 };

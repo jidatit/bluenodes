@@ -325,10 +325,10 @@ const TemperatureSchedule = ({
 						<div className="flex flex-wrap items-center justify-between gap-2 mb-12 text-gray-900 md:gap-4 2xl:mb-10">
 							<div className="flex flex-wrap items-center gap-2 w-full 2xl:w-[22%]  2xl:mr-0 ">
 								<Tooltip content={room.name} style="light">
-									<span className="text-sm font-bold w-[120px] md:w-[140px] overflow-hidden text-ellipsis whitespace-nowrap">
-										{room.name && room.name.length > 15
-											? `${room.name.slice(0, 15)}...`
-											: room.name}
+									<span className="text-sm font-bold block w-full overflow-hidden text-ellipsis whitespace-nowrap">
+									{room.name && room.name.length > 40
+										? room.name.slice(0, 40) + "..."
+										: room.name}
 									</span>
 								</Tooltip>
 								{/* <Tooltip content={room.tag} style="light">
@@ -343,7 +343,7 @@ const TemperatureSchedule = ({
 									</span>
 								</Tooltip> */}
 							</div>
-							<div className=" flex  items-center gap-4 justify-between w-auto 2xl:w-[25%] 2xl:gap-10">
+							<div className=" flex  items-center gap-4 justify-start w-auto 2xl:w-[25%] 2xl:gap-10">
 								<Tooltip
 									className={`px-2 py-1.5 text-center max-w-xs`}
 									content={`Raumtemperatur: ${
@@ -374,7 +374,7 @@ const TemperatureSchedule = ({
 									</div>
 								</Tooltip>
 
-								<Tooltip
+								{/* <Tooltip
 									className={`px-2 py-1.5 text-center max-w-xs`}
 									content={`Algorithmus ist ${room.algorithm ? "an" : "aus"}`}
 									style="light"
@@ -385,10 +385,10 @@ const TemperatureSchedule = ({
 											{room.algorithm ? "An" : "Aus"}
 										</p>
 									</div>
-								</Tooltip>
+								</Tooltip> */}
 							</div>
 
-							<div className="w-auto 2xl:w-[20%] flex justify-end">
+							<div className="w-auto 2xl:w-[30%] flex justify-end">
 								<Tooltip
 									content={
 										scheduleDetails[index]?.schedule?.templateName || "None"
@@ -404,10 +404,10 @@ const TemperatureSchedule = ({
 										}}
 									>
 										{scheduleDetails[index]?.schedule?.templateName
-											? scheduleDetails[index].schedule.templateName.length > 20
+											? scheduleDetails[index].schedule.templateName.length > 50
 												? `${scheduleDetails[index].schedule.templateName.slice(
 														0,
-														20,
+														50,
 													)}...`
 												: scheduleDetails[index].schedule.templateName
 											: "None"}
@@ -563,7 +563,7 @@ const TemperatureSchedule = ({
 														? "0"
 														: "0.45rem",
 											}}
-										/>
+										>{console.log(room.heatingSchedule.currentDay)}</div>
 									))}
 								</div>
 

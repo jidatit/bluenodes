@@ -33,7 +33,7 @@ export function CreateHeatingModal({
 		childSafety: "",
 		minTemp: "",
 		maxTemp: "",
-		applyAlgorithm: "",
+		applyAlgorithm: "Yes",
 	});
 
 	const [errorMessages, setErrorMessages] = useState({
@@ -555,7 +555,7 @@ export function CreateHeatingModal({
 			childSafety: "",
 			minTemp: "",
 			maxTemp: "",
-			applyAlgorithm: "",
+			applyAlgorithm: "Yes",
 		});
 		setErrorMessages({
 			programName: "",
