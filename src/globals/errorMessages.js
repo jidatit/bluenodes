@@ -29,7 +29,7 @@ export const errorMessages = {
 		"Ein Programm mit diesem Namen wurde bereits erstellt",
 	PorgramAssignedSuccessfully: "Programm erfolgreich zugewiesen",
 	PorgramAssignedFailed: "Zuweisung des Programms fehlgeschlagen",
-	DeviceNameUpdatedSuccessfully: "Device Name Updated Successfully",
-	DeviceNameUpdatedFailed: "Device Name Updated Failed",
-	TempDecimalNotAllowed: "Decimal Not Allowed",
+	DeviceNameUpdatedSuccessfully: "Gerätename erfolgreich aktualisiert",
+	DeviceNameUpdatedFailed: "Aktualisierung des Gerätenamens fehlgeschlagen",
+	TempDecimalNotAllowed: "Dezimalzahlen sind nicht erlaubt",
 };

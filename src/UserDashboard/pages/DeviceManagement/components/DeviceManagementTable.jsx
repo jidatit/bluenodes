@@ -721,7 +721,7 @@ const DeviceManagementTable = () => {
                         <FaChevronDown className="w-6 h-6 p-1 ml-2 rounded-full shadow-md" />
                       )}{" "}
                     </td>
-                    <td className="px-4 py-4 truncate">{item?.devEui}</td>
+                    <td className="px-4 py-4 truncate uppercase">{item?.devEui}</td>
 
                     <td className="relative px-4 py-4 truncate">
                       {editMode && editingItemId === item?.id ? (
