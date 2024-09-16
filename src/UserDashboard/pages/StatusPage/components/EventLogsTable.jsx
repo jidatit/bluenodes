@@ -516,9 +516,9 @@ const EventLogsTable = () => {
                   </td>
                   <td className="px-4 py-4 font-medium text-gray-900 break-words dark:text-white w-[15%]">
                     {item.roomName ? item.roomName : "-"}{" "}
-                    <span className="text-[10px] py-0.5 px-2.5 font-semibold bg-gray-100 rounded-[80px] p-1">
+                    {/* <span className="text-[10px] py-0.5 px-2.5 font-semibold bg-gray-100 rounded-[80px] p-1">
                       {item.roomTag ? item.roomTag : "-"}
-                    </span>
+                    </span> */}
                   </td>
                   <td className="px-4 py-4 w-[16%]">
                     {item.building_floor_string

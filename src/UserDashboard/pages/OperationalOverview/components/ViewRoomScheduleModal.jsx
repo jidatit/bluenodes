@@ -138,7 +138,7 @@ export function ViewRoomScheduleModal({
                     Heizplan
                   </h3>
                   {/* <ToggleSwitch checked={switch1} label="Toggle me" onChange={setSwitch1} /> */}
-                  <div>
+                  {/* <div>
                     <label className="flex items-center gap-2 cursor-pointer select-none">
                       <div className="relative">
                         <input
@@ -168,7 +168,7 @@ export function ViewRoomScheduleModal({
                         </div>
                       )}
                     </label>
-                  </div>
+                  </div> */}
                   {!isChecked ? (
                     <div className="max-h-[400px] overflow-y-auto overflow-x-hidden pr-2">
                       {locationDetails && (

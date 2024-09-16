@@ -331,7 +331,7 @@ const TemperatureSchedule = ({
 											: room.name}
 									</span>
 								</Tooltip>
-								<Tooltip content={room.tag} style="light">
+								{/* <Tooltip content={room.tag} style="light">
 									<span
 										className={`text-xs font-normal py-0.5 px-2.5 ml-1 ${handleTypeColor(
 											type,
@@ -341,7 +341,7 @@ const TemperatureSchedule = ({
 											? `${room.tag.slice(0, 12)}...`
 											: room.tag}
 									</span>
-								</Tooltip>
+								</Tooltip> */}
 							</div>
 							<div className=" flex  items-center gap-4 justify-between w-auto 2xl:w-[25%] 2xl:gap-10">
 								<Tooltip
