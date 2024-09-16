@@ -492,14 +492,14 @@ function HeatingSchedule({
 						// Set temperature for copied boxes
 						setTemperatureInputs((prevInputs) => ({
 							...prevInputs,
-							[newBoxId]: temperatureInputs[box.i], // Initialize temperature input for the new box
+							[newBoxId]: temperatureInputs[box.i]===undefined?box.temperature:temperatureInputs[box.i], // Initialize temperature input for the new box
 						}));
 	
 						// Return the new box with the generated ID
 						return {
 							...box,
 							i: newBoxId,
-							temperature:temperatureInputs[box.i]
+							temperature:temperatureInputs[box.i]===undefined?box.temperature:temperatureInputs[box.i]
 						};
 					});
 
