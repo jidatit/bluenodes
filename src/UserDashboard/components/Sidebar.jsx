@@ -133,11 +133,12 @@ const ExampleSidebar = () => {
                   to={NAVIGATION_PATH.operationalOverview}
                   icon={FaRegWindowRestore}
                   className={
-                    NAVIGATION_PATH.operationalOverview === currentPage
+                    currentPage.includes(NAVIGATION_PATH.operationalOverview)
+
                       ? "bg-gray-100 dark:bg-gray-700"
                       : ""
                   }
-                >
+                > 
                   Betriebsübersicht
                 </Sidebar.Item>
                 <Sidebar.Item
@@ -145,7 +146,7 @@ const ExampleSidebar = () => {
                   to={NAVIGATION_PATH.heatingprograms}
                   icon={FaBuilding}
                   className={
-                    NAVIGATION_PATH.heatingprograms === currentPage
+                    currentPage.includes(NAVIGATION_PATH.heatingprograms)
                       ? "bg-gray-100 dark:bg-gray-700"
                       : ""
                   }
@@ -157,7 +158,7 @@ const ExampleSidebar = () => {
                   to={NAVIGATION_PATH.deviceManagement}
                   icon={HiMiniCog6Tooth}
                   className={
-                    NAVIGATION_PATH.deviceManagement === currentPage
+                    currentPage.includes(NAVIGATION_PATH.deviceManagement)
                       ? "bg-gray-100 dark:bg-gray-700"
                       : ""
                   }
