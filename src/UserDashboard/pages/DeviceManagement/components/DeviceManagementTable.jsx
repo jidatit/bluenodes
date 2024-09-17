@@ -375,7 +375,18 @@ const DeviceManagementTable = () => {
       );
 
       setTotalRows(data.count);
-      setTableData(data.rows);
+      // Sorting tableData by roomName, handling null values
+      const sortedData = data.rows.sort((a, b) => {
+        // Handle null values by putting them at the end
+        if (!a.roomName) return 1;
+        if (!b.roomName) return -1;
+
+        // Compare roomName in a case-insensitive manner
+        return a.roomName.localeCompare(b.roomName);
+      });
+
+      // Set sorted data to the table
+      setTableData(sortedData);
     } catch (error) {
       console.log("Error fetching data:", error);
     }
@@ -558,6 +569,20 @@ const DeviceManagementTable = () => {
   const handleNodeToggle = (e) => {
     setExpandedKeys(e.value); // Update expanded keys state
   };
+  // Define the function outside of the JSX
+  const getBatteryLevelText = (batteryLevel) => {
+    switch (batteryLevel) {
+      case "low":
+        return "Niedrig";
+      case "medium":
+        return "Mittel";
+      case "high":
+        return "Hoch";
+      default:
+        return "Undefined";
+    }
+  };
+  
   return (
     <div className="flex flex-col w-full gap-4">
       <div className="relative w-full overflow-x-auto bg-white shadow-md sm:rounded-lg">
@@ -712,7 +737,7 @@ const DeviceManagementTable = () => {
             {tableData?.length > 0 &&
               tableData.map((item, index) => (
                 <React.Fragment key={index}>
-                  <tr className="bg-white border-b cursor-pointer dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                  <tr onClick={() => handleRowClick(index, item?.id)} className="bg-white border-b cursor-pointer dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                     <td onClick={() => handleRowClick(index, item?.id)}>
                       {" "}
                       {expandedRow === index ? (
@@ -735,9 +760,9 @@ const DeviceManagementTable = () => {
                       ) : (
                         <>
                           {item?.deviceName &&
-                          item.deviceName.toString().length > 12 ? (
+                          item.deviceName.toString().length > 20 ? (
                             <>
-                              {item.deviceName.toString().slice(0, 13)}{" "}
+                              {item.deviceName.toString().slice(0, 20)}{" "}
                               <span>...</span>
                             </>
                           ) : (
@@ -803,10 +828,7 @@ const DeviceManagementTable = () => {
                     <td className="px-4 py-4 truncate">
                       <Tooltip
                         className="p-3"
-                        content={`${
-                          item?.batteryLevel.charAt(0).toUpperCase() +
-                          item?.batteryLevel.slice(1)
-                        }`}
+                        content={getBatteryLevelText(item?.batteryLevel)}
                         style="light"
                         animation="duration-500"
                       >
