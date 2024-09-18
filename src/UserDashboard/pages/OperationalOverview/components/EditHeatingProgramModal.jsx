@@ -14,6 +14,7 @@ import useHeatingSchedule from "../../../../hooks/useHeatingSchedule";
 import axios from "axios";
 import ApiUrls from "../../../../globals/apiURL.js";
 import { daysOfWeek } from "../../../../globals/daysofWeek.js";
+import { useToast } from "./ToastContext.jsx";
 
 const EditHeatingProgramModal = ({
 	openModal,
@@ -22,6 +23,7 @@ const EditHeatingProgramModal = ({
 	fetchFloorDetails,
 	updateReplaced,
 }) => {
+	const { generateToast } = useToast();
 	const [selectedAction, setSelectedAction] = useState("");
 	const [selectedProgram, setSelectedProgram] = useState("");
 	const [showError, setShowError] = useState(false);
@@ -77,27 +79,26 @@ const EditHeatingProgramModal = ({
 			.then((response) => response.data)
 			.then(() => {
 				setIsSuccess(true);
-				setToastMessage(errors.ProgramReplacedSuccessfully);
+				// setToastMessage(errors.ProgramReplacedSuccessfully);
+				generateToast(errors.ProgramReplacedSuccessfully, true);
 				updateReplaced();
+				handleCloseModal();
 			})
 			.catch((error) => {
 				console.error("Error:", error);
 				setIsSuccess(false);
-				setToastMessage(errors.ProgramReplacedFailed);
+				generateToast(errors.ProgramReplacedFailed, false);
+				// setToastMessage(errors.ProgramReplacedFailed);
 			})
 			.finally(() => {
-				setShowToast(true);
+				// setShowToast(true);
 				setShowConfirmModal(false);
 
 				// Hide the toast after 4 seconds
-				setTimeout(() => {
-					setShowToast(false);
-				}, 3000);
+				// setTimeout(() => {
+				// 	setShowToast(false);
+				// }, 1000);
 			});
-
-		setTimeout(() => {
-			handleCloseModal();
-		}, 1000);
 	};
 
 	// if (updatedR !== null && updatedR) {
@@ -296,7 +297,7 @@ const EditHeatingProgramModal = ({
 					minTemp: isMinTempDecimal ? errors.TempDecimalNotAllowed : "",
 					maxTemp: isMaxTempDecimal ? errors.TempDecimalNotAllowed : "",
 				}));
-			} else if ((minTemp >= maxTemp) && (maxTempStr.length>=2)) {
+			} else if (minTemp >= maxTemp && maxTempStr.length >= 2) {
 				// Update error state for maxTemp when cross-validation fails
 				setErrorMessages((prev) => ({
 					...prev,
@@ -630,43 +631,31 @@ const EditHeatingProgramModal = ({
 				if (respData.active) {
 					console.log("created");
 					setIsSuccess(true);
-					setToastMessage(errors.heatingScheduleEditedSuccessfull);
-					setShowToast(true);
+					// setToastMessage(errors.heatingScheduleEditedSuccessfull);
+					// setShowToast(true);
+					generateToast(errors.heatingScheduleEditedSuccessfull, true);
 					console.log("created");
 					// handleOpenModal();
-					setTimeout(() => {
-						handleCloseModal();
-						updateReplaced();
-						resetModalState();
-					}, 1000);
 
 					if (room) {
 						fetchFloorDetails(room.parentId);
 					}
-					setTimeout(() => {
-						setShowToast(false);
-					}, 3000);
-					setTimeout(() => {
-						handleCloseModal();
-					}, 1000);
 
-					fetchHeatingSchedules();
+					handleCloseModal();
+					updateReplaced();
+					resetModalState();
 				} else {
 					setIsSuccess(false);
-					setToastMessage(errors.heatingScheduleEditedFailed);
-					setShowToast(true);
-					setTimeout(() => {
-						setShowToast(false);
-					}, 3000);
+					// setToastMessage(errors.heatingScheduleEditedFailed);
+					// setShowToast(true);
+					generateToast(errors.heatingScheduleEditedFailed, false);
 				}
 			} catch (error) {
 				setIsSuccess(false);
-				setToastMessage(errors.heatingScheduleEditedFailed);
-				setShowToast(true);
+				// setToastMessage(errors.heatingScheduleEditedFailed);
+				// setShowToast(true);
+				generateToast(errors.heatingScheduleEditedFailed, false);
 				console.error("Error during fetch operation:", error);
-				setTimeout(() => {
-					setShowToast(false);
-				}, 3000);
 			}
 		}
 	};
@@ -735,7 +724,6 @@ const EditHeatingProgramModal = ({
 						</Modal.Header>
 						<Modal.Body className="h-auto p-5 overflow-y-auto">
 							<div className="flex flex-col items-start justify-center w-full">
-								
 								<p className="mt-3 font-semibold ">Aktion auswählen</p>
 								<div className="flex flex-row items-center justify-start w-full gap-4 mt-2">
 									<div
@@ -1164,10 +1152,12 @@ const ConfirmReplaceModal = ({ show, onClose, onConfirm }) => {
 				></button>
 			</Modal.Header>
 			<Modal.Body className="text-[#6B7280]">
-				/*<p>
+				/*
+				<p>
 					Das Ersetzen des Programms wird alle Informationen des vorherigen
 					Programms entfernen.
-				</p>*/
+				</p>
+				*/
 				<p className="mt-2">Sind Sie sicher, dass Sie fortfahren möchten?</p>
 			</Modal.Body>
 			<Modal.Footer>
