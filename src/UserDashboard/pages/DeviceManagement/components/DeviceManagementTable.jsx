@@ -135,7 +135,9 @@ const DeviceManagementTable = () => {
     setApiLocationsToBeSend(null);
     setSelectedLocationFilter(0);
     setFiltersSelected(false);
+    setSelectedRoomIds([]);
   };
+
   const openBuildingFilter = () => {
     if (buildingOpen === false) {
       setBuildingOpen(true);
@@ -156,7 +158,7 @@ const DeviceManagementTable = () => {
   };
   const clearAllFilters = () => {
     setSelectedKeys([]);
-    setSelectedEventFilters(null);
+
     setApiLocationsToBeSend(null);
     setBatteryLevel(null);
     setStatus(null);
@@ -234,12 +236,13 @@ const DeviceManagementTable = () => {
   const [selectedRoomIds, setSelectedRoomIds] = useState(new Set());
 
   const [expandedKeys, setExpandedKeys] = useState({});
-
+  console.log("ApiLocationsToBeSend", ApiLocationsToBeSend);
+  console.log("selectedKeys", selectedKeys);
   const updateSelection = (newSelectedKeys) => {
     const newSelectedRoomIds = new Set([...selectedRoomIds]);
     const updatedKeys = { ...selectedKeys };
     const updatedDeselectedKeys = { ...Deselectedkeys };
-
+    console.log("new", newSelectedKeys);
     // Helper function to select a node and all its children
     const selectNodeAndChildren = (key) => {
       const node = findNodeByKey(key, LocationsData);
@@ -351,7 +354,6 @@ const DeviceManagementTable = () => {
       setApiLocationsToBeSend(sep_locations);
       setApiLocationsToBeSendCounter(apiLocationsToBeSendCounter + 1);
     } else {
-      setApiLocationsToBeSend(null);
       setSelectedLocationFilter(0);
       setFiltersSelected(false);
       getData();
@@ -438,7 +440,11 @@ const DeviceManagementTable = () => {
     status,
     batteryLevel,
   ]);
-
+  useEffect(() => {
+    if (selectedEventFilters !== null) {
+      getData(ApiLocationsToBeSend);
+    }
+  }, [selectedEventFilters]);
   useEffect(() => {
     filterData();
   }, [selectedFilter, searchQuery]);
@@ -735,16 +741,10 @@ const DeviceManagementTable = () => {
               />
               {selectedStatusFilter && (
                 <button
-                  className="text-xl text-red-500 shadow-lg rounded-lg"
+                  className="text-xl text-red-500 rounded-lg"
                   onClick={clearStatusFilter}
                 >
-                  <Tooltip
-                    content={"remove Filter"}
-                    style="light"
-                    className="-mt-12 ml-24"
-                  >
-                    <CiCircleRemove size={36} />
-                  </Tooltip>
+                  <CiCircleRemove size={36} />
                 </button>
               )}
             </div>

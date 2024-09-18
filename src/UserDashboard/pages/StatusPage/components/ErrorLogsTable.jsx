@@ -56,6 +56,8 @@ const ErrorLogsTable = () => {
   const clearBuildingFilter = () => {
     setSelectedKeys([]);
     setBuildingOpen(false);
+    setApiLocationsToBeSend(null);
+    setSelectedRoomIds([]);
   };
   const openBuildingFilter = () => {
     if (buildingOpen === false) {
@@ -508,13 +510,7 @@ const ErrorLogsTable = () => {
                   className="text-xl text-red-500 rounded-lg"
                   onClick={clearBuildingFilter}
                 >
-                  <Tooltip
-                    content={"remove Filter"}
-                    style="light"
-                    className="-mt-12 ml-24"
-                  >
-                    <CiCircleRemove size={36} />
-                  </Tooltip>
+                  <CiCircleRemove size={36} />
                 </button>
               )}
             </div>
@@ -554,13 +550,7 @@ const ErrorLogsTable = () => {
                 className="bg-red-500 px-3 py-3 h-[34%] text-white rounded-lg"
                 onClick={clearAllFilters}
               >
-                <Tooltip
-                  content={"remove Filter"}
-                  style="light"
-                  className="ml-24 bg-white shadow-lg"
-                >
-                  Clear Filters
-                </Tooltip>
+                Clear Filters
               </button>
             )}
           </div>

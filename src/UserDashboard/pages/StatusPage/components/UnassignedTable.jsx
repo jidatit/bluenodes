@@ -64,9 +64,10 @@ const UnassignedTable = ({ assignUpdate }) => {
     setCloseDateFilter(true);
   };
   const clearBuildingFilter = () => {
-    setApiLocationsToBeSend(null);
     setSelectedKeys([]);
     setBuildingOpen(false);
+    setApiLocationsToBeSend(null);
+    setSelectedRoomIds([]);
   };
   const openBuildingFilter = () => {
     if (buildingOpen === false) {

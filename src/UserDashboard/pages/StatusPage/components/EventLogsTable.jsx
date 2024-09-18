@@ -56,6 +56,7 @@ const EventLogsTable = () => {
     setSelectedKeys([]);
     setBuildingOpen(false);
     setApiLocationsToBeSend(null);
+    setSelectedRoomIds([]);
   };
   const openBuildingFilter = () => {
     if (buildingOpen === false) {
@@ -506,16 +507,10 @@ const EventLogsTable = () => {
 
               {Object.keys(selectedKeys).length > 0 && (
                 <button
-                  className="text-xl text-red-500 shadow-lg rounded-lg"
+                  className="text-xl text-red-500 rounded-lg"
                   onClick={clearBuildingFilter}
                 >
-                  <Tooltip
-                    content={"remove Filter"}
-                    style="light"
-                    className="-mt-12 ml-24"
-                  >
-                    <CiCircleRemove size={36} />
-                  </Tooltip>
+                  <CiCircleRemove size={36} />
                 </button>
               )}
             </div>

@@ -223,35 +223,14 @@ const DateFilter = ({
           </button>
           {subDropdownValue && subDropdownValue.length > 0 && (
             <button
-              className="text-xl text-red-500 shadow-lg rounded-lg"
+              className="text-xl text-red-500 rounded-lg"
               onClick={clearFilter}
             >
-              <Tooltip
-                content={"remove Filter"}
-                style="light"
-                className="-mt-12 ml-24 "
-              >
-                <CiCircleRemove size={36} />
-              </Tooltip>
+              <CiCircleRemove size={36} />
             </button>
           )}
         </div>
-        <div className=" flex flex-col gap-2 absolute top-14 ">
-          {subDropdownValue && subDropdownValue.length > 0 && (
-            <button
-              className="text-xl text-red-500 shadow-lg rounded-lg"
-              onClick={clearFilter}
-            >
-              <Tooltip
-                content={"remove Filter"}
-                style="light"
-                className="-mt-12 ml-24 "
-              >
-                <CiCircleRemove size={36} />
-              </Tooltip>
-            </button>
-          )}
-        </div>
+
         <div className=" flex flex-col gap-2 absolute top-14 ">
           {dropdownOpen && (
             <div className=" mt-2 py-2 bg-[#ffffff] border border-gray-300 rounded-md shadow-lg w-[28rem] z-20">
