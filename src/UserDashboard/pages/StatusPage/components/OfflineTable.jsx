@@ -23,6 +23,7 @@ import axios from "axios";
 import { TreeSelect } from "primereact/treeselect";
 import DateFilter from "./dateFilter/DateFilter";
 import formatTimestamp from "../../../../utils/formatTimeStamp";
+import { CiCircleRemove } from "react-icons/ci";
 
 const getBatteryImage = (battery_level) => {
   const level = battery_level;
@@ -46,7 +47,7 @@ const OfflineTable = () => {
   const [apiLocationsToBeSendCounter, setApiLocationsToBeSendCounter] =
     useState(null);
   const [selectedLocationFilter, setSelectedLocationFilter] = useState(0);
-
+  const [buildingOpen, setBuildingOpen] = useState(false);
   const [closeDateFilter, setCloseDateFilter] = useState(false);
   const dateFilterRef = useRef(null);
   const [floors, setFloors] = useState([]);
@@ -75,6 +76,21 @@ const OfflineTable = () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [dateFilterRef]);
+  const clearBuildingFilter = () => {
+    setApiLocationsToBeSend(null);
+    setSelectedKeys([]);
+    setBuildingOpen(false);
+  };
+  const openBuildingFilter = () => {
+    if (buildingOpen === false) {
+      setBuildingOpen(true);
+    }
+  };
+  const hideBuildingFilter = () => {
+    if (buildingOpen === true) {
+      setBuildingOpen(false);
+    }
+  };
   const transformData = (nodes) => {
     return nodes.map((node) => {
       const key =
@@ -404,19 +420,19 @@ const OfflineTable = () => {
     setExpandedKeys(e.value); // Update expanded keys state
   };
 
-    // Define the function outside of the JSX
-    const getBatteryLevelText = (batteryLevel) => {
-      switch (batteryLevel) {
-        case "low":
-          return "Niedrig";
-        case "medium":
-          return "Mittel";
-        case "high":
-          return "Hoch";
-        default:
-          return "Undefined";
-      }
-    };
+  // Define the function outside of the JSX
+  const getBatteryLevelText = (batteryLevel) => {
+    switch (batteryLevel) {
+      case "low":
+        return "Niedrig";
+      case "medium":
+        return "Mittel";
+      case "high":
+        return "Hoch";
+      default:
+        return "Undefined";
+    }
+  };
 
   return (
     <div className=" flex flex-col gap-4 w-full">
@@ -431,6 +447,8 @@ const OfflineTable = () => {
               value={selectedKeys}
               options={filteredLocations}
               onChange={onNodeSelectChange}
+              onShow={openBuildingFilter}
+              onHide={hideBuildingFilter}
               onClick={handleTreeSelectClick}
               expandedKeys={expandedKeys} // Use expandedKeys to manage expanded nodes
               onToggle={handleNodeToggle} // Handle node expand/collapse event
@@ -489,6 +507,14 @@ const OfflineTable = () => {
                 </div>
               )}
             />
+            {Object.keys(selectedKeys).length > 0 && (
+              <button
+                className="text-xl text-red-500 rounded-lg"
+                onClick={clearBuildingFilter}
+              >
+                <CiCircleRemove size={36} />
+              </button>
+            )}
             {/* <MultiSelect value={selectedEventFilters} onChange={(e) => setSelectedEventFilters(e.value)} showSelectAll={false} options={eventFilterOptions} optionLabel="name"
                             filter placeholder="All Events" display="chip" className="w-full md:w-20rem" />
 

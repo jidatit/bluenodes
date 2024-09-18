@@ -219,8 +219,8 @@ input[type="radio"]:checked::before {
 
 /* Change the radio button background color when checked */
 input[type="radio"]:checked {
-  background-color: #1b7b96; /* Custom color when checked */
-  border-color: #1b7b96; /* Optional: match border color */
+  background-color: #2cc7e6; /* Custom color when checked */
+  border-color: #2cc7e6; /* Optional: match border color */
 }
 
 /* Optional: Add hover effect */
@@ -234,5 +234,5 @@ input[type="radio"]:focus {
   box-shadow: none; /* Remove default focus box-shadow */
 }
 .p-tree .p-tree-container .p-treenode .p-treenode-content.p-highlight {
-  outline: 1px solid #3dd3f1;
+  outline: 2px solid #3dd3f1;
 }

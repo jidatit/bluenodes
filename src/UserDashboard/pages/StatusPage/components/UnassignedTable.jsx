@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 import { useState, useEffect, useRef } from "react";
-import { Button, Select, Toast } from "flowbite-react";
+import { Button, Select, Toast, Tooltip } from "flowbite-react";
 import { IoChevronBackOutline, IoSearch } from "react-icons/io5";
 import { IoChevronForwardOutline } from "react-icons/io5";
 import { MdOutlineAccessTimeFilled } from "react-icons/md";
@@ -21,13 +21,14 @@ import { MultiSelect } from "primereact/multiselect";
 import DateFilter from "./dateFilter/DateFilter";
 import AssignProgramModal from "./AssignProgramModal";
 import { errorMessages as errors } from "../../../../globals/errorMessages"; // Import error messages
+import { CiCircleRemove } from "react-icons/ci";
 
 const UnassignedTable = ({ assignUpdate }) => {
   const [selectedEventFilters, setSelectedEventFilters] = useState(null);
   const [ApiLocationsToBeSend, setApiLocationsToBeSend] = useState(null);
   const [apiLocationsToBeSendCounter, setApiLocationsToBeSendCounter] =
     useState(null);
-
+  const [buildingOpen, setBuildingOpen] = useState(false);
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
   const [isSuccess, setIsSuccess] = useState(true);
@@ -61,6 +62,21 @@ const UnassignedTable = ({ assignUpdate }) => {
   }, [dateFilterRef]);
   const handleTreeSelectClick = () => {
     setCloseDateFilter(true);
+  };
+  const clearBuildingFilter = () => {
+    setApiLocationsToBeSend(null);
+    setSelectedKeys([]);
+    setBuildingOpen(false);
+  };
+  const openBuildingFilter = () => {
+    if (buildingOpen === false) {
+      setBuildingOpen(true);
+    }
+  };
+  const hideBuildingFilter = () => {
+    if (buildingOpen === true) {
+      setBuildingOpen(false);
+    }
   };
 
   const [LocationsData, setLocationsData] = useState([]);
@@ -412,6 +428,8 @@ const UnassignedTable = ({ assignUpdate }) => {
               expandedKeys={expandedKeys} // Use expandedKeys to manage expanded nodes
               onToggle={handleNodeToggle} // Handle node expand/collapse event
               selectionMode="multiple"
+              onShow={openBuildingFilter}
+              onHide={hideBuildingFilter}
               placeholder="Alle Gebäude"
               filter
               filterBy="label"
@@ -466,6 +484,14 @@ const UnassignedTable = ({ assignUpdate }) => {
                 </div>
               )}
             />
+            {Object.keys(selectedKeys).length > 0 && (
+              <button
+                className="text-xl text-red-500 rounded-lg"
+                onClick={clearBuildingFilter}
+              >
+                <CiCircleRemove size={36} />
+              </button>
+            )}
             {/* <MultiSelect value={selectedEventFilters} onChange={(e) => setSelectedEventFilters(e.value)} showSelectAll={false} options={eventFilterOptions} optionLabel="name"
                             filter placeholder="All Events" display="chip" className="w-full md:w-20rem" />
 

@@ -38,6 +38,7 @@ import {
 import axios from "axios";
 import formatTimestamp from "../../../../utils/formatTimeStamp";
 import ApiUrls from "../../../../globals/apiURL";
+import { CiCircleRemove } from "react-icons/ci";
 const getBatteryImage = (battery_level) => {
   const level = battery_level;
   if (level === "full") {
@@ -68,7 +69,7 @@ const DeviceManagementTable = () => {
   const totalItems = totalRows && totalRows;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
   const [LocationsData, setLocationsData] = useState([]);
-
+  const [buildingOpen, setBuildingOpen] = useState(false);
   const [showToast, setShowToast] = useState(false);
   const [status, setStatus] = useState(null);
   const [isSuccess, setIsSuccess] = useState(true);
@@ -127,6 +128,42 @@ const DeviceManagementTable = () => {
     { key: "medium", germanLabel: "Mittel" },
     { key: "high", germanLabel: "Hoch" },
   ];
+
+  const clearBuildingFilter = () => {
+    // Clear selected keys and related filters
+    setSelectedKeys([]);
+    setApiLocationsToBeSend(null);
+    setSelectedLocationFilter(0);
+    setFiltersSelected(false);
+  };
+  const openBuildingFilter = () => {
+    if (buildingOpen === false) {
+      setBuildingOpen(true);
+    }
+  };
+  const hideBuildingFilter = () => {
+    if (buildingOpen === true) {
+      setBuildingOpen(false);
+    }
+  };
+  const clearStatusFilter = () => {
+    setSelectedStatusFilter(null);
+    setStatus(null);
+  };
+  const clearBatteryFilter = () => {
+    setSelectedBatteryLevels([]);
+    setBatteryLevel(null);
+  };
+  const clearAllFilters = () => {
+    setSelectedKeys([]);
+    setSelectedEventFilters(null);
+    setApiLocationsToBeSend(null);
+    setBatteryLevel(null);
+    setStatus(null);
+    setSelectedStatusFilter(null);
+    setSelectedBatteryLevels(null);
+  };
+
   const transformData = (nodes) => {
     return nodes.map((node) => {
       const key =
@@ -314,10 +351,10 @@ const DeviceManagementTable = () => {
       setApiLocationsToBeSend(sep_locations);
       setApiLocationsToBeSendCounter(apiLocationsToBeSendCounter + 1);
     } else {
+      setApiLocationsToBeSend(null);
       setSelectedLocationFilter(0);
       setFiltersSelected(false);
-      setApiLocationsToBeSend(null); // Set locations to null
-      setApiLocationsToBeSendCounter(apiLocationsToBeSendCounter + 1);
+      getData();
     }
   };
 
@@ -582,75 +619,87 @@ const DeviceManagementTable = () => {
         return "Undefined";
     }
   };
-  
+
   return (
     <div className="flex flex-col w-full gap-4">
       <div className="relative w-full overflow-x-auto bg-white shadow-md sm:rounded-lg">
         <div className="flex flex-wrap items-center justify-between mx-2 my-2 space-y-4 bg-transparent flex-column sm:flex-row sm:space-y-0">
           {/* Filter buttons */}
           <div className="flex flex-row items-center justify-center gap-1">
-            <TreeSelect
-              value={selectedKeys}
-              options={filteredLocations}
-              onChange={onNodeSelectChange}
-              onClick={handleTreeSelectClick}
-              expandedKeys={expandedKeys} // Use expandedKeys to manage expanded nodes
-              onToggle={handleNodeToggle} // Handle node expand/collapse event
-              selectionMode="multiple"
-              placeholder="Alle Gebäude"
-              filter
-              filterBy="label"
-              filterValue={filterValue}
-              className="w-full md:w-20rem"
-              closeIcon="false"
-              panelStyle={{
-                border: "0.5px solid #bababa",
-                borderRadius: "4px",
-                outline: "none",
-                boxShadow: "none",
-              }}
-              style={{
-                outline: "none",
-                boxShadow: "none",
-              }}
-              filterTemplate={({ filterInputProps }) => (
-                <div
-                  style={{
-                    backgroundColor: "#f5f5f5",
-                    padding: "10px",
-                    display: "flex",
-                    width: "100%",
-                    alignItems: "center",
-                    borderRadius: "6px",
-                    border: "1px solid #d5ddde",
-                  }}
-                >
-                  <span
+            <div className="flex flex-row gap-x-2">
+              <TreeSelect
+                value={selectedKeys}
+                options={filteredLocations}
+                onChange={onNodeSelectChange}
+                onClick={handleTreeSelectClick}
+                onHide={hideBuildingFilter}
+                onShow={openBuildingFilter}
+                expandedKeys={expandedKeys} // Use expandedKeys to manage expanded nodes
+                onToggle={handleNodeToggle} // Handle node expand/collapse event
+                selectionMode="multiple"
+                placeholder="Alle Gebäude"
+                filter
+                filterBy="label"
+                filterValue={filterValue}
+                className="w-full md:w-20rem"
+                closeIcon="false"
+                panelStyle={{
+                  border: "0.5px solid #bababa",
+                  borderRadius: "4px",
+                  outline: "none",
+                  boxShadow: "none",
+                }}
+                style={{
+                  outline: "none",
+                  boxShadow: "none",
+                }}
+                filterTemplate={({ filterInputProps }) => (
+                  <div
                     style={{
-                      marginLeft: "8px",
-                      marginRight: "8px",
-                      color: "#9e9e9e",
-                      fontSize: "18px",
+                      backgroundColor: "#f5f5f5",
+                      padding: "10px",
+                      display: "flex",
+                      width: "100%",
+                      alignItems: "center",
+                      borderRadius: "6px",
+                      border: "1px solid #d5ddde",
                     }}
                   >
-                    <IoSearch />
-                  </span>
-                  <input
-                    {...filterInputProps}
-                    value={filterValue}
-                    onChange={handleFilterChange}
-                    style={{
-                      border: "none",
-                      width: "100%",
-                      backgroundColor: "transparent",
-                      outline: "none",
-                      color: "#6e6e6e",
-                    }}
-                    placeholder="Suche"
-                  />
-                </div>
+                    <span
+                      style={{
+                        marginLeft: "8px",
+                        marginRight: "8px",
+                        color: "#9e9e9e",
+                        fontSize: "18px",
+                      }}
+                    >
+                      <IoSearch />
+                    </span>
+                    <input
+                      {...filterInputProps}
+                      value={filterValue}
+                      onChange={handleFilterChange}
+                      style={{
+                        border: "none",
+                        width: "100%",
+                        backgroundColor: "transparent",
+                        outline: "none",
+                        color: "#6e6e6e",
+                      }}
+                      placeholder="Suche"
+                    />
+                  </div>
+                )}
+              />
+              {Object.keys(selectedKeys).length > 0 && (
+                <button
+                  className="text-xl text-red-500 rounded-lg"
+                  onClick={clearBuildingFilter}
+                >
+                  <CiCircleRemove size={36} />
+                </button>
               )}
-            />
+            </div>
             {/* <MultiSelect
 							value={selectedStatusFilter}
 							onShow={handleMultiSelectClick}
@@ -667,38 +716,85 @@ const DeviceManagementTable = () => {
 								borderRadius: "4px",
 							}}
 						/> */}
-            <MultiSelect
-              value={selectedStatusFilter}
-              onShow={handleMultiSelectClick}
-              onChange={handleStatusChange}
-              showSelectAll={false}
-              options={eventFilterOptions}
-              placeholder="Status"
-              display="chip"
-              className="w-full md:w-20rem"
-              panelStyle={{
-                border: "0.5px solid #bababa",
-                borderRadius: "4px",
-              }}
-              maxSelectedLabels={1}
-              optionLabel={(option) => option.germanLabel} // Display German label in the UI
-            />
-
-            <MultiSelect
-              value={selectedBatteryLevels}
-              onShow={handleMultiSelectClick}
-              onChange={handleBatteryLevelChange}
-              showSelectAll={false}
-              options={batteryLevelOptions}
-              placeholder="Batteriestand"
-              display="chip"
-              className="w-full md:w-20rem"
-              panelStyle={{
-                border: "0.5px solid #bababa",
-                borderRadius: "4px",
-              }}
-              optionLabel={(option) => option.germanLabel} // Display German label in the UI
-            />
+            <div className="flex flex-row gap-x-2">
+              <MultiSelect
+                value={selectedStatusFilter}
+                onShow={handleMultiSelectClick}
+                onChange={handleStatusChange}
+                showSelectAll={false}
+                options={eventFilterOptions}
+                placeholder="Status"
+                display="chip"
+                className="w-full md:w-20rem"
+                panelStyle={{
+                  border: "0.5px solid #bababa",
+                  borderRadius: "4px",
+                }}
+                maxSelectedLabels={1}
+                optionLabel={(option) => option.germanLabel} // Display German label in the UI
+              />
+              {selectedStatusFilter && (
+                <button
+                  className="text-xl text-red-500 shadow-lg rounded-lg"
+                  onClick={clearStatusFilter}
+                >
+                  <Tooltip
+                    content={"remove Filter"}
+                    style="light"
+                    className="-mt-12 ml-24"
+                  >
+                    <CiCircleRemove size={36} />
+                  </Tooltip>
+                </button>
+              )}
+            </div>
+            <div className="flex flex-row gap-x-2">
+              <MultiSelect
+                value={selectedBatteryLevels}
+                onShow={handleMultiSelectClick}
+                onChange={handleBatteryLevelChange}
+                showSelectAll={false}
+                options={batteryLevelOptions}
+                placeholder="Batteriestand"
+                display="chip"
+                className="w-full md:w-20rem"
+                panelStyle={{
+                  border: "0.5px solid #bababa",
+                  borderRadius: "4px",
+                }}
+                optionLabel={(option) => option.germanLabel} // Display German label in the UI
+              />{" "}
+              {selectedBatteryLevels?.length > 0 && (
+                <button
+                  className="text-xl text-red-500 shadow-lg rounded-lg"
+                  onClick={clearBatteryFilter}
+                >
+                  <Tooltip
+                    content={"remove Filter"}
+                    style="light"
+                    className="-mt-12 ml-24"
+                  >
+                    <CiCircleRemove size={36} />
+                  </Tooltip>
+                </button>
+              )}
+            </div>
+            {(selectedStatusFilter ||
+              Object.keys(selectedKeys).length > 0 ||
+              (selectedBatteryLevels && selectedBatteryLevels.length > 0)) && (
+              <button
+                className="bg-red-500 px-3 py-3 h-[34%] text-white shadow-lg rounded-lg"
+                onClick={clearAllFilters}
+              >
+                <Tooltip
+                  content={"remove Filter"}
+                  style="light"
+                  className="ml-24 bg-white shadow-lg"
+                >
+                  Clear Filters
+                </Tooltip>
+              </button>
+            )}
           </div>
           {/* Search bar */}
         </div>
@@ -737,7 +833,10 @@ const DeviceManagementTable = () => {
             {tableData?.length > 0 &&
               tableData.map((item, index) => (
                 <React.Fragment key={index}>
-                  <tr onClick={() => handleRowClick(index, item?.id)} className="bg-white border-b cursor-pointer dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                  <tr
+                    onClick={() => handleRowClick(index, item?.id)}
+                    className="bg-white border-b cursor-pointer dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
+                  >
                     <td onClick={() => handleRowClick(index, item?.id)}>
                       {" "}
                       {expandedRow === index ? (
@@ -746,7 +845,9 @@ const DeviceManagementTable = () => {
                         <FaChevronDown className="w-6 h-6 p-1 ml-2 rounded-full shadow-md" />
                       )}{" "}
                     </td>
-                    <td className="px-4 py-4 truncate uppercase">{item?.devEui}</td>
+                    <td className="px-4 py-4 truncate uppercase">
+                      {item?.devEui}
+                    </td>
 
                     <td className="relative px-4 py-4 truncate">
                       {editMode && editingItemId === item?.id ? (

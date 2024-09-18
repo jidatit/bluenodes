@@ -55,6 +55,7 @@ const EventLogsTable = () => {
   const clearBuildingFilter = () => {
     setSelectedKeys([]);
     setBuildingOpen(false);
+    setApiLocationsToBeSend(null);
   };
   const openBuildingFilter = () => {
     if (buildingOpen === false) {
@@ -67,12 +68,14 @@ const EventLogsTable = () => {
     }
   };
   const clearEventFilter = () => {
-    setSelectedEventFilters(null);
+    setSelectedEventFilters([]);
+
     setEventOpen(false);
   };
   const clearAllFilters = () => {
     setSelectedKeys([]);
     setSelectedEventFilters(null);
+    setApiLocationsToBeSend(null);
     setdateFrom(null);
     setdateTo(null);
   };
