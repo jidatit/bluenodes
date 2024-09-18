@@ -39,7 +39,10 @@ const ErrorLogsTable = () => {
   const [LocationsData, setLocationsData] = useState([]);
   const dateFilterRef = useRef(null);
   const [floors, setFloors] = useState([]);
-
+  const [dates, setDates] = useState(null);
+  const [selectedDropdownOption, setSelectedDropdownOption] =
+    useState("Schnellauswahl");
+  const [dropDownValue, setDropDownValue] = useState("Schnellauswahl");
   const eventFilterOptions = [
     // { name: "Information", code: "info", germanLabel: "Information" },
     { name: "Error", code: "err", germanLabel: "Fehler" },
@@ -69,15 +72,18 @@ const ErrorLogsTable = () => {
       setBuildingOpen(false);
     }
   };
-  const clearEventFilter = () => {
-    setSelectedEventFilters([]);
-    setEventOpen(false);
-  };
+
   const clearAllFilters = () => {
     setSelectedKeys([]);
-    setSelectedEventFilters(null);
+
+    setApiLocationsToBeSend(null);
+    setSelectedRoomIds(null);
+    setSelectedDropdownOption("Schnellauswahl");
+    setDropDownValue("Schnellauswahl");
     setdateFrom(null);
     setdateTo(null);
+    setSubDropdownValue(null);
+    setDates(null);
   };
   useEffect(() => {
     // Function to handle click outside of the DateFilter
@@ -534,6 +540,12 @@ const ErrorLogsTable = () => {
             </div>
             <div className="dummy" ref={dateFilterRef}>
               <DateFilter
+                setSelectedDropdownOption={setSelectedDropdownOption}
+                selectedDropdownOption={selectedDropdownOption}
+                setDropDownValue={setDropDownValue}
+                dropDownValue={dropDownValue}
+                setDates={setDates}
+                dates={dates}
                 dateRef={dateFilterRef}
                 closeDropdown={closeDateFilter}
                 setCloseDateFilter={setCloseDateFilter}
@@ -545,9 +557,10 @@ const ErrorLogsTable = () => {
               />
             </div>
             {(Object.keys(selectedKeys).length > 0 ||
+              dates ||
               (subDropdownValue && subDropdownValue.length > 0)) && (
               <button
-                className="bg-red-500 px-3 py-3 h-[34%] text-white rounded-lg"
+                className="bg-red-500 px-3 py-3 h-[34%] text-white shadow-lg rounded-lg"
                 onClick={clearAllFilters}
               >
                 Clear Filters

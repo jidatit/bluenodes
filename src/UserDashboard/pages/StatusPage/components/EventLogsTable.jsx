@@ -78,6 +78,7 @@ const EventLogsTable = () => {
   const clearAllFilters = () => {
     setSelectedKeys([]);
     setSelectedEventFilters(null);
+    setSelectedRoomIds([]);
     setApiLocationsToBeSend(null);
     setSelectedDropdownOption("Schnellauswahl");
     setDropDownValue("Schnellauswahl");
