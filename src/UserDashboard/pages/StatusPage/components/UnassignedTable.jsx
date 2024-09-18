@@ -502,9 +502,9 @@ const UnassignedTable = ({ assignUpdate }) => {
                   </td>
                   <td className="px-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                     {item.name ? item.name : "N/A"}{" "}
-                    <span className="text-[12px] py-0.5 px-2.5 font-semibold bg-gray-100 rounded-[80px] p-1">
+                    {/* <span className="text-[12px] py-0.5 px-2.5 font-semibold bg-gray-100 rounded-[80px] p-1">
                       {item.tag ? item.tag : "N/A"}
-                    </span>
+                    </span> */}
                   </td>
                   <td className="px-4 py-4">
                     {item.building_floor_string

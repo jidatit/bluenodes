@@ -59,6 +59,7 @@ function HeatingSchedulePage() {
 	const [showToast, setShowToast] = useState(false);
 	const [toastMessage, setToastMessage] = useState("");
 	const [isSuccess, setIsSuccess] = useState(true);
+	const [key, setKey] = useState(0);
 
 	const handleCreateHeatingProgram = (combinedData) => {
 		if (combinedData) {
@@ -77,6 +78,7 @@ function HeatingSchedulePage() {
 
 		setShowToast(true);
 		fetchAllHeatingSchedules();
+		setKey((prevKey) => prevKey + 1);
 
 		// Hide the toast after 4 seconds
 		setTimeout(() => {
@@ -84,7 +86,6 @@ function HeatingSchedulePage() {
 		}, 3000);
 	};
 
-	const [key, setKey] = useState(0);
 
 	const handleRoomUpdate = (data) => {
 		if (data) {

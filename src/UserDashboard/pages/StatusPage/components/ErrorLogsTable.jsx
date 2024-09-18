@@ -22,6 +22,7 @@ import { IoIosWarning } from "react-icons/io";
 const ErrorLogsTable = () => {
   const [selectedEventFilters, setSelectedEventFilters] = useState([
     { name: "Error", code: "err", germanLabel: "Fehler" },
+    { name: "Warning", code: "warn", germanLabel: "Warnung" },
   ]);
   // Predefined filter for errors
 
@@ -503,19 +504,19 @@ const ErrorLogsTable = () => {
         <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 min-h-[20rem] table-fixed">
           <thead className="text-xs font-semibold text-gray-500 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
             <tr>
-              <th scope="col" className="p-4 w-[20%]">
+              <th scope="col" className="p-4 w-[15%]">
                 RAUM
               </th>
               <th scope="col" className="p-4 w-[20%]">
                 GEBÄUDE - ETAGE
               </th>
-              <th scope="col" className="p-4 w-[20%]">
+              <th scope="col" className="p-4 w-[10%]">
                 DATUM - UHRZEIT
               </th>
-              <th scope="col" className="p-4 w-[20%]">
+              <th scope="col" className="p-4 w-[15%]">
                 Fehlermeldung
               </th>
-              <th scope="col" className="p-4 w-[20%]">
+              <th scope="col" className="p-4 w-[40%]">
                 NACHRICHT
               </th>
             </tr>
@@ -528,9 +529,9 @@ const ErrorLogsTable = () => {
               >
                 <td className="px-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                   {item.roomName ? item.roomName : "N/A"}{" "}
-                  <span className="text-[12px] py-0.5 px-2.5 font-semibold bg-gray-100 rounded-[80px] p-1">
+                  {/* <span className="text-[12px] py-0.5 px-2.5 font-semibold bg-gray-100 rounded-[80px] p-1">
                     {item.roomTag ? item.roomTag : "N/A"}
-                  </span>
+                  </span> */}
                 </td>
                 <td className="px-4 py-4">
                   {item.building_floor_string

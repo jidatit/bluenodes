@@ -403,6 +403,21 @@ const OfflineTable = () => {
   const handleNodeToggle = (e) => {
     setExpandedKeys(e.value); // Update expanded keys state
   };
+
+    // Define the function outside of the JSX
+    const getBatteryLevelText = (batteryLevel) => {
+      switch (batteryLevel) {
+        case "low":
+          return "Niedrig";
+        case "medium":
+          return "Mittel";
+        case "high":
+          return "Hoch";
+        default:
+          return "Undefined";
+      }
+    };
+
   return (
     <div className=" flex flex-col gap-4 w-full">
       <div className="flex flex-col justify-center items-start w-full">
@@ -525,10 +540,7 @@ const OfflineTable = () => {
                   <td className="px-4 py-4 truncate">
                     <Tooltip
                       className="p-3"
-                      content={`${
-                        item?.batteryLevel.charAt(0).toUpperCase() +
-                        item?.batteryLevel.slice(1)
-                      }`}
+                      content={getBatteryLevelText(item?.batteryLevel)}
                       style="light"
                       animation="duration-500"
                     >

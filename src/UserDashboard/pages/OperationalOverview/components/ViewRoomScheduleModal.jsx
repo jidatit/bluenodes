@@ -118,7 +118,7 @@ export function ViewRoomScheduleModal({
                       </>
                     )}
 
-                    <div className="flex flex-col gap-2">
+                    {/* <div className="flex flex-col gap-2">
                       <p className="flex items-center gap-1 font-semibold ">
                         Algorithmus aktivieren
                         <Tooltip
@@ -130,7 +130,7 @@ export function ViewRoomScheduleModal({
                         </Tooltip>
                       </p>
                       <p className="">{algo ? "Yes" : "No"}</p>
-                    </div>
+                    </div> */}
                   </div>
                 </div>
                 <div className="flex flex-col w-full gap-4 pl-4 border-l border-gray-200 ">
@@ -138,7 +138,7 @@ export function ViewRoomScheduleModal({
                     Heizplan
                   </h3>
                   {/* <ToggleSwitch checked={switch1} label="Toggle me" onChange={setSwitch1} /> */}
-                  <div>
+                  {/* <div>
                     <label className="flex items-center gap-2 cursor-pointer select-none">
                       <div className="relative">
                         <input
@@ -168,7 +168,7 @@ export function ViewRoomScheduleModal({
                         </div>
                       )}
                     </label>
-                  </div>
+                  </div> */}
                   {!isChecked ? (
                     <div className="max-h-[400px] overflow-y-auto overflow-x-hidden pr-2">
                       {locationDetails && (

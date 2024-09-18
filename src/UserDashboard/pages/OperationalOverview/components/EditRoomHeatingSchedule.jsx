@@ -302,7 +302,7 @@ export function EditRoomHeatingSchedule({ openEditModal, handleEditModal, onEdit
       childSafety: "",
       minTemp: "",
       maxTemp: "",
-      applyAlgorithm: "",
+      applyAlgorithm: "Yes",
     });
     setErrorMessages({
       programName: "",

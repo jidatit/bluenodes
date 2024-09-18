@@ -412,6 +412,20 @@ const EventLogsTable = () => {
     setExpandedKeys(e.value); // Update expanded keys state
   };
 
+    // Define the function outside of the JSX
+    const getEventTypeText = (event) => {
+      switch (event) {
+        case "Information":
+          return "Information";
+        case "Warning":
+          return "Warnung";
+        case "Behoben":
+          return "Behoben";
+        default:
+          return "Fehler";
+      }
+    };
+
   return (
     <div className=" flex flex-col gap-4 w-full overflow-hidden">
       <div className="flex flex-col justify-center items-start w-full">
@@ -601,9 +615,9 @@ const EventLogsTable = () => {
                   </td>
                   <td className="px-4 py-4 font-medium text-gray-900 break-words dark:text-white w-[15%]">
                     {item.roomName ? item.roomName : "-"}{" "}
-                    <span className="text-[10px] py-0.5 px-2.5 font-semibold bg-gray-100 rounded-[80px] p-1">
+                    {/* <span className="text-[10px] py-0.5 px-2.5 font-semibold bg-gray-100 rounded-[80px] p-1">
                       {item.roomTag ? item.roomTag : "-"}
-                    </span>
+                    </span> */}
                   </td>
                   <td className="px-4 py-4 w-[16%]">
                     {item.building_floor_string ? (
@@ -621,7 +635,7 @@ const EventLogsTable = () => {
                   </td>
                   <td className="px-4 py-4 w-[15%]">
                     <div className="flex items-center gap-x-2">
-                      <Tooltip content={item.eventTypeLevel} style="light">
+                      <Tooltip content={getEventTypeText(item.eventTypeLevel)} style="light">
                         {item.eventTypeLevel === "Information" ? (
                           <FaCircleInfo />
                         ) : item.eventTypeLevel === "Warning" ? (

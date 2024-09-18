@@ -600,7 +600,7 @@ const AlertDeleteModal = ({
 		<Modal
 			show={openAlertDeleteModal}
 			size="lg"
-			onClose={() => setOpenAlertDeleteModal(false)}
+			onClose={() => {setOpenAlertDeleteModal(false); setOpenDeleteModal(false);}}
 			popup
 		>
 			<Modal.Header />
