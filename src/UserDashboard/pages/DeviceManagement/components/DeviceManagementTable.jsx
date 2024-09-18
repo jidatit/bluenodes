@@ -804,8 +804,8 @@ const DeviceManagementTable = () => {
                       <Tooltip
                         className="p-3"
                         content={`${
-                          item?.batteryLevel.charAt(0).toUpperCase() +
-                          item?.batteryLevel.slice(1)
+                          item?.batteryLevel?.charAt(0).toUpperCase() +
+                          item?.batteryLevel?.slice(1)
                         }`}
                         style="light"
                         animation="duration-500"
