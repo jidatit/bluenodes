@@ -167,7 +167,7 @@ export function CreateHeatingModal({
 					maxTemp: isMaxTempDecimal ? errors.TempDecimalNotAllowed : "",
 				}));
 			} else if ((minTemp >= maxTemp) && (maxTempStr.length>=2)) {
-				console.log("acc",maxTempStr.length)
+				// console.log("acc",maxTempStr.length)
 				// Update error state for maxTemp when cross-validation fails
 				setErrorMessages((prev) => ({
 					...prev,

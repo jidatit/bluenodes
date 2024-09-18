@@ -283,9 +283,13 @@ const AssignProgramModal = ({
 	useEffect(() => {
 		const minTemp = parseFloat(formData.minTemp);
 		const maxTemp = parseFloat(formData.maxTemp);
+
+		// Convert minTemp and maxTemp to strings to safely use .includes
+		const minTempStr = formData.minTemp?.toString() || "";
+		const maxTempStr = formData.maxTemp?.toString() || "";
 		// Cross-validate minTemp and maxTemp
 		if (minTemp !== "" && maxTemp !== "") {
-			if (minTemp >= maxTemp) {
+			if ((minTemp >= maxTemp) && (maxTempStr.length>=2)) {
 				// error = errors.maxTempLowerThanMinTemp;
 				// Update error state for maxTemp when cross-validation fails
 				setErrorMessages((prev) => ({
