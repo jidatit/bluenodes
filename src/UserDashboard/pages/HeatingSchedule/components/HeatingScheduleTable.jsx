@@ -197,7 +197,7 @@ function HeatingScheduleTable({ locationDetails, props }) {
 								margin: "0",
 							}}
 						>
-							<div className="text-[#0BAAC9] bg-[#E7F9FD] w-full font-medium rounded-lg text-xs px-3 py-2 me-2 mb-2 border border-[#0BAAC9] flex items-center justify-between ">
+							<div className="text-[#0BAAC9] bg-[#E7F9FD] w-full font-medium rounded-lg text-xs px-4 py-2 me-2 mb-2 border border-[#0BAAC9] flex items-center justify-between ">
 								{day}
 							</div>
 						</div>
@@ -245,7 +245,7 @@ function HeatingScheduleTable({ locationDetails, props }) {
 								}}
 							>
 								<GridLayout
-									className="layout mt-[-6px] w-full z-10"
+									className="layout mt-[-4px] w-full z-10"
 									compactType={null}
 									layout={initialLayouts[day]}
 									cols={1}
@@ -257,7 +257,7 @@ function HeatingScheduleTable({ locationDetails, props }) {
 									{initialLayouts[day].map((box) => (
 										<div
 											key={box.i}
-											className={`box pb-[50px] relative w-full rounded-md z-10 ${
+											className={`box relative pb-[3rem] w-full rounded-md z-10 ${
 												box.temperature === false ? "border border-red-500" : ""
 											}`}
 											style={{
