@@ -27,7 +27,7 @@ const EventLogsTable = () => {
   const [closeDateFilter, setCloseDateFilter] = useState(false); // State to manage dropdown visibility
 
   const dateFilterRef = useRef(null);
-  const [floors, setFloors] = useState([]);
+
   // Function to handle click outside of the DateFilter
   useEffect(() => {
     // Function to handle click outside of the DateFilter
@@ -88,15 +88,11 @@ const EventLogsTable = () => {
   const getAllLocations = async () => {
     try {
       const data = await axios.get(ApiUrls.SMARTHEATING_LOCATIONS.LIST);
+
       const transformedData = transformData(data.data);
+
       setFilteredLocations(transformedData);
       setLocationsData(transformedData);
-      const extractedFloors = LocationsData.map(
-        (location) => location.children
-      ).flat();
-
-      // Update the floors state with the extracted children
-      setFloors(extractedFloors);
     } catch (error) {
       console.log(error);
     }
@@ -296,7 +292,6 @@ const EventLogsTable = () => {
       console.log(error);
     }
   };
-
   const [dateTo, setdateTo] = useState(null);
   const [dateFrom, setdateFrom] = useState(null);
 
@@ -315,7 +310,7 @@ const EventLogsTable = () => {
       getData(ApiLocationsToBeSend);
     }
   }, [selectedEventFilters]);
-  const itemsPerPage = 10;
+  const itemsPerPage = 40;
   const totalItems = totalRows && totalRows;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
 
