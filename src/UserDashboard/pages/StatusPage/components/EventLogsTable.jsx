@@ -412,19 +412,19 @@ const EventLogsTable = () => {
     setExpandedKeys(e.value); // Update expanded keys state
   };
 
-    // Define the function outside of the JSX
-    const getEventTypeText = (event) => {
-      switch (event) {
-        case "Information":
-          return "Information";
-        case "Warning":
-          return "Warnung";
-        case "Behoben":
-          return "Behoben";
-        default:
-          return "Fehler";
-      }
-    };
+  // Define the function outside of the JSX
+  const getEventTypeText = (event) => {
+    switch (event) {
+      case "Information":
+        return "Information";
+      case "Warning":
+        return "Warnung";
+      case "Behoben":
+        return "Behoben";
+      default:
+        return "Fehler";
+    }
+  };
 
   return (
     <div className=" flex flex-col gap-4 w-full overflow-hidden">
@@ -503,13 +503,13 @@ const EventLogsTable = () => {
 
               {Object.keys(selectedKeys).length > 0 && (
                 <button
-                  className="text-xl text-black shadow-lg rounded-lg"
+                  className="text-xl text-red-500 shadow-lg rounded-lg"
                   onClick={clearBuildingFilter}
                 >
                   <Tooltip
                     content={"remove Filter"}
                     style="light"
-                    className="-mt-12 ml-24 bg-white shadow-lg"
+                    className="-mt-12 ml-24"
                   >
                     <CiCircleRemove size={36} />
                   </Tooltip>
@@ -536,13 +536,13 @@ const EventLogsTable = () => {
               />
               {selectedEventFilters?.length > 0 && (
                 <button
-                  className="text-xl text-black shadow-lg rounded-lg"
+                  className="text-xl text-red-500 shadow-lg rounded-lg"
                   onClick={clearEventFilter}
                 >
                   <Tooltip
                     content={"remove Filter"}
                     style="light"
-                    className="-mt-12 ml-24 bg-white shadow-lg"
+                    className="-mt-12 ml-24"
                   >
                     <CiCircleRemove size={36} />
                   </Tooltip>
@@ -635,7 +635,10 @@ const EventLogsTable = () => {
                   </td>
                   <td className="px-4 py-4 w-[15%]">
                     <div className="flex items-center gap-x-2">
-                      <Tooltip content={getEventTypeText(item.eventTypeLevel)} style="light">
+                      <Tooltip
+                        content={getEventTypeText(item.eventTypeLevel)}
+                        style="light"
+                      >
                         {item.eventTypeLevel === "Information" ? (
                           <FaCircleInfo />
                         ) : item.eventTypeLevel === "Warning" ? (

@@ -234,5 +234,5 @@ input[type="radio"]:focus {
   box-shadow: none; /* Remove default focus box-shadow */
 }
 .p-tree .p-tree-container .p-treenode .p-treenode-content.p-highlight {
-  background: #10d7ff;
+  outline: 1px solid #3dd3f1;
 }
