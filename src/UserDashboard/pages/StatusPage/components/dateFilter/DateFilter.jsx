@@ -96,6 +96,8 @@ const getDateRange = (option) => {
 };
 const DateFilter = ({
   dateRef,
+  dates,
+  setDates,
   onDatesChange,
   closeDropdown,
   setCloseDateFilter,
@@ -103,15 +105,16 @@ const DateFilter = ({
   selectedLocationFilter,
   setSubDropdownValue,
   subDropdownValue,
+  setSelectedDropdownOption,
+  selectedDropdownOption,
+  dropDownValue,
+  setDropDownValue,
 }) => {
   const [selectedOption, setSelectedOption] = useState("Schnellauswahl");
   const [showCalendar, setShowCalendar] = useState(false);
-  const [dropDownValue, setDropDownValue] = useState("Schnellauswahl");
 
-  const [dates, setDates] = useState(null);
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [selectedDropdownOption, setSelectedDropdownOption] =
-    useState("Schnellauswahl");
+
   const [subDropdownOpen, setSubDropdownOpen] = useState(false);
   const subDropdownOptions = [
     { key: "Today", label: "Today", germanLabel: "Heute" },
@@ -127,6 +130,7 @@ const DateFilter = ({
       setShowCalendar(false);
     }
   }, [closeDropdown]);
+
   const handleBestim = () => {
     setDropDownValue("Bestimmter Datumsbereich");
   };
@@ -221,7 +225,7 @@ const DateFilter = ({
             </span>{" "}
             {/* Down arrow */}
           </button>
-          {subDropdownValue && subDropdownValue.length > 0 && (
+          {(dates || (subDropdownValue && subDropdownValue.length > 0)) && (
             <button
               className="text-xl text-red-500 rounded-lg"
               onClick={clearFilter}

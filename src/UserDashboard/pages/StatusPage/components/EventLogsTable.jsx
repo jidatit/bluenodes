@@ -27,9 +27,11 @@ const EventLogsTable = () => {
   const [selectedLocationFilter, setSelectedLocationFilter] = useState(0);
   const [subDropdownValue, setSubDropdownValue] = useState(null);
   const [closeDateFilter, setCloseDateFilter] = useState(false); // State to manage dropdown visibility
-
+  const [dates, setDates] = useState(null);
   const dateFilterRef = useRef(null);
-
+  const [selectedDropdownOption, setSelectedDropdownOption] =
+    useState("Schnellauswahl");
+  const [dropDownValue, setDropDownValue] = useState("Schnellauswahl");
   // Function to handle click outside of the DateFilter
   useEffect(() => {
     // Function to handle click outside of the DateFilter
@@ -77,8 +79,12 @@ const EventLogsTable = () => {
     setSelectedKeys([]);
     setSelectedEventFilters(null);
     setApiLocationsToBeSend(null);
+    setSelectedDropdownOption("Schnellauswahl");
+    setDropDownValue("Schnellauswahl");
     setdateFrom(null);
     setdateTo(null);
+    setSubDropdownValue(null);
+    setDates(null);
   };
   const handleTreeSelectClick = () => {
     setCloseDateFilter(true);
@@ -534,21 +540,21 @@ const EventLogsTable = () => {
               />
               {selectedEventFilters?.length > 0 && (
                 <button
-                  className="text-xl text-red-500 shadow-lg rounded-lg"
+                  className="text-xl text-red-500 rounded-lg"
                   onClick={clearEventFilter}
                 >
-                  <Tooltip
-                    content={"remove Filter"}
-                    style="light"
-                    className="-mt-12 ml-24"
-                  >
-                    <CiCircleRemove size={36} />
-                  </Tooltip>
+                  <CiCircleRemove size={36} />
                 </button>
               )}
             </div>
             <div className="dummy" ref={dateFilterRef}>
               <DateFilter
+                setSelectedDropdownOption={setSelectedDropdownOption}
+                selectedDropdownOption={selectedDropdownOption}
+                setDropDownValue={setDropDownValue}
+                dropDownValue={dropDownValue}
+                setDates={setDates}
+                dates={dates}
                 dateRef={dateFilterRef}
                 closeDropdown={closeDateFilter}
                 setCloseDateFilter={setCloseDateFilter}
@@ -561,18 +567,13 @@ const EventLogsTable = () => {
             </div>
             {(selectedEventFilters?.length > 0 ||
               Object.keys(selectedKeys).length > 0 ||
+              dates ||
               (subDropdownValue && subDropdownValue.length > 0)) && (
               <button
                 className="bg-red-500 px-3 py-3 h-[34%] text-white shadow-lg rounded-lg"
                 onClick={clearAllFilters}
               >
-                <Tooltip
-                  content={"remove Filter"}
-                  style="light"
-                  className="ml-24 bg-white shadow-lg"
-                >
-                  Clear Filters
-                </Tooltip>
+                Clear Filters
               </button>
             )}
           </div>
