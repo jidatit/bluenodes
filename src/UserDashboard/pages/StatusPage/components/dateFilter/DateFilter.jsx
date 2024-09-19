@@ -207,6 +207,7 @@ const DateFilter = ({
       endDate = null;
     setDates(startDate, endDate);
     onDatesChange(startDate, endDate);
+    
   };
   return (
     <div

@@ -150,12 +150,8 @@ const EventLogsTable = () => {
     if (filtersSelected === false) getAllLocations();
   }, [filtersSelected]);
   const [tableData, setTableData] = useState([]);
-  // const [selectedFilter, setSelectedFilter] = useState("Last Year");
-  // const [selectedEvent, setSelectedEvent] = useState("All events");
-
   const [currentPage, setCurrentPage] = useState(1);
   const [totalRows, setTotalRows] = useState(0);
-
   const [selectedKeys, setSelectedKeys] = useState({});
   const [selectedRoomIds, setSelectedRoomIds] = useState(new Set());
   const [Deselectedkeys, setDeselectedKeys] = useState({});
