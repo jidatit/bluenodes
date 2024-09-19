@@ -354,7 +354,7 @@ const EventLogsTable = () => {
       getData(ApiLocationsToBeSend);
     }
   }, [selectedEventFilters]);
-  const itemsPerPage = 40;
+  const itemsPerPage = 10;
   const totalItems = totalRows && totalRows;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
 
@@ -570,7 +570,7 @@ const EventLogsTable = () => {
                 className="bg-red-500 px-3 py-3 h-[34%] text-white shadow-lg rounded-lg"
                 onClick={clearAllFilters}
               >
-                Clear Filters
+                Reset All
               </button>
             )}
           </div>

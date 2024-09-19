@@ -412,8 +412,8 @@ const DeviceManagementTable = () => {
         status,
         locations
       );
-
       setTotalRows(data.count);
+
       // Sorting tableData by roomName, handling null values
       const sortedData = data.rows.sort((a, b) => {
         // Handle null values by putting them at the end
@@ -791,7 +791,7 @@ const DeviceManagementTable = () => {
                   style="light"
                   className="ml-24 bg-white shadow-lg"
                 >
-                  Clear Filters
+                  Reset All
                 </Tooltip>
               </button>
             )}
