@@ -204,12 +204,11 @@ function HeatingSchedule({
 			const str = boxId;
 			const regex = /^box-(\w+)-\d+$/;
 			const match = str.match(regex);
-
+	
 			if (match) {
 				const day = match[1]; // Extract the day from the first capturing group
-
 				const inputValue = temperatureInputs[boxId];
-
+	
 				// Check if input is a number and within the range 5 to 30
 				if (!isNaN(inputValue) && inputValue >= 5 && inputValue <= 30) {
 					setLayouts((prevLayouts) => ({
@@ -228,15 +227,12 @@ function HeatingSchedule({
 			return;
 		} else if (isResizingOrDragging) {
 			// Ignore the click if a resize or drag event is in progress
-
 			return;
 		} else if (event.target.closest(".box")) {
-
 			// If the click happened inside a box, do nothing
 			return;
 		}
-
-
+	
 		const container = event.currentTarget;
 		const rect = container.getBoundingClientRect();
 		const xPosition = event.clientX - rect.left;
@@ -277,29 +273,32 @@ function HeatingSchedule({
 				temperature: null,
 			};
 		}
-
-		setLayouts((prevLayouts) => ({
-			...prevLayouts,
-			[day]: [...prevLayouts[day], newBoxLayout],
-		}));
-
+	
+		setLayouts((prevLayouts) => {
+			const updatedLayout = adjustLayoutForOverlap(prevLayouts[day], "abc", newBoxLayout);
+			return {
+				...prevLayouts,
+				[day]: [...updatedLayout, newBoxLayout],
+			};
+		});
+	
 		// Focus the input after adding the box
 		setTimeout(() => {
 			if (inputRefs.current[newBoxId]) {
 				inputRefs.current[newBoxId].focus();
 			}
 		}, 0);
-
+	
 		setEditableBoxes((prevEditable) => ({
-			// ...prevEditable,
 			[newBoxId]: true, // Enter editing mode on click
 		}));
-
+	
 		setTemperatureInputs((prevInputs) => ({
 			...prevInputs,
 			[newBoxId]: "", // Initialize temperature input for the new box
 		}));
 	};
+	
 
 	const generateNewBoxId = (day, layouts) => {
 		const dayLayouts = layouts[day];
