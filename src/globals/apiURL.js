@@ -19,7 +19,7 @@ const ApiUrls = {
 			}
 
 			if (dateTo && dateFrom) {
-				url += `&dateTo=${dateTo}&dateFrom=${dateFrom}`;
+				url += `&dateFrom=${dateFrom}&dateTo=${dateTo}`;
 			}
 			return url;
 		},

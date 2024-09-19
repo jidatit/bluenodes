@@ -139,7 +139,7 @@ const AssignProgramModal = ({
 		childSafety: "",
 		minTemp: "",
 		maxTemp: "",
-		applyAlgorithm: "",
+		applyAlgorithm: "Yes",
 	});
 	const [locationDetails, setLocationDetails] = useState([]);
 	const [formDataApi, setFormDataApi] = useState();
@@ -283,9 +283,13 @@ const AssignProgramModal = ({
 	useEffect(() => {
 		const minTemp = parseFloat(formData.minTemp);
 		const maxTemp = parseFloat(formData.maxTemp);
+
+		// Convert minTemp and maxTemp to strings to safely use .includes
+		const minTempStr = formData.minTemp?.toString() || "";
+		const maxTempStr = formData.maxTemp?.toString() || "";
 		// Cross-validate minTemp and maxTemp
 		if (minTemp !== "" && maxTemp !== "") {
-			if (minTemp >= maxTemp) {
+			if ((minTemp >= maxTemp) && (maxTempStr.length>=2)) {
 				// error = errors.maxTempLowerThanMinTemp;
 				// Update error state for maxTemp when cross-validation fails
 				setErrorMessages((prev) => ({
@@ -614,7 +618,7 @@ const AssignProgramModal = ({
 			childSafety: "",
 			minTemp: "",
 			maxTemp: "",
-			applyAlgorithm: "",
+			applyAlgorithm: "Yes",
 		});
 		setErrorMessages({
 			programName: "",
@@ -921,7 +925,7 @@ const ReplaceProgram = ({
 					</p>
 				)}
 			</div>
-			<div className="flex flex-col justify-start items-start w-full md:w-2/3">
+			{/* <div className="flex flex-col justify-start items-start w-full md:w-2/3">
 				<div className="mb-2 flex items-center gap-2">
 					<Label
 						className="text-sm font-semibold text-gray-700"
@@ -968,7 +972,7 @@ const ReplaceProgram = ({
 						</div>
 					</div>
 				</div>
-			</div>
+			</div> */}
 		</div>
 	);
 };

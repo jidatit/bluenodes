@@ -17,6 +17,8 @@ import { IoLogOut } from "react-icons/io5";
 import { useAuth } from "../../AuthContext";
 import { Modal } from "flowbite-react";
 import { Button } from "flowbite-react";
+import axios from "axios";
+import ApiUrls from "../../globals/apiURL";
 
 const user = {
   name: "Bonnie Green",
@@ -46,6 +48,7 @@ const ExampleSidebar = () => {
   useEffect(() => {
     setIsCollapsed(isSmallScreen());
   }, []);
+
 
   return (
     <div
@@ -176,6 +179,25 @@ const ExampleSidebar = () => {
 };
 
 const BottomMenu = ({ isCollapsed, isHovered }) => {
+  const [userDetails, setUserDetails] = useState([]);
+  
+
+  const fetchUserDetails = async () => {
+		try {
+			const response = await axios.get(
+				ApiUrls.USER.PROFILE,
+			);
+			const data = await response.data;
+      setUserDetails(data)
+		} catch (error) {
+			console.error("Error:", error);
+		}
+	};
+
+	useEffect(() => {
+		fetchUserDetails();
+	}, []);
+
   return (
     <div className="flex items-center justify-center gap-x-5">
       <div className="flex items-center justify-between w-full ">
@@ -186,8 +208,8 @@ const BottomMenu = ({ isCollapsed, isHovered }) => {
             "!block ": isHovered && isCollapsed, // Hide button when sidebar is collapsed
           })}
         >
-          <p className=" font-bold text-[#111928]">{user.name}</p>
-          <p className=" text-sm  text-[#6B7280]">{user.email}</p>
+          <p className=" font-bold text-[#111928]">{userDetails.customer}</p>
+          <p className=" text-xs text-[#6B7280]">{userDetails.email}</p>
         </div>
         <div
           className={classNames({

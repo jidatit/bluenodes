@@ -15,19 +15,23 @@ import { MultiSelect } from "primereact/multiselect";
 import DateFilter from "./dateFilter/DateFilter";
 import "../../../../index.css";
 import formatTimestamp from "../../../../utils/formatTimeStamp";
+import { CiCircleRemove } from "react-icons/ci";
 const EventLogsTable = () => {
   const [selectedEventFilters, setSelectedEventFilters] = useState(null);
   const [ApiLocationsToBeSend, setApiLocationsToBeSend] = useState(null);
   const [apiLocationsToBeSendCounter, setApiLocationsToBeSendCounter] =
     useState(null);
-
+  const [buildingOpen, setBuildingOpen] = useState(false);
+  const [eventOpen, setEventOpen] = useState(false);
   const [filtersSelected, setFiltersSelected] = useState(false);
   const [selectedLocationFilter, setSelectedLocationFilter] = useState(0);
-
+  const [subDropdownValue, setSubDropdownValue] = useState(null);
   const [closeDateFilter, setCloseDateFilter] = useState(false); // State to manage dropdown visibility
-
+  const [dates, setDates] = useState(null);
   const dateFilterRef = useRef(null);
-  const [floors, setFloors] = useState([]);
+  const [selectedDropdownOption, setSelectedDropdownOption] =
+    useState("Schnellauswahl");
+  const [dropDownValue, setDropDownValue] = useState("Schnellauswahl");
   // Function to handle click outside of the DateFilter
   useEffect(() => {
     // Function to handle click outside of the DateFilter
@@ -36,7 +40,8 @@ const EventLogsTable = () => {
         dateFilterRef.current &&
         !dateFilterRef.current.contains(event.target)
       ) {
-        setCloseDateFilter(true); // Close dropdown if clicked outside
+        setCloseDateFilter(true);
+        // Close dropdown if clicked outside
       }
     };
 
@@ -49,6 +54,39 @@ const EventLogsTable = () => {
     };
   }, [dateFilterRef]);
 
+  const clearBuildingFilter = () => {
+    setSelectedKeys([]);
+    setBuildingOpen(false);
+    setApiLocationsToBeSend(null);
+    setSelectedRoomIds([]);
+  };
+  const openBuildingFilter = () => {
+    if (buildingOpen === false) {
+      setBuildingOpen(true);
+    }
+  };
+  const hideBuildingFilter = () => {
+    if (buildingOpen === true) {
+      setBuildingOpen(false);
+    }
+  };
+  const clearEventFilter = () => {
+    setSelectedEventFilters([]);
+
+    setEventOpen(false);
+  };
+  const clearAllFilters = () => {
+    setSelectedKeys([]);
+    setSelectedEventFilters(null);
+    setSelectedRoomIds([]);
+    setApiLocationsToBeSend(null);
+    setSelectedDropdownOption("Schnellauswahl");
+    setDropDownValue("Schnellauswahl");
+    setdateFrom(null);
+    setdateTo(null);
+    setSubDropdownValue(null);
+    setDates(null);
+  };
   const handleTreeSelectClick = () => {
     setCloseDateFilter(true);
   };
@@ -56,8 +94,18 @@ const EventLogsTable = () => {
     if (selectedLocationFilter === 0) {
       setApiLocationsToBeSend(null);
     }
+    if (eventOpen === false) {
+      setEventOpen(true);
+      setCloseDateFilter(true);
+    }
     setCloseDateFilter(true);
   };
+  const handleMultiSelectHide = () => {
+    if (eventOpen === true) {
+      setEventOpen(false);
+    }
+  };
+
   const eventFilterOptions = [
     { name: "Information", code: "info", germanLabel: "Information" },
     { name: "Error", code: "err", germanLabel: "Fehler" },
@@ -88,15 +136,11 @@ const EventLogsTable = () => {
   const getAllLocations = async () => {
     try {
       const data = await axios.get(ApiUrls.SMARTHEATING_LOCATIONS.LIST);
+
       const transformedData = transformData(data.data);
+
       setFilteredLocations(transformedData);
       setLocationsData(transformedData);
-      const extractedFloors = LocationsData.map(
-        (location) => location.children
-      ).flat();
-
-      // Update the floors state with the extracted children
-      setFloors(extractedFloors);
     } catch (error) {
       console.log(error);
     }
@@ -106,12 +150,8 @@ const EventLogsTable = () => {
     if (filtersSelected === false) getAllLocations();
   }, [filtersSelected]);
   const [tableData, setTableData] = useState([]);
-  // const [selectedFilter, setSelectedFilter] = useState("Last Year");
-  // const [selectedEvent, setSelectedEvent] = useState("All events");
-
   const [currentPage, setCurrentPage] = useState(1);
   const [totalRows, setTotalRows] = useState(0);
-
   const [selectedKeys, setSelectedKeys] = useState({});
   const [selectedRoomIds, setSelectedRoomIds] = useState(new Set());
   const [Deselectedkeys, setDeselectedKeys] = useState({});
@@ -296,7 +336,6 @@ const EventLogsTable = () => {
       console.log(error);
     }
   };
-
   const [dateTo, setdateTo] = useState(null);
   const [dateFrom, setdateFrom] = useState(null);
 
@@ -341,7 +380,6 @@ const EventLogsTable = () => {
   // };
 
   const handleDatesChange = (newDates) => {
-    console.log(newDates);
     if (!newDates || !newDates[0]) {
       setdateFrom(null);
       setdateTo(null);
@@ -380,6 +418,20 @@ const EventLogsTable = () => {
     setExpandedKeys(e.value); // Update expanded keys state
   };
 
+  // Define the function outside of the JSX
+  const getEventTypeText = (event) => {
+    switch (event) {
+      case "Information":
+        return "Information";
+      case "Warning":
+        return "Warnung";
+      case "Behoben":
+        return "Behoben";
+      default:
+        return "Fehler";
+    }
+  };
+
   return (
     <div className=" flex flex-col gap-4 w-full overflow-hidden">
       <div className="flex flex-col justify-center items-start w-full">
@@ -388,100 +440,142 @@ const EventLogsTable = () => {
       <div className="relative w-full overflow-x-auto bg-white shadow-md sm:rounded-lg z-10">
         <div className="flex flex-column my-2 bg-transparent mx-2 sm:flex-row flex-wrap space-y-4 sm:space-y-0 items-center justify-between z-10 ">
           {/* Filter buttons */}
-          <div className="flex flex-row justify-center items-center gap-1 ">
-            <TreeSelect
-              value={selectedKeys}
-              options={filteredLocations}
-              onChange={onNodeSelectChange}
-              onClick={handleTreeSelectClick}
-              expandedKeys={expandedKeys} // Use expandedKeys to manage expanded nodes
-              onToggle={handleNodeToggle} // Handle node expand/collapse event
-              selectionMode="multiple"
-              placeholder="Alle Gebäude"
-              filter
-              filterBy="label"
-              filterValue={filterValue}
-              className="w-full md:w-20rem"
-              closeIcon="false"
-              panelStyle={{
-                border: "0.5px solid #bababa",
-                borderRadius: "4px",
-                outline: "none",
-                boxShadow: "none",
-              }}
-              style={{
-                outline: "none",
-                boxShadow: "none",
-              }}
-              filterTemplate={({ filterInputProps }) => (
-                <div
-                  style={{
-                    backgroundColor: "#f5f5f5",
-                    padding: "10px",
-                    display: "flex",
-                    width: "100%",
-                    alignItems: "center",
-                    borderRadius: "6px",
-                    border: "1px solid #d5ddde",
-                  }}
-                >
-                  <span
+          <div className="flex flex-row justify-center items-center gap-4 ">
+            <div className="flex flex-row gap-x-2">
+              <TreeSelect
+                value={selectedKeys}
+                options={filteredLocations}
+                onChange={onNodeSelectChange}
+                onClick={handleTreeSelectClick}
+                expandedKeys={expandedKeys}
+                onShow={openBuildingFilter}
+                onHide={hideBuildingFilter} // Use expandedKeys to manage expanded nodes
+                onToggle={handleNodeToggle} // Handle node expand/collapse event
+                selectionMode="multiple"
+                placeholder="Alle Gebäude"
+                filter
+                filterBy="label"
+                filterValue={filterValue}
+                className="w-full md:w-20rem"
+                closeIcon="false"
+                panelStyle={{
+                  border: "0.5px solid #bababa",
+                  borderRadius: "4px",
+                  outline: "none",
+                  boxShadow: "none",
+                }}
+                style={{
+                  outline: "none",
+                  boxShadow: "none",
+                }}
+                filterTemplate={({ filterInputProps }) => (
+                  <div
                     style={{
-                      marginLeft: "8px",
-                      marginRight: "8px",
-                      color: "#9e9e9e",
-                      fontSize: "18px",
+                      backgroundColor: "#f5f5f5",
+                      padding: "10px",
+                      display: "flex",
+                      width: "100%",
+                      alignItems: "center",
+                      borderRadius: "6px",
+                      border: "1px solid #d5ddde",
                     }}
                   >
-                    <IoSearch />
-                  </span>
-                  <input
-                    {...filterInputProps}
-                    value={filterValue}
-                    onChange={handleFilterChange}
-                    style={{
-                      border: "none",
-                      width: "100%",
-                      backgroundColor: "transparent",
-                      outline: "none",
-                      color: "#6e6e6e",
-                    }}
-                    placeholder="Suche"
-                  />
-                </div>
-              )}
-            />
+                    <span
+                      style={{
+                        marginLeft: "8px",
+                        marginRight: "8px",
+                        color: "#9e9e9e",
+                        fontSize: "18px",
+                      }}
+                    >
+                      <IoSearch />
+                    </span>
+                    <input
+                      {...filterInputProps}
+                      value={filterValue}
+                      onChange={handleFilterChange}
+                      style={{
+                        border: "none",
+                        width: "100%",
+                        backgroundColor: "transparent",
+                        outline: "none",
+                        color: "#6e6e6e",
+                      }}
+                      placeholder="Suche"
+                    />
+                  </div>
+                )}
+              />
 
-            <MultiSelect
-              value={selectedEventFilters}
-              onShow={handleMultiSelectClick}
-              onChange={(e) => setSelectedEventFilters(e.value)}
-              showSelectAll={false}
-              options={eventFilterOptions}
-              optionLabel="germanLabel" // Use the German label for the UI
-              filter
-              placeholder="Alle Ereignisse" // German translation for "All Events"
-              display="chip"
-              className="w-full md:w-20rem"
-              panelStyle={{
-                border: "0.5px solid #bababa",
-                borderRadius: "4px",
-              }}
-            />
+              {Object.keys(selectedKeys).length > 0 && (
+                <button
+                  className="text-xl text-red-500 rounded-lg"
+                  onClick={clearBuildingFilter}
+                >
+                  <CiCircleRemove size={36} />
+                </button>
+              )}
+            </div>
+            <div className="flex flex-row gap-x-2">
+              <MultiSelect
+                value={selectedEventFilters}
+                onShow={handleMultiSelectClick}
+                onHide={handleMultiSelectHide}
+                onChange={(e) => setSelectedEventFilters(e.value)}
+                showSelectAll={false}
+                options={eventFilterOptions}
+                optionLabel="germanLabel" // Use the German label for the UI
+                filter
+                placeholder="Alle Ereignisse" // German translation for "All Events"
+                display="chip"
+                className="w-full md:w-20rem"
+                panelStyle={{
+                  border: "0.5px solid #bababa",
+                  borderRadius: "4px",
+                }}
+              />
+              {selectedEventFilters?.length > 0 && (
+                <button
+                  className="text-xl text-red-500 rounded-lg"
+                  onClick={clearEventFilter}
+                >
+                  <CiCircleRemove size={36} />
+                </button>
+              )}
+            </div>
             <div className="dummy" ref={dateFilterRef}>
               <DateFilter
+                setSelectedDropdownOption={setSelectedDropdownOption}
+                selectedDropdownOption={selectedDropdownOption}
+                setDropDownValue={setDropDownValue}
+                dropDownValue={dropDownValue}
+                setDates={setDates}
+                dates={dates}
                 dateRef={dateFilterRef}
                 closeDropdown={closeDateFilter}
                 setCloseDateFilter={setCloseDateFilter}
                 onDatesChange={handleDatesChange}
                 setApiLocationsToBeSend={setApiLocationsToBeSend}
                 selectedLocationFilter={selectedLocationFilter}
+                setSubDropdownValue={setSubDropdownValue}
+                subDropdownValue={subDropdownValue}
               />
             </div>
+            {(selectedEventFilters?.length > 0 ||
+              Object.keys(selectedKeys).length > 0 ||
+              dates ||
+              (subDropdownValue && subDropdownValue.length > 0)) && (
+              <button
+                className="bg-red-500 px-3 py-3 h-[34%] text-white shadow-lg rounded-lg"
+                onClick={clearAllFilters}
+              >
+                Reset All
+              </button>
+            )}
           </div>
         </div>
         {/* Table */}
-        <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 z-10 min-h-[10rem] overflow-x-hidden">
+        <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 z-10 min-h-[30rem] overflow-x-hidden">
           <thead className="text-xs font-semibold text-gray-500 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
             <tr>
               <th scope="col" className="p-4">
@@ -504,56 +598,66 @@ const EventLogsTable = () => {
               </th>
             </tr>
           </thead>
-          <tbody>
             {tableData.length > 0 &&
-              tableData.map((item, index) => (
-                <tr
-                  key={index}
-                  className="text-sm bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
-                >
-                  <td className="px-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white w-[9%]">
-                    {item.id ? item.id : "-"}
-                  </td>
-                  <td className="px-4 py-4 font-medium text-gray-900 break-words dark:text-white w-[15%]">
-                    {item.roomName ? item.roomName : "-"}{" "}
-                    {/* <span className="text-[10px] py-0.5 px-2.5 font-semibold bg-gray-100 rounded-[80px] p-1">
-                      {item.roomTag ? item.roomTag : "-"}
-                    </span> */}
-                  </td>
-                  <td className="px-4 py-4 w-[16%]">
-                    {item.building_floor_string
-                      ? item.building_floor_string
-                      : "-"}
-                  </td>
-                  <td className="px-4 py-4 w-[13%]">
-                    {item.createdAt ? formatTimestamp(item.createdAt) : "-"}
-                  </td>
-                  <td className="px-4 py-4 w-[15%]">
-                    <div className="flex items-center gap-x-2">
-                      <Tooltip content={item.eventTypeLevel} style="light">
-                        {item.eventTypeLevel === "Information" ? (
-                          <FaCircleInfo />
-                        ) : item.eventTypeLevel === "Warning" ? (
-                          <RiErrorWarningFill className="text-yellow-500" />
-                        ) : item.eventTypeLevel === "Behoben" ? (
-                          <FaCircleCheck className="text-green-600" />
+              <tbody>
+                  {tableData.map((item, index) => (
+                    <tr
+                      key={index}
+                      className="text-sm bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
+                    >
+                      <td className="px-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white w-[9%]">
+                        {item.id ? item.id : "-"}
+                      </td>
+                      <td className="px-4 py-4 font-medium text-gray-900 break-words dark:text-white w-[15%]">
+                        {item.roomName ? item.roomName : "-"}{" "}
+                        {/* <span className="text-[10px] py-0.5 px-2.5 font-semibold bg-gray-100 rounded-[80px] p-1">
+                          {item.roomTag ? item.roomTag : "-"}
+                        </span> */}
+                      </td>
+                      <td className="px-4 py-4 w-[16%]">
+                        {item.building_floor_string ? (
+                          <>
+                            {item.building_floor_string.split(" - ")[0] + "-"}
+                            <br />
+                            {item.building_floor_string.split(" - ")[1]}
+                          </>
                         ) : (
-                          <IoIosWarning className="text-red-700" />
+                          "-"
                         )}
-                      </Tooltip>
-                      <span className="text-sm">
-                        {item.eventTypeMessage ? item.eventTypeMessage : "-"}
-                      </span>
-                    </div>
-                  </td>
-                  <td className="px-4 py-4 w-[26%]">
-                    <Tooltip content={item.message} style="light">
-                      {item.message ? `${item.message}` : "-"}
-                    </Tooltip>
-                  </td>
-                </tr>
-              ))}
-          </tbody>
+                      </td>
+                      <td className="px-4 py-4 w-[13%]">
+                        {item.createdAt ? formatTimestamp(item.createdAt) : "-"}
+                      </td>
+                      <td className="px-4 py-4 w-[15%]">
+                        <div className="flex items-center gap-x-2">
+                          <Tooltip
+                            content={getEventTypeText(item.eventTypeLevel)}
+                            style="light"
+                          >
+                            {item.eventTypeLevel === "Information" ? (
+                              <FaCircleInfo />
+                            ) : item.eventTypeLevel === "Warning" ? (
+                              <RiErrorWarningFill className="text-yellow-500" />
+                            ) : item.eventTypeLevel === "Behoben" ? (
+                              <FaCircleCheck className="text-green-600" />
+                            ) : (
+                              <IoIosWarning className="text-red-700" />
+                            )}
+                          </Tooltip>
+                          <span className="text-sm">
+                            {item.eventTypeMessage ? item.eventTypeMessage : "-"}
+                          </span>
+                        </div>
+                      </td>
+                      <td className="px-4 py-4 w-[26%]">
+                        <Tooltip content={item.message} style="light">
+                          {item.message ? `${item.message}` : "-"}
+                        </Tooltip>
+                      </td>
+                    </tr>
+                  ))}
+              </tbody>
+            }
         </table>
 
         {tableData.length === 0 && (

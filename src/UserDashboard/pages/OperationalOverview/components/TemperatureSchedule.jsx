@@ -314,6 +314,12 @@ const TemperatureSchedule = ({
 		// console.log("call1", accordianOpened, accordianOpened2);
 	}, [accordianOpened2]);
 
+	const formatTime = (time) => {
+		// Extract hours and minutes from the time string
+		const [hours, minutes] = time.split(':');
+		return `${hours}:${minutes}`;
+	};
+
 	return (
 		<>
 			{RoomsDetail && RoomsDetail.length > 0 ? (
@@ -325,10 +331,10 @@ const TemperatureSchedule = ({
 						<div className="flex flex-wrap items-center justify-between gap-2 mb-12 text-gray-900 md:gap-4 2xl:mb-10">
 							<div className="flex flex-wrap items-center gap-2 w-full 2xl:w-[22%]  2xl:mr-0 ">
 								<Tooltip content={room.name} style="light">
-									<span className="text-sm font-bold w-[120px] md:w-[140px] overflow-hidden text-ellipsis whitespace-nowrap">
-										{room.name && room.name.length > 15
-											? `${room.name.slice(0, 15)}...`
-											: room.name}
+									<span className="text-sm font-bold block w-full overflow-hidden text-ellipsis whitespace-nowrap">
+									{room.name && room.name.length > 40
+										? room.name.slice(0, 40) + "..."
+										: room.name}
 									</span>
 								</Tooltip>
 								{/* <Tooltip content={room.tag} style="light">
@@ -343,7 +349,7 @@ const TemperatureSchedule = ({
 									</span>
 								</Tooltip> */}
 							</div>
-							<div className=" flex  items-center gap-4 justify-between w-auto 2xl:w-[25%] 2xl:gap-10">
+							<div className=" flex  items-center gap-4 justify-start w-auto 2xl:w-[25%] 2xl:gap-10">
 								<Tooltip
 									className={`px-2 py-1.5 text-center max-w-xs`}
 									content={`Raumtemperatur: ${
@@ -374,7 +380,7 @@ const TemperatureSchedule = ({
 									</div>
 								</Tooltip>
 
-								<Tooltip
+								{/* <Tooltip
 									className={`px-2 py-1.5 text-center max-w-xs`}
 									content={`Algorithmus ist ${room.algorithm ? "an" : "aus"}`}
 									style="light"
@@ -385,10 +391,10 @@ const TemperatureSchedule = ({
 											{room.algorithm ? "An" : "Aus"}
 										</p>
 									</div>
-								</Tooltip>
+								</Tooltip> */}
 							</div>
 
-							<div className="w-auto 2xl:w-[20%] flex justify-end">
+							<div className="w-auto 2xl:w-[30%] flex justify-end">
 								<Tooltip
 									content={
 										scheduleDetails[index]?.schedule?.templateName || "None"
@@ -404,10 +410,10 @@ const TemperatureSchedule = ({
 										}}
 									>
 										{scheduleDetails[index]?.schedule?.templateName
-											? scheduleDetails[index].schedule.templateName.length > 20
+											? scheduleDetails[index].schedule.templateName.length > 50
 												? `${scheduleDetails[index].schedule.templateName.slice(
 														0,
-														20,
+														50,
 													)}...`
 												: scheduleDetails[index].schedule.templateName
 											: "None"}
@@ -544,42 +550,52 @@ const TemperatureSchedule = ({
 
 								{/* line */}
 								<div className="relative w-full h-1.5 rounded-full overflow-hidden bg-transparent">
-									{room.heatingSchedule.currentDay.map((element, index) => (
-										<div
-											key={index}
-											className={`absolute h-1.5 rounded-full`}
-											style={{
-												backgroundColor: handleTempColour(
-													element.targetTemperature,
-												),
-												left: `${parseTimeToPercentage(element.from)}%`,
-												width: `calc(${
-													parseTimeToPercentage(element.to) -
-													parseTimeToPercentage(element.from)
-												}% - 0.275rem)`,
-												marginLeft: index === 0 ? "0" : "0.1rem",
-												marginRight:
-													index === room.heatingSchedule.currentDay.length - 1
-														? "0"
-														: "0.45rem",
-											}}
-										/>
-									))}
-								</div>
+  {room.heatingSchedule.currentDay
+    .slice() // Create a shallow copy to avoid mutating the original array
+    .sort((a, b) => {
+      // Compare the `from` times
+      return a.from.localeCompare(b.from);
+    })
+    .map((element, index, array) => (
+      <div
+        key={index}
+        className={`absolute h-1.5 rounded-full`}
+        style={{
+          backgroundColor: handleTempColour(element.targetTemperature),
+          left: `${parseTimeToPercentage(element.from)}%`,
+          width: `calc(${
+            parseTimeToPercentage(element.to) - parseTimeToPercentage(element.from)
+          }% - 0.275rem)`,
+          marginLeft: index === 0 ? "0" : "0.1rem",
+          marginRight:
+            index === array.length - 1 ? "0" : "0.45rem",
+        }}
+      >
+        {/* {console.log(room.heatingSchedule.currentDay)} */}
+      </div>
+    ))}
+</div>
+
 
 								{/* Render an additional div after the last index */}
 								<div
 									className="absolute left-0 right-0 flex w-full gap-1 px-3"
 									style={{ top: `-5px` }}
 								>
-									{room.heatingSchedule.currentDay.map((element, index) => (
+							{room.heatingSchedule.currentDay
+								.slice() // Create a shallow copy to avoid mutating the original array
+								.sort((a, b) => {
+									// Compare the `from` times
+									return a.from.localeCompare(b.from);
+								})
+								.map((element, index) => (
 										<div
 											key={`separator-parent-${index}`}
 											style={{
 												width: `calc(${
 													parseTimeToPercentage(element.to) -
 													parseTimeToPercentage(element.from)
-												}% - 0.275rem)`,
+												}% - 0.3rem)`,
 											}}
 											className="flex justify-start"
 										>
@@ -597,7 +613,13 @@ const TemperatureSchedule = ({
 
 								{/* Temperature labels */}
 								<div className="flex justify-between mt-2 mb-2 text-sm text-gray-500">
-									{room.heatingSchedule.currentDay.map((element, index) => (
+								{room.heatingSchedule.currentDay
+								.slice() // Create a shallow copy to avoid mutating the original array
+								.sort((a, b) => {
+									// Compare the `from` times
+									return a.from.localeCompare(b.from);
+								})
+								.map((element, index) => (
 										<React.Fragment key={index}>
 											<span
 												style={{
@@ -609,12 +631,12 @@ const TemperatureSchedule = ({
 												}}
 												key={`time-${index}`}
 											>
-												{index === 0 ? "Today " : ""}
-												{element.from}
+												{index === 0 ? "Heute " : ""}
+												{formatTime(element.from)}
 											</span>
 											{index === room.heatingSchedule.currentDay.length - 1 && (
 												<span key={`time-${index + 1}`}>
-													{element.to === "24:00" ? "00:00" : element.to}
+													{element.to === "23:59:00" ? "00:00" : formatTime(element.to)}
 												</span>
 											)}
 										</React.Fragment>
@@ -622,7 +644,13 @@ const TemperatureSchedule = ({
 								</div>
 
 								<div className="flex justify-between mt-[-10px] text-sm font-semibold">
-									{room.heatingSchedule.currentDay.map((element, index) => (
+								{room.heatingSchedule.currentDay
+								.slice() // Create a shallow copy to avoid mutating the original array
+								.sort((a, b) => {
+									// Compare the `from` times
+									return a.from.localeCompare(b.from);
+								})
+								.map((element, index) => (
 										<span
 											style={{
 												width: `calc(${

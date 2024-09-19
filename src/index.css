@@ -1,7 +1,7 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
 
 * {
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
 }
 
 .box {
@@ -38,7 +38,6 @@
   transform: rotate(0deg);
 }
 
-
 .divide-y > :not([hidden]) ~ :not([hidden]) {
   --tw-divide-y-reverse: 0;
   border-width: 1px !important;
@@ -61,39 +60,36 @@
 
 .p-treeselect {
   max-width: 400px !important;
-  
 }
 
-.p-treenode-label{
- font-size: 14px !important; 
- color: #000;
+.p-treenode-label {
+  font-size: 14px !important;
+  color: #000;
 }
-.p-link{
-position: relative;
-top: 1px !important;
-padding: 5px;
- color: #000;
+.p-link {
+  position: relative;
+  top: 1px !important;
+  padding: 5px;
+  color: #000;
 }
-.p-tree{
-padding: 10px !important;
+.p-tree {
+  padding: 10px !important;
 }
-.p-treeselect-close{
+.p-treeselect-close {
   visibility: hidden;
   display: none !important;
 }
-.p-treeselect-header{
+.p-treeselect-header {
   width: 100%;
   padding-top: 14px;
-  padding-bottom: 8px ;
+  padding-bottom: 8px;
   padding-left: 10px;
   padding-right: 10px;
 }
-.p-treenode-leaf .p-treenode-label{
-
-
-padding: 12px;
-border-radius: 10px;
-color: #000000;
+.p-treenode-leaf .p-treenode-label {
+  padding: 12px;
+  border-radius: 10px;
+  color: #000000;
 }
 /* .p-tree .p-tree-container .p-treenode .p-treenode-leaf .p-treenode-label.p-highlight{
 
@@ -101,47 +97,46 @@ color: #000000;
 background: #004152 !important;
 } */
 
-.p-treenode-leaf .p-treenode-content .p-tree-toggler{
-display: none !important;
-  
-}
-
-.p-inputwrapper{
-border: 1px solid rgb(207, 207, 207) !important;
-border-radius: 10px;
-}
-.p-inputtext{
-  border-radius: 10px;
-}
-.p-tree-container{
-  padding: 0px !important;
-}
-.p-tree{
-  padding: 0px;
-}
-.p-treenode{
-  margin-left: 10px !important;
-}
-.p-treeselect-items-wrapper .p-component{
-  padding: 0px !important;
-}
-
-.p-checkbox-box{
-  border: 1px solid rgb(209, 209, 209) !important;
-}
-.p-multiselect-item span{
-  color: black !important;
-}
-
-.p-multiselect-header .p-multiselect-filter-container .p-multiselect-filter{
-  border-radius: 8px !important;
-  border: 1px solid rgb(206, 206, 206) !important;
-}
-.p-multiselect-close{
+.p-treenode-leaf .p-treenode-content .p-tree-toggler {
   display: none !important;
 }
 
-.p-checkbox .p-checkbox-box{
+.p-inputwrapper {
+  border: 1px solid rgb(207, 207, 207) !important;
+  border-radius: 10px;
+}
+.p-inputtext {
+  border-radius: 10px;
+}
+.p-tree-container {
+  padding: 0px !important;
+}
+.p-tree {
+  padding: 0px;
+}
+.p-treenode {
+  margin-left: 10px !important;
+}
+.p-treeselect-items-wrapper .p-component {
+  padding: 0px !important;
+}
+
+.p-checkbox-box {
+  border: 1px solid rgb(209, 209, 209) !important;
+}
+.p-multiselect-item span {
+  color: black !important;
+}
+
+.p-multiselect-header .p-multiselect-filter-container .p-multiselect-filter {
+  border-radius: 8px !important;
+  border: 1px solid rgb(206, 206, 206) !important;
+}
+.p-multiselect-close {
+  display: none !important;
+}
+
+.p-checkbox .p-checkbox-box {
   border-radius: 50%;
 }
 /* .p-multiselect-items-wrapper .p-multiselect-items{
@@ -149,21 +144,20 @@ border-radius: 10px;
   flex-direction: row;
   gap: 10px !important;
 } */
- .p-radiobutton-box{
+.p-radiobutton-box {
   border: 0.2px solid rgb(197, 197, 197) !important;
- }
+}
 
-.p-multiselect-header{
+.p-multiselect-header {
   display: none !important;
 }
-.p-calendar{
-    height: 40px !important;
+.p-calendar {
+  height: 40px !important;
 }
-.p-treenode-content{
+.p-treenode-content {
   border: none !important;
-  
 }
-.p-treenode-content:focus{
+.p-treenode-content:focus {
   border: none;
 }
 .p-treeselect .p-treeselect-label-container {
@@ -194,7 +188,7 @@ p-treeselect .p-treeview .p-highlight {
 /* .p-datepicker {
   top: 0 !important;
 } */
- .p-tree .p-tree-container .p-treenode:focus > .p-treenode-content {
+.p-tree .p-tree-container .p-treenode:focus > .p-treenode-content {
   box-shadow: none !important;
 }
 input[type="radio"] {
@@ -207,6 +201,7 @@ input[type="radio"] {
   height: 20px; /* Size of the radio button */
   cursor: pointer; /* Pointer cursor on hover */
   position: relative; /* For positioning the inner circle */
+  outline: none; /* Remove default outline */
 }
 
 /* Inner circle styling when radio button is checked */
@@ -214,15 +209,30 @@ input[type="radio"]:checked::before {
   content: ""; /* Necessary for ::before pseudo-element */
   position: absolute; /* Position relative to the radio button */
   top: 50%; /* Center it vertically */
-  left: 50.2%; /* Center it horizontally */
+  left: 50%; /* Center it horizontally */
   width: 12px; /* Size of the inner circle */
-  height: 11px; /* Size of the inner circle */
-  background-color: #ffffff; /* Color of the inner circle */
-  border-radius: 52%; /* Make it round */
+  height: 12px; /* Size of the inner circle */
+  background-color: #e9e9e9; /* Color of the inner circle */
+  border-radius: 50%; /* Make it round */
   transform: translate(-50%, -50%); /* Center the inner circle */
+}
+
+/* Change the radio button background color when checked */
+input[type="radio"]:checked {
+  background-color: #2cc7e6; /* Custom color when checked */
+  border-color: #2cc7e6; /* Optional: match border color */
 }
 
 /* Optional: Add hover effect */
 input[type="radio"]:hover {
   border-color: #a0a0a0; /* Change border color on hover */
+}
+
+/* Remove focus outline when the radio button is focused */
+input[type="radio"]:focus {
+  outline: none;
+  box-shadow: none; /* Remove default focus box-shadow */
+}
+.p-tree .p-tree-container .p-treenode .p-treenode-content.p-highlight {
+  outline: 2px solid #3dd3f1;
 }

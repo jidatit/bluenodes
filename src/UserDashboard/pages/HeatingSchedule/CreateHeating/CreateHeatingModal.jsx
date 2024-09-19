@@ -33,7 +33,7 @@ export function CreateHeatingModal({
 		childSafety: "",
 		minTemp: "",
 		maxTemp: "",
-		applyAlgorithm: "",
+		applyAlgorithm: "Yes",
 	});
 
 	const [errorMessages, setErrorMessages] = useState({
@@ -166,7 +166,8 @@ export function CreateHeatingModal({
 					minTemp: isMinTempDecimal ? errors.TempDecimalNotAllowed : "",
 					maxTemp: isMaxTempDecimal ? errors.TempDecimalNotAllowed : "",
 				}));
-			} else if (minTemp >= maxTemp) {
+			} else if ((minTemp >= maxTemp) && (maxTempStr.length>=2)) {
+				// console.log("acc",maxTempStr.length)
 				// Update error state for maxTemp when cross-validation fails
 				setErrorMessages((prev) => ({
 					...prev,
@@ -555,7 +556,7 @@ export function CreateHeatingModal({
 			childSafety: "",
 			minTemp: "",
 			maxTemp: "",
-			applyAlgorithm: "",
+			applyAlgorithm: "Yes",
 		});
 		setErrorMessages({
 			programName: "",

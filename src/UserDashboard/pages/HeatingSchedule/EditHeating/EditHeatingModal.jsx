@@ -32,7 +32,7 @@ export function EditHeatingModal({
 		childSafety: "",
 		minTemp: "",
 		maxTemp: "",
-		applyAlgorithm: "",
+		applyAlgorithm: "Yes",
 	});
 
 	const { createdHeatingScheduleNames, setCreatedHeatingScheduleNames } =
@@ -56,7 +56,7 @@ export function EditHeatingModal({
 				childSafety: program?.allowDeviceOverride === true ? "No" : "Yes" || "",
 				minTemp: program?.deviceOverrideTemperatureMin + "°C" || "",
 				maxTemp: program?.deviceOverrideTemperatureMax + "°C" || "",
-				applyAlgorithm: "",
+				applyAlgorithm: "Yes",
 			});
 			setFormDataApi(program);
 		}
@@ -179,7 +179,7 @@ export function EditHeatingModal({
 					minTemp: isMinTempDecimal ? errors.TempDecimalNotAllowed : "",
 					maxTemp: isMaxTempDecimal ? errors.TempDecimalNotAllowed : "",
 				}));
-			} else if (minTemp >= maxTemp) {
+			} else if ((minTemp >= maxTemp) && (maxTempStr.length>=2)) {
 				// Update error state for maxTemp when cross-validation fails
 				setErrorMessages((prev) => ({
 					...prev,
@@ -516,7 +516,7 @@ export function EditHeatingModal({
 			childSafety: "",
 			minTemp: "",
 			maxTemp: "",
-			applyAlgorithm: "",
+			applyAlgorithm: "Yes",
 		});
 		setErrorMessages({
 			programName: "",

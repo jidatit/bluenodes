@@ -11,111 +11,80 @@ const getDateRange = (option) => {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are zero-based
     const day = String(date.getDate()).padStart(2, "0");
-
     return `${year}-${month}-${day}`;
   }
   switch (option) {
-    case "Today":
-      // Create a UTC date for today
+    case "Today": {
       let today = new Date(
         Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate())
       );
-
-      // Set startDate to the start of today (00:00:00.000Z)
-      startDate = today.toISOString().split("T")[0] + "T00:00:00.000Z";
-      console.log("startDate:", startDate);
-
-      // Set endDate to the end of today (23:59:59.999Z)
-      endDate = today.toISOString().split("T")[0] + "T23:59:59.999Z";
-      console.log("endDate:", endDate);
-
+      startDate = today.toISOString().slice(0, 10);
+      endDate = today.toISOString().slice(0, 10);
       break;
-
-    case "Yesterday":
-      // Create a UTC date for yesterday by subtracting one day
-      let yesterday = new Date(
+    }
+    case "Yesterday": {
+      let today = new Date(
         Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() - 1)
       );
-
-      // Set startDate to the start of yesterday (00:00:00.000Z)
-      startDate = yesterday.toISOString().split("T")[0] + "T00:00:00.000Z";
-      console.log("startDate:", startDate);
-
-      // Set endDate to the end of yesterday (23:59:59.999Z)
-      endDate = yesterday.toISOString().split("T")[0] + "T23:59:59.999Z";
-      console.log("endDate:", endDate);
-
+      startDate = today.toISOString().slice(0, 10);
+      endDate = today.toISOString().slice(0, 10);
       break;
-    case "Last 7 Days":
+    }
+    case "Last 7 Days": {
       // Get current date (today)
       // Set startDate to 7 days ago
-      console.log("hey");
       startDate = new Date(now);
       startDate.setDate(now.getDate() - 6); // 7 days ago
       startDate.setHours(0, 0, 0, 0); // Start of the day
-
       // Set endDate to yesterday
       endDate = new Date(now);
       endDate.setDate(now.getDate()); // Yesterday
       endDate.setHours(23, 59, 59, 999); // End of the day
-
       // Format the dates to yyyy-mm-dd format
       startDate = formatDateToISO(startDate);
       endDate = formatDateToISO(endDate);
-
       break;
-
-    case "Last 30 days":
+    }
+    case "Last 30 days": {
       // Set startDate to 30 days ago
       startDate = new Date(now);
       startDate.setDate(now.getDate() - 30); // 30 days ago
       startDate.setHours(0, 0, 0, 0); // Start of the day
-
       // Set endDate to the current day
       endDate = new Date(now);
       startDate.setDate(now.getDate());
       endDate.setHours(23, 59, 59, 999); // End of the day
-
       // Format startDate and endDate
       startDate = formatDateToISO(startDate);
       endDate = formatDateToISO(endDate);
-
-      console.log("startDate:", startDate);
-      console.log("endDate:", endDate);
-
+      // console.log("startDate:", startDate);
+      // console.log("endDate:", endDate);
       break;
-
-    case "Last Year":
+    }
+    case "Last Year": {
       // Set startDate to the same day last year
       startDate = new Date(now);
       startDate.setFullYear(now.getFullYear() - 1); // Last year
       startDate.setHours(0, 0, 0, 0); // Start of the day
-
       // Set endDate to the same day of the current year
       endDate = new Date(now);
       endDate.setFullYear(now.getFullYear()); // Last year
       endDate.setHours(23, 59, 59, 999); // End of the day
-
       // Format startDate and endDate
       startDate = formatDateToISO(startDate);
       endDate = formatDateToISO(endDate);
-
-      console.log("startDate:", startDate);
-      console.log("endDate:", endDate);
-
+      // console.log("startDate:", startDate);
+      // console.log("endDate:", endDate);
       break;
-
-    case "AllDates":
+    }
+    /*case "AllDates":
       // Set an arbitrary far past and future date
       startDate = new Date(1900, 0, 1); // January 1, 1900
       endDate = new Date(2100, 11, 31); // December 31, 2100
-
       // Format startDate and endDate
       startDate = formatDateToISO(startDate); // Assign formatted startDate
       endDate = formatDateToISO(endDate); // Assign formatted endDate
-
-      break;
-
+      break;*/
     default:
       startDate = new Date(now);
       startDate.setDate(now.getDate() - 1); // Default to include the previous day
@@ -123,27 +92,30 @@ const getDateRange = (option) => {
       endDate.setDate(endDate.getDate() + 1); // Default to include the next day
       break;
   }
-
   return [startDate, endDate];
 };
 const DateFilter = ({
   dateRef,
+  dates,
+  setDates,
   onDatesChange,
   closeDropdown,
   setCloseDateFilter,
   setApiLocationsToBeSend,
   selectedLocationFilter,
+  setSubDropdownValue,
+  subDropdownValue,
+  setSelectedDropdownOption,
+  selectedDropdownOption,
+  dropDownValue,
+  setDropDownValue,
 }) => {
   const [selectedOption, setSelectedOption] = useState("Schnellauswahl");
   const [showCalendar, setShowCalendar] = useState(false);
-  const [subDropdownValue, setSubDropdownValue] = useState(null);
-  const [dates, setDates] = useState(null);
 
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [selectedDropdownOption, setSelectedDropdownOption] =
-    useState("Schnellauswahl");
-  const [subDropdownOpen, setSubDropdownOpen] = useState(false);
 
+  const [subDropdownOpen, setSubDropdownOpen] = useState(false);
   const subDropdownOptions = [
     { key: "Today", label: "Today", germanLabel: "Heute" },
     { key: "Yesterday", label: "Yesterday", germanLabel: "Gestern" },
@@ -158,35 +130,29 @@ const DateFilter = ({
       setShowCalendar(false);
     }
   }, [closeDropdown]);
+
+  const handleBestim = () => {
+    setDropDownValue("Bestimmter Datumsbereich");
+  };
   const toggleDropdown = () => {
-    if (dropdownOpen === false) {
-      if (selectedLocationFilter === 0) {
-        setApiLocationsToBeSend(null);
-      }
-
-      setDropdownOpen(true);
-      setSubDropdownOpen(false);
-      setCloseDateFilter(false);
-      if (selectedDropdownOption === "Schnellauswahl") {
-        setSubDropdownOpen(true);
-      } else if (selectedDropdownOption === "Bestimmter Datumsbereich") {
-        setShowCalendar(true);
-      }
-    } else {
-      setDropdownOpen(false);
-
-      setSubDropdownOpen(false);
-      setShowCalendar(false);
+    if (selectedLocationFilter === 0) {
+      setApiLocationsToBeSend(null);
+    }
+    setDropdownOpen(true);
+    setSubDropdownOpen(false);
+    setCloseDateFilter(false);
+    if (selectedDropdownOption === "Schnellauswahl") {
+      setSubDropdownOpen(true);
+    } else if (selectedDropdownOption === "Bestimmter Datumsbereich") {
+      setShowCalendar(true);
     }
   };
-
   const handleDropdownChange = (event) => {
     const selectedValue = event.target.value;
     setSelectedDropdownOption(selectedValue);
-
     setDropdownOpen(true);
-
     if (selectedValue === "Schnellauswahl") {
+      setDropDownValue(selectedValue);
       setSubDropdownOpen(true);
       setShowCalendar(false);
       setDates(null); // Reset dates for the specific date range
@@ -196,28 +162,25 @@ const DateFilter = ({
       setSubDropdownValue(null); // Reset sub-dropdown value
       setDates(null); // Ensure dates are reset
     }
-
     setSelectedOption(selectedValue);
   };
-
   const handleSubDropdownChange = (e) => {
     const value = e.target.value;
     setSubDropdownValue(value);
-
     const [startDate, endDate] = getDateRange(value);
     setDates([startDate, endDate]);
     onDatesChange([startDate, endDate]);
-
     // Update the main dropdown with the German label of the selected sub-option
     const selectedGermanLabel = subDropdownOptions.find(
       (option) => option.label === value
     )?.germanLabel;
-    setSelectedDropdownOption(selectedGermanLabel || "Schnellauswahl");
-  };
 
+    setDropDownValue(selectedGermanLabel || "Schnellauswahl");
+  };
   const handleCalendarChange = (e) => {
     if (e.value) {
       const formattedDates = e.value.map((date) => {
+        if (!date) return null; // Handle null dates
         const d = new Date(date);
         // Format as 'yyyy-MM-dd'
         const year = d.getFullYear();
@@ -225,25 +188,32 @@ const DateFilter = ({
         const day = String(d.getDate()).padStart(2, "0");
         return `${year}-${month}-${day}`;
       });
-      setSelectedDropdownOption(`${formattedDates[0]}, ${formattedDates[1]}`);
+      if (formattedDates[1]) {
+        setDropDownValue(`${formattedDates[0]} - ${formattedDates[1]}`);
+      } else {
+        setDropDownValue(`${formattedDates[0]}`);
+      }
+
+      // console.log(e.value);
       setDates(e.value);
-      onDatesChange(e.value); // Notify parent component
+      onDatesChange(formattedDates); // Notify parent component
     } else {
       setDates(null); // Reset or handle accordingly
     }
   };
-
   const clearFilter = () => {
     setDropdownOpen(false);
     setSubDropdownOpen(false);
     setCloseDateFilter(false);
     setSelectedDropdownOption("Schnellauswahl");
+    setDropDownValue("Schnellauswahl");
     setShowCalendar(false);
     setSubDropdownValue(null);
     let startDate = null,
       endDate = null;
     setDates(startDate, endDate);
     onDatesChange(startDate, endDate);
+    
   };
   return (
     <div
@@ -256,43 +226,22 @@ const DateFilter = ({
             onClick={toggleDropdown}
             className="flex justify-between text-gray-500 items-center text-[1rem] w-40 min-w-72 px-4 py-[0.623rem] bg-white border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
-            {selectedDropdownOption}
+            {dropDownValue}
             <span className="ml-2">
               <MdOutlineKeyboardArrowDown size={29} className="text-gray-400" />
             </span>{" "}
             {/* Down arrow */}
           </button>
-          {dropdownOpen && (
+          {(dates || (subDropdownValue && subDropdownValue.length > 0)) && (
             <button
-              className="bg-red-500 px-2 py-2 h-[34%] mt-1.5 text-white shadow-lg rounded-lg"
+              className="text-xl text-red-500 rounded-lg"
               onClick={clearFilter}
             >
-              <Tooltip
-                content={"remove Filter"}
-                style="light"
-                className="-mt-12 ml-24 bg-white shadow-lg"
-              >
-                <CiCircleRemove size={22} />
-              </Tooltip>
+              <CiCircleRemove size={36} />
             </button>
           )}
         </div>
-        <div className=" flex flex-col gap-2 absolute top-14 ">
-          {dropdownOpen && (
-            <button
-              className="bg-red-500 px-2 py-2 h-[34%] mt-1.5 text-white shadow-lg rounded-lg"
-              onClick={clearFilter}
-            >
-              <Tooltip
-                content={"remove Filter"}
-                style="light"
-                className="-mt-12 ml-24 bg-white shadow-lg"
-              >
-                <CiCircleRemove size={22} />
-              </Tooltip>
-            </button>
-          )}
-        </div>
+
         <div className=" flex flex-col gap-2 absolute top-14 ">
           {dropdownOpen && (
             <div className=" mt-2 py-2 bg-[#ffffff] border border-gray-300 rounded-md shadow-lg w-[28rem] z-20">
@@ -318,7 +267,10 @@ const DateFilter = ({
                     Schnellauswahl
                   </label>
                 </div>
-                <div className="flex items-center justify-center">
+                <div
+                  className="flex items-center justify-center"
+                  onClick={handleBestim}
+                >
                   <input
                     type="radio"
                     name="dateFilter"
@@ -330,7 +282,6 @@ const DateFilter = ({
                       selectedDropdownOption === "Bestimmter Datumsbereich"
                     }
                   />
-
                   <label htmlFor="Bestimmter Datumsbereich" className="ml-2">
                     Bestimmter Datumsbereich
                   </label>
@@ -358,12 +309,8 @@ const DateFilter = ({
               ))}
             </div>
           )}
-
           {showCalendar && (
-            <div
-              className=" p-6 ccc relative shadow-lg bg-white w-[23rem] rounded-lg border z-50"
-              // ref={dateRef}
-            >
+            <div className=" p-6 ccc relative shadow-lg bg-white w-[23rem] rounded-lg border z-50">
               <Calendar
                 // dateRef={dateRef}
                 value={dates}
@@ -382,5 +329,4 @@ const DateFilter = ({
     </div>
   );
 };
-
 export default DateFilter;

@@ -184,7 +184,7 @@ function GeneralInformation({
 					)}
 
 					{/* Apply algorithm? */}
-					<div>
+					{/* <div>
 						<div className="mb-2 flex items-center gap-2">
 							<Label
 								className=" text-sm text-gray-900"
@@ -240,7 +240,7 @@ function GeneralInformation({
 								{errorMessages.applyAlgorithm}
 							</div>
 						)}
-					</div>
+					</div> */}
 				</div>
 			</form>
 		</div>

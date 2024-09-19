@@ -23,6 +23,7 @@ import axios from "axios";
 import { TreeSelect } from "primereact/treeselect";
 import DateFilter from "./dateFilter/DateFilter";
 import formatTimestamp from "../../../../utils/formatTimeStamp";
+import { CiCircleRemove } from "react-icons/ci";
 
 const getBatteryImage = (battery_level) => {
   const level = battery_level;
@@ -46,7 +47,7 @@ const OfflineTable = () => {
   const [apiLocationsToBeSendCounter, setApiLocationsToBeSendCounter] =
     useState(null);
   const [selectedLocationFilter, setSelectedLocationFilter] = useState(0);
-
+  const [buildingOpen, setBuildingOpen] = useState(false);
   const [closeDateFilter, setCloseDateFilter] = useState(false);
   const dateFilterRef = useRef(null);
   const [floors, setFloors] = useState([]);
@@ -75,6 +76,22 @@ const OfflineTable = () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [dateFilterRef]);
+  const clearBuildingFilter = () => {
+    setSelectedKeys([]);
+    setBuildingOpen(false);
+    setApiLocationsToBeSend(null);
+    setSelectedRoomIds([]);
+  };
+  const openBuildingFilter = () => {
+    if (buildingOpen === false) {
+      setBuildingOpen(true);
+    }
+  };
+  const hideBuildingFilter = () => {
+    if (buildingOpen === true) {
+      setBuildingOpen(false);
+    }
+  };
   const transformData = (nodes) => {
     return nodes.map((node) => {
       const key =
@@ -303,7 +320,6 @@ const OfflineTable = () => {
 
       setTotalRows(data.count);
       setTableData(data.rows);
-      console.log(data.rows);
     } catch (error) {
       console.log(error);
     }
@@ -356,7 +372,6 @@ const OfflineTable = () => {
 
   const handleDatesChange = (newDates) => {
     if (!newDates || !newDates[0]) {
-      console.log("cleared");
       setdateFrom(null);
       setdateTo(null);
       return;
@@ -403,6 +418,21 @@ const OfflineTable = () => {
   const handleNodeToggle = (e) => {
     setExpandedKeys(e.value); // Update expanded keys state
   };
+
+  // Define the function outside of the JSX
+  const getBatteryLevelText = (batteryLevel) => {
+    switch (batteryLevel) {
+      case "low":
+        return "Niedrig";
+      case "medium":
+        return "Mittel";
+      case "high":
+        return "Hoch";
+      default:
+        return "Undefined";
+    }
+  };
+
   return (
     <div className=" flex flex-col gap-4 w-full">
       <div className="flex flex-col justify-center items-start w-full">
@@ -416,6 +446,8 @@ const OfflineTable = () => {
               value={selectedKeys}
               options={filteredLocations}
               onChange={onNodeSelectChange}
+              onShow={openBuildingFilter}
+              onHide={hideBuildingFilter}
               onClick={handleTreeSelectClick}
               expandedKeys={expandedKeys} // Use expandedKeys to manage expanded nodes
               onToggle={handleNodeToggle} // Handle node expand/collapse event
@@ -474,6 +506,14 @@ const OfflineTable = () => {
                 </div>
               )}
             />
+            {Object.keys(selectedKeys).length > 0 && (
+              <button
+                className="text-xl text-red-500 rounded-lg"
+                onClick={clearBuildingFilter}
+              >
+                <CiCircleRemove size={36} />
+              </button>
+            )}
             {/* <MultiSelect value={selectedEventFilters} onChange={(e) => setSelectedEventFilters(e.value)} showSelectAll={false} options={eventFilterOptions} optionLabel="name"
                             filter placeholder="All Events" display="chip" className="w-full md:w-20rem" />
 
@@ -525,10 +565,7 @@ const OfflineTable = () => {
                   <td className="px-4 py-4 truncate">
                     <Tooltip
                       className="p-3"
-                      content={`${
-                        item?.batteryLevel.charAt(0).toUpperCase() +
-                        item?.batteryLevel.slice(1)
-                      }`}
+                      content={getBatteryLevelText(item?.batteryLevel)}
                       style="light"
                       animation="duration-500"
                     >
