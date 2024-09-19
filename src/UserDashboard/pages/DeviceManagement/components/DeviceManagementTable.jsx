@@ -158,7 +158,7 @@ const DeviceManagementTable = () => {
   };
   const clearAllFilters = () => {
     setSelectedKeys([]);
-
+    setSelectedRoomIds([]);
     setApiLocationsToBeSend(null);
     setBatteryLevel(null);
     setStatus(null);
