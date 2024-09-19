@@ -320,7 +320,6 @@ const OfflineTable = () => {
 
       setTotalRows(data.count);
       setTableData(data.rows);
-      console.log(data.rows);
     } catch (error) {
       console.log(error);
     }
@@ -373,7 +372,6 @@ const OfflineTable = () => {
 
   const handleDatesChange = (newDates) => {
     if (!newDates || !newDates[0]) {
-      console.log("cleared");
       setdateFrom(null);
       setdateTo(null);
       return;

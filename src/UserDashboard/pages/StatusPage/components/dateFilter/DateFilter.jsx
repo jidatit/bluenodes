@@ -57,8 +57,8 @@ const getDateRange = (option) => {
       // Format startDate and endDate
       startDate = formatDateToISO(startDate);
       endDate = formatDateToISO(endDate);
-      console.log("startDate:", startDate);
-      console.log("endDate:", endDate);
+      // console.log("startDate:", startDate);
+      // console.log("endDate:", endDate);
       break;
     }
     case "Last Year": {
@@ -73,8 +73,8 @@ const getDateRange = (option) => {
       // Format startDate and endDate
       startDate = formatDateToISO(startDate);
       endDate = formatDateToISO(endDate);
-      console.log("startDate:", startDate);
-      console.log("endDate:", endDate);
+      // console.log("startDate:", startDate);
+      // console.log("endDate:", endDate);
       break;
     }
     /*case "AllDates":
@@ -180,6 +180,7 @@ const DateFilter = ({
   const handleCalendarChange = (e) => {
     if (e.value) {
       const formattedDates = e.value.map((date) => {
+        if (!date) return null; // Handle null dates
         const d = new Date(date);
         // Format as 'yyyy-MM-dd'
         const year = d.getFullYear();
@@ -187,8 +188,13 @@ const DateFilter = ({
         const day = String(d.getDate()).padStart(2, "0");
         return `${year}-${month}-${day}`;
       });
+      if (formattedDates[1]) {
+        setDropDownValue(`${formattedDates[0]} - ${formattedDates[1]}`);
+      } else {
+        setDropDownValue(`${formattedDates[0]}`);
+      }
 
-      setDropDownValue(`${formattedDates[0]} - ${formattedDates[1]}`);
+      // console.log(e.value);
       setDates(e.value);
       onDatesChange(formattedDates); // Notify parent component
     } else {

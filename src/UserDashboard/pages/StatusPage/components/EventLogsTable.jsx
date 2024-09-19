@@ -380,7 +380,6 @@ const EventLogsTable = () => {
   // };
 
   const handleDatesChange = (newDates) => {
-    console.log(newDates);
     if (!newDates || !newDates[0]) {
       setdateFrom(null);
       setdateTo(null);
@@ -599,65 +598,66 @@ const EventLogsTable = () => {
               </th>
             </tr>
           </thead>
-          <tbody>
             {tableData.length > 0 &&
-              tableData.map((item, index) => (
-                <tr
-                  key={index}
-                  className="text-sm bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
-                >
-                  <td className="px-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white w-[9%]">
-                    {item.id ? item.id : "-"}
-                  </td>
-                  <td className="px-4 py-4 font-medium text-gray-900 break-words dark:text-white w-[15%]">
-                    {item.roomName ? item.roomName : "-"}{" "}
-                    {/* <span className="text-[10px] py-0.5 px-2.5 font-semibold bg-gray-100 rounded-[80px] p-1">
-                      {item.roomTag ? item.roomTag : "-"}
-                    </span> */}
-                  </td>
-                  <td className="px-4 py-4 w-[16%]">
-                    {item.building_floor_string ? (
-                      <>
-                        {item.building_floor_string.split(" - ")[0] + "-"}
-                        <br />
-                        {item.building_floor_string.split(" - ")[1]}
-                      </>
-                    ) : (
-                      "-"
-                    )}
-                  </td>
-                  <td className="px-4 py-4 w-[13%]">
-                    {item.createdAt ? formatTimestamp(item.createdAt) : "-"}
-                  </td>
-                  <td className="px-4 py-4 w-[15%]">
-                    <div className="flex items-center gap-x-2">
-                      <Tooltip
-                        content={getEventTypeText(item.eventTypeLevel)}
-                        style="light"
-                      >
-                        {item.eventTypeLevel === "Information" ? (
-                          <FaCircleInfo />
-                        ) : item.eventTypeLevel === "Warning" ? (
-                          <RiErrorWarningFill className="text-yellow-500" />
-                        ) : item.eventTypeLevel === "Behoben" ? (
-                          <FaCircleCheck className="text-green-600" />
+              <tbody>
+                  {tableData.map((item, index) => (
+                    <tr
+                      key={index}
+                      className="text-sm bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
+                    >
+                      <td className="px-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white w-[9%]">
+                        {item.id ? item.id : "-"}
+                      </td>
+                      <td className="px-4 py-4 font-medium text-gray-900 break-words dark:text-white w-[15%]">
+                        {item.roomName ? item.roomName : "-"}{" "}
+                        {/* <span className="text-[10px] py-0.5 px-2.5 font-semibold bg-gray-100 rounded-[80px] p-1">
+                          {item.roomTag ? item.roomTag : "-"}
+                        </span> */}
+                      </td>
+                      <td className="px-4 py-4 w-[16%]">
+                        {item.building_floor_string ? (
+                          <>
+                            {item.building_floor_string.split(" - ")[0] + "-"}
+                            <br />
+                            {item.building_floor_string.split(" - ")[1]}
+                          </>
                         ) : (
-                          <IoIosWarning className="text-red-700" />
+                          "-"
                         )}
-                      </Tooltip>
-                      <span className="text-sm">
-                        {item.eventTypeMessage ? item.eventTypeMessage : "-"}
-                      </span>
-                    </div>
-                  </td>
-                  <td className="px-4 py-4 w-[26%]">
-                    <Tooltip content={item.message} style="light">
-                      {item.message ? `${item.message}` : "-"}
-                    </Tooltip>
-                  </td>
-                </tr>
-              ))}
-          </tbody>
+                      </td>
+                      <td className="px-4 py-4 w-[13%]">
+                        {item.createdAt ? formatTimestamp(item.createdAt) : "-"}
+                      </td>
+                      <td className="px-4 py-4 w-[15%]">
+                        <div className="flex items-center gap-x-2">
+                          <Tooltip
+                            content={getEventTypeText(item.eventTypeLevel)}
+                            style="light"
+                          >
+                            {item.eventTypeLevel === "Information" ? (
+                              <FaCircleInfo />
+                            ) : item.eventTypeLevel === "Warning" ? (
+                              <RiErrorWarningFill className="text-yellow-500" />
+                            ) : item.eventTypeLevel === "Behoben" ? (
+                              <FaCircleCheck className="text-green-600" />
+                            ) : (
+                              <IoIosWarning className="text-red-700" />
+                            )}
+                          </Tooltip>
+                          <span className="text-sm">
+                            {item.eventTypeMessage ? item.eventTypeMessage : "-"}
+                          </span>
+                        </div>
+                      </td>
+                      <td className="px-4 py-4 w-[26%]">
+                        <Tooltip content={item.message} style="light">
+                          {item.message ? `${item.message}` : "-"}
+                        </Tooltip>
+                      </td>
+                    </tr>
+                  ))}
+              </tbody>
+            }
         </table>
 
         {tableData.length === 0 && (

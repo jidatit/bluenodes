@@ -361,7 +361,6 @@ const UnassignedTable = ({ assignUpdate }) => {
   };
 
   const handleDatesChange = (newDates) => {
-    console.log(newDates);
     if (!newDates || !newDates[0]) {
       setdateFrom(null);
       setdateTo(null);

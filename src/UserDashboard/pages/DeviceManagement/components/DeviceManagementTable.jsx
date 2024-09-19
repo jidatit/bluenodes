@@ -1174,7 +1174,7 @@ const DeviceManagementTable = () => {
                             </div>
                             <div
                               className={`flex flex-col items-start justify-start gap-2 ${
-                                deviceData.valvePositionInProcent
+                                deviceData.valvePositionInPercent
                                   ? "opacity-100"
                                   : "opacity-0"
                               }`}
@@ -1185,7 +1185,7 @@ const DeviceManagementTable = () => {
                               />
                               <h2> Ventilöffnung in % </h2>
                               <h1 className="text-base font-medium text-black">
-                                {`${deviceData.valvePositionInProcent}%` ||
+                                {`${deviceData.valvePositionInPercent}%` ||
                                   "--"}
                               </h1>
                               {/* <h2> Valve Position in Steps </h2>
