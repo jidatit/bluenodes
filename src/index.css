@@ -235,4 +235,5 @@ input[type="radio"]:focus {
 }
 .p-tree .p-tree-container .p-treenode .p-treenode-content.p-highlight {
   outline: 2px solid #3dd3f1;
+  margin-top: 7px !important;
 }
