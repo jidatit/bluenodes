@@ -178,10 +178,6 @@ const DateFilter = ({
     setDropDownValue(selectedGermanLabel || "Schnellauswahl");
   };
 
-  function replaceHyphensWithDots(str) {
-    return str.replace(/-/g, '.');
-  }
-
   const handleCalendarChange = (e) => {
     if (e.value) {
       const formattedDates = e.value.map((date) => {
@@ -191,12 +187,25 @@ const DateFilter = ({
         const year = d.getFullYear();
         const month = String(d.getMonth() + 1).padStart(2, "0"); // Months are zero-based
         const day = String(d.getDate()).padStart(2, "0");
-        return `${day}-${month}-${year}`;
+
+        return `${year}-${month}-${day}`;
       });
-      if (formattedDates[1]) {
-        setDropDownValue(`${replaceHyphensWithDots(formattedDates[0])} - ${replaceHyphensWithDots(formattedDates[1])}`);
+      const formattedDropDownDates = e.value.map((date) => {
+        if (!date) return null; // Handle null dates
+        const d = new Date(date);
+        // Format as 'yyyy-MM-dd'
+        const year = d.getFullYear();
+        const month = String(d.getMonth() + 1).padStart(2, "0"); // Months are zero-based
+        const day = String(d.getDate()).padStart(2, "0");
+
+        return `${day}.${month}.${year}`;
+      });
+      if (formattedDropDownDates[1]) {
+        setDropDownValue(
+          `${formattedDropDownDates[0]} - ${formattedDropDownDates[1]}`
+        );
       } else {
-        setDropDownValue(`${replaceHyphensWithDots(formattedDates[0])}`);
+        setDropDownValue(`${formattedDropDownDates[0]}`);
       }
 
       // console.log(e.value);
