@@ -1152,12 +1152,6 @@ const ConfirmReplaceModal = ({ show, onClose, onConfirm }) => {
 				></button>
 			</Modal.Header>
 			<Modal.Body className="text-[#6B7280]">
-				/*
-				<p>
-					Das Ersetzen des Programms wird alle Informationen des vorherigen
-					Programms entfernen.
-				</p>
-				*/
 				<p className="mt-2">Sind Sie sicher, dass Sie fortfahren möchten?</p>
 			</Modal.Body>
 			<Modal.Footer>

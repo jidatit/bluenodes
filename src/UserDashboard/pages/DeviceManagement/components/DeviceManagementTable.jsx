@@ -770,7 +770,7 @@ const DeviceManagementTable = () => {
                   onClick={clearBatteryFilter}
                 >
                   <Tooltip
-                    content={"remove Filter"}
+                    content={"Filter entfernen"}
                     style="light"
                     className="-mt-12 ml-24"
                   >
@@ -787,11 +787,11 @@ const DeviceManagementTable = () => {
                 onClick={clearAllFilters}
               >
                 <Tooltip
-                  content={"remove Filter"}
+                  content={"Filter entfernen"}
                   style="light"
-                  className="ml-24 bg-white shadow-lg"
+                  className="-mt-12 ml-24"
                 >
-                  Reset All
+                  Alle zurücksetzen
                 </Tooltip>
               </button>
             )}
@@ -806,7 +806,7 @@ const DeviceManagementTable = () => {
               <th scope="col" className="p-4">
                 ID
               </th>
-              <th scope="col" className="p-4">
+              <th scope="col" className="p-4" style={{ width: "200px" }}>
                 GERÄTENAME
               </th>
               <th scope="col" className="p-4">

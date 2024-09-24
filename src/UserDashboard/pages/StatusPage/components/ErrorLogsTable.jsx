@@ -563,7 +563,7 @@ const ErrorLogsTable = () => {
                 className="bg-red-500 px-3 py-3 h-[34%] text-white shadow-lg rounded-lg"
                 onClick={clearAllFilters}
               >
-                Reset All
+                Alle zurücksetzen
               </button>
             )}
           </div>
