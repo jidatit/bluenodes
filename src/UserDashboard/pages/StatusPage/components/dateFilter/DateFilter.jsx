@@ -177,6 +177,11 @@ const DateFilter = ({
 
     setDropDownValue(selectedGermanLabel || "Schnellauswahl");
   };
+
+  function replaceHyphensWithDots(str) {
+    return str.replace(/-/g, '.');
+  }
+
   const handleCalendarChange = (e) => {
     if (e.value) {
       const formattedDates = e.value.map((date) => {
@@ -189,9 +194,9 @@ const DateFilter = ({
         return `${day}-${month}-${year}`;
       });
       if (formattedDates[1]) {
-        setDropDownValue(`${formattedDates[0]} - ${formattedDates[1]}`);
+        setDropDownValue(`${replaceHyphensWithDots(formattedDates[0])} - ${replaceHyphensWithDots(formattedDates[1])}`);
       } else {
-        setDropDownValue(`${formattedDates[0]}`);
+        setDropDownValue(`${replaceHyphensWithDots(formattedDates[0])}`);
       }
 
       // console.log(e.value);
@@ -201,6 +206,7 @@ const DateFilter = ({
       setDates(null); // Reset or handle accordingly
     }
   };
+
   const clearFilter = () => {
     setDropdownOpen(false);
     setSubDropdownOpen(false);

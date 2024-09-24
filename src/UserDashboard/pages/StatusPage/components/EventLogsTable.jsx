@@ -617,7 +617,7 @@ const EventLogsTable = () => {
                   <td className="px-4 py-4 w-[16%]">
                     {item.building_floor_string ? (
                       <>
-                        {item.building_floor_string.split(" - ")[0] + "-"}
+                        {item.building_floor_string.split(" - ")[0] + " - "}
                         <br />
                         {item.building_floor_string.split(" - ")[1]}
                       </>

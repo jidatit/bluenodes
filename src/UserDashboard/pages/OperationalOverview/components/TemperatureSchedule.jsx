@@ -588,7 +588,7 @@ const TemperatureSchedule = ({
 												key={`separator-parent-${index}`}
 												style={{
 													width: `calc(${parseTimeToPercentage(element.to) -
-														parseTimeToPercentage(element.from)}% - 0.35rem)`,
+														parseTimeToPercentage(element.from)}% - 0.3rem)`,
 												}}
 												className="flex justify-start relative"
 											>
