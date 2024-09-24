@@ -542,9 +542,9 @@ function AssignRoomsModal({
 																					/>
 																				</Table.HeadCell>
 																				<Table.HeadCell>Räume</Table.HeadCell>
-																				<Table.HeadCell>
+																				{/* <Table.HeadCell>
 																					Algorithmus
-																				</Table.HeadCell>
+																				</Table.HeadCell> */}
 																				<Table.HeadCell>
 																					Aktiver Heizplan
 																				</Table.HeadCell>
@@ -578,13 +578,13 @@ function AssignRoomsModal({
 																									{room.type}
 																								</span>
 																							</Table.Cell>
-																							<Table.Cell className=" text-green-700 text-xl">
+																							{/* <Table.Cell className=" text-green-700 text-xl">
 																								{room.algorithmOn ? (
 																									<FaCheck />
 																								) : (
 																									""
 																								)}
-																							</Table.Cell>
+																							</Table.Cell> */}
 																							<Table.Cell>
 																								{room.programAssigned ? (
 																									<span className=" text-primary">
@@ -675,9 +675,9 @@ function AssignRoomsModal({
 																						/>
 																					</Table.HeadCell>
 																					<Table.HeadCell>Räume</Table.HeadCell>
-																					<Table.HeadCell>
+																					{/* <Table.HeadCell>
 																						Algorithmus
-																					</Table.HeadCell>
+																					</Table.HeadCell> */}
 																					<Table.HeadCell>
 																						Aktiver Heizplan
 																					</Table.HeadCell>
@@ -711,13 +711,13 @@ function AssignRoomsModal({
 																										{room.type}
 																									</span>
 																								</Table.Cell>
-																								<Table.Cell className=" text-green-700 text-xl">
+																								{/* <Table.Cell className=" text-green-700 text-xl">
 																									{room.algorithmOn ? (
 																										<FaCheck />
 																									) : (
 																										""
 																									)}
-																								</Table.Cell>
+																								</Table.Cell> */}
 																								<Table.Cell>
 																									{room.programAssigned ? (
 																										<span className=" text-primary">

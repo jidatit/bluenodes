@@ -769,32 +769,32 @@ const DeviceManagementTable = () => {
                   className="text-xl text-red-500 shadow-lg rounded-lg"
                   onClick={clearBatteryFilter}
                 >
-                  <Tooltip
+                  {/* <Tooltip
                     content={"Filter entfernen"}
                     style="light"
                     className="-mt-12 ml-24"
-                  >
-                    <CiCircleRemove size={36} />
-                  </Tooltip>
+                  > */}
+                  <CiCircleRemove size={36} />
+                  {/* </Tooltip> */}
                 </button>
               )}
             </div>
             {(selectedStatusFilter ||
               Object.keys(selectedKeys).length > 0 ||
               (selectedBatteryLevels && selectedBatteryLevels.length > 0)) && (
-              <button
-                className="bg-red-500 px-3 py-3 h-[34%] text-white shadow-lg rounded-lg"
-                onClick={clearAllFilters}
-              >
-                <Tooltip
-                  content={"Filter entfernen"}
-                  style="light"
-                  className="-mt-12 ml-24"
+                <button
+                  className="bg-red-500 px-2 text-[11px] py-3 h-[34%] text-white shadow-lg rounded-lg"
+                  onClick={clearAllFilters}
                 >
+                  {/* <Tooltip
+                    content={"Filter entfernen"}
+                    style="light"
+                    className="-mt-12 ml-24"
+                  > */}
                   Alle zurücksetzen
-                </Tooltip>
-              </button>
-            )}
+                  {/* </Tooltip> */}
+                </button>
+              )}
           </div>
           {/* Search bar */}
         </div>
@@ -849,73 +849,68 @@ const DeviceManagementTable = () => {
                       {item?.devEui}
                     </td>
 
-                    <td className="relative px-4 py-4 truncate">
+                    <td className="flex items-center justify-between h-[92px] px-4 py-4 truncate">
                       {editMode && editingItemId === item?.id ? (
-                        <TextInput
-                          type="text"
-                          value={editedName}
-                          onChange={handleInputChange}
-                          className="w-[68%]"
-                          sizing="sm"
-                        />
+                        <>
+                          <TextInput
+                            type="text"
+                            value={editedName}
+                            onChange={handleInputChange}
+                            className="w-[68%] mr-2"
+                            sizing="sm"
+                          />
+                          <div className="flex items-center gap-2">
+                            <button
+                              onClick={handleCancel}
+                              className="p-1 text-red-700 hover:bg-gray-300 hover:shadow-md hover:rounded-md"
+                            >
+                              <Tooltip
+                                placement="top" // Tooltip will now display on top
+                                content="Abbrechen"
+                                style="light"
+                                animation="duration-500"
+                              >
+                                <ImCancelCircle className="w-4 h-4" />
+                              </Tooltip>
+                            </button>
+                            <button
+                              onClick={() => handleSave(item?.id)}
+                              className="p-1 text-green-800 hover:bg-gray-300 hover:shadow-md hover:rounded-md"
+                            >
+                              <Tooltip
+                                placement="top" // Tooltip will now display on top
+                                content="Speichern"
+                                style="light"
+                                animation="duration-500"
+                              >
+                                <FaCheck className="w-4 h-4" />
+                              </Tooltip>
+                            </button>
+                          </div>
+                        </>
                       ) : (
                         <>
-                          {item?.deviceName &&
-                          item.deviceName.toString().length > 20 ? (
+                          {item?.deviceName && item.deviceName.toString().length > 20 ? (
                             <>
-                              {item.deviceName.toString().slice(0, 20)}{" "}
-                              <span>...</span>
+                              {item.deviceName.toString().slice(0, 25)} <span>...</span>
                             </>
                           ) : (
-                            <>
-                              <p className="pr-1">{item.deviceName}</p>
-                            </>
+                            <p className="pr-1">{item.deviceName}</p>
                           )}
+                          <Tooltip
+                            placement="top" // Tooltip will display on top
+                            content="Name bearbeiten"
+                            style="light"
+                            animation="duration-500"
+                          >
+                            <FaEdit
+                              onClick={() => {
+                                handleEditClick(item?.id);
+                              }}
+                              className="cursor-pointer ml-2 p-1 hover:rounded-md hover:shadow-md hover:bg-gray-300 w-5 h-5"
+                            />
+                          </Tooltip>
                         </>
-                      )}
-                      {editMode && editingItemId === item?.id ? (
-                        <div className="absolute top-1/2 transform -translate-y-1/2 right-2 flex gap-[2px]">
-                          <button
-                            onClick={handleCancel}
-                            className="p-1 text-red-700 hover:bg-gray-300 hover:shadow-md hover:rounded-md"
-                          >
-                            <Tooltip
-                              placement="left"
-                              content={"Abbrechen"}
-                              style="light"
-                              animation="duration-500"
-                            >
-                              <ImCancelCircle className="w-4 h-4" />
-                            </Tooltip>
-                          </button>
-                          <button
-                            onClick={() => handleSave(item?.id)}
-                            className="p-1 text-green-800  hover:bg-gray-300 hover:shadow-md hover:rounded-md"
-                          >
-                            <Tooltip
-                              placement="left"
-                              content={"Speichern"}
-                              style="light"
-                              animation="duration-500"
-                            >
-                              <FaCheck className="w-4 h-4" />
-                            </Tooltip>
-                          </button>
-                        </div>
-                      ) : (
-                        <Tooltip
-                          placement="left"
-                          content={"Name bearbeiten"}
-                          style="light"
-                          animation="duration-500"
-                        >
-                          <FaEdit
-                            onClick={() => {
-                              handleEditClick(item?.id);
-                            }}
-                            className="absolute p-[2px] hover:rounded-md hover:shadow-md hover:bg-gray-300 w-5 h-5 top-1/2 bottom-1/2 right-0 transform -translate-y-1/2"
-                          />
-                        </Tooltip>
                       )}
                     </td>
 
@@ -949,11 +944,10 @@ const DeviceManagementTable = () => {
                     </td>
                     <td className="px-4 py-4 truncate">
                       <div
-                        className={`py-0.5 px-2.5 rounded-md flex items-center justify-center gap-1 w-fit ${
-                          item.status === "online"
-                            ? "bg-green-100 text-green-800"
-                            : "bg-gray-100 text-gray-900"
-                        } text-[10px]`}
+                        className={`py-0.5 px-2.5 rounded-md flex items-center justify-center gap-1 w-fit ${item.status === "online"
+                          ? "bg-green-100 text-green-800"
+                          : "bg-gray-100 text-gray-900"
+                          } text-[10px]`}
                       >
                         {item.status === "online" ? (
                           <FaRegCircleCheck />
@@ -973,57 +967,51 @@ const DeviceManagementTable = () => {
                               <img
                                 src={ThermometerIcon}
                                 alt="Thermometer Icon"
-                                className={`${
-                                  deviceData.targetTemperature
-                                    ? "opacity-100"
-                                    : "opacity-0"
-                                }`}
+                                className={`${deviceData.targetTemperature
+                                  ? "opacity-100"
+                                  : "opacity-0"
+                                  }`}
                               />
                               <h2
-                                className={`${
-                                  deviceData.targetTemperature
-                                    ? "opacity-100"
-                                    : "opacity-0"
-                                }`}
+                                className={`${deviceData.targetTemperature
+                                  ? "opacity-100"
+                                  : "opacity-0"
+                                  }`}
                               >
                                 {" "}
                                 Soll-Temperatur{" "}
                               </h2>
                               <h1
-                                className={`text-base font-medium text-black ${
-                                  deviceData.targetTemperature
-                                    ? "opacity-100"
-                                    : "opacity-0"
-                                }`}
+                                className={`text-base font-medium text-black ${deviceData.targetTemperature
+                                  ? "opacity-100"
+                                  : "opacity-0"
+                                  }`}
                               >
                                 {`${deviceData.targetTemperature}°C` || "--"}
                               </h1>
                               <h2
-                                className={`${
-                                  deviceData.currentTemperature
-                                    ? "opacity-100"
-                                    : "opacity-0"
-                                }`}
+                                className={`${deviceData.currentTemperature
+                                  ? "opacity-100"
+                                  : "opacity-0"
+                                  }`}
                               >
                                 {" "}
                                 Sensor-Temperatur{" "}
                               </h2>
                               <h1
-                                className={`text-base font-medium text-black ${
-                                  deviceData.currentTemperature
-                                    ? "opacity-100"
-                                    : "opacity-0"
-                                } `}
+                                className={`text-base font-medium text-black ${deviceData.currentTemperature
+                                  ? "opacity-100"
+                                  : "opacity-0"
+                                  } `}
                               >
                                 {`${deviceData.currentTemperature}°C` || "--"}
                               </h1>
                             </div>
                             <div
-                              className={`flex flex-col items-start justify-start gap-2 ${
-                                deviceData.currentHumidity
-                                  ? "opacity-100"
-                                  : "opacity-0"
-                              }`}
+                              className={`flex flex-col items-start justify-start gap-2 ${deviceData.currentHumidity
+                                ? "opacity-100"
+                                : "opacity-0"
+                                }`}
                             >
                               <img src={HumidityIcon} alt="Humidity Icon" />
                               <h2> Luftfeuchtigkeit </h2>
@@ -1032,11 +1020,10 @@ const DeviceManagementTable = () => {
                               </h1>
                             </div>
                             <div
-                              className={`flex flex-col items-start justify-start gap-2 ${
-                                deviceData.lightIntensity
-                                  ? "opacity-100"
-                                  : "opacity-0"
-                              }`}
+                              className={`flex flex-col items-start justify-start gap-2 ${deviceData.lightIntensity
+                                ? "opacity-100"
+                                : "opacity-0"
+                                }`}
                             >
                               <img
                                 src={LightIntensityIcon}
@@ -1048,11 +1035,10 @@ const DeviceManagementTable = () => {
                               </h1>
                             </div>
                             <div
-                              className={`flex flex-col items-start justify-start gap-2 ${
-                                deviceData.movementDetected
-                                  ? "opacity-100"
-                                  : "opacity-0"
-                              }`}
+                              className={`flex flex-col items-start justify-start gap-2 ${deviceData.movementDetected
+                                ? "opacity-100"
+                                : "opacity-0"
+                                }`}
                             >
                               <img src={MovementIcon} alt="Movement Icon" />
                               <h2> Anwesenheit erkannt </h2>
@@ -1064,43 +1050,38 @@ const DeviceManagementTable = () => {
                               className={`flex flex-col items-start justify-start gap-2 `}
                             >
                               <img
-                                className={`${
-                                  deviceData.error ? "opacity-100" : "opacity-0"
-                                }`}
+                                className={`${deviceData.error ? "opacity-100" : "opacity-0"
+                                  }`}
                                 src={ErrorIcon}
                                 alt="Error Icon"
                               />
                               <h2
-                                className={`${
-                                  deviceData.error ? "opacity-100" : "opacity-0"
-                                }`}
+                                className={`${deviceData.error ? "opacity-100" : "opacity-0"
+                                  }`}
                               >
                                 {" "}
                                 Fehler{" "}
                               </h2>
                               <h1
-                                className={`text-base font-medium text-black ${
-                                  deviceData.error ? "opacity-100" : "opacity-0"
-                                }`}
+                                className={`text-base font-medium text-black ${deviceData.error ? "opacity-100" : "opacity-0"
+                                  }`}
                               >
                                 {deviceData.error || "--"}
                               </h1>
                               <h2
-                                className={`${
-                                  deviceData.timestamp
-                                    ? "opacity-100"
-                                    : "opacity-0"
-                                }`}
+                                className={`${deviceData.timestamp
+                                  ? "opacity-100"
+                                  : "opacity-0"
+                                  }`}
                               >
                                 {" "}
                                 Letztes Datenpaket{" "}
                               </h2>
                               <h1
-                                className={`text-base font-medium text-black ${
-                                  deviceData.timestamp
-                                    ? "opacity-100"
-                                    : "opacity-0"
-                                }`}
+                                className={`text-base font-medium text-black ${deviceData.timestamp
+                                  ? "opacity-100"
+                                  : "opacity-0"
+                                  }`}
                               >
                                 {formatTimestamp(deviceData.timestamp)}
                               </h1>
@@ -1114,57 +1095,51 @@ const DeviceManagementTable = () => {
                               <img
                                 src={ThermometerIcon}
                                 alt="Thermometer Icon"
-                                className={`${
-                                  deviceData.targetTemperature
-                                    ? "opacity-100"
-                                    : "opacity-0"
-                                }`}
+                                className={`${deviceData.targetTemperature
+                                  ? "opacity-100"
+                                  : "opacity-0"
+                                  }`}
                               />
                               <h2
-                                className={`${
-                                  deviceData.targetTemperature
-                                    ? "opacity-100"
-                                    : "opacity-0"
-                                }`}
+                                className={`${deviceData.targetTemperature
+                                  ? "opacity-100"
+                                  : "opacity-0"
+                                  }`}
                               >
                                 {" "}
                                 Soll-Temperatur{" "}
                               </h2>
                               <h1
-                                className={`text-base font-medium text-black ${
-                                  deviceData.targetTemperature
-                                    ? "opacity-100"
-                                    : "opacity-0"
-                                }`}
+                                className={`text-base font-medium text-black ${deviceData.targetTemperature
+                                  ? "opacity-100"
+                                  : "opacity-0"
+                                  }`}
                               >
                                 {`${deviceData.targetTemperature}°C` || "--"}
                               </h1>
                               <h2
-                                className={`${
-                                  deviceData.currentTemperature
-                                    ? "opacity-100"
-                                    : "opacity-0"
-                                }`}
+                                className={`${deviceData.currentTemperature
+                                  ? "opacity-100"
+                                  : "opacity-0"
+                                  }`}
                               >
                                 {" "}
                                 Sensor-Temperatur{" "}
                               </h2>
                               <h1
-                                className={`text-base font-medium text-black ${
-                                  deviceData.currentTemperature
-                                    ? "opacity-100"
-                                    : "opacity-0"
-                                } `}
+                                className={`text-base font-medium text-black ${deviceData.currentTemperature
+                                  ? "opacity-100"
+                                  : "opacity-0"
+                                  } `}
                               >
                                 {`${deviceData.currentTemperature}°C` || "--"}
                               </h1>
                             </div>
                             <div
-                              className={`flex flex-col items-start justify-start gap-2 ${
-                                deviceData.currentHumidity
-                                  ? "opacity-100"
-                                  : "opacity-0"
-                              }`}
+                              className={`flex flex-col items-start justify-start gap-2 ${deviceData.currentHumidity
+                                ? "opacity-100"
+                                : "opacity-0"
+                                }`}
                             >
                               <img src={HumidityIcon} alt="Humidity Icon" />
                               <h2> Luftfeuchtigkeit </h2>
@@ -1173,11 +1148,10 @@ const DeviceManagementTable = () => {
                               </h1>
                             </div>
                             <div
-                              className={`flex flex-col items-start justify-start gap-2 ${
-                                deviceData.valvePositionInPercent
-                                  ? "opacity-100"
-                                  : "opacity-0"
-                              }`}
+                              className={`flex flex-col items-start justify-start gap-2 ${deviceData.valvePositionInPercent >= 0
+                                ? "opacity-100"
+                                : "opacity-0"
+                                }`}
                             >
                               <img
                                 src={ValvePositionIcon}
@@ -1194,11 +1168,10 @@ const DeviceManagementTable = () => {
 															</h1> */}
                             </div>
                             <div
-                              className={`flex flex-col items-start justify-start gap-2  ${
-                                deviceData.childLock !== null
-                                  ? "opacity-100"
-                                  : "opacity-0"
-                              }`}
+                              className={`flex flex-col items-start justify-start gap-2  ${deviceData.childLock !== null
+                                ? "opacity-100"
+                                : "opacity-0"
+                                }`}
                             >
                               <img src={ChildLockIcon} alt="Child Lock Icon" />
                               <h2> Kindersicherung </h2>
@@ -1210,43 +1183,38 @@ const DeviceManagementTable = () => {
                               className={`flex flex-col items-start justify-start gap-2 `}
                             >
                               <img
-                                className={`${
-                                  deviceData.error ? "opacity-100" : "opacity-0"
-                                }`}
+                                className={`${deviceData.error ? "opacity-100" : "opacity-0"
+                                  }`}
                                 src={ErrorIcon}
                                 alt="Error Icon"
                               />
                               <h2
-                                className={`${
-                                  deviceData.error ? "opacity-100" : "opacity-0"
-                                }`}
+                                className={`${deviceData.error ? "opacity-100" : "opacity-0"
+                                  }`}
                               >
                                 {" "}
                                 Fehler{" "}
                               </h2>
                               <h1
-                                className={`text-base font-medium text-black ${
-                                  deviceData.error ? "opacity-100" : "opacity-0"
-                                }`}
+                                className={`text-base font-medium text-black ${deviceData.error ? "opacity-100" : "opacity-0"
+                                  }`}
                               >
                                 {deviceData.error || "--"}
                               </h1>
                               <h2
-                                className={`${
-                                  deviceData.timestamp
-                                    ? "opacity-100"
-                                    : "opacity-0"
-                                }`}
+                                className={`${deviceData.timestamp
+                                  ? "opacity-100"
+                                  : "opacity-0"
+                                  }`}
                               >
                                 {" "}
                                 Letztes Datenpaket{" "}
                               </h2>
                               <h1
-                                className={`text-base font-medium text-black ${
-                                  deviceData.timestamp
-                                    ? "opacity-100"
-                                    : "opacity-0"
-                                }`}
+                                className={`text-base font-medium text-black ${deviceData.timestamp
+                                  ? "opacity-100"
+                                  : "opacity-0"
+                                  }`}
                               >
                                 {formatTimestamp(deviceData.timestamp)}
                               </h1>
@@ -1313,11 +1281,10 @@ const DeviceManagementTable = () => {
           <div className="flex justify-end border border-gray-200 rounded-md w-fit">
             <button
               onClick={() => handlePageChange(currentPage - 1)}
-              className={`inline-flex items-center px-4 py-2 text-sm font-medium rounded-sm ${
-                currentPage === 1
-                  ? "text-gray-300 cursor-not-allowed"
-                  : "text-primary bg-[#CFF4FB] hover:bg-primary-300"
-              }`}
+              className={`inline-flex items-center px-4 py-2 text-sm font-medium rounded-sm ${currentPage === 1
+                ? "text-gray-300 cursor-not-allowed"
+                : "text-primary bg-[#CFF4FB] hover:bg-primary-300"
+                }`}
               disabled={currentPage === 1}
             >
               <IoChevronBackOutline />
@@ -1339,11 +1306,10 @@ const DeviceManagementTable = () => {
               <button
                 key={startPage + index}
                 onClick={() => handlePageChange(startPage + index)}
-                className={`inline-flex items-center px-4 py-2 text-sm font-medium rounded-sm ${
-                  currentPage === startPage + index
-                    ? "text-primary bg-[#CFF4FB] hover:bg-primary-300"
-                    : "text-gray-500 bg-white hover:bg-gray-100"
-                }`}
+                className={`inline-flex items-center px-4 py-2 text-sm font-medium rounded-sm ${currentPage === startPage + index
+                  ? "text-primary bg-[#CFF4FB] hover:bg-primary-300"
+                  : "text-gray-500 bg-white hover:bg-gray-100"
+                  }`}
               >
                 {startPage + index}
               </button>
@@ -1356,11 +1322,10 @@ const DeviceManagementTable = () => {
             {endPage < totalPages && (
               <button
                 onClick={() => handlePageChange(totalPages)}
-                className={`inline-flex items-center px-4 py-2 text-sm font-medium rounded-sm ${
-                  currentPage === totalPages
-                    ? "text-gray-300 cursor-not-allowed"
-                    : "text-gray-500 bg-white hover:bg-gray-100"
-                }`}
+                className={`inline-flex items-center px-4 py-2 text-sm font-medium rounded-sm ${currentPage === totalPages
+                  ? "text-gray-300 cursor-not-allowed"
+                  : "text-gray-500 bg-white hover:bg-gray-100"
+                  }`}
                 disabled={currentPage === totalPages}
               >
                 {totalPages}
@@ -1368,11 +1333,10 @@ const DeviceManagementTable = () => {
             )}
             <button
               onClick={() => handlePageChange(currentPage + 1)}
-              className={`inline-flex items-center px-4 py-2 text-sm font-medium rounded-sm ${
-                currentPage === totalPages
-                  ? "text-gray-300 cursor-not-allowed"
-                  : "text-primary bg-[#CFF4FB] hover:bg-primary-300"
-              }`}
+              className={`inline-flex items-center px-4 py-2 text-sm font-medium rounded-sm ${currentPage === totalPages
+                ? "text-gray-300 cursor-not-allowed"
+                : "text-primary bg-[#CFF4FB] hover:bg-primary-300"
+                }`}
               disabled={currentPage === totalPages}
             >
               <IoChevronForwardOutline />

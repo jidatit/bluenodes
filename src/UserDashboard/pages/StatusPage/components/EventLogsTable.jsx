@@ -566,7 +566,7 @@ const EventLogsTable = () => {
               dates ||
               (subDropdownValue && subDropdownValue.length > 0)) && (
               <button
-                className="bg-red-500 px-3 py-3 h-[34%] text-white shadow-lg rounded-lg"
+                className="bg-red-500 px-2 text-[11px] py-3 h-[34%] text-white shadow-lg rounded-lg"
                 onClick={clearAllFilters}
               >
                 Alle zurücksetzen

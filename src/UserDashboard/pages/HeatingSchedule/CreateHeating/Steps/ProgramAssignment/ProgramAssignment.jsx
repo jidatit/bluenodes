@@ -309,7 +309,7 @@ const ProgramAssignment = ({ formData, assignmentData,setHandleAssignmentRef, ha
                                 />
                               </Table.HeadCell>
                               <Table.HeadCell>Raum</Table.HeadCell>
-                              <Table.HeadCell>Algorithmus</Table.HeadCell>
+                              {/* <Table.HeadCell>Algorithmus</Table.HeadCell> */}
                               <Table.HeadCell>Heizplan</Table.HeadCell>
                               <Table.HeadCell>Raumtemperatur</Table.HeadCell>
                               {/* <Table.HeadCell>Assignment</Table.HeadCell> */}
@@ -323,7 +323,7 @@ const ProgramAssignment = ({ formData, assignmentData,setHandleAssignmentRef, ha
                                   <Table.Cell className="whitespace-nowrap font-bold text-gray-900 dark:text-white">
                                     {room.name} <span className=' text-xs font-normal py-0.5 px-2.5 bg-gray-100 rounded-3xl'>{room.type}</span>
                                   </Table.Cell>
-                                  <Table.Cell className=' text-green-700 text-xl'>{room.algorithmOn ? <FaCheck/>:''}</Table.Cell>
+                                  {/* <Table.Cell className=' text-green-700 text-xl'>{room.algorithmOn ? <FaCheck/>:''}</Table.Cell> */}
                                   <Table.Cell>{room.programAssigned ? <span className=' text-primary'>{room.programAssigned}</span> : '-'}</Table.Cell>
                                   <Table.Cell className=' text-gray-900'>{room.currentTemperature}</Table.Cell>
                                 </Table.Row>

@@ -241,12 +241,12 @@ const TemperatureSchedule = ({
 			fetchSchedules();  // Trigger fetchSchedules when RoomsDetail updates
 		}
 	}, [RoomsDetail]);  // Use RoomsDetail as a dependency
-	
+
 	const fetchedScheduleIds = new Set();
-	
+
 	const fetchSchedules = async () => {
 		if (!RoomsDetail.length) return;
-	
+
 		const updatedRooms = await Promise.all(
 			RoomsDetail.map(async (room) => {
 				if (room.heatingSchedule) {
@@ -267,7 +267,7 @@ const TemperatureSchedule = ({
 		// console.log(updatedRooms, "up");
 		setscheduleDetails(updatedRooms);  // Update schedule details
 	};
-	
+
 	const getFloorDetails = async (id) => {
 		try {
 			const resp = await axios.get(
@@ -281,7 +281,7 @@ const TemperatureSchedule = ({
 			console.log(error);
 		}
 	};
-	
+
 
 	useEffect(() => {
 		if (isFirstRender.current) {
@@ -332,9 +332,9 @@ const TemperatureSchedule = ({
 							<div className="flex flex-wrap items-center gap-2 w-full 2xl:w-[22%]  2xl:mr-0 ">
 								<Tooltip content={room.name} style="light">
 									<span className="text-sm font-bold block w-full overflow-hidden text-ellipsis whitespace-nowrap">
-									{room.name && room.name.length > 40
-										? room.name.slice(0, 40) + "..."
-										: room.name}
+										{room.name && room.name.length > 40
+											? room.name.slice(0, 40) + "..."
+											: room.name}
 									</span>
 								</Tooltip>
 								{/* <Tooltip content={room.tag} style="light">
@@ -352,9 +352,8 @@ const TemperatureSchedule = ({
 							<div className=" flex  items-center gap-4 justify-start w-auto 2xl:w-[25%] 2xl:gap-10">
 								<Tooltip
 									className={`px-2 py-1.5 text-center max-w-xs`}
-									content={`Raumtemperatur: ${
-										room.roomTemperature ? `${room.roomTemperature}°C` : "Unset"
-									}`}
+									content={`Raumtemperatur: ${room.roomTemperature ? `${room.roomTemperature}°C` : "Unset"
+										}`}
 									style="light"
 								>
 									<div className="flex items-center gap-2 text-xl ">
@@ -412,9 +411,9 @@ const TemperatureSchedule = ({
 										{scheduleDetails[index]?.schedule?.templateName
 											? scheduleDetails[index].schedule.templateName.length > 50
 												? `${scheduleDetails[index].schedule.templateName.slice(
-														0,
-														50,
-													)}...`
+													0,
+													50,
+												)}...`
 												: scheduleDetails[index].schedule.templateName
 											: "None"}
 									</p>
@@ -434,11 +433,10 @@ const TemperatureSchedule = ({
 										setroomName(room.name);
 										setSelectedRoom(room);
 									}}
-									className={`hover:!bg-transparent hover:opacity-80 border-none text-primary bg-transparent ${
-										room.heatingSchedule !== null && room.heatingSchedule.id
-											? "text-primary"
-											: "text-gray-500"
-									} pr-2 py-0 [&>*]:p-0 focus:ring-transparent`}
+									className={`hover:!bg-transparent hover:opacity-80 border-none text-primary bg-transparent ${room.heatingSchedule !== null && room.heatingSchedule.id
+										? "text-primary"
+										: "text-gray-500"
+										} pr-2 py-0 [&>*]:p-0 focus:ring-transparent`}
 								>
 									Heizplan ansehen
 								</Button>
@@ -454,11 +452,10 @@ const TemperatureSchedule = ({
 												if (room.heatingSchedule !== null)
 													handleOpenEditModal(room ? room : null);
 											}}
-											className={`cursor-pointer w-6 h-6  dark:text-white ${
-												room.heatingSchedule !== null && room.heatingSchedule.id
-													? "text-gray-800"
-													: "text-gray-500"
-											}`}
+											className={`cursor-pointer w-6 h-6  dark:text-white ${room.heatingSchedule !== null && room.heatingSchedule.id
+												? "text-gray-800"
+												: "text-gray-500"
+												}`}
 											aria-hidden="true"
 											xmlns="http://www.w3.org/2000/svg"
 											width="24"
@@ -550,123 +547,123 @@ const TemperatureSchedule = ({
 
 								{/* line */}
 								<div className="relative w-full h-1.5 rounded-full overflow-hidden bg-transparent">
-  {room.heatingSchedule.currentDay
-    .slice() // Create a shallow copy to avoid mutating the original array
-    .sort((a, b) => {
-      // Compare the `from` times
-      return a.from.localeCompare(b.from);
-    })
-    .map((element, index, array) => (
-      <div
-        key={index}
-        className={`absolute h-1.5 rounded-full`}
-        style={{
-          backgroundColor: handleTempColour(element.targetTemperature),
-          left: `${parseTimeToPercentage(element.from)}%`,
-          width: `calc(${
-            parseTimeToPercentage(element.to) - parseTimeToPercentage(element.from)
-          }% - 0.275rem)`,
-          marginLeft: index === 0 ? "0" : "0.1rem",
-          marginRight:
-            index === array.length - 1 ? "0" : "0.45rem",
-        }}
-      >
-        {/* {console.log(room.heatingSchedule.currentDay)} */}
-      </div>
-    ))}
-</div>
-
+									{room.heatingSchedule.currentDay
+										.slice() // Create a shallow copy to avoid mutating the original array
+										.sort((a, b) => {
+											// Compare the `from` times
+											return a.from.localeCompare(b.from);
+										})
+										.map((element, index, array) => (
+											<div
+												key={index}
+												className={`absolute h-1.5 rounded-full`}
+												style={{
+													backgroundColor: handleTempColour(element.targetTemperature),
+													left: `${parseTimeToPercentage(element.from)}%`,
+													width: `calc(${parseTimeToPercentage(element.to) - parseTimeToPercentage(element.from)
+														}% - 0.275rem)`,
+													marginLeft: index === 0 ? "0" : "0.1rem",
+													marginRight:
+														index === array.length - 1 ? "0" : "0.45rem",
+												}}
+											>
+												{/* {console.log(room.heatingSchedule.currentDay)} */}
+											</div>
+										))}
+								</div>
 
 								{/* Render an additional div after the last index */}
 								<div
 									className="absolute left-0 right-0 flex w-full gap-1 px-3"
 									style={{ top: `-5px` }}
 								>
-							{room.heatingSchedule.currentDay
-								.slice() // Create a shallow copy to avoid mutating the original array
-								.sort((a, b) => {
-									// Compare the `from` times
-									return a.from.localeCompare(b.from);
-								})
-								.map((element, index) => (
-										<div
-											key={`separator-parent-${index}`}
-											style={{
-												width: `calc(${
-													parseTimeToPercentage(element.to) -
-													parseTimeToPercentage(element.from)
-												}% - 0.3rem)`,
-											}}
-											className="flex justify-start"
-										>
+									{room.heatingSchedule.currentDay
+										.slice() // Create a shallow copy to avoid mutating the original array
+										.sort((a, b) => {
+											// Compare the `from` times
+											return a.from.localeCompare(b.from);
+										})
+										.map((element, index) => (
 											<div
-												key={`separator-${index}`}
-												className="w-[2px] h-4 bg-gray-200"
-											/>
-										</div>
-									))}
-									<div
-										key={`separator-${updatedTemperatureData.length}`}
-										className="w-[2px] h-4 bg-gray-200"
-									/>
-								</div>
+												key={`separator-parent-${index}`}
+												style={{
+													width: `calc(${parseTimeToPercentage(element.to) -
+														parseTimeToPercentage(element.from)}% - 0.35rem)`,
+												}}
+												className="flex justify-start relative"
+											>
+												<div className="flex flex-col text-sm text-gray-500 items-center">
+													{/* Separator */}
+													<div key={`separator-${index}`} className="w-[2px] h-4 bg-gray-200" />
+													{/* Time label directly under the separator */}
+													<span
+														style={{
+															position: "absolute",
+															top: "20px", // Adjust vertical spacing below the separator
+															left: "0", // Align with the left edge of the separator
+															transform: index === 0 ? '' : 'translateX(-50%)',
+															whiteSpace: "nowrap", // Prevent text wrapping
+														}}
+													>
+														{index === 0 ? "Heute " : ""}
+														{formatTime(element.from)}
+													</span>
+												</div>
+											</div>
+										))}
 
-								{/* Temperature labels */}
-								<div className="flex justify-between mt-2 mb-2 text-sm text-gray-500">
-								{room.heatingSchedule.currentDay
-								.slice() // Create a shallow copy to avoid mutating the original array
-								.sort((a, b) => {
-									// Compare the `from` times
-									return a.from.localeCompare(b.from);
-								})
-								.map((element, index) => (
-										<React.Fragment key={index}>
+									{/* Render the final separator */}
+									<div
+										key={`separator-parent-${room.heatingSchedule.currentDay.length}`}
+										style={{
+											position: 'relative',
+											width: '0px', // No extra width needed for the last separator
+										}}
+										className="flex justify-start relative"
+									>
+										<div className="flex flex-col text-sm text-gray-500 items-center">
+											{/* Final separator */}
+											<div key={`separator-${room.heatingSchedule.currentDay.length}`} className="w-[2px] h-4 bg-gray-200" />
+											{/* Final time label */}
 											<span
 												style={{
-													width: `calc(${
-														parseTimeToPercentage(element.to) -
-														parseTimeToPercentage(element.from)
-													}%)`,
-													marginLeft: index === 0 ? "-16px" : "0",
+													position: "absolute",
+													top: "20px", // Adjust vertical spacing below the separator
+													right: "-20px", // Align with the right edge of the container
+													whiteSpace: "nowrap", // Prevent text wrapping
 												}}
-												key={`time-${index}`}
 											>
-												{index === 0 ? "Heute " : ""}
-												{formatTime(element.from)}
+												{formatTime(room.heatingSchedule.currentDay[room.heatingSchedule.currentDay.length - 1].to) === "23:59:00"
+													? "00:00"
+													: formatTime(room.heatingSchedule.currentDay[room.heatingSchedule.currentDay.length - 1].to)}
 											</span>
-											{index === room.heatingSchedule.currentDay.length - 1 && (
-												<span key={`time-${index + 1}`}>
-													{element.to === "23:59:00" ? "00:00" : formatTime(element.to)}
-												</span>
-											)}
-										</React.Fragment>
-									))}
+										</div>
+									</div>
 								</div>
 
-								<div className="flex justify-between mt-[-10px] text-sm font-semibold">
-								{room.heatingSchedule.currentDay
-								.slice() // Create a shallow copy to avoid mutating the original array
-								.sort((a, b) => {
-									// Compare the `from` times
-									return a.from.localeCompare(b.from);
-								})
-								.map((element, index) => (
-										<span
-											style={{
-												width: `calc(${
-													parseTimeToPercentage(element.to) -
-													parseTimeToPercentage(element.from)
-												}%)`,
-												color: handleTextColour(element.targetTemperature),
-											}}
-											key={`temp-${index}`}
-											className={`${handleTextColour(
-												element.targetTemperature,
-											)} flex justify-center`}
-										>
-											{element.targetTemperature}°C
-										</span>
-									))}
+								<div className="flex justify-between mt-7 text-sm font-semibold">
+									{room.heatingSchedule.currentDay
+										.slice() // Create a shallow copy to avoid mutating the original array
+										.sort((a, b) => {
+											// Compare the `from` times
+											return a.from.localeCompare(b.from);
+										})
+										.map((element, index) => (
+											<span
+												style={{
+													width: `calc(${parseTimeToPercentage(element.to) -
+														parseTimeToPercentage(element.from)
+														}%)`,
+													color: handleTextColour(element.targetTemperature),
+												}}
+												key={`temp-${index}`}
+												className={`${handleTextColour(
+													element.targetTemperature,
+												)} flex justify-center`}
+											>
+												{element.targetTemperature}°C
+											</span>
+										))}
 								</div>
 							</div>
 						) : (

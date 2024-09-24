@@ -736,7 +736,7 @@ const EditHeatingProgramModal = ({
 											value="edit-room"
 											checked={selectedAction === "edit-room"}
 											className="cursor-pointer "
-											// onChange={handleActionChange}
+										// onChange={handleActionChange}
 										/>
 										<Label className="cursor-pointer " htmlFor="edit-room">
 											Heizplan für den Raum bearbeiten
@@ -752,7 +752,7 @@ const EditHeatingProgramModal = ({
 											value="replace-room"
 											checked={selectedAction === "replace-room"}
 											className="cursor-pointer "
-											// onChange={handleActionChange}
+										// onChange={handleActionChange}
 										/>
 										<Label className="cursor-pointer " htmlFor="replace-room">
 											Anderen Heizplan auswählen
@@ -935,9 +935,8 @@ const ReplaceProgram = ({
 				<label
 					htmlFor="program"
 					value="Program"
-					className={`mb-2 text-sm pt-3 font-semibold ${
-						showError ? "text-red-500" : "text-gray-700"
-					}`}
+					className={`mb-2 text-sm pt-3 font-semibold ${showError ? "text-red-500" : "text-gray-700"
+						}`}
 				>
 					{" "}
 				</label>
@@ -951,11 +950,10 @@ const ReplaceProgram = ({
 					<option value="">Heizplan auswählen</option>
 					{data.map((program) => (
 						<option
-							className={`block rounded-lg px-4 py-2 text-sm ${
-								program.id === room.heatingSchedule.id
+							className={`block rounded-lg px-4 py-2 text-sm ${program.id === room.heatingSchedule.id
 									? "bg-gray-100 text-gray-400 cursor-not-allowed"
 									: "hover:bg-blue-100 hover:text-blue-700"
-							}`}
+								}`}
 							key={program.id}
 							value={program.id}
 							disabled={program.id === room.heatingSchedule.id}
@@ -1110,7 +1108,7 @@ const ViewTableComponent = ({ selectedProgram }) => {
 							</>
 						)}
 
-						<div className="flex flex-col gap-2">
+						{/* <div className="flex flex-col gap-2">
 							<p className="flex items-center gap-1 font-semibold">
 								Algorithmus aktivieren
 								<Tooltip
@@ -1122,8 +1120,8 @@ const ViewTableComponent = ({ selectedProgram }) => {
 								</Tooltip>
 							</p>
 							<p>{temperatureDetails?.applyAlgorithm ? "Ja" : "Nein"}</p>{" "}
-							{/* Replace hardcoded value */}
-						</div>
+						</div> */}
+						{/* Replace hardcoded value */}
 					</div>
 				</div>
 				<div className="w-[75%] border-l flex flex-col gap-4 border-gray-200 pl-4">

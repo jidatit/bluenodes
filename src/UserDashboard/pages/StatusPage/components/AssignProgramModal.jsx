@@ -289,7 +289,7 @@ const AssignProgramModal = ({
 		const maxTempStr = formData.maxTemp?.toString() || "";
 		// Cross-validate minTemp and maxTemp
 		if (minTemp !== "" && maxTemp !== "") {
-			if ((minTemp >= maxTemp) && (maxTempStr.length>=2)) {
+			if ((minTemp >= maxTemp) && (maxTempStr.length >= 2)) {
 				// error = errors.maxTempLowerThanMinTemp;
 				// Update error state for maxTemp when cross-validation fails
 				setErrorMessages((prev) => ({
@@ -887,9 +887,8 @@ const ReplaceProgram = ({
 				<label
 					htmlFor="program"
 					value="Program"
-					className={`mb-2 text-sm pt-3 font-semibold ${
-						showError ? "text-red-500" : "text-gray-700"
-					}`}
+					className={`mb-2 text-sm pt-3 font-semibold ${showError ? "text-red-500" : "text-gray-700"
+						}`}
 				>
 					{" "}
 				</label>
@@ -910,7 +909,7 @@ const ReplaceProgram = ({
 							// }`}
 							key={program.id}
 							value={program.id}
-							// disabled={program.id === room.heatingSchedule.id}
+						// disabled={program.id === room.heatingSchedule.id}
 						>
 							{program.templateName.length > 50
 								? `${program.templateName.slice(0, 50)}...`
@@ -1062,7 +1061,7 @@ const ViewTableComponent = ({ selectedProgram }) => {
 							</>
 						)}
 
-						<div className="flex flex-col gap-2">
+						{/* <div className="flex flex-col gap-2">
 							<p className="font-semibold flex items-center gap-1">
 								Algorithmus aktivieren
 								<Tooltip
@@ -1074,8 +1073,8 @@ const ViewTableComponent = ({ selectedProgram }) => {
 								</Tooltip>
 							</p>
 							<p>{temperatureDetails?.applyAlgorithm ? "Ja" : "Nein"}</p>{" "}
-							{/* Replace hardcoded value */}
-						</div>
+						</div> */}
+						{/* Replace hardcoded value */}
 					</div>
 				</div>
 				<div className="w-[75%] border-l flex flex-col gap-4 border-gray-200 pl-4">
