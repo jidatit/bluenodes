@@ -236,13 +236,10 @@ const DeviceManagementTable = () => {
   const [selectedRoomIds, setSelectedRoomIds] = useState(new Set());
 
   const [expandedKeys, setExpandedKeys] = useState({});
-  console.log("ApiLocationsToBeSend", ApiLocationsToBeSend);
-  console.log("selectedKeys", selectedKeys);
   const updateSelection = (newSelectedKeys) => {
     const newSelectedRoomIds = new Set([...selectedRoomIds]);
     const updatedKeys = { ...selectedKeys };
     const updatedDeselectedKeys = { ...Deselectedkeys };
-    console.log("new", newSelectedKeys);
     // Helper function to select a node and all its children
     const selectNodeAndChildren = (key) => {
       const node = findNodeByKey(key, LocationsData);

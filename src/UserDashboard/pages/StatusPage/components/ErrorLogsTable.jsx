@@ -342,7 +342,6 @@ const ErrorLogsTable = () => {
           item.eventTypeLevel !== "Behoben"
       );
 
-      console.log(filteredData);
       setTotalRows(filteredData.length);
       setTableData(filteredData);
     } catch (error) {
@@ -400,7 +399,6 @@ const ErrorLogsTable = () => {
   // };
 
   const handleDatesChange = (newDates) => {
-    console.log(newDates);
     if (!newDates || !newDates[0]) {
       setdateFrom(null);
       setdateTo(null);

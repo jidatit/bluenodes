@@ -10,7 +10,6 @@ export const fetchDeviceManagementList = async (
 ) => {
   try {
     // Construct the URL using the ApiUrls.SMARTHEATING_DEVICEMANAGEMENT.LIST function
-    console.log("location", locationId);
     const url = ApiUrls.SMARTHEATING_DEVICEMANAGEMENT.LIST(
       page,
       limit,
@@ -20,8 +19,6 @@ export const fetchDeviceManagementList = async (
     );
 
     const { data } = await axios.get(url);
-    console.log(data);
-
     return data;
   } catch (error) {
     console.error("Error fetching device management list:", error);
@@ -33,9 +30,7 @@ export const updateDeviceName = async (deviceId, newName) => {
   try {
     const url =
       ApiUrls.SMARTHEATING_DEVICEMANAGEMENT.UPDATE_DEVICE_NAME(deviceId);
-    console.log("name", newName);
     const response = await axios.put(url, { deviceName: newName });
-    console.log("resp", response);
 
     return response; // assuming the API responds with updated data or success confirmation
   } catch (error) {

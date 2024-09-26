@@ -78,7 +78,6 @@ export const fetchEventLogsData = async (
     }
   } else if (eventTypeLevel !== null && locations !== null) {
     try {
-      console.log("hey 2");
 
       const data = await axios.get(
         ApiUrls.SMARTHEATING_STATUSPAGE.EVENT_LOGS(
