@@ -766,7 +766,7 @@ const DeviceManagementTable = () => {
               />{" "}
               {selectedBatteryLevels?.length > 0 && (
                 <button
-                  className="text-xl text-red-500 shadow-lg rounded-lg"
+                  className="text-xl text-red-500 rounded-lg"
                   onClick={clearBatteryFilter}
                 >
                   {/* <Tooltip
