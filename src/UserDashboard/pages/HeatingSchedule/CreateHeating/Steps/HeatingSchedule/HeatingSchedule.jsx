@@ -221,7 +221,9 @@ function HeatingSchedule({
 					}));
 					setEditableBoxes({});
 				} else {
-					alert(invalidInputString);
+					if (!event.target.closest('svg')) {
+						alert(invalidInputString);
+					}
 				}
 			}
 			return;
