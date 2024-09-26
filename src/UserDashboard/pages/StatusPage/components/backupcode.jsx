@@ -246,9 +246,6 @@ const EventLogsTable = () => {
     setDeselectedKeys(updatedDeselectedKeys);
     setExpandedKeys(newExpandedKeys); // Update expanded keys
 
-    console.log("Deselected Keys", updatedDeselectedKeys);
-    console.log("Selected Keys", updatedKeys);
-
     // Handle selected room IDs and filters
     const locations = Array.from(newSelectedRoomIds);
     const transformedArray = locations.map((item) =>
@@ -363,7 +360,6 @@ const EventLogsTable = () => {
   };
 
   const handleDatesChange = (newDates) => {
-    console.log(newDates);
     if (!newDates || !newDates[0]) {
       setdateFrom(null);
       setdateTo(null);
