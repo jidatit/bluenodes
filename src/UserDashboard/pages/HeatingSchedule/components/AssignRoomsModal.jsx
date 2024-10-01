@@ -594,8 +594,8 @@ function AssignRoomsModal({
 																									"-"
 																								)}
 																							</Table.Cell>
-																							<Table.Cell className=" text-gray-900">
-																								{room.currentTemperature}
+																							<Table.Cell className="text-gray-900">
+																								{room.currentTemperature.toFixed(1)}°C
 																							</Table.Cell>
 																						</Table.Row>
 																					),
@@ -727,8 +727,8 @@ function AssignRoomsModal({
 																										"-"
 																									)}
 																								</Table.Cell>
-																								<Table.Cell className=" text-gray-900">
-																									{room.currentTemperature}
+																								<Table.Cell className="text-gray-900">
+																									{room.currentTemperature.toFixed(1)}°C
 																								</Table.Cell>
 																							</Table.Row>
 																						),

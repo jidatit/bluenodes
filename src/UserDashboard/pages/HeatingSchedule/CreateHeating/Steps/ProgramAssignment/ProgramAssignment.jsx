@@ -325,7 +325,9 @@ const ProgramAssignment = ({ formData, assignmentData,setHandleAssignmentRef, ha
                                   </Table.Cell>
                                   {/* <Table.Cell className=' text-green-700 text-xl'>{room.algorithmOn ? <FaCheck/>:''}</Table.Cell> */}
                                   <Table.Cell>{room.programAssigned ? <span className=' text-primary'>{room.programAssigned}</span> : '-'}</Table.Cell>
-                                  <Table.Cell className=' text-gray-900'>{room.currentTemperature}</Table.Cell>
+                                  <Table.Cell className="text-gray-900">
+                                    {room.currentTemperature.toFixed(1)}°C
+                                  </Table.Cell>
                                 </Table.Row>
                               ))}
                             </Table.Body>
