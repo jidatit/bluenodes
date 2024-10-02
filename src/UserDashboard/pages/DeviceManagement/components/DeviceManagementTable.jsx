@@ -1169,7 +1169,7 @@ const DeviceManagementTable = () => {
 														</div>
 														<div
 															className={`flex flex-col items-start justify-start gap-2 ${
-																deviceData.valvePositionInPercent
+																deviceData.valvePositionInPercent !=='' && deviceData.valvePositionInPercent!== null
 																	? "opacity-100"
 																	: "opacity-0"
 															}`}

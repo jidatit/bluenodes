@@ -750,7 +750,7 @@ function HeatingSchedule({
 					</div>
 				</div>
 			)}
-			<div className="">
+			<div className=" ">
 				<div
 					style={{
 						display: "flex",
@@ -835,7 +835,7 @@ function HeatingSchedule({
 						</div>
 					))}
 				</div>
-				<div style={{ display: "flex", zIndex: "10" }}>
+				<div className=" max-h-[2920px] overflow-hidden" style={{ display: "flex", zIndex: "10" }}>
 					<div style={{ width: "60px" }}>{timeLabels}</div>
 					<div
 						style={{
@@ -874,189 +874,192 @@ function HeatingSchedule({
 									zIndex: "10",
 								}}
 							>
-								<GridLayout
-									className="layout pt-[18px] z-10"
-									compactType={null}
-									layout={layouts[day]}
-									cols={1}
-									rowHeight={rowHeight}
-									width={150}
-									resizeHandles={["s", "n"]}
-									isDraggable={false}
-									isDroppable={false}
-									allowOverlap={true}
-									// draggableHandle=".box-drag"
-									draggableCancel=".box-resize-handle"
-									onResizeStart={(layout, oldLayout, newLayout) => {
-										setResizingBox(newLayout.i);
-										setIsResizingOrDragging(true);
-									}}
-									onResizeStop={(layout, oldItem, newItem) => {
-										if (newItem.y + newItem.h > 96) {
-											newItem.h = 96 - newItem.y; // Adjust height to not exceed 24 units
-										}
-										setResizingBox(null);
-										const adjustedLayout = adjustLayoutForOverlap(
-											layout,
-											oldItem,
-											newItem,
-										);
-										setLayouts((prevLayouts) => {
-											const layout = prevLayouts[day];
-											adjustedLayout.forEach((newBox) => {
-												const existingBox = layout.find(
-													(box) => box.i === newBox.i,
-												);
-												if (existingBox) {
-													newBox.temperature = existingBox.temperature; // Preserve temperature value
-												}
-											});
-											return { ...prevLayouts, [day]: adjustedLayout };
-										});
-										setTimeout(() => {
-											setIsResizingOrDragging(false);
-											// Perform temperature submission for the resized box
-											const boxId = newItem.i; // Get the ID of the resized box
-											const inputValue = temperatureInputs[boxId]; // Get the current temperature input for this box
-
-											// Check if the temperature value is valid (between 5 and 30)
-											if (!isNaN(inputValue) && inputValue >= 5 && inputValue <= 30) {
+									<GridLayout
+										className="layout pt-[18px] z-10"
+										maxRows={96}
+										compactType={null}
+										layout={layouts[day]}
+										cols={1}
+										rowHeight={rowHeight}
+										width={150}
+										resizeHandles={["s", "n"]}
+										isDraggable={false}
+										isDroppable={false}
+										allowOverlap={true}
+										// draggableHandle=".box-drag"
+										draggableCancel=".box-resize-handle"
+										onResizeStart={(layout, oldLayout, newLayout) => {
+											setResizingBox(newLayout.i);
+											setIsResizingOrDragging(true);
+										}}
+										onResizeStop={(layout, oldItem, newItem) => {
+											if (newItem.y + newItem.h > 96) {
+												newItem.h = 96 - newItem.y; // Adjust height to not exceed 24 units
+											}
+											setResizingBox(null);
+											const adjustedLayout = adjustLayoutForOverlap(
+												layout,
+												oldItem,
+												newItem,
+											);
 											setLayouts((prevLayouts) => {
 												const layout = prevLayouts[day];
-												return {
-												...prevLayouts,
-												[day]: layout.map((box) =>
-													box.i === boxId ? { ...box, temperature: inputValue } : box
-												),
-												};
+												adjustedLayout.forEach((newBox) => {
+													const existingBox = layout.find(
+														(box) => box.i === newBox.i,
+													);
+													if (existingBox) {
+														newBox.temperature = existingBox.temperature; // Preserve temperature value
+													}
+												});
+												return { ...prevLayouts, [day]: adjustedLayout };
 											});
-											setEditableBoxes({}); // Exit edit mode after submission
-											} 
-											else if(newItem.temperature){
+											setTimeout(() => {
+												setIsResizingOrDragging(false);
+												// Perform temperature submission for the resized box
+												const boxId = newItem.i; // Get the ID of the resized box
+												const inputValue = temperatureInputs[boxId]; // Get the current temperature input for this box
+
+												// Check if the temperature value is valid (between 5 and 30)
+												if (!isNaN(inputValue) && inputValue >= 5 && inputValue <= 30) {
 												setLayouts((prevLayouts) => {
 													const layout = prevLayouts[day];
 													return {
 													...prevLayouts,
 													[day]: layout.map((box) =>
-														box.i === boxId ? { ...box, temperature: newItem.temperature } : box
+														box.i === boxId ? { ...box, temperature: inputValue } : box
 													),
 													};
 												});
 												setEditableBoxes({}); // Exit edit mode after submission
-											}
-											else {
-											alert(invalidInputString); // Handle invalid input (optional)
-											}
-										}, 500);
-									}}
-								>
-									{layouts[day].map((box) => (
-										<div
-											key={box.i}
-											data-grid={{
-												...box,
-												resizeHandles: box.i.startsWith("empty-")
-													? []
-													: ["s", "n"],
-											}}
-											className={`box relative w-full !important rounded-md z-10 ${
-												box.temperature === false ? "border border-red-500" : ""
-											}`}
-											style={{
-												// backgroundColor: hoveredBoxes[box.i] ? handleHoverColour(box.temperature) : handleTempColour(box.temperature),
-												color: handleTextColour(box.temperature),
-												background:
-													box.temperature === false
-														? "linear-gradient(135deg, rgba(255, 0, 0, 0.1) 25%, transparent 25%, transparent 50%, rgba(255, 0, 0, 0.1) 50%, rgba(255, 0, 0, 0.1) 75%, transparent 75%, transparent)"
-														: hoveredBoxes[`${day}-${box.i}`] === true
-															? handleHoverColour(box.temperature)
-															: handleTempColour(box.temperature),
-												backgroundSize:
-													box.temperature === false ? "10px 10px" : "",
-												zIndex: box === resizingBox ? 100 : 0,
-											}}
-											onMouseEnter={() => handleMouseEnter(box.i, day)}
-											onMouseLeave={() => handleMouseLeave(box.i, day)}
-											onClick={(e) => handleBoxClick(e, box.i, box.temperature)}
-										>
-											<div
-												style={{
-													marginTop: "10px",
-													padding: "0px 10px",
-													position: "relative",
-													zIndex: "1",
-													fontSize: "14px",
-												}}
-											>
-												{box.temperature !== false ? (
-													!editableBoxes[box.i] && box.temperature !== null ? (
-														`${box.temperature}°C`
-													) : (
-														<input
-															type="text"
-															ref={(el) => (inputRefs.current[box.i] = el)}
-															value={temperatureInputs[box.i] || ""}
-															onChange={(e) =>
-																handleTemperatureChange(e, box.i)
-															}
-															onKeyDown={(e) =>
-																handleTemperatureKeyPress(e, box.i, day)
-															}
-															placeholder="Insert temp"
-															onClick={(e) => e.stopPropagation()} // Prevent click event on input from bubbling up
-															style={{
-																width: "100%",
-																padding: "4px",
-																fontSize: "10px",
-																border: "none",
-																background: "transparent",
-																outline: "none", // This removes the default focus ring
-															}}
-															onFocus={(e) =>
-																(e.target.style.boxShadow = "none")
-															}
-															onBlur={(e) => (e.target.style.boxShadow = "")}
-														/>
-													)
-												) : (
-													// If box.temperature is not null, render nothing
-													<div>Soll-Temperatur angeben</div>
-												)}
+												} 
+												else if(newItem.temperature){
+													setLayouts((prevLayouts) => {
+														const layout = prevLayouts[day];
+														return {
+														...prevLayouts,
+														[day]: layout.map((box) =>
+															box.i === boxId ? { ...box, temperature: newItem.temperature } : box
+														),
+														};
+													});
+													setEditableBoxes({}); // Exit edit mode after submission
+												}
+												else {
+												alert(invalidInputString); // Handle invalid input (optional)
+												}
+											}, 500);
+										}}
 
-												<button
+									>
+										{layouts[day].map((box) => (
+											<div
+												key={box.i}
+												data-grid={{
+													...box,
+													resizeHandles: box.i.startsWith("empty-")
+														? []
+														: ["s", "n"],
+												}}
+												className={`box relative w-full !important rounded-md z-10 ${
+													box.temperature === false ? "border border-red-500" : ""
+												}`}
+												style={{
+													// backgroundColor: hoveredBoxes[box.i] ? handleHoverColour(box.temperature) : handleTempColour(box.temperature),
+													color: handleTextColour(box.temperature),
+													background:
+														box.temperature === false
+															? "linear-gradient(135deg, rgba(255, 0, 0, 0.1) 25%, transparent 25%, transparent 50%, rgba(255, 0, 0, 0.1) 50%, rgba(255, 0, 0, 0.1) 75%, transparent 75%, transparent)"
+															: hoveredBoxes[`${day}-${box.i}`] === true
+																? handleHoverColour(box.temperature)
+																: handleTempColour(box.temperature),
+													backgroundSize:
+														box.temperature === false ? "10px 10px" : "",
+													zIndex: box === resizingBox ? 100 : 0,
+												}}
+												onMouseEnter={() => handleMouseEnter(box.i, day)}
+												onMouseLeave={() => handleMouseLeave(box.i, day)}
+												onClick={(e) => handleBoxClick(e, box.i, box.temperature)}
+											>
+												<div
 													style={{
-														position: "absolute",
-														top: "10px",
-														right: "10px",
-														cursor: "pointer",
-														fontSize: "14px", // Adjusted font size for better visibility
-														lineHeight: "14px", // Adjusted line height to center the 'x' better
+														marginTop: "10px",
+														padding: "0px 10px",
+														position: "relative",
+														zIndex: "1",
+														fontSize: "14px",
 													}}
-													className=" text-gray-900"
-													onClick={() => handleDeleteBox(day, box.i)}
 												>
-													<IoMdClose />
-												</button>
+													{box.temperature !== false ? (
+														!editableBoxes[box.i] && box.temperature !== null ? (
+															`${box.temperature}°C`
+														) : (
+															<input
+																type="text"
+																ref={(el) => (inputRefs.current[box.i] = el)}
+																value={temperatureInputs[box.i] || ""}
+																onChange={(e) =>
+																	handleTemperatureChange(e, box.i)
+																}
+																onKeyDown={(e) =>
+																	handleTemperatureKeyPress(e, box.i, day)
+																}
+																placeholder="Insert temp"
+																onClick={(e) => e.stopPropagation()} // Prevent click event on input from bubbling up
+																style={{
+																	width: "100%",
+																	padding: "4px",
+																	fontSize: "10px",
+																	border: "none",
+																	background: "transparent",
+																	outline: "none", // This removes the default focus ring
+																}}
+																onFocus={(e) =>
+																	(e.target.style.boxShadow = "none")
+																}
+																onBlur={(e) => (e.target.style.boxShadow = "")}
+															/>
+														)
+													) : (
+														// If box.temperature is not null, render nothing
+														<div>Soll-Temperatur angeben</div>
+													)}
+
+													<button
+														style={{
+															position: "absolute",
+															top: "10px",
+															right: "10px",
+															cursor: "pointer",
+															fontSize: "14px", // Adjusted font size for better visibility
+															lineHeight: "14px", // Adjusted line height to center the 'x' better
+														}}
+														className=" text-gray-900"
+														onClick={() => handleDeleteBox(day, box.i)}
+													>
+														<IoMdClose />
+													</button>
+												</div>
+												{/* <div
+														className="box-drag"
+														style={{
+															position: 'absolute',
+															bottom: 0,
+															width: '100%',
+															height: '20px',
+															cursor: 'ns-resize',
+															backgroundColor: '#ccc',
+															zIndex:'0'
+															// backgroundImage: `url(${sep})`,
+															// backgroundPosition: 'center bottom',
+															// backgroundRepeat: 'no-repeat',
+															// backgroundSize: 'contain'
+														}}
+													/> */}
 											</div>
-											{/* <div
-                          className="box-drag"
-                          style={{
-                            position: 'absolute',
-                            bottom: 0,
-                            width: '100%',
-                            height: '20px',
-                            cursor: 'ns-resize',
-                            backgroundColor: '#ccc',
-                            zIndex:'0'
-                            // backgroundImage: `url(${sep})`,
-                            // backgroundPosition: 'center bottom',
-                            // backgroundRepeat: 'no-repeat',
-                            // backgroundSize: 'contain'
-                          }}
-                        /> */}
-										</div>
-									))}
-								</GridLayout>
+										))}
+									</GridLayout>
+
 							</div>
 						))}
 					</div>
