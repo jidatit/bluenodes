@@ -112,7 +112,10 @@ const ApiUrls = {
 			`/smartheating/devicemanagement/devicename/${deviceId}`,
 		GET_DEVICE_INFO: (id) => `/smartheating/devicemanagement/lastpayload/${id}`,
 	},
-
+	SMARTHEATING_DEVICESETTINGS: {
+		UPDATE_DEVICE_SETTINGS: (deviceId) => `/smartheating/settings/device/${deviceId}`,
+	},
+	
 	USER: {
 		PROFILE: "/user/profile",
 	},

@@ -543,7 +543,7 @@ const DeviceManagementTable = () => {
 
 		try {
 			const response = await updateDeviceName(id, editedName);
-			if (response.status === 200) {
+			if (response.status >= 200 && response.status < 300) {
 				setEditMode(false);
 				setEditingItemId(null);
 				getData();

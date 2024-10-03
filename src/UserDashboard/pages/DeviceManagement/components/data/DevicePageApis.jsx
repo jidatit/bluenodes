@@ -28,11 +28,8 @@ export const fetchDeviceManagementList = async (
 
 export const updateDeviceName = async (deviceId, newName) => {
   try {
-    const url =
-      ApiUrls.SMARTHEATING_DEVICEMANAGEMENT.UPDATE_DEVICE_NAME(deviceId);
-    const response = await axios.put(url, { deviceName: newName });
-
-    return response; // assuming the API responds with updated data or success confirmation
+    const url= ApiUrls.SMARTHEATING_DEVICESETTINGS.UPDATE_DEVICE_SETTINGS(deviceId);
+    return await axios.post(url, {deviceName: newName});
   } catch (error) {
     if (error.response) {
       // Server responded with a status other than 200 range
