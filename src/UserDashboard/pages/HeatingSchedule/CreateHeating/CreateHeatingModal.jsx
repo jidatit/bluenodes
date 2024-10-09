@@ -1,6 +1,3 @@
-/* eslint-disable no-inner-declarations */
-/* eslint-disable react/prop-types */
-// Parent Component
 import { Button, Modal } from "flowbite-react";
 import customTheme from "./ModalTheme";
 import { useEffect, useRef, useState } from "react";
@@ -12,13 +9,10 @@ import HeatingSchedule from "./Steps/HeatingSchedule/HeatingSchedule";
 import axios from "axios";
 import ApiUrls from "../../../../globals/apiURL.js";
 import useHeatingSchedule from "../../../../hooks/useHeatingSchedule.jsx";
-import { Toast } from "flowbite-react";
 import { daysOfWeek } from "../../../../globals/daysofWeek.js";
 import { useToast } from "../../OperationalOverview/components/ToastContext.jsx";
 
 export function CreateHeatingModal({ openModal, handleOpenModal, onCreate }) {
-  //Set token for bearer authorization
-  const token = localStorage.getItem("token");
   const { generateToast } = useToast();
   const [currentStep, setCurrentStep] = useState(1);
 
@@ -140,17 +134,9 @@ export function CreateHeatingModal({ openModal, handleOpenModal, onCreate }) {
       const invalidCharRegex = /[^0-9°CFa-z]/;
       return invalidCharRegex.test(str);
     };
-    // Check if input is a decimal
-    // const isMinTempDecimal = minTempStr.includes(".");
-    // const isMaxTempDecimal = maxTempStr.includes(".");
 
     const isMinTempDecimal = containsInvalidCharacter(minTempStr);
     const isMaxTempDecimal = containsInvalidCharacter(maxTempStr);
-
-    // // Check if input is a decimal
-    // const isMinTempDecimal = formData.minTemp.includes(".");
-    // const isMaxTempDecimal = formData.maxTemp.includes(".");
-
     // Validate minTemp and maxTemp
     if (minTemp !== "" && maxTemp !== "") {
       if (isMinTempDecimal || isMaxTempDecimal) {
@@ -161,8 +147,6 @@ export function CreateHeatingModal({ openModal, handleOpenModal, onCreate }) {
           maxTemp: isMaxTempDecimal ? errors.TempDecimalNotAllowed : "",
         }));
       } else if (minTemp >= maxTemp && maxTempStr.length >= 2) {
-        // console.log("acc",maxTempStr.length)
-        // Update error state for maxTemp when cross-validation fails
         setErrorMessages((prev) => ({
           ...prev,
           maxTemp: errors.maxTempLowerThanMinTemp,
@@ -278,9 +262,6 @@ export function CreateHeatingModal({ openModal, handleOpenModal, onCreate }) {
       const invalidCharRegex = /[^0-9°CFa-z]/;
       return invalidCharRegex.test(str);
     };
-    // Check if input is a decimal
-    // const isMinTempDecimal = formData.minTemp.includes(".");
-    // const isMaxTempDecimal = formData.maxTemp.includes(".");
     const minTempStr = formData.minTemp?.toString() || "";
     const maxTempStr = formData.maxTemp?.toString() || "";
     const isMinTempDecimal = containsInvalidCharacter(minTempStr);
@@ -311,7 +292,6 @@ export function CreateHeatingModal({ openModal, handleOpenModal, onCreate }) {
       return false;
     }
 
-    // console.log(formData);
     return true;
   };
 
@@ -371,15 +351,6 @@ export function CreateHeatingModal({ openModal, handleOpenModal, onCreate }) {
         setCurrentStep((prev) => Math.min(prev + 1, 3));
         setFinalScheduleData(layoutsRef.current);
       }
-      // // Validate layouts for all days
-      // const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-      // const allNonEmpty = days.every(day => (day in layoutsRef.current) && layoutsRef.current[day].length > 0);
-      // if (allNonEmpty) {
-      //   setFinalScheduleData(layoutsRef.current);
-      //   setCurrentStep((prev) => Math.min(prev + 1, 3));
-      // } else {
-      //   console.log('All layouts are empty. Please fill in the required information.');
-      // }
     }
   };
 
@@ -403,10 +374,8 @@ export function CreateHeatingModal({ openModal, handleOpenModal, onCreate }) {
         finalScheduleData,
       });
     }
-    // console.log(combinedData);
   }, [formData, heatingAssignmentData, finalScheduleData]);
 
-  // const programAssignmentRef = useRef();
   const [buttonText, setButtonText] = useState("Create");
 
   const handleCreate = () => {
@@ -420,12 +389,7 @@ export function CreateHeatingModal({ openModal, handleOpenModal, onCreate }) {
           )
       );
 
-      // if (!anyRoomSelected && buttonText === "Create") {
-      // 	setButtonText("Confirm");
-      // } else {
       handleAssignmentData();
-      // onCreate(combinedData);
-
       // Get rooms IDs from the entire Data
       function getRoomIdsByProgram(data) {
         const programName = combinedData.formData.programName;
@@ -514,9 +478,6 @@ export function CreateHeatingModal({ openModal, handleOpenModal, onCreate }) {
           combinedData.formData.maxTemp
         );
       }
-      // console.log(finalObj,"finalObj")
-
-      // Submit the form or perform other actions
 
       axios
         .post(ApiUrls.SMARTHEATING_HEATINGSCHEDULE.HEATINGSCHEDULE, finalObj)

@@ -1,32 +1,17 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable react/prop-types */
-import { useEffect, useState } from "react";
-import { FaRegCopy, FaEdit } from "react-icons/fa";
+import { useState } from "react";
 import { RiDeleteBin6Line } from "react-icons/ri";
-import {
-  Button,
-  Modal,
-  Tooltip,
-  Accordion,
-  Progress,
-  List,
-} from "flowbite-react";
+import { Button, Modal, Accordion } from "flowbite-react";
 import { MdNotificationsActive } from "react-icons/md";
-import HeatingScheduleTable from "../../HeatingSchedule/components/HeatingScheduleTable";
 import bimg from "../../../../assets/images/Image.png";
 import TemperatureSchedule from "./TemperatureSchedule";
-import { FaCircleExclamation } from "react-icons/fa6";
-import { errorMessages as errors } from "../../../../globals/errorMessages"; // Import error messages
-import React, { memo } from "react";
+import React from "react";
 
 const OverviewCard = ({ formData }) => {
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
   const [openAlertDeleteModal, setOpenAlertDeleteModal] = useState(false);
-  const [buildError, setBuildError] = useState(true);
   const [accordianOpened, setaccordianOpened] = useState(false);
   const [accordianOpened2, setaccordianOpened2] = useState(false);
 
-  const [opened, setOpened] = useState(false);
   const handleDelete = () => {
     setOpenDeleteModal(false);
     if (formData.children.some((child) => child.roomsAssigned !== 0)) {
@@ -34,7 +19,6 @@ const OverviewCard = ({ formData }) => {
     }
   };
   const [count, setCount] = useState(0);
-  const [indexCount, setIndexCount] = useState();
 
   const triggerCount = () => {
     setCount(count + 1);

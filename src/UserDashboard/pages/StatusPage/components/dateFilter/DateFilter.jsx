@@ -3,7 +3,6 @@ import { Calendar } from "primereact/calendar";
 import { CiCircleRemove } from "react-icons/ci";
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
 import "../../../../../index.css";
-import { Tooltip } from "flowbite-react";
 const getDateRange = (option) => {
   const now = new Date();
   let startDate, endDate;
@@ -31,8 +30,6 @@ const getDateRange = (option) => {
       break;
     }
     case "Last 7 Days": {
-      // Get current date (today)
-      // Set startDate to 7 days ago
       startDate = new Date(now);
       startDate.setDate(now.getDate() - 6); // 7 days ago
       startDate.setHours(0, 0, 0, 0); // Start of the day
@@ -57,8 +54,7 @@ const getDateRange = (option) => {
       // Format startDate and endDate
       startDate = formatDateToISO(startDate);
       endDate = formatDateToISO(endDate);
-      // console.log("startDate:", startDate);
-      // console.log("endDate:", endDate);
+
       break;
     }
     case "Last Year": {
@@ -73,18 +69,9 @@ const getDateRange = (option) => {
       // Format startDate and endDate
       startDate = formatDateToISO(startDate);
       endDate = formatDateToISO(endDate);
-      // console.log("startDate:", startDate);
-      // console.log("endDate:", endDate);
+
       break;
     }
-    /*case "AllDates":
-      // Set an arbitrary far past and future date
-      startDate = new Date(1900, 0, 1); // January 1, 1900
-      endDate = new Date(2100, 11, 31); // December 31, 2100
-      // Format startDate and endDate
-      startDate = formatDateToISO(startDate); // Assign formatted startDate
-      endDate = formatDateToISO(endDate); // Assign formatted endDate
-      break;*/
     default:
       startDate = new Date(now);
       startDate.setDate(now.getDate() - 1); // Default to include the previous day
@@ -110,7 +97,6 @@ const DateFilter = ({
   dropDownValue,
   setDropDownValue,
 }) => {
-  const [selectedOption, setSelectedOption] = useState("Schnellauswahl");
   const [showCalendar, setShowCalendar] = useState(false);
 
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -162,7 +148,6 @@ const DateFilter = ({
       setSubDropdownValue(null); // Reset sub-dropdown value
       setDates(null); // Ensure dates are reset
     }
-    setSelectedOption(selectedValue);
   };
   const handleSubDropdownChange = (e) => {
     const value = e.target.value;
@@ -183,7 +168,6 @@ const DateFilter = ({
       const formattedDates = e.value.map((date) => {
         if (!date) return null; // Handle null dates
         const d = new Date(date);
-        // Format as 'yyyy-MM-dd'
         const year = d.getFullYear();
         const month = String(d.getMonth() + 1).padStart(2, "0"); // Months are zero-based
         const day = String(d.getDate()).padStart(2, "0");
@@ -193,7 +177,6 @@ const DateFilter = ({
       const formattedDropDownDates = e.value.map((date) => {
         if (!date) return null; // Handle null dates
         const d = new Date(date);
-        // Format as 'yyyy-MM-dd'
         const year = d.getFullYear();
         const month = String(d.getMonth() + 1).padStart(2, "0"); // Months are zero-based
         const day = String(d.getDate()).padStart(2, "0");
@@ -208,7 +191,6 @@ const DateFilter = ({
         setDropDownValue(`${formattedDropDownDates[0]}`);
       }
 
-      // console.log(e.value);
       setDates(e.value);
       onDatesChange(formattedDates); // Notify parent component
     } else {
@@ -270,13 +252,6 @@ const DateFilter = ({
                     onChange={handleDropdownChange}
                     checked={selectedDropdownOption === "Schnellauswahl"}
                   />
-                  {/* <RadioButton
-                    inputId="Schnellauswahl"
-                    name="dateFilter"
-                    value="Schnellauswahl"
-                    onChange={handleDropdownChange}
-                    checked={selectedDropdownOption === "Schnellauswahl"}
-                  /> */}
                   <label htmlFor="Schnellauswahl" className="ml-2">
                     Schnellauswahl
                   </label>
@@ -326,7 +301,6 @@ const DateFilter = ({
           {showCalendar && (
             <div className=" p-6 ccc relative shadow-lg bg-white w-[23rem] rounded-lg border z-50">
               <Calendar
-                // dateRef={dateRef}
                 value={dates}
                 onChange={handleCalendarChange}
                 selectionMode="range"

@@ -7,9 +7,7 @@ import { errorMessages as errors } from "../../../../globals/errorMessages"; // 
 import ProgressStepper from "../../HeatingSchedule/CreateHeating/components/ProgressStepper";
 import GeneralInformation from "../../HeatingSchedule/CreateHeating/Steps/GeneralInformation/GeneralInformation";
 import HeatingSchedule from "../../HeatingSchedule/CreateHeating/Steps/HeatingSchedule/HeatingSchedule";
-import { Toast } from "flowbite-react";
 import HeatingScheduleTable from "../../HeatingSchedule/components/HeatingScheduleTable";
-import { Dropdown } from "flowbite-react";
 import useHeatingSchedule from "../../../../hooks/useHeatingSchedule";
 import axios from "axios";
 import ApiUrls from "../../../../globals/apiURL.js";
@@ -257,9 +255,6 @@ const EditHeatingProgramModal = ({
       const invalidCharRegex = /[^0-9°CFa-z]/;
       return invalidCharRegex.test(str);
     };
-    // Check if input is a decimal
-    // const isMinTempDecimal = minTempStr.includes(".");
-    // const isMaxTempDecimal = maxTempStr.includes(".");
 
     const isMinTempDecimal = containsInvalidCharacter(minTempStr);
     const isMaxTempDecimal = containsInvalidCharacter(maxTempStr);
@@ -391,9 +386,6 @@ const EditHeatingProgramModal = ({
       const invalidCharRegex = /[^0-9°CFa-z]/;
       return invalidCharRegex.test(str);
     };
-    // Check if input is a decimal
-    // const isMinTempDecimal = minTempStr.includes(".");
-    // const isMaxTempDecimal = maxTempStr.includes(".");
 
     const isMinTempDecimal = containsInvalidCharacter(minTempStr);
     const isMaxTempDecimal = containsInvalidCharacter(maxTempStr);
@@ -424,9 +416,7 @@ const EditHeatingProgramModal = ({
       return false;
     }
 
-    // console.log(formData);
     return true;
-    // console.log(formData);
   };
 
   const [layouts, setLayouts] = useState({}); // State to hold layouts
@@ -444,9 +434,7 @@ const EditHeatingProgramModal = ({
   let newCheck = null;
   // Function to handle layout updates
   const handleCheckUpdate = (updatedCheck) => {
-    // console.log(updatedCheck,"hhihi")
     newCheck = updatedCheck;
-    // checkedRef.current = updatedCheck;
   };
 
   const handlePrevious = () => {
@@ -456,7 +444,6 @@ const EditHeatingProgramModal = ({
   };
 
   const handleNext = () => {
-    // console.log("first step ",formData)
     if (currentStep === 1) {
       if (handleSubmit()) {
         setCurrentStep((prev) => Math.min(prev + 1, 3));
@@ -483,11 +470,9 @@ const EditHeatingProgramModal = ({
         finalScheduleData,
       });
     }
-    // console.log(combinedData);
   }, [formData, finalScheduleData]);
 
   function convertScheduleData(data) {
-    // console.log(data)
     const dayMapping = {
       [daysOfWeek[0]]: 1,
       [daysOfWeek[1]]: 2,
@@ -698,7 +683,6 @@ const EditHeatingProgramModal = ({
                       value="edit-room"
                       checked={selectedAction === "edit-room"}
                       className="cursor-pointer "
-                      // onChange={handleActionChange}
                     />
                     <Label className="cursor-pointer " htmlFor="edit-room">
                       Heizplan für den Raum bearbeiten
@@ -714,7 +698,6 @@ const EditHeatingProgramModal = ({
                       value="replace-room"
                       checked={selectedAction === "replace-room"}
                       className="cursor-pointer "
-                      // onChange={handleActionChange}
                     />
                     <Label className="cursor-pointer " htmlFor="replace-room">
                       Anderen Heizplan auswählen
@@ -828,8 +811,6 @@ const ReplaceProgram = ({
       .then((response) => response.data)
       .then((data) => {
         setData(data);
-        // console.log("schedule programs", data);
-        // setLoader(false);
       })
       .catch((error) => console.error("Error:", error));
   };
@@ -905,7 +886,6 @@ const ViewTableComponent = ({ selectedProgram }) => {
       })
       .then((data) => {
         setTemperatureDetails(data);
-        // console.log("location details", data);
       })
       .catch((error) => console.error("Error:", error));
   };

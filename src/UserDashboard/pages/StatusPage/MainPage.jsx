@@ -9,7 +9,6 @@ import ErrorLogsTable from "./components/ErrorLogsTable";
 import UnassignedTable from "./components/UnassignedTable";
 import OfflineTable from "./components/OfflineTable";
 import { tableData } from "./components/data/tableData";
-import { deviceData } from "./components/data/deviceData";
 import celeAnimation from "../../../assets/icons/celeb.gif";
 import { fetchStatusPageStats } from "./data/Statuspageapis";
 

@@ -9,7 +9,6 @@ import ProgramAssignment from "../CreateHeating/Steps/ProgramAssignment/ProgramA
 import axios from "axios";
 import ApiUrls from "../../../../globals/apiURL.js";
 import useHeatingSchedule from "../../../../hooks/useHeatingSchedule.jsx";
-import { Toast } from "flowbite-react";
 import { daysOfWeek } from "../../../../globals/daysofWeek.js";
 import { useToast } from "../../OperationalOverview/components/ToastContext.jsx";
 
@@ -20,8 +19,6 @@ export function CloneHeatingModal({
   program,
   locationDetails,
 }) {
-  //Set token for bearer authorization
-  const token = localStorage.getItem("token");
   const { generateToast } = useToast();
   const [currentStep, setCurrentStep] = useState(1);
   const [formDataApi, setFormDataApi] = useState();
@@ -392,14 +389,11 @@ export function CloneHeatingModal({
         finalScheduleData,
       });
     }
-    // console.log(combinedData);
   }, [formData, heatingAssignmentData, finalScheduleData]);
 
-  // const programAssignmentRef = useRef();
   const [buttonText, setButtonText] = useState("Create");
 
   const handleCreate = () => {
-    // if (buttonText === 'Create') {
     if (handleAssignmentRef.current) {
       handleAssignmentRef.current();
 
@@ -503,7 +497,6 @@ export function CloneHeatingModal({
       axios
         .post(ApiUrls.SMARTHEATING_HEATINGSCHEDULE.HEATINGSCHEDULE, finalObj)
         .then((response) => {
-          const { data, status } = response;
           generateToast(errors.cloneSuccessfull, true);
           onCreate(combinedData);
           handleCloneModal();

@@ -2,9 +2,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import isBrowser from "../UserDashboard/helpers/is-browser";
 import isSmallScreen from "../UserDashboard/helpers/is-small-screen";
-
 const SidebarContext = createContext(undefined);
-
 export function SidebarProvider({ children }) {
   const location = isBrowser() ? window.location.pathname : "/";
   const [isOpen, setOpen] = useState(
@@ -24,23 +22,6 @@ export function SidebarProvider({ children }) {
       setOpen(true);
     }
   }, [location]);
-
-  // Close Sidebar on mobile tap inside main content
-  // useEffect(() => {
-  //   function handleMobileTapInsideMain(event) {
-  //     const main = document.querySelector("main");
-  //     const isClickInsideMain = main?.contains(event.target);
-
-  //     if (isSmallScreen() && isClickInsideMain) {
-  //       setOpen(false);
-  //     }
-  //   }
-
-  //   document.addEventListener("mousedown", handleMobileTapInsideMain);
-  //   return () => {
-  //     document.removeEventListener("mousedown", handleMobileTapInsideMain);
-  //   };
-  // }, []);
 
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isHovered, setIsHovered] = useState(false);

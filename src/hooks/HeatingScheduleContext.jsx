@@ -1,14 +1,17 @@
-import React, { createContext, useState, useContext } from 'react';
+import { createContext, useState, useContext } from "react";
 
 // Create Context
 const HeatingScheduleContext = createContext();
 
 // Create Provider Component
 export const HeatingScheduleProvider = ({ children }) => {
-  const [createdHeatingScheduleNames, setCreatedHeatingScheduleNames] = useState([]);
+  const [createdHeatingScheduleNames, setCreatedHeatingScheduleNames] =
+    useState([]);
 
   return (
-    <HeatingScheduleContext.Provider value={{ createdHeatingScheduleNames, setCreatedHeatingScheduleNames }}>
+    <HeatingScheduleContext.Provider
+      value={{ createdHeatingScheduleNames, setCreatedHeatingScheduleNames }}
+    >
       {children}
     </HeatingScheduleContext.Provider>
   );

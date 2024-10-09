@@ -1,25 +1,11 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable react/prop-types */
 import { useState, useEffect, useRef } from "react";
-import { Button, Select, Toast, Tooltip } from "flowbite-react";
+import { Button } from "flowbite-react";
 import { IoChevronBackOutline, IoSearch } from "react-icons/io5";
 import { IoChevronForwardOutline } from "react-icons/io5";
-import { MdOutlineAccessTimeFilled } from "react-icons/md";
-import { FaCircleInfo } from "react-icons/fa6";
-import { RiErrorWarningFill } from "react-icons/ri";
-import { IoIosWarning } from "react-icons/io";
-import { FaSearch } from "react-icons/fa";
-import { GiTireIronCross } from "react-icons/gi";
-import {
-  fetchEventLogsData,
-  fetchUnassignedRoomsData,
-} from "../data/Statuspageapis";
+import { fetchUnassignedRoomsData } from "../data/Statuspageapis";
 import { TreeSelect } from "primereact/treeselect";
 import axios from "axios";
 import ApiUrls from "../../../../globals/apiURL";
-import { MultiSelect } from "primereact/multiselect";
-import DateFilter from "./dateFilter/DateFilter";
-import AssignProgramModal from "./AssignProgramModal";
 import { errorMessages as errors } from "../../../../globals/errorMessages"; // Import error messages
 import { CiCircleRemove } from "react-icons/ci";
 import { useToast } from "../../OperationalOverview/components/ToastContext";
@@ -33,7 +19,6 @@ const UnassignedTable = ({ assignUpdate }) => {
   const { generateToast } = useToast();
   const [filtersSelected, setFiltersSelected] = useState(false);
   const [selectedLocationFilter, setSelectedLocationFilter] = useState(0);
-
   const [closeDateFilter, setCloseDateFilter] = useState(false); // State to manage dropdown visibility
   const [parentNodes, setParentNodes] = useState(null);
   const dateFilterRef = useRef(null);
@@ -102,7 +87,6 @@ const UnassignedTable = ({ assignUpdate }) => {
     try {
       const data = await axios.get(ApiUrls.SMARTHEATING_LOCATIONS.LIST);
       const transformedData = transformData(data.data);
-
       setFilteredLocations(transformedData);
       setLocationsData(transformedData);
       const extractedFloors = LocationsData.map(
@@ -121,16 +105,11 @@ const UnassignedTable = ({ assignUpdate }) => {
   }, [filtersSelected]);
 
   const [tableData, setTableData] = useState([]);
-  // const [selectedFilter, setSelectedFilter] = useState("Last Year");
-  // const [selectedEvent, setSelectedEvent] = useState("All events");
-
   const [currentPage, setCurrentPage] = useState(1);
   const [totalRows, setTotalRows] = useState(0);
-
   const [selectedKeys, setSelectedKeys] = useState({});
   const [selectedRoomIds, setSelectedRoomIds] = useState(new Set());
   const [Deselectedkeys, setDeselectedKeys] = useState({});
-
   const [openEditModal, setOpenEditModal] = useState(false);
   const [selectedRoom, setSelectedRoom] = useState(null);
 
@@ -358,19 +337,6 @@ const UnassignedTable = ({ assignUpdate }) => {
       .join("-");
   };
 
-  const handleDatesChange = (newDates) => {
-    if (!newDates || !newDates[0]) {
-      setdateFrom(null);
-      setdateTo(null);
-      return;
-    }
-    if (newDates[0] && newDates[1]) {
-      let from = newDates[0] && formatDateforApitosend(new Date(newDates[0]));
-      setdateFrom(from);
-      let to = newDates[1] && formatDateforApitosend(new Date(newDates[1]));
-      setdateTo(to);
-    }
-  };
   const handleOpenEditModal = (room) => {
     setOpenEditModal(!openEditModal);
     setSelectedRoom(room);
@@ -484,10 +450,6 @@ const UnassignedTable = ({ assignUpdate }) => {
                 <CiCircleRemove size={36} />
               </button>
             )}
-            {/* <MultiSelect value={selectedEventFilters} onChange={(e) => setSelectedEventFilters(e.value)} showSelectAll={false} options={eventFilterOptions} optionLabel="name"
-                            filter placeholder="All Events" display="chip" className="w-full md:w-20rem" />
-
-                        <DateFilter onDatesChange={handleDatesChange} /> */}
           </div>
         </div>
         {/* Table */}
@@ -638,14 +600,12 @@ const UnassignedTable = ({ assignUpdate }) => {
       </div>
 
       {handleOpenEditModal && openEditModal && (
-        <AssignProgramModal
-          // fetchFloorDetails={getFloorDetails}
+        <AssignProgramModa
           openModal={openEditModal}
           handleOpenModal={handleOpenEditModal}
           room={selectedRoom}
           fetchList={getData}
           assignSuccess={assignSuccess}
-          // updateReplaced={updateReplacedF}
         />
       )}
     </div>

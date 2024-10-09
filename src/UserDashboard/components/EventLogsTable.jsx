@@ -1,5 +1,3 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable react/prop-types */
 import { useState, useEffect } from "react";
 import { Select } from "flowbite-react";
 import { IoChevronBackOutline } from "react-icons/io5";
@@ -75,7 +73,7 @@ const EventLogsTable = ({ tableData }) => {
   return (
     <div className="flex flex-col w-full gap-4 ">
       <div className="flex flex-col items-start justify-center w-full">
-      <h1 className=" font-[500] text-lg text-gray-900">Event Übersicht</h1>
+        <h1 className=" font-[500] text-lg text-gray-900">Event Übersicht</h1>
       </div>
       <div className="relative w-full overflow-x-auto bg-white shadow-md sm:rounded-lg">
         <div className="flex flex-wrap items-center justify-between mx-2 my-2 space-y-4 bg-transparent flex-column sm:flex-row sm:space-y-0">
@@ -127,7 +125,7 @@ const EventLogsTable = ({ tableData }) => {
             />
             {searchQuery.length > 0 && (
               <GiTireIronCross
-                onClick={(e) => setSearchQuery("")}
+                onClick={() => setSearchQuery("")}
                 className="w-5 h-5 cursor-pointer absolute p-1 bg-gray-200 text-black rounded-full right-[7px] top-[9px] hover:scale-75 transition-all delay-100"
               />
             )}

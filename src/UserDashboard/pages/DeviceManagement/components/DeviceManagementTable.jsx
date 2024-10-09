@@ -1,14 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Select, Tooltip, TextInput, TableRow } from "flowbite-react";
+import { Tooltip, TextInput } from "flowbite-react";
 import { IoChevronBackOutline, IoChevronForwardOutline } from "react-icons/io5";
-import { MdOutlineAccessTimeFilled } from "react-icons/md";
 import { FaRegCircleCheck } from "react-icons/fa6";
-import { GiTireIronCross } from "react-icons/gi";
 import { AiOutlineExclamationCircle } from "react-icons/ai";
 import { BsFillCalendarDateFill } from "react-icons/bs";
 import { errorMessages as errors } from "../../../../globals/errorMessages";
 import BatteryFull from "../../../../assets/battery-icons/battery-100.png";
-import BatteryHigh from "../../../../assets/battery-icons/battery-76.png";
 import BatteryMedium from "../../../../assets/battery-icons/battery-51.png";
 import BatteryLow from "../../../../assets/battery-icons/battery-26.png";
 import BatteryEmpty from "../../../../assets/battery-icons/battery-0.png";
@@ -25,11 +22,9 @@ import ErrorIcon from "../../../../assets/icons/bell.png";
 import OpenCloseWindowIcon from "../../../../assets/icons/Window.png";
 import LightIntensityIcon from "../../../../assets/icons/light.png";
 import MovementIcon from "../../../../assets/icons/movement.png";
-import { FaSearch } from "react-icons/fa";
 import { IoSearch } from "react-icons/io5";
 import { TreeSelect } from "primereact/treeselect";
 import { MultiSelect } from "primereact/multiselect";
-import { Toast } from "flowbite-react";
 import {
   fetchDeviceManagementList,
   updateDeviceName,
@@ -58,9 +53,7 @@ const getBatteryImage = (battery_level) => {
 const DeviceManagementTable = () => {
   const [selectedFilter, setSelectedFilter] = useState("Last Year");
   const [selectedStatusFilter, setSelectedStatusFilter] = useState(null);
-  const [selectedEvent, setSelectedEvent] = useState("All events");
   const [currentPage, setCurrentPage] = useState(1);
-  // const [filteredData, setFilteredData] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [expandedRow, setExpandedRow] = useState(null);
   const [tableData, setTableData] = useState([]);
@@ -96,7 +89,6 @@ const DeviceManagementTable = () => {
         setCloseDateFilter(true); // Close dropdown if clicked outside
       }
     };
-
     // Attach the event listener
     document.addEventListener("mousedown", handleClickOutside);
 
@@ -395,11 +387,6 @@ const DeviceManagementTable = () => {
 
   const getData = async (locations) => {
     try {
-      // const batteryLevel =
-      // 	selectedFilter !== null
-      // 		? selectedFilter.map((filter) => filter.name).join(",")
-      // 		: null;
-
       const data = await fetchDeviceManagementList(
         currentPage,
         itemsPerPage,
@@ -443,26 +430,6 @@ const DeviceManagementTable = () => {
   useEffect(() => {
     filterData();
   }, [selectedFilter, searchQuery]);
-  // useEffect(() => {
-  // 	getData(ApiLocationsToBeSend);
-  // }, [ApiLocationsToBeSend, apiLocationsToBeSendCounter]);
-
-  // useEffect(() => {
-  // 	// Call getData whenever selectedEventFilters or selectedStatusFilter changes
-  // 	if (selectedStatusFilter !== null || selectedStatusFilter?.length > 0) {
-  // 		setApiLocationsToBeSend(null);
-  // 		// setApiLocationsToBeSendCounter(0);
-  // 		getData(selectedStatusFilter);
-  // 	}
-  // }, [selectedStatusFilter]);
-
-  // useEffect(() => {
-  // 	if (selectedStatusFilter !== null) {
-  // 		setApiLocationsToBeSend(null);
-  // 		setApiLocationsToBeSendCounter(0);
-  // 		getData(ApiLocationsToBeSend);
-  // 	}
-  // }, [selectedStatusFilter]);
   const filterData = () => {
     let currentDate = new Date();
     let startDate = new Date();
@@ -482,19 +449,6 @@ const DeviceManagementTable = () => {
       default:
         break;
     }
-
-    // const filtered = tableData?.filter((item) => {
-    // 	let eventDate = new Date(item.date + " " + item.time);
-    // 	return (
-    // 		eventDate >= startDate &&
-    // 		eventDate <= currentDate &&
-    // 		(item.device_id.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    // 			item.device_name.toLowerCase().includes(searchQuery.toLowerCase()))
-    // 	);
-    // });
-
-    // setFilteredData(filtered);
-    // setCurrentPage(1);
   };
 
   const handlePageChange = (page) => {
@@ -1136,10 +1090,6 @@ const DeviceManagementTable = () => {
                                 {`${deviceData.valvePositionInPercent}%` ||
                                   "--"}
                               </h1>
-                              {/* <h2> Valve Position in Steps </h2>
-															<h1 className="text-base font-medium text-black">
-																{deviceData.valvePositionSteps || "--"}
-															</h1> */}
                             </div>
                             <div
                               className={`flex flex-col items-start justify-start gap-2  ${

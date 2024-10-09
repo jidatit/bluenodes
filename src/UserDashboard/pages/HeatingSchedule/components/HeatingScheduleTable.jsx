@@ -24,7 +24,7 @@ function HeatingScheduleTable({ locationDetails, props }) {
       window.removeEventListener("resize", updateZoomLevel);
     };
   }, []);
-  const rowHeight = 7; // Each row represents 20 pixels
+  const rowHeight = 7;
 
   // Helper function to convert time to units
   const convertTimeToUnits = (time) => {

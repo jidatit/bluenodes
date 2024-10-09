@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import classNames from "classnames";
 import { Dropdown, Sidebar } from "flowbite-react";
 import { useEffect, useState } from "react";
@@ -48,7 +47,6 @@ const ExampleSidebar = () => {
   useEffect(() => {
     setIsCollapsed(isSmallScreen());
   }, []);
-
 
   return (
     <div
@@ -137,11 +135,10 @@ const ExampleSidebar = () => {
                   icon={FaRegWindowRestore}
                   className={
                     currentPage.includes(NAVIGATION_PATH.operationalOverview)
-
                       ? "bg-gray-100 dark:bg-gray-700"
                       : ""
                   }
-                > 
+                >
                   Betriebsübersicht
                 </Sidebar.Item>
                 <Sidebar.Item
@@ -180,23 +177,20 @@ const ExampleSidebar = () => {
 
 const BottomMenu = ({ isCollapsed, isHovered }) => {
   const [userDetails, setUserDetails] = useState([]);
-  
 
   const fetchUserDetails = async () => {
-		try {
-			const response = await axios.get(
-				ApiUrls.USER.PROFILE,
-			);
-			const data = await response.data;
-      setUserDetails(data)
-		} catch (error) {
-			console.error("Error:", error);
-		}
-	};
+    try {
+      const response = await axios.get(ApiUrls.USER.PROFILE);
+      const data = await response.data;
+      setUserDetails(data);
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
 
-	useEffect(() => {
-		fetchUserDetails();
-	}, []);
+  useEffect(() => {
+    fetchUserDetails();
+  }, []);
 
   return (
     <div className="flex items-center justify-center gap-x-5">

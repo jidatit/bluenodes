@@ -6,7 +6,6 @@ import { FaCircleCheck, FaCircleInfo } from "react-icons/fa6";
 import { RiErrorWarningFill } from "react-icons/ri";
 import { IoSearch } from "react-icons/io5";
 import { IoIosWarning } from "react-icons/io";
-
 import { fetchEventLogsData } from "../data/Statuspageapis";
 import { TreeSelect } from "primereact/treeselect";
 import axios from "axios";
@@ -136,9 +135,7 @@ const EventLogsTable = () => {
   const getAllLocations = async () => {
     try {
       const data = await axios.get(ApiUrls.SMARTHEATING_LOCATIONS.LIST);
-
       const transformedData = transformData(data.data);
-
       setFilteredLocations(transformedData);
       setLocationsData(transformedData);
     } catch (error) {
@@ -369,15 +366,6 @@ const EventLogsTable = () => {
 
   let startPage = Math.max(1, currentPage - paginationRange);
   let endPage = Math.min(totalPages, currentPage + paginationRange);
-
-  // const formatDateforApitosend = (date) => {
-  //   const options = { year: "numeric", month: "2-digit", day: "2-digit" };
-  //   return new Intl.DateTimeFormat("en-GB", options)
-  //     .format(date)
-  //     .split("/")
-  //     .reverse()
-  //     .join("-");
-  // };
 
   const handleDatesChange = (newDates) => {
     if (!newDates || !newDates[0]) {
@@ -610,9 +598,6 @@ const EventLogsTable = () => {
                   </td>
                   <td className="px-4 py-4 font-medium text-gray-900 break-words dark:text-white w-[15%]">
                     {item.roomName ? item.roomName : "-"}{" "}
-                    {/* <span className="text-[10px] py-0.5 px-2.5 font-semibold bg-gray-100 rounded-[80px] p-1">
-                          {item.roomTag ? item.roomTag : "-"}
-                        </span> */}
                   </td>
                   <td className="px-4 py-4 w-[16%]">
                     {item.building_floor_string ? (

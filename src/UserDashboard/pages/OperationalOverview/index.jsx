@@ -3,7 +3,6 @@ import OverviewCard from "./components/OverviewCard";
 import { Spinner } from "flowbite-react";
 import axios from "axios";
 import ApiUrls from "../../../globals/apiURL.js";
-import { useToast } from "./components/ToastContext.jsx";
 
 function OverviewPage() {
   const [data, setData] = useState([]);
@@ -71,10 +70,6 @@ function OverviewPage() {
                 />
               </div>
             </form>
-            {/* <div className=" flex items-center justify-center gap-1.5 text-[#6B7280] cursor-pointer">
-							<FaFilter />
-							<p className="text-sm ">Filter</p>
-						</div> */}
           </div>
         </div>
         {Loader && (

@@ -1,11 +1,10 @@
 /* eslint-disable no-unused-vars */
-import { Button, Toast } from "flowbite-react";
+import { Button } from "flowbite-react";
 import { useEffect, useState } from "react";
 import { FaFilter } from "react-icons/fa";
 import { GoPlus } from "react-icons/go";
 import { CreateHeatingModal } from "./CreateHeating/CreateHeatingModal";
 import HeatingProgramEntity from "./components/HeatingProgramEntity";
-import { errorMessages } from "../../../globals/errorMessages";
 import { Spinner } from "flowbite-react";
 import axios from "axios";
 import ApiUrls from "../../../globals/apiURL.js";
@@ -146,9 +145,6 @@ function HeatingSchedulePage() {
                     ? room.heatingSchedule.templateName
                     : null,
                   currentTemperature: room.roomTemperature,
-                  // assigned:
-                  // 	room.assignedNumberOfRooms !== 0 &&
-                  // 	room.heatingSchedule.id === program.id,
                 })),
               })),
             };

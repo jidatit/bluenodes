@@ -8,7 +8,6 @@ import HeatingSchedule from "../CreateHeating/Steps/HeatingSchedule/HeatingSched
 import useHeatingSchedule from "../../../../hooks/useHeatingSchedule";
 import axios from "axios";
 import ApiUrls from "../../../../globals/apiURL.js";
-import { Toast } from "flowbite-react";
 import { daysOfWeek } from "../../../../globals/daysofWeek.js";
 import { useToast } from "../../OperationalOverview/components/ToastContext.jsx";
 
@@ -126,7 +125,6 @@ export function EditHeatingModal({
             maxTemp: "",
           }));
         }
-        // console.log(errorMessages);
       }
 
       if (id === "maxTemp") {
@@ -137,7 +135,6 @@ export function EditHeatingModal({
         }
       }
     }
-
     // Set error message for the current field
     setErrorMessages((prev) => ({
       ...prev,
@@ -373,10 +370,7 @@ export function EditHeatingModal({
         finalScheduleData,
       });
     }
-    // console.log(combinedData);
   }, [formData, finalScheduleData]);
-
-  // const programAssignmentRef = useRef();
 
   const handleCreate = () => {
     let scheduleDataTemp = {};
@@ -393,7 +387,6 @@ export function EditHeatingModal({
 
         // Convert schedule data into API format
         function convertScheduleData(data) {
-          // console.log(data)
           const dayMapping = {
             [daysOfWeek[0]]: 1,
             [daysOfWeek[1]]: 2,
@@ -459,7 +452,6 @@ export function EditHeatingModal({
             finalObj
           )
           .then((response) => {
-            const { data, status } = response;
             generateToast(errors.editSuccessfull, true);
             onEdit(combinedData);
             handleEditModal();

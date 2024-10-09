@@ -1,10 +1,7 @@
-/* eslint-disable react/prop-types */
-// Parent Component
-import { Button, Modal, ToggleSwitch, Tooltip } from "flowbite-react";
+import { Button, Modal, Tooltip } from "flowbite-react";
 import customTheme from "../../HeatingSchedule/CreateHeating/ModalTheme";
 import { IoInformationCircleOutline } from "react-icons/io5";
 import { useEffect, useState } from "react";
-import HeatingScheduleTable from "../../HeatingSchedule/components/HeatingScheduleTable";
 import HeatingScheduleComparison from "./HeatingScheduleComparison";
 import HeatingScheduleTableStatic from "../../HeatingSchedule/components/HeatingScheduleTableStatic";
 import { Spinner } from "flowbite-react";
@@ -14,20 +11,15 @@ import ApiUrls from "../../../../globals/apiURL.js";
 export function ViewRoomScheduleModal({
   openModal,
   handleOpenModal,
-  algo,
   heatingScheduleId,
   roomName,
   handleOpenEditModal,
   room,
 }) {
-  const [switch1, setSwitch1] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
   const [locationDetails, setLocationDetails] = useState(null);
   const [loading, setloading] = useState(false);
 
-  const handleCheckboxChange = () => {
-    setIsChecked(!isChecked);
-  };
   const handleCloseModal = () => {
     handleOpenModal();
   };
@@ -117,20 +109,6 @@ export function ViewRoomScheduleModal({
                         </div>
                       </>
                     )}
-
-                    {/* <div className="flex flex-col gap-2">
-                      <p className="flex items-center gap-1 font-semibold ">
-                        Algorithmus aktivieren
-                        <Tooltip
-                          className="px-3 py-1.5 text-center max-w-96"
-                          content="Der Algorithmus passt dynamisch den Heizplan an."
-                          style="light"
-                        >
-                          <IoInformationCircleOutline color="#6B7280" />
-                        </Tooltip>
-                      </p>
-                      <p className="">{algo ? "Yes" : "No"}</p>
-                    </div> */}
                   </div>
                 </div>
                 <div className="flex flex-col w-full gap-4 pl-4 border-l border-gray-200 ">
@@ -143,7 +121,6 @@ export function ViewRoomScheduleModal({
                       {locationDetails && (
                         <HeatingScheduleTableStatic
                           locationDetails={locationDetails}
-                          // noHeading={true}
                         />
                       )}
                     </div>

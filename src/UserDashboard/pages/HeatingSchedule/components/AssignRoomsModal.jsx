@@ -1,22 +1,19 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   Checkbox,
   Table,
   Accordion,
   Select,
   Button,
-  Tooltip,
   Modal,
 } from "flowbite-react";
 import { customTableTheme } from "../CreateHeating/Steps/ProgramAssignment/AssignmentAccordionTheme";
-import { FaCheck, FaCircleCheck } from "react-icons/fa6";
+import { FaCircleCheck } from "react-icons/fa6";
 import { errorMessages } from "../../../../globals/errorMessages";
 import _ from "lodash";
-import { IoArrowBackCircle } from "react-icons/io5";
 import customTheme from "../CreateHeating/ModalTheme";
 import axios from "axios";
 import ApiUrls from "../../../../globals/apiURL.js";
-import { Toast } from "flowbite-react";
 import { useToast } from "../../OperationalOverview/components/ToastContext.jsx";
 
 function AssignRoomsModal({
@@ -26,8 +23,6 @@ function AssignRoomsModal({
   program,
   initialData,
 }) {
-  //Set token for bearer authorization
-  const token = localStorage.getItem("token");
   const [data, setData] = useState(initialData);
   const { generateToast } = useToast();
   const fetchAllLocations = () => {
@@ -97,8 +92,6 @@ function AssignRoomsModal({
     setViewAll(false);
     setError(null);
     setNoRoomsError(false);
-
-    // Call handleAssign to close the modal
     handleAssign();
   };
 
@@ -201,7 +194,6 @@ function AssignRoomsModal({
     const newData = _.cloneDeep(data);
     const building = newData.buildings.find((b) => b.id === buildingId);
     const floor = building.floors.find((f) => f.id === floorId);
-    let newVar = 0;
 
     floor.rooms.forEach((room) => {
       room.assigned = isSelected;
@@ -282,7 +274,6 @@ function AssignRoomsModal({
   const handleViewAll = () => {
     setFilter("All");
     setViewAll(false);
-    // setviewSelected(false)
   };
 
   const [error, setError] = useState();
@@ -430,7 +421,6 @@ function AssignRoomsModal({
                     placeholder="Suche"
                     required
                   />
-                  {/* <button type="submit" className="text-white absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Search</button> */}
                 </div>
               </form>
             </div>
@@ -522,16 +512,13 @@ function AssignRoomsModal({
                                           />
                                         </Table.HeadCell>
                                         <Table.HeadCell>Räume</Table.HeadCell>
-                                        {/* <Table.HeadCell>
-																					Algorithmus
-																				</Table.HeadCell> */}
+
                                         <Table.HeadCell>
                                           Aktiver Heizplan
                                         </Table.HeadCell>
                                         <Table.HeadCell>
                                           Raumtemperatur
                                         </Table.HeadCell>
-                                        {/* <Table.HeadCell>Assignment</Table.HeadCell> */}
                                       </Table.Head>
                                       <Table.Body className="">
                                         {filterRooms(floor.rooms).map(
@@ -562,13 +549,7 @@ function AssignRoomsModal({
                                                   {room.type}
                                                 </span>
                                               </Table.Cell>
-                                              {/* <Table.Cell className=" text-green-700 text-xl">
-																								{room.algorithmOn ? (
-																									<FaCheck />
-																								) : (
-																									""
-																								)}
-																							</Table.Cell> */}
+
                                               <Table.Cell>
                                                 {room.programAssigned ? (
                                                   <span className=" text-primary">
@@ -680,16 +661,13 @@ function AssignRoomsModal({
                                             />
                                           </Table.HeadCell>
                                           <Table.HeadCell>Räume</Table.HeadCell>
-                                          {/* <Table.HeadCell>
-																						Algorithmus
-																					</Table.HeadCell> */}
+
                                           <Table.HeadCell>
                                             Aktiver Heizplan
                                           </Table.HeadCell>
                                           <Table.HeadCell>
                                             Raumtemperatur
                                           </Table.HeadCell>
-                                          {/* <Table.HeadCell>Assignment</Table.HeadCell> */}
                                         </Table.Head>
                                         <Table.Body className="">
                                           {filterRooms(floor.rooms).map(
@@ -720,13 +698,7 @@ function AssignRoomsModal({
                                                     {room.type}
                                                   </span>
                                                 </Table.Cell>
-                                                {/* <Table.Cell className=" text-green-700 text-xl">
-																									{room.algorithmOn ? (
-																										<FaCheck />
-																									) : (
-																										""
-																									)}
-																								</Table.Cell> */}
+
                                                 <Table.Cell>
                                                   {room.programAssigned ? (
                                                     <span className=" text-primary">

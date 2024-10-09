@@ -1,7 +1,3 @@
-/* eslint-disable react/prop-types */
-// Parent Component
-import { Button, Modal } from "flowbite-react";
-// import customTheme from "../CreateHeating/ModalTheme";
 import { useEffect, useRef, useState } from "react";
 import { errorMessages as errors } from "../../../../globals/errorMessages"; // Import error messages
 import ProgressStepper from "../../HeatingSchedule/CreateHeating/components/ProgressStepper";
@@ -106,7 +102,6 @@ export function EditRoomHeatingSchedule({
             maxTemp: "",
           }));
         }
-        // console.log(errorMessages)
       }
 
       if (id === "maxTemp") {
@@ -131,7 +126,6 @@ export function EditRoomHeatingSchedule({
     // Cross-validate minTemp and maxTemp
     if (minTemp !== "" && maxTemp !== "") {
       if (minTemp >= maxTemp) {
-        // error = errors.maxTempLowerThanMinTemp;
         // Update error state for maxTemp when cross-validation fails
         setErrorMessages((prev) => ({
           ...prev,
@@ -221,7 +215,6 @@ export function EditRoomHeatingSchedule({
       return false;
     }
 
-    // console.log(formData);
     return true;
   };
 
@@ -289,10 +282,7 @@ export function EditRoomHeatingSchedule({
         finalScheduleData,
       });
     }
-    // console.log(combinedData);
   }, [formData, finalScheduleData]);
-
-  // const programAssignmentRef = useRef();
 
   const handleCreate = () => {
     // Save button clicked

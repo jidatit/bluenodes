@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import GridLayout from "react-grid-layout";
 import "react-grid-layout/css/styles.css";
 import "react-resizable/css/styles.css";
@@ -7,7 +6,6 @@ import { daysOfWeek } from "../../../../globals/daysofWeek";
 function HeatingScheduleComparison(props) {
   const rowHeight = 20; // Each row represents 70 pixels
 
-  // Dummy data for initial layouts
   const initialLayouts = {
     [daysOfWeek[0]]: [
       {

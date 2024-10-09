@@ -1,27 +1,16 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable react/prop-types */
 import { useState, useEffect, useRef } from "react";
-import { Select, Tooltip } from "flowbite-react";
+import { Tooltip } from "flowbite-react";
 import { IoChevronBackOutline, IoSearch } from "react-icons/io5";
 import { IoChevronForwardOutline } from "react-icons/io5";
-import { MdOutlineAccessTimeFilled } from "react-icons/md";
-import { FaCircleInfo, FaRegCircleCheck } from "react-icons/fa6";
-import { RiErrorWarningFill } from "react-icons/ri";
-import { IoIosWarning } from "react-icons/io";
-import { FaSearch } from "react-icons/fa";
-import { GiTireIronCross } from "react-icons/gi";
+import { FaRegCircleCheck } from "react-icons/fa6";
 import { AiOutlineExclamationCircle } from "react-icons/ai";
 import BatteryFull from "../../../../assets/battery-icons/battery-100.png";
-import BatteryHigh from "../../../../assets/battery-icons/battery-76.png";
 import BatteryMedium from "../../../../assets/battery-icons/battery-51.png";
 import BatteryLow from "../../../../assets/battery-icons/battery-26.png";
 import BatteryEmpty from "../../../../assets/battery-icons/battery-0.png";
 import { fetchDevicesOfflineData } from "../data/Statuspageapis";
 import ApiUrls from "../../../../globals/apiURL";
-import { MultiSelect } from "primereact/multiselect";
-import axios from "axios";
 import { TreeSelect } from "primereact/treeselect";
-import DateFilter from "./dateFilter/DateFilter";
 import formatTimestamp from "../../../../utils/formatTimeStamp";
 import { CiCircleRemove } from "react-icons/ci";
 
@@ -133,15 +122,9 @@ const OfflineTable = () => {
   }, [filtersSelected]);
 
   const [tableData, setTableData] = useState([]);
-  // const [selectedFilter, setSelectedFilter] = useState('Last Year');
-  // const [selectedEvent, setSelectedEvent] = useState("All events");
   const [currentPage, setCurrentPage] = useState(1);
   const [totalRows, setTotalRows] = useState(0);
-  // const [filteredData, setFilteredData] = useState([]);
-  // const [searchQuery, setSearchQuery] = useState('');
-
   const itemsPerPage = 10;
-
   const [selectedKeys, setSelectedKeys] = useState({});
   const [selectedRoomIds, setSelectedRoomIds] = useState(new Set());
   const [Deselectedkeys, setDeselectedKeys] = useState({});
@@ -514,10 +497,6 @@ const OfflineTable = () => {
                 <CiCircleRemove size={36} />
               </button>
             )}
-            {/* <MultiSelect value={selectedEventFilters} onChange={(e) => setSelectedEventFilters(e.value)} showSelectAll={false} options={eventFilterOptions} optionLabel="name"
-                            filter placeholder="All Events" display="chip" className="w-full md:w-20rem" />
-
-                        <DateFilter onDatesChange={handleDatesChange} /> */}
           </div>
         </div>
         {/* Table */}

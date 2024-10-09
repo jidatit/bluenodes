@@ -1,16 +1,9 @@
-/* eslint-disable react/prop-types */
 import { useEffect, useRef, useState } from "react";
-import { Button, Modal, Radio, Label, Select, Tooltip } from "flowbite-react";
+import { Button, Modal, Tooltip } from "flowbite-react";
 import { IoInformationCircleOutline } from "react-icons/io5";
 import customTheme from "../../HeatingSchedule/CreateHeating/ModalTheme";
 import { errorMessages as errors } from "../../../../globals/errorMessages"; // Import error messages
-import ProgressStepper from "../../HeatingSchedule/CreateHeating/components/ProgressStepper";
-import GeneralInformation from "../../HeatingSchedule/CreateHeating/Steps/GeneralInformation/GeneralInformation";
-import HeatingSchedule from "../../HeatingSchedule/CreateHeating/Steps/HeatingSchedule/HeatingSchedule";
-import { Toast } from "flowbite-react";
 import HeatingScheduleTable from "../../HeatingSchedule/components/HeatingScheduleTable";
-import { Dropdown } from "flowbite-react";
-import useHeatingSchedule from "../../../../hooks/useHeatingSchedule";
 import axios from "axios";
 import ApiUrls from "../../../../globals/apiURL.js";
 import { daysOfWeek } from "../../../../globals/daysofWeek.js";
@@ -22,15 +15,12 @@ const AssignProgramModal = ({
   room,
   fetchList,
   assignSuccess,
-  // fetchFloorDetails,
-  // updateReplaced,
 }) => {
   const [selectedAction, setSelectedAction] = useState("");
   const [selectedProgram, setSelectedProgram] = useState("");
   const [showError, setShowError] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [data, setData] = useState([]);
-  // const { createdHeatingScheduleNames, setCreatedHeatingScheduleNames } = useHeatingSchedule();
   const { generateToast } = useToast();
   const handleCloseModal = () => {
     handleCancelReplace();
@@ -233,7 +223,6 @@ const AssignProgramModal = ({
             maxTemp: "",
           }));
         }
-        // console.log(errorMessages);
       }
 
       if (id === "maxTemp") {
@@ -262,8 +251,6 @@ const AssignProgramModal = ({
     // Cross-validate minTemp and maxTemp
     if (minTemp !== "" && maxTemp !== "") {
       if (minTemp >= maxTemp && maxTempStr.length >= 2) {
-        // error = errors.maxTempLowerThanMinTemp;
-        // Update error state for maxTemp when cross-validation fails
         setErrorMessages((prev) => ({
           ...prev,
           maxTemp: errors.maxTempLowerThanMinTemp,
@@ -386,7 +373,6 @@ const AssignProgramModal = ({
     } else {
       return true;
     }
-    // console.log(formData);
   };
 
   const [layouts, setLayouts] = useState({}); // State to hold layouts
@@ -404,9 +390,7 @@ const AssignProgramModal = ({
   let newCheck = null;
   // Function to handle layout updates
   const handleCheckUpdate = (updatedCheck) => {
-    // console.log(updatedCheck,"hhihi")
     newCheck = updatedCheck;
-    // checkedRef.current = updatedCheck;
   };
 
   const handlePrevious = () => {
@@ -416,7 +400,6 @@ const AssignProgramModal = ({
   };
 
   const handleNext = () => {
-    // console.log("first step ",formData)
     if (currentStep === 1) {
       if (handleSubmit()) {
         setCurrentStep((prev) => Math.min(prev + 1, 3));
@@ -443,11 +426,9 @@ const AssignProgramModal = ({
         finalScheduleData,
       });
     }
-    // console.log(combinedData);
   }, [formData, finalScheduleData]);
 
   function convertScheduleData(data) {
-    // console.log(data)
     const dayMapping = {
       [daysOfWeek[0]]: 1,
       [daysOfWeek[1]]: 2,
@@ -552,7 +533,6 @@ const AssignProgramModal = ({
         const respData = await resp.data;
         if (respData.active) {
           handleOpenModal();
-          // updateReplaced();
           resetModalState();
           generateToast(errors.heatingScheduleEditedSuccessfull, true);
 
@@ -767,7 +747,6 @@ const ViewTableComponent = ({ selectedProgram }) => {
       })
       .then((data) => {
         setTemperatureDetails(data);
-        // console.log("location details", data);
       })
       .catch((error) => console.error("Error:", error));
   };

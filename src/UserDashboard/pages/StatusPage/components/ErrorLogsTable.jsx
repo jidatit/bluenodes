@@ -1,5 +1,3 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable react/prop-types */
 import { useState, useEffect, useRef } from "react";
 import { Tooltip } from "flowbite-react";
 import {
@@ -7,7 +5,6 @@ import {
   IoChevronForwardOutline,
   IoSearch,
 } from "react-icons/io5";
-import { MdOutlineAccessTimeFilled } from "react-icons/md";
 import axios from "axios";
 import ApiUrls from "../../../../globals/apiURL";
 import DateFilter from "./dateFilter/DateFilter";
@@ -25,13 +22,10 @@ const ErrorLogsTable = () => {
     { name: "Error", code: "err", germanLabel: "Fehler" },
     { name: "Warning", code: "warn", germanLabel: "Warnung" },
   ]);
-  // Predefined filter for errors
-
   const [ApiLocationsToBeSend, setApiLocationsToBeSend] = useState(null);
   const [apiLocationsToBeSendCounter, setApiLocationsToBeSendCounter] =
     useState(null);
   const [buildingOpen, setBuildingOpen] = useState(false);
-  const [eventOpen, setEventOpen] = useState(false);
   const [filtersSelected, setFiltersSelected] = useState(false);
   const [selectedLocationFilter, setSelectedLocationFilter] = useState(0);
   const [subDropdownValue, setSubDropdownValue] = useState(null);
@@ -44,10 +38,8 @@ const ErrorLogsTable = () => {
     useState("Schnellauswahl");
   const [dropDownValue, setDropDownValue] = useState("Schnellauswahl");
   const eventFilterOptions = [
-    // { name: "Information", code: "info", germanLabel: "Information" },
     { name: "Error", code: "err", germanLabel: "Fehler" },
     { name: "Warning", code: "warn", germanLabel: "Warnung" },
-    // { name: "Behoben", code: "beh", germanLabel: "Behoben" },
   ];
   // Function to handle click outside of the DateFilter
   const handleMultiSelectClick = () => {
@@ -72,10 +64,8 @@ const ErrorLogsTable = () => {
       setBuildingOpen(false);
     }
   };
-
   const clearAllFilters = () => {
     setSelectedKeys([]);
-
     setApiLocationsToBeSend(null);
     setSelectedRoomIds(null);
     setSelectedDropdownOption("Schnellauswahl");
@@ -112,16 +102,13 @@ const ErrorLogsTable = () => {
     return nodes.map((node) => {
       const key =
         node.children.length > 0 ? node.id.toString() : `room${node.id}`;
-
       const transformedNode = {
         key: key,
         label: node.name,
       };
-
       if (node.children.length > 0) {
         transformedNode.children = transformData(node.children);
       }
-
       return transformedNode;
     });
   };
@@ -130,13 +117,11 @@ const ErrorLogsTable = () => {
     try {
       const data = await axios.get(ApiUrls.SMARTHEATING_LOCATIONS.LIST);
       const transformedData = transformData(data.data);
-
       setFilteredLocations(transformedData);
       setLocationsData(transformedData);
       const extractedFloors = LocationsData.map(
         (location) => location.children
       ).flat();
-
       // Update the floors state with the extracted children
       setFloors(extractedFloors);
     } catch (error) {
@@ -148,8 +133,6 @@ const ErrorLogsTable = () => {
     if (filtersSelected === false) getAllLocations();
   }, [filtersSelected]);
   const [tableData, setTableData] = useState([]);
-  // const [selectedFilter, setSelectedFilter] = useState("Last Year");
-  // const [selectedEvent, setSelectedEvent] = useState("All events");
   useEffect(() => {
     if (selectedEventFilters !== null) {
       getData(ApiLocationsToBeSend);
@@ -157,7 +140,6 @@ const ErrorLogsTable = () => {
   }, [selectedEventFilters]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalRows, setTotalRows] = useState(0);
-
   const [selectedKeys, setSelectedKeys] = useState({});
   const [selectedRoomIds, setSelectedRoomIds] = useState(new Set());
   const [Deselectedkeys, setDeselectedKeys] = useState({});
@@ -389,15 +371,6 @@ const ErrorLogsTable = () => {
     return new Date(dateString).toLocaleDateString("de-DE", options);
   };
 
-  // const formatDateforApitosend = (date) => {
-  //   const options = { year: "numeric", month: "2-digit", day: "2-digit" };
-  //   return new Intl.DateTimeFormat("en-GB", options)
-  //     .format(date)
-  //     .split("/")
-  //     .reverse()
-  //     .join("-");
-  // };
-
   const handleDatesChange = (newDates) => {
     if (!newDates || !newDates[0]) {
       setdateFrom(null);
@@ -594,9 +567,6 @@ const ErrorLogsTable = () => {
               >
                 <td className="px-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                   {item.roomName ? item.roomName : "N/A"}{" "}
-                  {/* <span className="text-[12px] py-0.5 px-2.5 font-semibold bg-gray-100 rounded-[80px] p-1">
-                    {item.roomTag ? item.roomTag : "N/A"}
-                  </span> */}
                 </td>
                 <td className="px-4 py-4">
                   {item.building_floor_string

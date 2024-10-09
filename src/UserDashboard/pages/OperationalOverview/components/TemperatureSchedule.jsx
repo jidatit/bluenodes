@@ -1,27 +1,11 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import thermometer from "../../../../assets/icons/thermometer-02.png";
 import windowicon from "../../../../assets/icons/Window.png";
-import algo from "../../../../assets/icons/algorithm.png";
 import { Button, Tooltip } from "flowbite-react";
 import { ViewRoomScheduleModal } from "./ViewRoomScheduleModal";
 import EditHeatingProgramModal from "./EditHeatingProgramModal";
 import axios from "axios";
 import ApiUrls from "../../../../globals/apiURL.js";
-import { memo } from "react";
-
-// Function to determine the background and text colors based on type
-const handleTypeColor = (type) => {
-  switch (type) {
-    case "Resident":
-      return "bg-yellow-100 text-yellow-800";
-    case "Office":
-      return "bg-primary-100 text-primary-800";
-    case "Utility":
-      return "bg-purple-100 text-purple-800";
-    default:
-      return "bg-gray-200 text-gray-900";
-  }
-};
 
 // Function to determine color based on temperature
 const handleTempColour = (temp) => {
@@ -101,11 +85,9 @@ const parseTimeToPercentage = (timestamp) => {
     if (isNaN(hours) || isNaN(minutes)) {
       return null;
     }
-
     const totalMinutes = hours * 60 + minutes;
     const totalSeconds = totalMinutes * 60 + seconds;
     const percentage = (totalSeconds / 86400) * 100;
-
     return percentage;
   }
 };
@@ -173,14 +155,12 @@ const TemperatureSchedule = ({
     });
   };
 
-  const [type, setType] = useState("Resident");
   const [openModal, setOpenModal] = useState(false);
   const [openEditModal, setOpenEditModal] = useState(false);
   const [selectedRoom, setSelectedRoom] = useState(null);
   const [selectedRoomSchedId, setSelectedRoomSchedId] = useState(null);
   const [selectedRoomAlgo, setSelectedRoomAlgo] = useState(false);
   const [RoomsDetail, setRoomsDetail] = useState([]);
-  const [locationDetails, setLocationDetails] = useState([]);
   const [scheduleDetails, setscheduleDetails] = useState([]);
   const [roomName, setroomName] = useState("");
   const isFirstRender = useRef(true);
@@ -190,10 +170,6 @@ const TemperatureSchedule = ({
     setSelectedRoomSchedId(roomSchedId);
     setOpenModal(!openModal);
   };
-  // useEffect(() => {
-  // 	console.log("temp schdeuled rendere");
-  // }, []);
-
   const handleOpenEditModal = (room) => {
     setOpenEditModal(!openEditModal);
     setSelectedRoom(room);
@@ -225,8 +201,6 @@ const TemperatureSchedule = ({
         getFloorDetails(floorId);
         fetchSchedules();
         setfetch1(false);
-
-        // console.log("call 2");
       }
     }
   }, [fetch1]);
@@ -264,7 +238,6 @@ const TemperatureSchedule = ({
         return room;
       })
     );
-    // console.log(updatedRooms, "up");
     setscheduleDetails(updatedRooms); // Update schedule details
   };
 
@@ -275,7 +248,6 @@ const TemperatureSchedule = ({
       );
       const data = await resp.data;
       const pdata = processRoomsData(data);
-      // console.log(pdata);
       setRoomsDetail(pdata); // This will automatically trigger fetchSchedules via useEffect
     } catch (error) {
       console.log(error);
@@ -290,8 +262,6 @@ const TemperatureSchedule = ({
         getFloorDetails(floorId);
         fetchSchedules();
         setaccordianOpened(false);
-
-        // console.log("call 4");
       }
     }
   }, [accordianOpened]);
@@ -303,14 +273,8 @@ const TemperatureSchedule = ({
       if (accordianOpened2 === true) {
         fetchSchedules();
         setaccordianOpened2(false);
-        // console.log("called twice");
-        // console.log("call 4");
       }
     }
-    // fetchSchedules();
-    // setaccordianOpened2(false);
-    // console.log("called twice");
-    // console.log("call1", accordianOpened, accordianOpened2);
   }, [accordianOpened2]);
 
   const formatTime = (time) => {
@@ -336,17 +300,6 @@ const TemperatureSchedule = ({
                       : room.name}
                   </span>
                 </Tooltip>
-                {/* <Tooltip content={room.tag} style="light">
-									<span
-										className={`text-xs font-normal py-0.5 px-2.5 ml-1 ${handleTypeColor(
-											type,
-										)} rounded-full overflow-hidden text-ellipsis whitespace-nowrap`}
-									>
-										{room.tag && room.tag.length > 15
-											? `${room.tag.slice(0, 12)}...`
-											: room.tag}
-									</span>
-								</Tooltip> */}
               </div>
               <div className=" flex  items-center gap-4 justify-start w-auto 2xl:w-[25%] 2xl:gap-10">
                 <Tooltip
@@ -378,19 +331,6 @@ const TemperatureSchedule = ({
                     </p>
                   </div>
                 </Tooltip>
-
-                {/* <Tooltip
-									className={`px-2 py-1.5 text-center max-w-xs`}
-									content={`Algorithmus ist ${room.algorithm ? "an" : "aus"}`}
-									style="light"
-								>
-									<div className="flex items-center w-full gap-2 text-xl ">
-										<img src={algo} alt="Algorithm" />
-										<p className="text-sm w-[45px]">
-											{room.algorithm ? "An" : "Aus"}
-										</p>
-									</div>
-								</Tooltip> */}
               </div>
 
               <div className="w-auto 2xl:w-[30%] flex justify-end">
@@ -573,13 +513,8 @@ const TemperatureSchedule = ({
                               parseTimeToPercentage(element.to) -
                               parseTimeToPercentage(element.from)
                             }% - 0.15rem)`,
-                            // marginLeft: index === 0 ? "0" : "0.1rem",
-                            // marginRight:
-                            // 	index === array.length - 1 ? "0" : "0.45rem",
                           }}
-                        >
-                          {/* {console.log(room.heatingSchedule.currentDay)} */}
-                        </div>
+                        ></div>
                         <div
                           className=" absolute top-[-4px] flex flex-col text-sm text-gray-500 items-end ml-[2px]"
                           style={{
