@@ -9,6 +9,7 @@ import ApiUrls from "../../../../globals/apiURL";
 import { errorMessages as errors } from "../../../../globals/errorMessages"; // Import error messages
 import { CiCircleRemove } from "react-icons/ci";
 import { useToast } from "../../OperationalOverview/components/ToastContext";
+import AssignProgramModal from "./AssignProgramModal";
 
 const UnassignedTable = ({ assignUpdate }) => {
   const [selectedEventFilters, setSelectedEventFilters] = useState(null);
@@ -600,7 +601,7 @@ const UnassignedTable = ({ assignUpdate }) => {
       </div>
 
       {handleOpenEditModal && openEditModal && (
-        <AssignProgramModa
+        <AssignProgramModal
           openModal={openEditModal}
           handleOpenModal={handleOpenEditModal}
           room={selectedRoom}
