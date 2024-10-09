@@ -87,8 +87,8 @@ export function ViewRoomScheduleModal({
                       <>
                         <div className="flex flex-col gap-2">
                           <p className="flex items-center gap-1 font-semibold">
-                          Mindesttemperatur
-                          <Tooltip
+                            Mindesttemperatur
+                            <Tooltip
                               className="px-3 py-1.5 text-center max-w-96"
                               content="Die Mindesttemperatur, die am Thermostat manuell eingestellt werden kann."
                               style="light"
@@ -102,8 +102,8 @@ export function ViewRoomScheduleModal({
                         </div>
                         <div className="flex flex-col gap-2">
                           <p className="flex items-center gap-1 font-semibold">
-                          Höchsttemperatur
-                          <Tooltip
+                            Höchsttemperatur
+                            <Tooltip
                               className="px-3 py-1.5 text-center max-w-96"
                               content="Die Höchsttemperatur, die am Thermostat manuell eingestellt werden kann."
                               style="light"
@@ -137,38 +137,7 @@ export function ViewRoomScheduleModal({
                   <h3 className="text-[16px] text-gray-500 font-semibold">
                     Heizplan
                   </h3>
-                  {/* <ToggleSwitch checked={switch1} label="Toggle me" onChange={setSwitch1} /> */}
-                  {/* <div>
-                    <label className="flex items-center gap-2 cursor-pointer select-none">
-                      <div className="relative">
-                        <input
-                          type="checkbox"
-                          checked={isChecked}
-                          onChange={handleCheckboxChange}
-                          className="sr-only"
-                        />
-                        <div
-                          className={`box block h-5 !w-10 rounded-full ${
-                            isChecked ? "bg-primary" : " bg-gray-200"
-                          }`}
-                        ></div>
-                        <div
-                          className={`absolute left-1 top-[2px] flex h-4 w-4 items-center justify-center rounded-full bg-white transition ${
-                            isChecked ? "translate-x-full" : ""
-                          }`}
-                        ></div>
-                      </div>
-                      {!isChecked ? (
-                        <div className="text-sm font-medium text-gray-900 ">
-                          Vergleich zum intelligenten Heizplan
-                        </div>
-                      ) : (
-                        <div className="text-sm font-medium text-gray-900 ">
-                          Ursprünglichen Heizplan anzeigen
-                        </div>
-                      )}
-                    </label>
-                  </div> */}
+
                   {!isChecked ? (
                     <div className="max-h-[400px] overflow-y-auto overflow-x-hidden pr-2">
                       {locationDetails && (

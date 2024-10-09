@@ -11,26 +11,26 @@ import "primereact/resources/primereact.min.css";
 import { ToastProvider } from "./UserDashboard/pages/OperationalOverview/components/ToastContext.jsx";
 
 axios.interceptors.request.use(
-	(config) => {
-		const token = localStorage.getItem("token");
+  (config) => {
+    const token = localStorage.getItem("token");
 
-		if (token) {
-			config.headers["Authorization"] = "Bearer " + token;
-		}
-		return config;
-	},
-	(error) => {
-		return Promise.reject(error);
-	},
+    if (token) {
+      config.headers["Authorization"] = "Bearer " + token;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
 );
 axios.defaults.baseURL = ApiUrls.BASE_URL;
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-	<AuthProvider>
-		<PrimeReactProvider value={{ unstyled: false }}>
-			<ToastProvider>
-				<App />
-			</ToastProvider>
-		</PrimeReactProvider>
-	</AuthProvider>,
+  <AuthProvider>
+    <PrimeReactProvider value={{ unstyled: false }}>
+      <ToastProvider>
+        <App />
+      </ToastProvider>
+    </PrimeReactProvider>
+  </AuthProvider>
 );

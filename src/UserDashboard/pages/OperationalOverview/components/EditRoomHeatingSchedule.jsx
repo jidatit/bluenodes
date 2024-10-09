@@ -9,15 +9,20 @@ import GeneralInformation from "../../HeatingSchedule/CreateHeating/Steps/Genera
 import HeatingSchedule from "../../HeatingSchedule/CreateHeating/Steps/HeatingSchedule/HeatingSchedule";
 import { daysOfWeek } from "../../../../globals/daysofWeek";
 
-export function EditRoomHeatingSchedule({ openEditModal, handleEditModal, onEdit, program, locationDetails }) {
-  
+export function EditRoomHeatingSchedule({
+  openEditModal,
+  handleEditModal,
+  onEdit,
+  program,
+  locationDetails,
+}) {
   const [currentStep, setCurrentStep] = useState(1);
 
   const [formData, setFormData] = useState({
     programName: program?.templateName || "",
-    childSafety: program?.allowDeviceOverride===true?"No":"Yes" || "",
-    minTemp: program?.deviceOverrideTemperatureMin + '°C'||"",
-    maxTemp: program?.deviceOverrideTemperatureMax + '°C'||"",
+    childSafety: program?.allowDeviceOverride === true ? "No" : "Yes" || "",
+    minTemp: program?.deviceOverrideTemperatureMin + "°C" || "",
+    maxTemp: program?.deviceOverrideTemperatureMax + "°C" || "",
     applyAlgorithm: "",
   });
 
@@ -34,18 +39,20 @@ export function EditRoomHeatingSchedule({ openEditModal, handleEditModal, onEdit
 
   useEffect(() => {
     if (formSubmitted) {
-      const allFieldsFilled = Object.values(formData).every((field) => field !== '');
+      const allFieldsFilled = Object.values(formData).every(
+        (field) => field !== ""
+      );
       if (!allFieldsFilled) {
         setGeneralErrorMessage(errors.allFieldsRequired);
       } else {
-        setGeneralErrorMessage('');
+        setGeneralErrorMessage("");
       }
 
       const newErrors = {};
 
       // Check for empty fields
       Object.keys(formData).forEach((key) => {
-        if (formData[key] === '') {
+        if (formData[key] === "") {
           newErrors[key] = errors.missingSelectionOrInformation;
         }
       });
@@ -74,23 +81,24 @@ export function EditRoomHeatingSchedule({ openEditModal, handleEditModal, onEdit
 
   const validateField = (id, value) => {
     let error = "";
-  
+
     if (value === "") {
       error = errors.missingSelectionOrInformation;
     } else {
-      const minTemp = id === "minTemp" ? parseFloat(value) : parseFloat(formData.minTemp);
-      const maxTemp = id === "maxTemp" ? parseFloat(value) : parseFloat(formData.maxTemp);
-  
+      const minTemp =
+        id === "minTemp" ? parseFloat(value) : parseFloat(formData.minTemp);
+      const maxTemp =
+        id === "maxTemp" ? parseFloat(value) : parseFloat(formData.maxTemp);
+
       if (id === "minTemp") {
         if (isNaN(minTemp) || minTemp < 10 || minTemp > 29) {
           error = errors.minTempInvalid;
-        } else if ( maxTemp !== "" && minTemp >= maxTemp) {
+        } else if (maxTemp !== "" && minTemp >= maxTemp) {
           // Update error state for maxTemp immediately
           setErrorMessages((prev) => ({
             ...prev,
             maxTemp: errors.maxTempLowerThanMinTemp,
           }));
-
         } else {
           // Clear error for maxTemp if minTemp is valid and lower than maxTemp
           setErrorMessages((prev) => ({
@@ -100,7 +108,7 @@ export function EditRoomHeatingSchedule({ openEditModal, handleEditModal, onEdit
         }
         // console.log(errorMessages)
       }
-  
+
       if (id === "maxTemp") {
         if (isNaN(maxTemp) || maxTemp < 11 || maxTemp > 30) {
           error = errors.maxTempInvalid;
@@ -108,8 +116,8 @@ export function EditRoomHeatingSchedule({ openEditModal, handleEditModal, onEdit
           error = errors.maxTempLowerThanMinTemp;
         }
       }
-  }
-  
+    }
+
     // Set error message for the current field
     setErrorMessages((prev) => ({
       ...prev,
@@ -117,9 +125,9 @@ export function EditRoomHeatingSchedule({ openEditModal, handleEditModal, onEdit
     }));
   };
 
-  useEffect(()=>{
-    const minTemp =  parseFloat(formData.minTemp);
-    const maxTemp =  parseFloat(formData.maxTemp);
+  useEffect(() => {
+    const minTemp = parseFloat(formData.minTemp);
+    const maxTemp = parseFloat(formData.maxTemp);
     // Cross-validate minTemp and maxTemp
     if (minTemp !== "" && maxTemp !== "") {
       if (minTemp >= maxTemp) {
@@ -136,14 +144,14 @@ export function EditRoomHeatingSchedule({ openEditModal, handleEditModal, onEdit
           maxTemp: "", // Clear the error message for maxTemp
         }));
       }
-    }    
-  },[formData])
+    }
+  }, [formData]);
 
   const handleChange = (e) => {
     const { id, value } = e.target;
-  
+
     validateField(id, value);
-    
+
     // Check if the change is from the radio button groups
     if (id === "childSafetyYes" || id === "childSafetyNo") {
       setFormData((prev) => ({
@@ -162,27 +170,24 @@ export function EditRoomHeatingSchedule({ openEditModal, handleEditModal, onEdit
       }));
     }
 
-      // Re-validate the related temperature field
-  if (id === "minTemp" && formData.maxTemp) {
-    validateField("maxTemp", formData.maxTemp);
-  }
-  if (id === "maxTemp" && formData.minTemp) {
-    validateField("minTemp", formData.minTemp);
-  }
-  
+    // Re-validate the related temperature field
+    if (id === "minTemp" && formData.maxTemp) {
+      validateField("maxTemp", formData.maxTemp);
+    }
+    if (id === "maxTemp" && formData.minTemp) {
+      validateField("minTemp", formData.minTemp);
+    }
+
     const allFieldsFilled = Object.values({
       ...formData,
       [id]: value,
     }).every((field) => field !== "");
-  
+
     if (allFieldsFilled) {
       setErrorMessages({});
       setGeneralErrorMessage(""); // Clear general error message if all fields are filled
     }
   };
-  
-  
-
   const handleSubmit = () => {
     setFormSubmitted(true);
 
@@ -220,10 +225,9 @@ export function EditRoomHeatingSchedule({ openEditModal, handleEditModal, onEdit
     return true;
   };
 
-
   const [layouts, setLayouts] = useState({}); // State to hold layouts
   const [finalScheduleData, setFinalScheduleData] = useState({});
-  
+
   const handleCheckRef = useRef(null); // Ref to hold handleCheck function
   const layoutsRef = useRef(layouts); // Ref to hold the latest layouts value
 
@@ -240,7 +244,6 @@ export function EditRoomHeatingSchedule({ openEditModal, handleEditModal, onEdit
   };
 
   const handleNext = () => {
-
     if (currentStep === 1) {
       if (handleSubmit()) {
         setCurrentStep((prev) => Math.min(prev + 1, 3));
@@ -252,13 +255,17 @@ export function EditRoomHeatingSchedule({ openEditModal, handleEditModal, onEdit
       }
 
       // Validate layouts for all days
-      const days = daysOfWeek
-      const allNonEmpty = days.every(day => (day in layoutsRef.current) && layoutsRef.current[day].length > 0);
+      const days = daysOfWeek;
+      const allNonEmpty = days.every(
+        (day) => day in layoutsRef.current && layoutsRef.current[day].length > 0
+      );
       if (allNonEmpty) {
         setFinalScheduleData(layoutsRef.current);
         setCurrentStep((prev) => Math.min(prev + 1, 3));
       } else {
-        console.log('All layouts are empty. Please fill in the required information.');
+        console.log(
+          "All layouts are empty. Please fill in the required information."
+        );
       }
     }
   };
@@ -283,16 +290,15 @@ export function EditRoomHeatingSchedule({ openEditModal, handleEditModal, onEdit
       });
     }
     // console.log(combinedData);
-  }, [formData,finalScheduleData]);
+  }, [formData, finalScheduleData]);
 
   // const programAssignmentRef = useRef();
 
   const handleCreate = () => {
-
-      // Save button clicked
-      onEdit(combinedData);
-      handleEditModal();
-      resetModalState();
+    // Save button clicked
+    onEdit(combinedData);
+    handleEditModal();
+    resetModalState();
   };
 
   const resetModalState = () => {
@@ -324,36 +330,33 @@ export function EditRoomHeatingSchedule({ openEditModal, handleEditModal, onEdit
 
   return (
     <>
-
-          <div className="flex flex-col items-center space-y-6 w-full">
-            <ProgressStepper currentStep={currentStep} editMode={true} />
-            <div className="w-full">
-              {currentStep === 1 && (
-                <div>
-                  <GeneralInformation
-                    formData={formData}
-                    handleChange={handleChange}
-                    errorMessages={errorMessages}
-                    generalErrorMessage={generalErrorMessage} // Pass general error message to Form1
-                  />
-                </div>
-              )}
-              {currentStep === 2 && (
-                <div>
-                  <HeatingSchedule
-                    onUpdateLayouts={handleLayoutUpdate}
-                    setHandleCheckRef={(func) => handleCheckRef.current = func}
-                    handlePrev={handlePrevious}
-                    finalScheduleData={finalScheduleData}
-                    clone={true}
-                    locationDetails={locationDetails}
-                  />
-                </div>
-              )}
+      <div className="flex flex-col items-center space-y-6 w-full">
+        <ProgressStepper currentStep={currentStep} editMode={true} />
+        <div className="w-full">
+          {currentStep === 1 && (
+            <div>
+              <GeneralInformation
+                formData={formData}
+                handleChange={handleChange}
+                errorMessages={errorMessages}
+                generalErrorMessage={generalErrorMessage} // Pass general error message to Form1
+              />
             </div>
-
-          </div>
-
+          )}
+          {currentStep === 2 && (
+            <div>
+              <HeatingSchedule
+                onUpdateLayouts={handleLayoutUpdate}
+                setHandleCheckRef={(func) => (handleCheckRef.current = func)}
+                handlePrev={handlePrevious}
+                finalScheduleData={finalScheduleData}
+                clone={true}
+                locationDetails={locationDetails}
+              />
+            </div>
+          )}
+        </div>
+      </div>
     </>
   );
 }
