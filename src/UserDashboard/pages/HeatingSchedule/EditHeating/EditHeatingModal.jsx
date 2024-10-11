@@ -17,6 +17,7 @@ import validateFieldHelper from "../../../../shared/helper/ValidateFieldHelper.j
 import validateTemperatureHelper from "../../../../shared/helper/ValidateTemperatureHelper.js";
 import handleFormChangeHelper from "../../../../shared/helper/FormChangeValidationCheckHelper.js";
 import validateAndSubmit from "../../../../shared/helper/HandleSubmitHelper.js";
+import { prepareApiPayload } from "../../../../shared/helper/createEditHeatingHelper.js";
 
 export function EditHeatingModal({
   openEditModal,
@@ -369,8 +370,89 @@ export function EditHeatingModal({
   }, [formData, finalScheduleData]);
 
   const handleCreate = () => {
-    let scheduleDataTemp = {};
+    // let scheduleDataTemp = {};
+    // // Save button clicked
+    // if (currentStep === 2) {
+    //   // Trigger the handleCheck function in the child component
+    //   if (handleCheckRef.current) {
+    //     handleCheckRef.current();
+    //   }
+    //   if (newCheck !== null && !newCheck) {
+    //     setFinalScheduleData(layoutsRef.current);
+    //     scheduleDataTemp = layoutsRef.current;
+    //     // Convert schedule data into API format
+    //     // eslint-disable-next-line no-inner-declarations
+    //     function convertScheduleData(data) {
+    //       const dayMapping = {
+    //         [daysOfWeek[0]]: 1,
+    //         [daysOfWeek[1]]: 2,
+    //         [daysOfWeek[2]]: 3,
+    //         [daysOfWeek[3]]: 4,
+    //         [daysOfWeek[4]]: 5,
+    //         [daysOfWeek[5]]: 6,
+    //         [daysOfWeek[6]]: 7,
+    //       };
+    //       const result = { days: [] };
+    //       const normalizeTime = (value) => {
+    //         const hours = Math.floor((value * 24) / 96);
+    //         const minutes = Math.floor(((value * 24 * 60) / 96) % 60);
+    //         return `${hours.toString().padStart(2, "0")}:${minutes
+    //           .toString()
+    //           .padStart(2, "0")}`;
+    //       };
+    //       for (const [dayName, entries] of Object.entries(data)) {
+    //         const day = dayMapping[dayName];
+    //         entries.forEach((entry) => {
+    //           const from = normalizeTime(entry.y);
+    //           let to = normalizeTime(entry.y + entry.h);
+    //           const targetTemperature = parseFloat(entry.temperature, 10);
+    //           if (to === "24:00") {
+    //             to = "23:59";
+    //           }
+    //           result.days.push({
+    //             day,
+    //             from,
+    //             to,
+    //             targetTemperature,
+    //           });
+    //         });
+    //       }
+    //       return result.days;
+    //     }
+    //     //Manipulating for API
+    //     let finalObj = {
+    //       templateName: combinedData.formData.programName,
+    //       allowDeviceOverride:
+    //         combinedData.formData.childSafety === "No" ? true : false,
+    //       days: convertScheduleData(scheduleDataTemp),
+    //     };
+    //     if (combinedData.formData.childSafety !== "Yes") {
+    //       finalObj.deviceOverrideTemperatureMin = parseInt(
+    //         combinedData.formData.minTemp
+    //       );
+    //       finalObj.deviceOverrideTemperatureMax = parseInt(
+    //         combinedData.formData.maxTemp
+    //       );
+    //     }
+    //     axios
+    //       .put(
+    //         ApiUrls.SMARTHEATING_HEATINGSCHEDULE.HEATINGSCHEDULE_ID(program.id),
+    //         finalObj
+    //       )
+    //       .then((response) => {
+    //         generateToast(errors.editSuccessfull, true);
+    //         onEdit(combinedData);
+    //         handleEditModal();
+    //         resetModalState();
+    //       })
+    //       .catch((error) => {
+    //         generateToast(errors.editFailed, false);
+    //         console.error("Error:", error);
+    //       });
+    //   }
+    // }
 
+    let scheduleDataTemp = {};
     // Save button clicked
     if (currentStep === 2) {
       // Trigger the handleCheck function in the child component
@@ -381,68 +463,13 @@ export function EditHeatingModal({
         setFinalScheduleData(layoutsRef.current);
         scheduleDataTemp = layoutsRef.current;
 
-        // Convert schedule data into API format
-        // eslint-disable-next-line no-inner-declarations
-        function convertScheduleData(data) {
-          const dayMapping = {
-            [daysOfWeek[0]]: 1,
-            [daysOfWeek[1]]: 2,
-            [daysOfWeek[2]]: 3,
-            [daysOfWeek[3]]: 4,
-            [daysOfWeek[4]]: 5,
-            [daysOfWeek[5]]: 6,
-            [daysOfWeek[6]]: 7,
-          };
+        // Use the reusable helper to prepare API data
+        const finalObj = prepareApiPayload(
+          combinedData,
+          scheduleDataTemp,
+          daysOfWeek
+        );
 
-          const result = { days: [] };
-
-          const normalizeTime = (value) => {
-            const hours = Math.floor((value * 24) / 96);
-            const minutes = Math.floor(((value * 24 * 60) / 96) % 60);
-            return `${hours.toString().padStart(2, "0")}:${minutes
-              .toString()
-              .padStart(2, "0")}`;
-          };
-
-          for (const [dayName, entries] of Object.entries(data)) {
-            const day = dayMapping[dayName];
-            entries.forEach((entry) => {
-              const from = normalizeTime(entry.y);
-              let to = normalizeTime(entry.y + entry.h);
-              const targetTemperature = parseFloat(entry.temperature, 10);
-
-              if (to === "24:00") {
-                to = "23:59";
-              }
-
-              result.days.push({
-                day,
-                from,
-                to,
-                targetTemperature,
-              });
-            });
-          }
-
-          return result.days;
-        }
-
-        //Manipulating for API
-        let finalObj = {
-          templateName: combinedData.formData.programName,
-          allowDeviceOverride:
-            combinedData.formData.childSafety === "No" ? true : false,
-          days: convertScheduleData(scheduleDataTemp),
-        };
-
-        if (combinedData.formData.childSafety !== "Yes") {
-          finalObj.deviceOverrideTemperatureMin = parseInt(
-            combinedData.formData.minTemp
-          );
-          finalObj.deviceOverrideTemperatureMax = parseInt(
-            combinedData.formData.maxTemp
-          );
-        }
         axios
           .put(
             ApiUrls.SMARTHEATING_HEATINGSCHEDULE.HEATINGSCHEDULE_ID(program.id),
