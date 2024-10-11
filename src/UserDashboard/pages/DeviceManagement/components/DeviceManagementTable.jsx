@@ -143,21 +143,42 @@ const DeviceManagementTable = () => {
       return transformedNode;
     });
   };
+  // const getAllLocations = async () => {
+  //   try {
+  //     const data = await axios.get(ApiUrls.SMARTHEATING_LOCATIONS.LIST);
+  //     const transformedData = transformData(data.data);
+
+  //     setFilteredLocations(transformedData);
+  //     setLocationsData(transformedData);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   if (filtersSelected === false) getAllLocations();
+  // }, [filtersSelected]);
   const getAllLocations = async () => {
     try {
-      const data = await axios.get(ApiUrls.SMARTHEATING_LOCATIONS.LIST);
-      const transformedData = transformData(data.data);
+      const response = await axios.get(ApiUrls.SMARTHEATING_LOCATIONS.LIST);
+      const transformedData = transformData(response.data);
 
       setFilteredLocations(transformedData);
       setLocationsData(transformedData);
     } catch (error) {
-      console.log(error);
+      console.error("Error fetching locations:", error);
+      // Optionally set an error state here
     }
   };
 
   useEffect(() => {
-    if (filtersSelected === false) getAllLocations();
+    if (!filtersSelected) {
+      getAllLocations().catch((error) => {
+        console.error("Error in getAllLocations:", error);
+      });
+    }
   }, [filtersSelected]);
+
   const getAllKeys = (node) => {
     let keys = [node.key];
     if (node.children) {
@@ -194,7 +215,7 @@ const DeviceManagementTable = () => {
     const newSelectedRoomIds = new Set([...selectedRoomIds]);
     const updatedKeys = { ...selectedKeys };
     const updatedDeselectedKeys = { ...Deselectedkeys };
-    console.log("new", newSelectedKeys);
+
     // Helper function to select a node and all its children
     const selectNodeAndChildren = (key) => {
       const node = findNodeByKey(key, LocationsData);
@@ -350,33 +371,72 @@ const DeviceManagementTable = () => {
     }
   };
 
-  const getData = async (locations) => {
-    try {
-      const data = await fetchDeviceManagementList(
-        currentPage,
-        itemsPerPage,
-        batteryLevel,
-        status,
-        locations
-      );
-      setTotalRows(data.count);
+  // const getData = async (locations) => {
+  //   try {
+  //     const data = await fetchDeviceManagementList(
+  //       currentPage,
+  //       itemsPerPage,
+  //       batteryLevel,
+  //       status,
+  //       locations
+  //     );
+  //     setTotalRows(data.count);
 
-      // Sorting tableData by roomName, handling null values
-      const sortedData = data.rows.sort((a, b) => {
-        // Handle null values by putting them at the end
-        if (!a.roomName) return 1;
-        if (!b.roomName) return -1;
+  //     // Sorting tableData by roomName, handling null values
+  //     const sortedData = data.rows.sort((a, b) => {
+  //       // Handle null values by putting them at the end
+  //       if (!a.roomName) return 1;
+  //       if (!b.roomName) return -1;
 
-        // Compare roomName in a case-insensitive manner
-        return a.roomName.localeCompare(b.roomName);
+  //       // Compare roomName in a case-insensitive manner
+  //       return a.roomName.localeCompare(b.roomName);
+  //     });
+
+  //     // Set sorted data to the table
+  //     setTableData(sortedData);
+  //   } catch (error) {
+  //     console.log("Error fetching data:", error);
+  //   }
+  // };
+  // useEffect(() => {
+  //   getData(ApiLocationsToBeSend);
+  //   setExpandedRow(null);
+  // }, [
+  //   ApiLocationsToBeSend,
+  //   apiLocationsToBeSendCounter,
+  //   currentPage,
+  //   status,
+  //   batteryLevel,
+  // ]);
+  const getData = (locations) => {
+    fetchDeviceManagementList(
+      currentPage,
+      itemsPerPage,
+      batteryLevel,
+      status,
+      locations
+    )
+      .then((data) => {
+        setTotalRows(data.count);
+
+        // Sorting tableData by roomName, handling null values
+        const sortedData = data.rows.sort((a, b) => {
+          // Handle null values by putting them at the end
+          if (!a.roomName) return 1;
+          if (!b.roomName) return -1;
+
+          // Compare roomName in a case-insensitive manner
+          return a.roomName.localeCompare(b.roomName);
+        });
+
+        // Set sorted data to the table
+        setTableData(sortedData);
+      })
+      .catch((error) => {
+        console.log("Error fetching data:", error);
       });
-
-      // Set sorted data to the table
-      setTableData(sortedData);
-    } catch (error) {
-      console.log("Error fetching data:", error);
-    }
   };
+
   useEffect(() => {
     getData(ApiLocationsToBeSend);
     setExpandedRow(null);
@@ -387,6 +447,7 @@ const DeviceManagementTable = () => {
     status,
     batteryLevel,
   ]);
+
   // useEffect(() => {
   //   if (selectedEventFilters !== null) {
   //     getData(ApiLocationsToBeSend);
@@ -703,10 +764,20 @@ const DeviceManagementTable = () => {
               tableData.map((item, index) => (
                 <React.Fragment key={index}>
                   <tr
-                    onClick={() => handleRowClick(index, item?.id)}
+                    onClick={async () => {
+                      try {
+                        await handleRowClick(index, item?.id);
+                      } catch (error) {
+                        console.error("Error during row click:", error);
+                      }
+                    }}
                     className="bg-white border-b cursor-pointer dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
                   >
-                    <td onClick={() => handleRowClick(index, item?.id)}>
+                    <td
+                      onClick={async () =>
+                        await handleRowClick(index, item?.id)
+                      }
+                    >
                       {" "}
                       {expandedRow === index ? (
                         <FaChevronUp className="w-6 h-6 p-1 ml-2 rounded-full shadow-md" />
@@ -764,9 +835,9 @@ const DeviceManagementTable = () => {
                             <ImCancelCircle className="w-4 h-4" />
                           </button>
                           <button
-                            onClick={(e) => {
-                              e.stopPropagation(); // Prevent the row click handler from being called
-                              handleSave(item?.id);
+                            onClick={async (e) => {
+                              e.stopPropagation();
+                              await handleSave(item?.id);
                             }}
                             className="p-1 text-green-800 hover:bg-gray-300 hover:shadow-md hover:rounded-md"
                           >

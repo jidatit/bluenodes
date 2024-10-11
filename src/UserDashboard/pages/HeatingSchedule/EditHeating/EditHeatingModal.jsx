@@ -515,6 +515,44 @@ export function EditHeatingModal({
     resetModalState();
     handleEditModal();
   };
+  // const handleCheckName = () => {
+  //   const fetchHeatingSchedules = () => {
+  //     return axios
+  //       .get(ApiUrls.SMARTHEATING_HEATINGSCHEDULE.LIST)
+  //       .then((response) => {
+  //         const data = response.data; // Get data directly from the response
+  //         const templateNames =
+  //           data.length > 0
+  //             ? data.map((template) => template.templateName)
+  //             : [];
+  //         setCreatedHeatingScheduleNames(templateNames);
+
+  //         const nameExistsInCreatedSchedules = templateNames.includes(
+  //           formData.programName
+  //         ); // Changed from createdHeatingScheduleNames
+  //         const isSameAsTemplateName =
+  //           program.templateName === formData.programName;
+
+  //         if (!isSameAsTemplateName && nameExistsInCreatedSchedules) {
+  //           setErrorMessages((prev) => ({
+  //             ...prev,
+  //             programName: errors.ProgramWithNameAlreadyCreated,
+  //           }));
+  //         } else {
+  //           setErrorMessages((prev) => ({
+  //             ...prev,
+  //             programName: "",
+  //           }));
+  //         }
+  //       })
+  //       .catch((error) => {
+  //         console.error("Error fetching heating schedules:", error);
+  //       });
+  //   };
+
+  //   // Call the function to fetch schedules
+  //   fetchHeatingSchedules();
+  // };
 
   const handleCheckName = () => {
     const fetchHeatingSchedules = async () => {

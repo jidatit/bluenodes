@@ -743,6 +743,42 @@ export function CreateHeatingModal({ openModal, handleOpenModal, onCreate }) {
 
   const { createdHeatingScheduleNames, setCreatedHeatingScheduleNames } =
     useHeatingSchedule();
+  // const handleCheckName = async () => {
+  //   try {
+  //     // Fetch the heating schedules
+  //     const response = await axios.get(
+  //       ApiUrls.SMARTHEATING_HEATINGSCHEDULE.LIST
+  //     );
+  //     const data = response.data; // Directly access the data here
+  //     const templateNames =
+  //       data.length > 0 ? data.map((template) => template.templateName) : [];
+  //     setCreatedHeatingScheduleNames(templateNames);
+
+  //     // Check if the programName exists in the created heating schedule names
+  //     const nameExistsInCreatedSchedules = templateNames.includes(
+  //       formData.programName
+  //     );
+
+  //     if (nameExistsInCreatedSchedules) {
+  //       setErrorMessages((prev) => ({
+  //         ...prev,
+  //         programName: errors.ProgramWithNameAlreadyCreated,
+  //       }));
+  //     } else {
+  //       setErrorMessages((prev) => ({
+  //         ...prev,
+  //         programName: "",
+  //       }));
+  //     }
+  //   } catch (error) {
+  //     console.error("Error:", error);
+  //     // Optionally, handle the error (e.g., display an error message)
+  //     setErrorMessages((prev) => ({
+  //       ...prev,
+  //       programName: errors.FetchError, // Assuming you have a relevant error message
+  //     }));
+  //   }
+  // };
 
   const handleCheckName = () => {
     const fetchHeatingSchedules = async () => {

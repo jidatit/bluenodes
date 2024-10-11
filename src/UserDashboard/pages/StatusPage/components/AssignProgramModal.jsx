@@ -105,30 +105,30 @@ const AssignProgramModal = ({
   });
   const [locationDetails, setLocationDetails] = useState([]);
   const [formDataApi, setFormDataApi] = useState();
-  const fetchHeatingScheduleForRoom = async (heatingScheduleId) => {
-    console.log("id", heatingScheduleId);
-    try {
-      const resp = await axios.get(
-        ApiUrls.SMARTHEATING_HEATINGSCHEDULE.HEATINGSCHEDULE_ID(
-          heatingScheduleId
-        )
-      );
-      const data = await resp.data;
-      // console.log("Haeting", data);
-      setLocationDetails(data);
-      setFormDataApi(data);
-      setFormData((prev) => ({
-        ...prev,
-        programName: `${data.templateName} - Room ${room.name}`,
-        childSafety: data.allowDeviceOverride ? "No" : "Yes",
-        minTemp: data.deviceOverrideTemperatureMin,
-        maxTemp: data.deviceOverrideTemperatureMax,
-        applyAlgorithm: room.algorithm ? "Yes" : "No",
-      }));
-    } catch (error) {
-      console.error("Error fetching heating schedule:", error);
-    }
-  };
+  // const fetchHeatingScheduleForRoom = async (heatingScheduleId) => {
+  //   console.log("id", heatingScheduleId);
+  //   try {
+  //     const resp = await axios.get(
+  //       ApiUrls.SMARTHEATING_HEATINGSCHEDULE.HEATINGSCHEDULE_ID(
+  //         heatingScheduleId
+  //       )
+  //     );
+  //     const data = await resp.data;
+
+  //     setLocationDetails(data);
+  //     setFormDataApi(data);
+  //     setFormData((prev) => ({
+  //       ...prev,
+  //       programName: `${data.templateName} - Room ${room.name}`,
+  //       childSafety: data.allowDeviceOverride ? "No" : "Yes",
+  //       minTemp: data.deviceOverrideTemperatureMin,
+  //       maxTemp: data.deviceOverrideTemperatureMax,
+  //       applyAlgorithm: room.algorithm ? "Yes" : "No",
+  //     }));
+  //   } catch (error) {
+  //     console.error("Error fetching heating schedule:", error);
+  //   }
+  // };
   useEffect(() => {
     console.log("item", room);
     // if (room) {
@@ -343,36 +343,39 @@ const AssignProgramModal = ({
       }
     };
 
-    fetchHeatingSchedules();
-    const programName = formData.programName;
-    createdHeatingScheduleNames &&
-      createdHeatingScheduleNames.map((name, index) => {
-        if (programName == name) {
-          newErrors.programName = errors.ProgramWithNameAlreadyCreated;
-        }
-      });
+    fetchHeatingSchedules().then(() => {
+      // Continue execution after data is fetched
 
-    // Validate temperature fields
+      const programName = formData.programName;
+      createdHeatingScheduleNames &&
+        createdHeatingScheduleNames.map((name, index) => {
+          if (programName == name) {
+            newErrors.programName = errors.ProgramWithNameAlreadyCreated;
+          }
+        });
 
-    const minTemp = parseFloat(formData.minTemp);
-    const maxTemp = parseFloat(formData.maxTemp);
+      // Validate temperature fields
 
-    if (!isNaN(minTemp) && (minTemp < 10 || minTemp > 29)) {
-      newErrors.minTemp = errors.minTempInvalid;
-    }
-    if (!isNaN(maxTemp) && (maxTemp < 11 || maxTemp > 30)) {
-      newErrors.maxTemp = errors.maxTempInvalid;
-    }
-    if (!isNaN(minTemp) && !isNaN(maxTemp) && maxTemp <= minTemp) {
-      newErrors.maxTemp = errors.maxTempLowerThanMinTemp;
-    }
+      const minTemp = parseFloat(formData.minTemp);
+      const maxTemp = parseFloat(formData.maxTemp);
 
-    if (Object.keys(newErrors).length > 0 || !allFieldsFilled) {
-      setErrorMessages(newErrors);
-      return false;
-    } else {
-      return true;
-    }
+      if (!isNaN(minTemp) && (minTemp < 10 || minTemp > 29)) {
+        newErrors.minTemp = errors.minTempInvalid;
+      }
+      if (!isNaN(maxTemp) && (maxTemp < 11 || maxTemp > 30)) {
+        newErrors.maxTemp = errors.maxTempInvalid;
+      }
+      if (!isNaN(minTemp) && !isNaN(maxTemp) && maxTemp <= minTemp) {
+        newErrors.maxTemp = errors.maxTempLowerThanMinTemp;
+      }
+
+      if (Object.keys(newErrors).length > 0 || !allFieldsFilled) {
+        setErrorMessages(newErrors);
+        return false;
+      } else {
+        return true;
+      }
+    });
   };
 
   const [layouts, setLayouts] = useState({}); // State to hold layouts
@@ -530,14 +533,14 @@ const AssignProgramModal = ({
           );
         }
 
-        const respData = await resp.data;
+        const respData = resp.data;
         if (respData.active) {
           handleOpenModal();
           resetModalState();
           generateToast(errors.heatingScheduleEditedSuccessfull, true);
 
           handleCloseModal();
-          fetchHeatingSchedules();
+          await fetchHeatingSchedules();
         } else {
           generateToast(errors.heatingScheduleEditedFailed, false);
         }
