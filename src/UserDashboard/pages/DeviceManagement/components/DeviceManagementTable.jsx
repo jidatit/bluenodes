@@ -51,10 +51,9 @@ const getBatteryImage = (battery_level) => {
 };
 
 const DeviceManagementTable = () => {
-  const [selectedFilter, setSelectedFilter] = useState("Last Year");
+  // const [selectedFilter, setSelectedFilter] = useState("Last Year");
   const [selectedStatusFilter, setSelectedStatusFilter] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const [searchQuery, setSearchQuery] = useState("");
   const [expandedRow, setExpandedRow] = useState(null);
   const [tableData, setTableData] = useState([]);
   const [totalRows, setTotalRows] = useState(0);
@@ -67,44 +66,17 @@ const DeviceManagementTable = () => {
   const [status, setStatus] = useState(null);
   const [selectedBatteryLevels, setSelectedBatteryLevels] = useState([]);
   const [batteryLevel, setBatteryLevel] = useState("");
-  const [selectedEventFilters, setSelectedEventFilters] = useState(null);
   const [ApiLocationsToBeSend, setApiLocationsToBeSend] = useState(null);
   const [apiLocationsToBeSendCounter, setApiLocationsToBeSendCounter] =
     useState(null);
   const [filtersSelected, setFiltersSelected] = useState(false);
   const [selectedLocationFilter, setSelectedLocationFilter] = useState(0);
-  const [closeDateFilter, setCloseDateFilter] = useState(false); // State to manage dropdown visibility
-  const dateFilterRef = useRef(null);
-  const [floors, setFloors] = useState([]);
-  const [parentNodes, setParentNodes] = useState(null);
   const { generateToast } = useToast();
-  // Function to handle click outside of the DateFilter
-  useEffect(() => {
-    // Function to handle click outside of the DateFilter
-    const handleClickOutside = (event) => {
-      if (
-        dateFilterRef.current &&
-        !dateFilterRef.current.contains(event.target)
-      ) {
-        setCloseDateFilter(true); // Close dropdown if clicked outside
-      }
-    };
-    // Attach the event listener
-    document.addEventListener("mousedown", handleClickOutside);
 
-    // Clean up the event listener on component unmount
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [dateFilterRef]);
-  const handleTreeSelectClick = () => {
-    setCloseDateFilter(true);
-  };
   const handleMultiSelectClick = () => {
     if (selectedLocationFilter === 0) {
       setApiLocationsToBeSend(null);
     }
-    setCloseDateFilter(true);
   };
   const eventFilterOptions = [
     { key: "offline", germanLabel: "Offline" },
@@ -178,12 +150,6 @@ const DeviceManagementTable = () => {
 
       setFilteredLocations(transformedData);
       setLocationsData(transformedData);
-      const extractedFloors = LocationsData.map(
-        (location) => location.children
-      ).flat();
-
-      // Update the floors state with the extracted children
-      setFloors(extractedFloors);
     } catch (error) {
       console.log(error);
     }
@@ -212,7 +178,6 @@ const DeviceManagementTable = () => {
       if (node.children) {
         const childNode = findNodeByKey(key, node.children);
         if (childNode) {
-          setParentNodes(childNode);
           return childNode;
         }
       }
@@ -422,34 +387,34 @@ const DeviceManagementTable = () => {
     status,
     batteryLevel,
   ]);
-  useEffect(() => {
-    if (selectedEventFilters !== null) {
-      getData(ApiLocationsToBeSend);
-    }
-  }, [selectedEventFilters]);
-  useEffect(() => {
-    filterData();
-  }, [selectedFilter, searchQuery]);
-  const filterData = () => {
-    let currentDate = new Date();
-    let startDate = new Date();
-    switch (selectedFilter) {
-      case "Last 7 days":
-        startDate.setDate(currentDate.getDate() - 7);
-        break;
-      case "Last 30 days":
-        startDate.setDate(currentDate.getDate() - 30);
-        break;
-      case "Last Month":
-        startDate.setMonth(currentDate.getMonth() - 1);
-        break;
-      case "Last Year":
-        startDate.setFullYear(currentDate.getFullYear() - 1);
-        break;
-      default:
-        break;
-    }
-  };
+  // useEffect(() => {
+  //   if (selectedEventFilters !== null) {
+  //     getData(ApiLocationsToBeSend);
+  //   }
+  // }, [selectedEventFilters]);
+  // useEffect(() => {
+  //   filterData();
+  // }, [selectedFilter, searchQuery]);
+  // const filterData = () => {
+  //   let currentDate = new Date();
+  //   let startDate = new Date();
+  //   switch (selectedFilter) {
+  //     case "Last 7 days":
+  //       startDate.setDate(currentDate.getDate() - 7);
+  //       break;
+  //     case "Last 30 days":
+  //       startDate.setDate(currentDate.getDate() - 30);
+  //       break;
+  //     case "Last Month":
+  //       startDate.setMonth(currentDate.getMonth() - 1);
+  //       break;
+  //     case "Last Year":
+  //       startDate.setFullYear(currentDate.getFullYear() - 1);
+  //       break;
+  //     default:
+  //       break;
+  //   }
+  // };
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
@@ -570,7 +535,6 @@ const DeviceManagementTable = () => {
                 value={selectedKeys}
                 options={filteredLocations}
                 onChange={onNodeSelectChange}
-                onClick={handleTreeSelectClick}
                 onHide={hideBuildingFilter}
                 onShow={openBuildingFilter}
                 expandedKeys={expandedKeys} // Use expandedKeys to manage expanded nodes

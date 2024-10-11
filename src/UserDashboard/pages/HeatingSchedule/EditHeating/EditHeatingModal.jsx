@@ -10,6 +10,13 @@ import axios from "axios";
 import ApiUrls from "../../../../globals/apiURL.js";
 import { daysOfWeek } from "../../../../globals/daysofWeek.js";
 import { useToast } from "../../OperationalOverview/components/ToastContext.jsx";
+import EditModal from "../../../../shared/components/EditModal.jsx";
+import setFormDataHelper from "../../../../shared/helper/formDataHelper.js";
+import validateFormData from "../../../../shared/helper/ValidateFormData.js";
+import validateFieldHelper from "../../../../shared/helper/ValidateFieldHelper.js";
+import validateTemperatureHelper from "../../../../shared/helper/ValidateTemperatureHelper.js";
+import handleFormChangeHelper from "../../../../shared/helper/FormChangeValidationCheckHelper.js";
+import validateAndSubmit from "../../../../shared/helper/HandleSubmitHelper.js";
 
 export function EditHeatingModal({
   openEditModal,
@@ -42,52 +49,77 @@ export function EditHeatingModal({
 
   const [generalErrorMessage, setGeneralErrorMessage] = useState(null); // State for general error message
   const [formSubmitted, setFormSubmitted] = useState(false);
-
+  const component = "edit";
   useEffect(() => {
+    // if (openEditModal) {
+    //   setFormData({
+    //     programName: program?.templateName || "",
+    //     childSafety: program?.allowDeviceOverride === true ? "No" : "Yes" || "",
+    //     minTemp: program?.deviceOverrideTemperatureMin + "°C" || "",
+    //     maxTemp: program?.deviceOverrideTemperatureMax + "°C" || "",
+    //     applyAlgorithm: "Yes",
+    //   });
+    //   setFormDataApi(program);
+    // }
+
     if (openEditModal) {
-      setFormData({
-        programName: program?.templateName || "",
-        childSafety: program?.allowDeviceOverride === true ? "No" : "Yes" || "",
-        minTemp: program?.deviceOverrideTemperatureMin + "°C" || "",
-        maxTemp: program?.deviceOverrideTemperatureMax + "°C" || "",
-        applyAlgorithm: "Yes",
-      });
+      const formData = setFormDataHelper(program, component); // No clone, so isClone is false or omitted
+      setFormData(formData);
       setFormDataApi(program);
     }
   }, [openEditModal, program]);
 
   useEffect(() => {
+    // if (formSubmitted) {
+    //   const allFieldsFilled = Object.values(formData).every(
+    //     (field) => field !== ""
+    //   );
+    //   if (!allFieldsFilled) {
+    //     setGeneralErrorMessage(errors.allFieldsRequired);
+    //   } else {
+    //     setGeneralErrorMessage("");
+    //   }
+
+    //   const newErrors = {};
+
+    //   // Check for empty fields
+    //   Object.keys(formData).forEach((key) => {
+    //     if (formData[key] === "") {
+    //       newErrors[key] = errors.missingSelectionOrInformation;
+    //     }
+    //   });
+
+    //   // Validate temperature fields
+    //   const minTemp = parseFloat(formData.minTemp);
+    //   const maxTemp = parseFloat(formData.maxTemp);
+
+    //   if (!isNaN(minTemp) && (minTemp < 10 || minTemp > 29)) {
+    //     newErrors.minTemp = errors.minTempInvalid;
+    //   }
+    //   if (!isNaN(maxTemp) && (maxTemp < 11 || maxTemp > 30)) {
+    //     newErrors.maxTemp = errors.maxTempInvalid;
+    //   }
+    //   if (!isNaN(minTemp) && !isNaN(maxTemp) && maxTemp <= minTemp) {
+    //     newErrors.maxTemp = errors.maxTempLowerThanMinTemp;
+    //   }
+
+    //   if (Object.keys(newErrors).length > 0 || !allFieldsFilled) {
+    //     setErrorMessages(newErrors);
+    //   } else {
+    //     setErrorMessages({});
+    //   }
+    // }
+
     if (formSubmitted) {
-      const allFieldsFilled = Object.values(formData).every(
-        (field) => field !== ""
+      const { allFieldsFilled, errors: newErrors } = validateFormData(
+        formData,
+        errors
       );
+
       if (!allFieldsFilled) {
         setGeneralErrorMessage(errors.allFieldsRequired);
       } else {
         setGeneralErrorMessage("");
-      }
-
-      const newErrors = {};
-
-      // Check for empty fields
-      Object.keys(formData).forEach((key) => {
-        if (formData[key] === "") {
-          newErrors[key] = errors.missingSelectionOrInformation;
-        }
-      });
-
-      // Validate temperature fields
-      const minTemp = parseFloat(formData.minTemp);
-      const maxTemp = parseFloat(formData.maxTemp);
-
-      if (!isNaN(minTemp) && (minTemp < 10 || minTemp > 29)) {
-        newErrors.minTemp = errors.minTempInvalid;
-      }
-      if (!isNaN(maxTemp) && (maxTemp < 11 || maxTemp > 30)) {
-        newErrors.maxTemp = errors.maxTempInvalid;
-      }
-      if (!isNaN(minTemp) && !isNaN(maxTemp) && maxTemp <= minTemp) {
-        newErrors.maxTemp = errors.maxTempLowerThanMinTemp;
       }
 
       if (Object.keys(newErrors).length > 0 || !allFieldsFilled) {
@@ -98,225 +130,189 @@ export function EditHeatingModal({
     }
   }, [formSubmitted, formData]);
 
-  const validateField = (id, value) => {
-    let error = "";
+  // const validateField = (id, value) => {
+  //   let error = "";
 
-    if (value === "") {
-      error = errors.missingSelectionOrInformation;
-    } else {
-      const minTemp =
-        id === "minTemp" ? parseFloat(value) : parseFloat(formData.minTemp);
-      const maxTemp =
-        id === "maxTemp" ? parseFloat(value) : parseFloat(formData.maxTemp);
+  //   if (value === "") {
+  //     error = errors.missingSelectionOrInformation;
+  //   } else {
+  //     const minTemp =
+  //       id === "minTemp" ? parseFloat(value) : parseFloat(formData.minTemp);
+  //     const maxTemp =
+  //       id === "maxTemp" ? parseFloat(value) : parseFloat(formData.maxTemp);
 
-      if (id === "minTemp") {
-        if (isNaN(minTemp) || minTemp < 10 || minTemp > 29) {
-          error = errors.minTempInvalid;
-        } else if (maxTemp !== "" && minTemp >= maxTemp) {
-          // Update error state for maxTemp immediately
-          setErrorMessages((prev) => ({
-            ...prev,
-            maxTemp: errors.maxTempLowerThanMinTemp,
-          }));
-        } else {
-          // Clear error for maxTemp if minTemp is valid and lower than maxTemp
-          setErrorMessages((prev) => ({
-            ...prev,
-            maxTemp: "",
-          }));
-        }
-      }
+  //     if (id === "minTemp") {
+  //       if (isNaN(minTemp) || minTemp < 10 || minTemp > 29) {
+  //         error = errors.minTempInvalid;
+  //       } else if (maxTemp !== "" && minTemp >= maxTemp) {
+  //         // Update error state for maxTemp immediately
+  //         setErrorMessages((prev) => ({
+  //           ...prev,
+  //           maxTemp: errors.maxTempLowerThanMinTemp,
+  //         }));
+  //       } else {
+  //         // Clear error for maxTemp if minTemp is valid and lower than maxTemp
+  //         setErrorMessages((prev) => ({
+  //           ...prev,
+  //           maxTemp: "",
+  //         }));
+  //       }
+  //     }
 
-      if (id === "maxTemp") {
-        if (isNaN(maxTemp) || maxTemp < 11 || maxTemp > 30) {
-          error = errors.maxTempInvalid;
-        } else if (minTemp !== "" && maxTemp <= minTemp) {
-          error = errors.maxTempLowerThanMinTemp;
-        }
-      }
-    }
-    // Set error message for the current field
-    setErrorMessages((prev) => ({
-      ...prev,
-      [id]: error,
-    }));
-  };
+  //     if (id === "maxTemp") {
+  //       if (isNaN(maxTemp) || maxTemp < 11 || maxTemp > 30) {
+  //         error = errors.maxTempInvalid;
+  //       } else if (minTemp !== "" && maxTemp <= minTemp) {
+  //         error = errors.maxTempLowerThanMinTemp;
+  //       }
+  //     }
+  //   }
+  //   // Set error message for the current field
+  //   setErrorMessages((prev) => ({
+  //     ...prev,
+  //     [id]: error,
+  //   }));
+  // };
 
   useEffect(() => {
-    const minTemp = parseFloat(formData.minTemp);
-    const maxTemp = parseFloat(formData.maxTemp);
+    // const minTemp = parseFloat(formData.minTemp);
+    // const maxTemp = parseFloat(formData.maxTemp);
 
-    // Convert minTemp and maxTemp to strings to safely use .includes
-    const minTempStr = formData.minTemp?.toString() || "";
-    const maxTempStr = formData.maxTemp?.toString() || "";
+    // // Convert minTemp and maxTemp to strings to safely use .includes
+    // const minTempStr = formData.minTemp?.toString() || "";
+    // const maxTempStr = formData.maxTemp?.toString() || "";
 
-    const containsInvalidCharacter = (str) => {
-      // Regex to match any character that is not a digit, decimal point, °, C, or F
-      const invalidCharRegex = /[^0-9°CFa-z]/;
-      return invalidCharRegex.test(str);
-    };
+    // const containsInvalidCharacter = (str) => {
+    //   // Regex to match any character that is not a digit, decimal point, °, C, or F
+    //   const invalidCharRegex = /[^0-9°CFa-z]/;
+    //   return invalidCharRegex.test(str);
+    // };
 
-    const isMinTempDecimal = containsInvalidCharacter(minTempStr);
-    const isMaxTempDecimal = containsInvalidCharacter(maxTempStr);
+    // const isMinTempDecimal = containsInvalidCharacter(minTempStr);
+    // const isMaxTempDecimal = containsInvalidCharacter(maxTempStr);
 
-    // Validate minTemp and maxTemp
-    if (minTempStr !== "" && maxTempStr !== "") {
-      if (isMinTempDecimal || isMaxTempDecimal) {
-        // Show error if any input is a decimal
-        setErrorMessages((prev) => ({
-          ...prev,
-          minTemp: isMinTempDecimal ? errors.TempDecimalNotAllowed : "",
-          maxTemp: isMaxTempDecimal ? errors.TempDecimalNotAllowed : "",
-        }));
-      } else if (minTemp >= maxTemp && maxTempStr.length >= 2) {
-        // Update error state for maxTemp when cross-validation fails
-        setErrorMessages((prev) => ({
-          ...prev,
-          maxTemp: errors.maxTempLowerThanMinTemp,
-        }));
-      } else {
-        // Clear error for maxTemp if cross-validation passes
-        setErrorMessages((prev) => ({
-          ...prev,
-          maxTemp: "", // Clear the error message for maxTemp
-          minTemp: "", // Clear the error message for minTemp
-        }));
-      }
-    }
+    // // Validate minTemp and maxTemp
+    // if (minTempStr !== "" && maxTempStr !== "") {
+    //   if (isMinTempDecimal || isMaxTempDecimal) {
+    //     // Show error if any input is a decimal
+    //     setErrorMessages((prev) => ({
+    //       ...prev,
+    //       minTemp: isMinTempDecimal ? errors.TempDecimalNotAllowed : "",
+    //       maxTemp: isMaxTempDecimal ? errors.TempDecimalNotAllowed : "",
+    //     }));
+    //   } else if (minTemp >= maxTemp && maxTempStr.length >= 2) {
+    //     // Update error state for maxTemp when cross-validation fails
+    //     setErrorMessages((prev) => ({
+    //       ...prev,
+    //       maxTemp: errors.maxTempLowerThanMinTemp,
+    //     }));
+    //   } else {
+    //     // Clear error for maxTemp if cross-validation passes
+    //     setErrorMessages((prev) => ({
+    //       ...prev,
+    //       maxTemp: "", // Clear the error message for maxTemp
+    //       minTemp: "", // Clear the error message for minTemp
+    //     }));
+    //   }
+    // }
+
+    validateTemperatureHelper(formData, setErrorMessages, errors, "edit");
   }, [formData]);
 
   const handleChange = (e) => {
-    const { id, value } = e.target;
+    // const { id, value } = e.target;
 
-    validateField(id, value);
+    // validateFieldHelper(id, value, formData, setErrorMessages, errors);
 
-    // Check if the change is from the radio button groups
-    if (id === "childSafetyYes") {
-      setFormData((prev) => ({
-        ...prev,
-        childSafety: value,
-        minTemp: "min",
-        maxTemp: "max",
-      }));
-    } else if (id === "childSafetyNo") {
-      setFormData((prev) => ({
-        ...prev,
-        childSafety: value,
-        minTemp: formDataApi.deviceOverrideTemperatureMin,
-        maxTemp: formDataApi.deviceOverrideTemperatureMax,
-      }));
-    } else if (id === "applyAlgorithmYes" || id === "applyAlgorithmNo") {
-      setFormData((prev) => ({
-        ...prev,
-        applyAlgorithm: value,
-      }));
-    } else {
-      setFormData((prev) => ({
-        ...prev,
-        [id]: value,
-      }));
-    }
+    // // Check if the change is from the radio button groups
+    // if (id === "childSafetyYes") {
+    //   setFormData((prev) => ({
+    //     ...prev,
+    //     childSafety: value,
+    //     minTemp: "min",
+    //     maxTemp: "max",
+    //   }));
+    // } else if (id === "childSafetyNo") {
+    //   setFormData((prev) => ({
+    //     ...prev,
+    //     childSafety: value,
+    //     minTemp: formDataApi.deviceOverrideTemperatureMin,
+    //     maxTemp: formDataApi.deviceOverrideTemperatureMax,
+    //   }));
+    // } else if (id === "applyAlgorithmYes" || id === "applyAlgorithmNo") {
+    //   setFormData((prev) => ({
+    //     ...prev,
+    //     applyAlgorithm: value,
+    //   }));
+    // } else {
+    //   setFormData((prev) => ({
+    //     ...prev,
+    //     [id]: value,
+    //   }));
+    // }
 
-    // Re-validate the related temperature field
-    if (id === "minTemp" && formData.maxTemp) {
-      validateField("maxTemp", formData.maxTemp);
-    }
-    if (id === "maxTemp" && formData.minTemp) {
-      validateField("minTemp", formData.minTemp);
-    }
+    // // Re-validate the related temperature field
+    // if (id === "minTemp" && formData.maxTemp) {
+    //   validateFieldHelper(
+    //     "maxTemp",
+    //     formData.maxTemp,
+    //     formData,
+    //     setErrorMessages,
+    //     errors
+    //   );
+    // }
+    // if (id === "maxTemp" && formData.minTemp) {
+    //   validateFieldHelper(
+    //     "minTemp",
+    //     formData.minTemp,
+    //     formData,
+    //     setErrorMessages,
+    //     errors
+    //   );
+    // }
 
-    const allFieldsFilled = Object.values({
-      ...formData,
-      [id]: value,
-    }).every((field) => field !== "");
+    // const allFieldsFilled = Object.values({
+    //   ...formData,
+    //   [id]: value,
+    // }).every((field) => field !== "");
 
-    if (allFieldsFilled) {
-      setErrorMessages({});
-      setGeneralErrorMessage(""); // Clear general error message if all fields are filled
-    }
+    // if (allFieldsFilled) {
+    //   setErrorMessages({});
+    //   setGeneralErrorMessage(""); // Clear general error message if all fields are filled
+    // }
+    handleFormChangeHelper(
+      e,
+      formData,
+      setFormData,
+      formDataApi,
+      validateFieldHelper,
+      setErrorMessages,
+      errors,
+      setGeneralErrorMessage,
+      "edit"
+    );
   };
 
   const handleSubmit = () => {
-    handleCheckName();
-    setFormSubmitted(true);
+    const valid = validateAndSubmit(
+      formData,
+      program,
+      errors,
+      setCreatedHeatingScheduleNames,
+      setErrorMessages,
+      handleCheckName,
+      setFormSubmitted,
+      createdHeatingScheduleNames,
+      ApiUrls,
+      "edit"
+    );
 
-    let allFieldsFilled = true; // Flag to check if all fields are filled
-    const newErrors = {};
-
-    // Check for empty fields
-    Object.keys(formData).forEach((key) => {
-      if (formData[key] === "") {
-        newErrors[key] = errors.missingSelectionOrInformation;
-        allFieldsFilled = false; // Set flag to false if any field is empty
-      }
-    });
-
-    const fetchHeatingSchedules = async () => {
-      try {
-        const response = await axios.get(
-          ApiUrls.SMARTHEATING_HEATINGSCHEDULE.LIST
-        );
-        const data = await response.data;
-        const templateNames =
-          data.length > 0 ? data.map((template) => template.templateName) : [];
-        setCreatedHeatingScheduleNames(templateNames);
-      } catch (error) {
-        console.error("Error:", error);
-      }
-    };
-    fetchHeatingSchedules();
-
-    const programName = formData.programName;
-    const isSameAsTemplateName = program.templateName === programName;
-
-    if (!isSameAsTemplateName) {
-      createdHeatingScheduleNames?.forEach((name) => {
-        if (programName === name) {
-          newErrors.programName = errors.ProgramWithNameAlreadyCreated;
-        }
-      });
+    if (!valid) {
+      return false; // Form is invalid
     }
 
-    // Validate temperature fields
-    const minTemp = parseFloat(formData.minTemp);
-    const maxTemp = parseFloat(formData.maxTemp);
-
-    const minTempStr = formData.minTemp?.toString() || "";
-    const maxTempStr = formData.maxTemp?.toString() || "";
-
-    const containsInvalidCharacter = (str) => {
-      const invalidCharRegex = /[^0-9°CFa-z]/;
-      return invalidCharRegex.test(str);
-    };
-
-    const isMinTempDecimal = containsInvalidCharacter(minTempStr);
-    const isMaxTempDecimal = containsInvalidCharacter(maxTempStr);
-
-    // Check for decimal values
-    if (isMinTempDecimal) {
-      newErrors.minTemp = errors.TempDecimalNotAllowed;
-    }
-    if (isMaxTempDecimal) {
-      newErrors.maxTemp = errors.TempDecimalNotAllowed;
-    }
-
-    if (!isMinTempDecimal && !isMaxTempDecimal) {
-      if (!isNaN(minTemp) && (minTemp < 10 || minTemp > 29)) {
-        newErrors.minTemp = errors.minTempInvalid;
-      }
-      if (!isNaN(maxTemp) && (maxTemp < 11 || maxTemp > 30)) {
-        newErrors.maxTemp = errors.maxTempInvalid;
-      }
-      if (!isNaN(minTemp) && !isNaN(maxTemp) && maxTemp <= minTemp) {
-        newErrors.maxTemp = errors.maxTempLowerThanMinTemp;
-      }
-    }
-    if (Object.keys(newErrors).length > 0 || !allFieldsFilled) {
-      setErrorMessages(newErrors);
-      return false;
-    }
-
-    return true;
+    // Proceed with form submission or other logic
+    return true; // Form is valid
   };
 
   const [layouts, setLayouts] = useState({}); // State to hold layouts
@@ -386,6 +382,7 @@ export function EditHeatingModal({
         scheduleDataTemp = layoutsRef.current;
 
         // Convert schedule data into API format
+        // eslint-disable-next-line no-inner-declarations
         function convertScheduleData(data) {
           const dayMapping = {
             [daysOfWeek[0]]: 1,

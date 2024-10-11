@@ -78,7 +78,7 @@ function AssignRoomsModal({
   const [filter, setFilter] = useState("All");
   const handleCloseModal = () => {
     // Reset all the state variables to their initial values
-    setheatingData({});
+    // setheatingData({});
     setData(initialData);
     setFilter("All");
     setFormData({
@@ -102,10 +102,6 @@ function AssignRoomsModal({
     maxTemp: "",
     applyAlgorithm: "",
   });
-
-  const assignmentData = (assignmentData) => {
-    setheatingData(assignmentData);
-  };
 
   // Function to create a mapping of room IDs to their default values
   const createDefaultValuesMap = () => {
@@ -239,10 +235,6 @@ function AssignRoomsModal({
     }
   };
 
-  useEffect(() => {
-    assignmentData(data);
-  }, [data]);
-
   const [viewSelected, setviewSelected] = useState(false);
   const [viewAll, setViewAll] = useState(false);
 
@@ -297,7 +289,7 @@ function AssignRoomsModal({
         locations: locationstosend,
       })
       .then((response) => {
-        const { data, status } = response;
+        const { data } = response;
         generateToast(errorMessages.roomAssignSuccessfull, true);
         onUpdate(data);
         handleAssign();
