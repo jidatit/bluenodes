@@ -178,20 +178,35 @@ const ExampleSidebar = () => {
 const BottomMenu = ({ isCollapsed, isHovered }) => {
   const [userDetails, setUserDetails] = useState([]);
 
-  const fetchUserDetails = async () => {
-    try {
-      const response = await axios.get(ApiUrls.USER.PROFILE);
-      const data = await response.data;
-      setUserDetails(data);
-    } catch (error) {
-      console.error("Error:", error);
-    }
-  };
+  // const fetchUserDetails = async () => {
+  //   try {
+  //     const response = await axios.get(ApiUrls.USER.PROFILE);
+  //     const data = await response.data;
+  //     setUserDetails(data);
+  //   } catch (error) {
+  //     console.error("Error:", error);
+  //   }
+  // };
 
+  // useEffect(() => {
+  //   fetchUserDetails();
+
+  const fetchUserDetails = () => {
+    axios
+      .get(ApiUrls.USER.PROFILE)
+      .then((response) => {
+        const data = response.data; // Directly access the data
+        setUserDetails(data);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  };
+  
   useEffect(() => {
     fetchUserDetails();
   }, []);
-
+  
   return (
     <div className="flex items-center justify-center gap-x-5">
       <div className="flex items-center justify-between w-full ">

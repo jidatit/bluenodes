@@ -84,26 +84,51 @@ const UnassignedTable = ({ assignUpdate }) => {
     });
   };
 
-  const getAllLocations = async () => {
-    try {
-      const data = await axios.get(ApiUrls.SMARTHEATING_LOCATIONS.LIST);
-      const transformedData = transformData(data.data);
-      setFilteredLocations(transformedData);
-      setLocationsData(transformedData);
-      const extractedFloors = LocationsData.map(
-        (location) => location.children
-      ).flat();
+  // const getAllLocations = async () => {
+  //   try {
+  //     const data = await axios.get(ApiUrls.SMARTHEATING_LOCATIONS.LIST);
+  //     const transformedData = transformData(data.data);
+  //     setFilteredLocations(transformedData);
+  //     setLocationsData(transformedData);
+  //     const extractedFloors = LocationsData.map(
+  //       (location) => location.children
+  //     ).flat();
 
-      // Update the floors state with the extracted children
-      setFloors(extractedFloors);
-    } catch (error) {
-      console.log(error);
-    }
+  //     // Update the floors state with the extracted children
+  //     setFloors(extractedFloors);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   if (filtersSelected === false) getAllLocations();
+  // }, [filtersSelected]);
+
+  const getAllLocations = () => {
+    axios
+      .get(ApiUrls.SMARTHEATING_LOCATIONS.LIST)
+      .then((response) => {
+        const transformedData = transformData(response.data);
+        setFilteredLocations(transformedData);
+        setLocationsData(transformedData);
+        
+        const extractedFloors = transformedData.map(
+          (location) => location.children
+        ).flat();
+  
+        // Update the floors state with the extracted children
+        setFloors(extractedFloors);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
-
+  
   useEffect(() => {
     if (filtersSelected === false) getAllLocations();
   }, [filtersSelected]);
+  
 
   const [tableData, setTableData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -271,47 +296,88 @@ const UnassignedTable = ({ assignUpdate }) => {
     return null;
   };
 
-  const getData = async (locations) => {
-    try {
-      const eventTypeLevel =
-        (selectedEventFilters !== null &&
-          selectedEventFilters.map((filter) => filter.name).join(",")) ||
-        null;
+  // const getData = async (locations) => {
+  //   try {
+  //     const eventTypeLevel =
+  //       (selectedEventFilters !== null &&
+  //         selectedEventFilters.map((filter) => filter.name).join(",")) ||
+  //       null;
 
-      const data = await fetchUnassignedRoomsData(
-        currentPage,
-        itemsPerPage,
-        locations,
-        eventTypeLevel,
-        dateTo,
-        dateFrom
-      );
+  //     const data = await fetchUnassignedRoomsData(
+  //       currentPage,
+  //       itemsPerPage,
+  //       locations,
+  //       eventTypeLevel,
+  //       dateTo,
+  //       dateFrom
+  //     );
 
+  //     setTotalRows(data.count);
+  //     setTableData(data.rows);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
+
+  // const [dateTo, setdateTo] = useState(null);
+  // const [dateFrom, setdateFrom] = useState(null);
+
+  // useEffect(() => {
+  //   getData(ApiLocationsToBeSend);
+  // }, [
+  //   ApiLocationsToBeSend,
+  //   apiLocationsToBeSendCounter,
+  //   dateTo,
+  //   dateFrom,
+  //   currentPage,
+  // ]);
+
+  // useEffect(() => {
+  //   if (selectedEventFilters !== null) {
+  //     getData(ApiLocationsToBeSend);
+  //   }
+  // }, [selectedEventFilters]);
+  const getData = (locations) => {
+  const eventTypeLevel =
+    (selectedEventFilters !== null &&
+      selectedEventFilters.map((filter) => filter.name).join(",")) ||
+    null;
+
+  fetchUnassignedRoomsData(
+    currentPage,
+    itemsPerPage,
+    locations,
+    eventTypeLevel,
+    dateTo,
+    dateFrom
+  )
+    .then((data) => {
       setTotalRows(data.count);
       setTableData(data.rows);
-    } catch (error) {
+    })
+    .catch((error) => {
       console.log(error);
-    }
-  };
+    });
+};
 
-  const [dateTo, setdateTo] = useState(null);
-  const [dateFrom, setdateFrom] = useState(null);
+const [dateTo, setdateTo] = useState(null);
+const [dateFrom, setdateFrom] = useState(null);
 
-  useEffect(() => {
+useEffect(() => {
+  getData(ApiLocationsToBeSend);
+}, [
+  ApiLocationsToBeSend,
+  apiLocationsToBeSendCounter,
+  dateTo,
+  dateFrom,
+  currentPage,
+]);
+
+useEffect(() => {
+  if (selectedEventFilters !== null) {
     getData(ApiLocationsToBeSend);
-  }, [
-    ApiLocationsToBeSend,
-    apiLocationsToBeSendCounter,
-    dateTo,
-    dateFrom,
-    currentPage,
-  ]);
-
-  useEffect(() => {
-    if (selectedEventFilters !== null) {
-      getData(ApiLocationsToBeSend);
-    }
-  }, [selectedEventFilters]);
+  }
+}, [selectedEventFilters]);
 
   const itemsPerPage = 10;
   const totalItems = totalRows && totalRows;

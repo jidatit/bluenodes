@@ -311,31 +311,59 @@ const EventLogsTable = () => {
     return null;
   };
 
-  const getData = async (locations) => {
-    try {
-      const eventTypeLevel =
-        (selectedEventFilters !== null &&
-          selectedEventFilters.map((filter) => filter.name).join(",")) ||
-        null;
+  // const getData = async (locations) => {
+  //   try {
+  //     const eventTypeLevel =
+  //       (selectedEventFilters !== null &&
+  //         selectedEventFilters.map((filter) => filter.name).join(",")) ||
+  //       null;
 
-      const data = await fetchEventLogsData(
-        currentPage,
-        itemsPerPage,
-        locations,
-        eventTypeLevel,
-        dateTo,
-        dateFrom
-      );
+  //     const data = await fetchEventLogsData(
+  //       currentPage,
+  //       itemsPerPage,
+  //       locations,
+  //       eventTypeLevel,
+  //       dateTo,
+  //       dateFrom
+  //     );
 
-      setTotalRows(data.count);
-      setTableData(data.rows);
-    } catch (error) {
-      console.log(error);
-    }
+  //     setTotalRows(data.count);
+  //     setTableData(data.rows);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
+  // const [dateTo, setdateTo] = useState(null);
+  // const [dateFrom, setdateFrom] = useState(null);
+
+  // useEffect(() => {
+  //   getData(ApiLocationsToBeSend);
+  // }, [
+  //   ApiLocationsToBeSend,
+  //   apiLocationsToBeSendCounter,
+  //   dateTo,
+  //   dateFrom,
+  //   currentPage,
+  // ]);
+  const getData = (locations) => {
+    const eventTypeLevel =
+      (selectedEventFilters !== null &&
+        selectedEventFilters.map((filter) => filter.name).join(",")) ||
+      null;
+  
+    fetchEventLogsData(currentPage, itemsPerPage, locations, eventTypeLevel, dateTo, dateFrom)
+      .then((data) => {
+        setTotalRows(data.count);
+        setTableData(data.rows);
+      })
+      .catch((error) => {
+        console.log("Error fetching event logs:", error);
+      });
   };
+  
   const [dateTo, setdateTo] = useState(null);
   const [dateFrom, setdateFrom] = useState(null);
-
+  
   useEffect(() => {
     getData(ApiLocationsToBeSend);
   }, [
@@ -345,7 +373,7 @@ const EventLogsTable = () => {
     dateFrom,
     currentPage,
   ]);
-
+  
   useEffect(() => {
     if (selectedEventFilters !== null) {
       getData(ApiLocationsToBeSend);

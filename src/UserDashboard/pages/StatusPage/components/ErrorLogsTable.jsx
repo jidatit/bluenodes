@@ -113,25 +113,49 @@ const ErrorLogsTable = () => {
     });
   };
 
-  const getAllLocations = async () => {
-    try {
-      const data = await axios.get(ApiUrls.SMARTHEATING_LOCATIONS.LIST);
-      const transformedData = transformData(data.data);
-      setFilteredLocations(transformedData);
-      setLocationsData(transformedData);
-      const extractedFloors = LocationsData.map(
-        (location) => location.children
-      ).flat();
-      // Update the floors state with the extracted children
-      setFloors(extractedFloors);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  // const getAllLocations = async () => {
+  //   try {
+  //     const data = await axios.get(ApiUrls.SMARTHEATING_LOCATIONS.LIST);
+  //     const transformedData = transformData(data.data);
+  //     setFilteredLocations(transformedData);
+  //     setLocationsData(transformedData);
+  //     const extractedFloors = LocationsData.map(
+  //       (location) => location.children
+  //     ).flat();
+  //     // Update the floors state with the extracted children
+  //     setFloors(extractedFloors);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
+  // useEffect(() => {
+  //   if (filtersSelected === false) getAllLocations();
+  // }, [filtersSelected]);
+
+  const getAllLocations = () => {
+    axios
+      .get(ApiUrls.SMARTHEATING_LOCATIONS.LIST)
+      .then((response) => {
+        const transformedData = transformData(response.data);
+        setFilteredLocations(transformedData);
+        setLocationsData(transformedData);
+  
+        const extractedFloors = transformedData
+          .map((location) => location.children)
+          .flat();
+        // Update the floors state with the extracted children
+        setFloors(extractedFloors);
+      })
+      .catch((error) => {
+        console.log("Error fetching locations:", error);
+      });
+  };
+  
   useEffect(() => {
-    if (filtersSelected === false) getAllLocations();
+    if (!filtersSelected) getAllLocations();
   }, [filtersSelected]);
+  
   const [tableData, setTableData] = useState([]);
   useEffect(() => {
     if (selectedEventFilters !== null) {
@@ -303,46 +327,79 @@ const ErrorLogsTable = () => {
     return null;
   };
 
-  const getData = async (locations) => {
-    try {
-      const eventTypeLevel =
-        (selectedEventFilters !== null &&
-          selectedEventFilters.map((filter) => filter.name).join(",")) ||
-        null;
+  // const getData = async (locations) => {
+  //   try {
+  //     const eventTypeLevel =
+  //       (selectedEventFilters !== null &&
+  //         selectedEventFilters.map((filter) => filter.name).join(",")) ||
+  //       null;
 
-      const data = await fetchEventLogsData(
-        currentPage,
-        itemsPerPage,
-        locations,
-        eventTypeLevel,
-        dateTo,
-        dateFrom
-      );
+  //     const data = await fetchEventLogsData(
+  //       currentPage,
+  //       itemsPerPage,
+  //       locations,
+  //       eventTypeLevel,
+  //       dateTo,
+  //       dateFrom
+  //     );
+  //     const filteredData = data.rows.filter(
+  //       (item) =>
+  //         item.eventTypeLevel !== "Information" &&
+  //         item.eventTypeLevel !== "Behoben"
+  //     );
+
+  //     setTotalRows(filteredData.length);
+  //     setTableData(filteredData);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
+
+  // const [dateTo, setdateTo] = useState(null);
+  // const [dateFrom, setdateFrom] = useState(null);
+
+  // useEffect(() => {
+  //   getData(ApiLocationsToBeSend);
+  // }, [
+  //   ApiLocationsToBeSend,
+  //   apiLocationsToBeSendCounter,
+  //   dateTo,
+  //   dateFrom,
+  //   currentPage,
+  // ]);
+  const getData = (locations) => {
+  const eventTypeLevel =
+    (selectedEventFilters !== null &&
+      selectedEventFilters.map((filter) => filter.name).join(",")) ||
+    null;
+
+  fetchEventLogsData(currentPage, itemsPerPage, locations, eventTypeLevel, dateTo, dateFrom)
+    .then((data) => {
       const filteredData = data.rows.filter(
         (item) =>
           item.eventTypeLevel !== "Information" &&
           item.eventTypeLevel !== "Behoben"
       );
-
+      
       setTotalRows(filteredData.length);
       setTableData(filteredData);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const [dateTo, setdateTo] = useState(null);
+    })
+    .catch((error) => {
+      console.log("Error fetching event logs:", error);
+    });
+};
+ const [dateTo, setdateTo] = useState(null);
   const [dateFrom, setdateFrom] = useState(null);
 
-  useEffect(() => {
-    getData(ApiLocationsToBeSend);
-  }, [
-    ApiLocationsToBeSend,
-    apiLocationsToBeSendCounter,
-    dateTo,
-    dateFrom,
-    currentPage,
-  ]);
+useEffect(() => {
+  getData(ApiLocationsToBeSend);
+}, [
+  ApiLocationsToBeSend,
+  apiLocationsToBeSendCounter,
+  dateTo,
+  dateFrom,
+  currentPage,
+]);
 
   const itemsPerPage = 10;
   const totalItems = totalRows && totalRows;

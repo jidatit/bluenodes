@@ -106,36 +106,65 @@ const EditHeatingProgramModal = ({
   });
   const [locationDetails, setLocationDetails] = useState([]);
   const [formDataApi, setFormDataApi] = useState();
-  const fetchHeatingScheduleForRoom = async (heatingScheduleId) => {
-    console.log("id", heatingScheduleId);
-    try {
-      const resp = await axios.get(
-        ApiUrls.SMARTHEATING_HEATINGSCHEDULE.HEATINGSCHEDULE_ID(
-          heatingScheduleId
-        )
-      );
-      const data = await resp.data;
-      // console.log("Haeting", data);
-      setLocationDetails(data);
-      setFormDataApi(data);
-      setFormData((prev) => ({
-        ...prev,
-        programName: `${data.templateName} - Room ${room.name}`,
-        childSafety: data.allowDeviceOverride ? "No" : "Yes",
-        minTemp: data.deviceOverrideTemperatureMin,
-        maxTemp: data.deviceOverrideTemperatureMax,
-        applyAlgorithm: room.algorithm ? "Yes" : "No",
-      }));
-    } catch (error) {
-      console.error("Error fetching heating schedule:", error);
-    }
+  // const fetchHeatingScheduleForRoom = async (heatingScheduleId) => {
+    
+  //   try {
+  //     const resp = await axios.get(
+  //       ApiUrls.SMARTHEATING_HEATINGSCHEDULE.HEATINGSCHEDULE_ID(
+  //         heatingScheduleId
+  //       )
+  //     );
+  //     const data = await resp.data;
+  //     // console.log("Haeting", data);
+  //     setLocationDetails(data);
+  //     setFormDataApi(data);
+  //     setFormData((prev) => ({
+  //       ...prev,
+  //       programName: `${data.templateName} - Room ${room.name}`,
+  //       childSafety: data.allowDeviceOverride ? "No" : "Yes",
+  //       minTemp: data.deviceOverrideTemperatureMin,
+  //       maxTemp: data.deviceOverrideTemperatureMax,
+  //       applyAlgorithm: room.algorithm ? "Yes" : "No",
+  //     }));
+  //   } catch (error) {
+  //     console.error("Error fetching heating schedule:", error);
+  //   }
+  // };
+  // useEffect(() => {
+  //   if (room) {
+  //     fetchHeatingScheduleForRoom(room.heatingSchedule?.id);
+  //   }
+  // }, [room]);
+
+  const fetchHeatingScheduleForRoom = (heatingScheduleId) => {
+    axios
+      .get(ApiUrls.SMARTHEATING_HEATINGSCHEDULE.HEATINGSCHEDULE_ID(heatingScheduleId))
+      .then((response) => {
+        const data = response.data; // Access data directly from response
+  
+        // Set states with the fetched data
+        setLocationDetails(data);
+        setFormDataApi(data);
+        setFormData((prev) => ({
+          ...prev,
+          programName: `${data.templateName} - Room ${room.name}`,
+          childSafety: data.allowDeviceOverride ? "No" : "Yes",
+          minTemp: data.deviceOverrideTemperatureMin,
+          maxTemp: data.deviceOverrideTemperatureMax,
+          applyAlgorithm: room.algorithm ? "Yes" : "No",
+        }));
+      })
+      .catch((error) => {
+        console.error("Error fetching heating schedule:", error);
+      });
   };
+  
   useEffect(() => {
     if (room) {
       fetchHeatingScheduleForRoom(room.heatingSchedule?.id);
     }
   }, [room]);
-
+  
   const [errorMessages, setErrorMessages] = useState({
     programName: "",
     childSafety: "",
@@ -350,19 +379,33 @@ const EditHeatingProgramModal = ({
         allFieldsFilled = false; // Set flag to false if any field is empty
       }
     });
-    const fetchHeatingSchedules = async () => {
-      try {
-        const response = await axios.get(
-          ApiUrls.SMARTHEATING_HEATINGSCHEDULE.LIST
-        );
-        const data = await response.data;
-        const templateNames =
-          data.length > 0 ? data.map((template) => template.templateName) : [];
-        setCreatedHeatingScheduleNames(templateNames);
-      } catch (error) {
-        console.error("Error:", error);
-      }
+    // const fetchHeatingSchedules = async () => {
+    //   try {
+    //     const response = await axios.get(
+    //       ApiUrls.SMARTHEATING_HEATINGSCHEDULE.LIST
+    //     );
+    //     const data = await response.data;
+    //     const templateNames =
+    //       data.length > 0 ? data.map((template) => template.templateName) : [];
+    //     setCreatedHeatingScheduleNames(templateNames);
+    //   } catch (error) {
+    //     console.error("Error:", error);
+    //   }
+    // };
+    const fetchHeatingSchedules = () => {
+      axios
+        .get(ApiUrls.SMARTHEATING_HEATINGSCHEDULE.LIST)
+        .then((response) => {
+          const data = response.data;
+          const templateNames =
+            data.length > 0 ? data.map((template) => template.templateName) : [];
+          setCreatedHeatingScheduleNames(templateNames);
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
     };
+    
 
     fetchHeatingSchedules();
     const programName = formData.programName;
@@ -630,31 +673,61 @@ const EditHeatingProgramModal = ({
     setSelectedAction("");
   };
 
-  const handleCheckName = () => {
-    const fetchHeatingSchedules = async () => {
-      try {
-        const response = await axios.get(
-          ApiUrls.SMARTHEATING_HEATINGSCHEDULE.LIST
-        );
-        const data = await response.data;
-        const templateNames =
-          data.length > 0 ? data.map((template) => template.templateName) : [];
-        setCreatedHeatingScheduleNames(templateNames);
-      } catch (error) {
-        console.error("Error:", error);
-      }
+    // const handleCheckName = () => {
+    //   const fetchHeatingSchedules = async () => {
+    //     try {
+    //       const response = await axios.get(
+    //         ApiUrls.SMARTHEATING_HEATINGSCHEDULE.LIST
+    //       );
+    //       const data = await response.data;
+    //       const templateNames =
+    //         data.length > 0 ? data.map((template) => template.templateName) : [];
+    //       setCreatedHeatingScheduleNames(templateNames);
+    //     } catch (error) {
+    //       console.error("Error:", error);
+    //     }
+    //   };
+    //   fetchHeatingSchedules();
+    //   const exists =
+    //     createdHeatingScheduleNames &&
+    //     createdHeatingScheduleNames.includes(formData.programName);
+    //   if (exists) {
+    //     setErrorMessages((prev) => ({
+    //       ...prev,
+    //       programName: errors.ProgramWithNameAlreadyCreated,
+    //     }));
+    //   }
+    // };
+    const handleCheckName = () => {
+      axios
+        .get(ApiUrls.SMARTHEATING_HEATINGSCHEDULE.LIST)
+        .then((response) => {
+          const data = response.data;
+          const templateNames =
+            data.length > 0 ? data.map((template) => template.templateName) : [];
+          setCreatedHeatingScheduleNames(templateNames);
+    
+          const exists =
+            templateNames &&
+            templateNames.includes(formData.programName);
+          
+          if (exists) {
+            setErrorMessages((prev) => ({
+              ...prev,
+              programName: errors.ProgramWithNameAlreadyCreated,
+            }));
+          } else {
+            setErrorMessages((prev) => ({
+              ...prev,
+              programName: "",
+            }));
+          }
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
     };
-    fetchHeatingSchedules();
-    const exists =
-      createdHeatingScheduleNames &&
-      createdHeatingScheduleNames.includes(formData.programName);
-    if (exists) {
-      setErrorMessages((prev) => ({
-        ...prev,
-        programName: errors.ProgramWithNameAlreadyCreated,
-      }));
-    }
-  };
+    
 
   return (
     <>

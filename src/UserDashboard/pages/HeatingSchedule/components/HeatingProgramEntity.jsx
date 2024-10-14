@@ -119,19 +119,34 @@ const HeatingProgramEntity = ({
     setOpenEditModal(!openEditModal);
   };
 
-  const fetchDetails = async () => {
-    try {
-      const response = await axios.get(
-        ApiUrls.SMARTHEATING_HEATINGSCHEDULE.DETAILS(program.id)
-      );
-      const data = await response.data;
-      setLocationDetails(data); // Update the state with the fetched data
-      setLoader(false);
-      setfetched(true); // Ensure fetched is set to true only after data is fetched
-    } catch (error) {
-      console.error("Error:", error);
-    }
+  // const fetchDetails = async () => {
+  //   try {
+  //     const response = await axios.get(
+  //       ApiUrls.SMARTHEATING_HEATINGSCHEDULE.DETAILS(program.id)
+  //     );
+  //     const data = await response.data;
+  //     setLocationDetails(data); // Update the state with the fetched data
+  //     setLoader(false);
+  //     setfetched(true); // Ensure fetched is set to true only after data is fetched
+  //   } catch (error) {
+  //     console.error("Error:", error);
+  //   }
+  // };
+
+  const fetchDetails = () => {
+    axios
+      .get(ApiUrls.SMARTHEATING_HEATINGSCHEDULE.DETAILS(program.id))
+      .then((response) => {
+        const data = response.data;
+        setLocationDetails(data); // Update the state with the fetched data
+        setLoader(false);
+        setfetched(true); // Ensure fetched is set to true only after data is fetched
+      })
+      .catch((error) => {
+        console.error("Error fetching heating schedule details:", error);
+      });
   };
+  
   // Function to recursively count the rooms
   const countRooms = (node) => {
     if (node.type === "raum") {

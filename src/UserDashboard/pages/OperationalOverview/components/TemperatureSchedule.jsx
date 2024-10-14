@@ -241,17 +241,30 @@ const TemperatureSchedule = ({
     setscheduleDetails(updatedRooms); // Update schedule details
   };
 
-  const getFloorDetails = async (id) => {
-    try {
-      const resp = await axios.get(
-        ApiUrls.SMARTHEATING_OPERATIONALVIEW.DETAILS(id)
-      );
-      const data = await resp.data;
-      const pdata = processRoomsData(data);
-      setRoomsDetail(pdata); // This will automatically trigger fetchSchedules via useEffect
-    } catch (error) {
-      console.log(error);
-    }
+  // const getFloorDetails = async (id) => {
+  //   try {
+  //     const resp = await axios.get(
+  //       ApiUrls.SMARTHEATING_OPERATIONALVIEW.DETAILS(id)
+  //     );
+  //     const data = await resp.data;
+  //     const pdata = processRoomsData(data);
+  //     setRoomsDetail(pdata); // This will automatically trigger fetchSchedules via useEffect
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
+
+  const getFloorDetails = (id) => {
+    axios
+      .get(ApiUrls.SMARTHEATING_OPERATIONALVIEW.DETAILS(id))
+      .then((resp) => {
+        const data = resp.data;
+        const pdata = processRoomsData(data);
+        setRoomsDetail(pdata); // This will automatically trigger fetchSchedules via useEffect
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   useEffect(() => {

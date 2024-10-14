@@ -24,32 +24,59 @@ function MainPage() {
     unassignedNumberOfRooms: 0,
   });
 
-  const fetchData = async () => {
-    try {
-      const {
-        numberOfDevices,
-        numberOfDevicesOffline,
-        numberOfErrors,
-        numberOfRooms,
-        unassignedNumberOfRooms,
-      } = await fetchStatusPageStats();
+  // const fetchData = async () => {
+  //   try {
+  //     const {
+  //       numberOfDevices,
+  //       numberOfDevicesOffline,
+  //       numberOfErrors,
+  //       numberOfRooms,
+  //       unassignedNumberOfRooms,
+  //     } = await fetchStatusPageStats();
 
-      setStatsData({
-        numberOfDevices,
-        numberOfDevicesOffline,
-        numberOfErrors,
-        numberOfRooms,
-        unassignedNumberOfRooms,
+  //     setStatsData({
+  //       numberOfDevices,
+  //       numberOfDevicesOffline,
+  //       numberOfErrors,
+  //       numberOfRooms,
+  //       unassignedNumberOfRooms,
+  //     });
+  //     setDataLoaded(true);
+  //   } catch (error) {
+  //     console.error("Failed to fetch stats:", error);
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   fetchData();
+  // }, []);
+  const fetchData = () => {
+    fetchStatusPageStats()
+      .then(({ 
+        numberOfDevices, 
+        numberOfDevicesOffline, 
+        numberOfErrors, 
+        numberOfRooms, 
+        unassignedNumberOfRooms 
+      }) => {
+        setStatsData({
+          numberOfDevices,
+          numberOfDevicesOffline,
+          numberOfErrors,
+          numberOfRooms,
+          unassignedNumberOfRooms,
+        });
+        setDataLoaded(true);
+      })
+      .catch((error) => {
+        console.error("Failed to fetch stats:", error);
       });
-      setDataLoaded(true);
-    } catch (error) {
-      console.error("Failed to fetch stats:", error);
-    }
   };
-
+  
   useEffect(() => {
     fetchData();
   }, []);
+  
 
   const handleCardClick = (card) => {
     setLoading(true);
