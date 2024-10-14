@@ -3,6 +3,7 @@ const ProgramSelector = ({
   placeholder, // Placeholder for the default option
   errorMessage, // Error message for validation
   data, // List of programs
+  room,
   selectedProgram, // Currently selected program
   handleProgramChange, // Function to handle the program change
   showError, // Error flag to show error message
@@ -14,40 +15,61 @@ const ProgramSelector = ({
       <div className="flex flex-col justify-start items-start w-full md:w-1/3">
         <label
           htmlFor="program"
+          value="Program"
           className={`mb-2 text-sm pt-3 font-semibold ${
             showError ? "text-red-500" : "text-gray-700"
           }`}
         >
-          {label}
+          {" "}
         </label>
-        <select
-          id="program"
-          required
-          className="mt-1.5 w-full rounded-lg border-gray-300 text-gray-700 sm:text-sm"
-          value={selectedProgram}
-          onChange={handleProgramChange}
-        >
-          <option value="">{placeholder}</option>
-          {data.map((program) => (
-            <option
-              key={program.id}
-              value={program.id}
-              className={`block rounded-lg px-4 py-2 text-sm ${
-                program.id === disabledProgramId
-                  ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-                  : "hover:bg-blue-100 hover:text-blue-700"
-              }`}
-              disabled={program.id === disabledProgramId}
-            >
-              {program.templateName.length > 50
-                ? `${program.templateName.slice(0, 50)}...`
-                : program.templateName}
-            </option>
-          ))}
-        </select>
+
+        {componentType === "edit" ? (
+          <select
+            id="program"
+            required
+            className={` mt-1.5 w-full rounded-lg border-gray-300 text-gray-700 sm:text-sm`}
+            value={selectedProgram}
+            onChange={handleProgramChange}
+          >
+            <option value="">Heizplan auswählen</option>
+            {data.map((program) => (
+              <option key={program.id} value={program.id}>
+                {program.templateName.length > 50
+                  ? `${program.templateName.slice(0, 50)}...`
+                  : program.templateName}
+              </option>
+            ))}
+          </select>
+        ) : (
+          <select
+            id="program"
+            required
+            className={` mt-1.5 w-full rounded-lg border-gray-300 text-gray-700 sm:text-sm`}
+            value={selectedProgram}
+            onChange={handleProgramChange}
+          >
+            <option value="">Heizplan auswählen</option>
+            {data.map((program) => (
+              <option
+                className={`block rounded-lg px-4 py-2 text-sm ${
+                  program.id === room
+                    ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                    : "hover:bg-blue-100 hover:text-blue-700"
+                }`}
+                key={program.id}
+                value={program.id}
+                disabled={program.id === room}
+              >
+                {program.templateName.length > 50
+                  ? `${program.templateName.slice(0, 50)}...`
+                  : program.templateName}
+              </option>
+            ))}
+          </select>
+        )}
 
         {showError && (
-          <p className="mt-1 text-sm text-red-500">{errorMessage}</p>
+          <p className="text-red-500 text-sm mt-1">{errorMessage}</p>
         )}
       </div>
     </div>

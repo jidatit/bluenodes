@@ -645,22 +645,22 @@ const ReplaceProgram = ({
     //       value={selectedProgram}
     //       onChange={handleProgramChange}
     //     >
-    // <option value="">Heizplan auswählen</option>
-    // {data.map((program) => (
-    //   <option
-    //     className={`block rounded-lg px-4 py-2 text-sm ${
-    //       program.id === room.heatingSchedule.id
-    //         ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-    //         : "hover:bg-blue-100 hover:text-blue-700"
-    //     }`}
-    //     key={program.id}
-    //     value={program.id}
-    //     disabled={program.id === room.heatingSchedule.id}
-    //   >
-    //     {program.templateName.length > 50
-    //       ? `${program.templateName.slice(0, 50)}...`
-    //       : program.templateName}
-    //   </option>
+    //       <option value="">Heizplan auswählen</option>
+    //       {data.map((program) => (
+    //         <option
+    //           className={`block rounded-lg px-4 py-2 text-sm ${
+    //             program.id === room.heatingSchedule.id
+    //               ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+    //               : "hover:bg-blue-100 hover:text-blue-700"
+    //           }`}
+    //           key={program.id}
+    //           value={program.id}
+    //           disabled={program.id === room.heatingSchedule.id}
+    //         >
+    //           {program.templateName.length > 50
+    //             ? `${program.templateName.slice(0, 50)}...`
+    //             : program.templateName}
+    //         </option>
     //       ))}
     //     </select>
 
@@ -677,11 +677,13 @@ const ReplaceProgram = ({
       placeholder="Heizplan auswählen"
       errorMessage="Bitte einen Heizplan auswählen."
       data={data}
+      room={room}
       selectedProgram={selectedProgram}
       handleProgramChange={handleProgramChange}
       showError={showError}
-      disabledProgramId={room?.heatingSchedule?.id} // The ID of the program to disable
-      componentType="edit" // To manage context if needed later
+      disabledProgramId={room?.heatingSchedule?.id}
+      componentType="edit"
+      // Passing room object for the edit condition
     />
   );
 };

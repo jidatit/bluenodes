@@ -429,15 +429,17 @@ const ReplaceProgram = ({
     //     )}
     //   </div>
     // </div>
+
     <ProgramSelector
       label="Program"
       placeholder="Heizplan auswählen"
       errorMessage="Ein Programm muss ausgewählt werden."
       data={data}
+      room={room?.heatingSchedule?.id || null}
       selectedProgram={selectedProgram}
       handleProgramChange={handleProgramChange}
       showError={showError}
-      disabledProgramId={room?.heatingSchedule?.id}
+      disabledProgramId={null} // Not needed for assign
       componentType="assign"
     />
   );
