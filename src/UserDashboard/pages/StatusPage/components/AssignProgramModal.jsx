@@ -9,6 +9,13 @@ import ApiUrls from "../../../../globals/apiURL.js";
 import { daysOfWeek } from "../../../../globals/daysofWeek.js";
 import { useToast } from "../../OperationalOverview/components/ToastContext.jsx";
 import HeatingPlanTempDetails from "../../../../shared/components/HeatingPlanTempDetails.jsx";
+import { handleConfirmReplaceHelper } from "../../../../shared/EditAndAssignHelper/helper/ConfirmReplaceHelper.js";
+import { validateForm } from "../../../../shared/EditAndAssignHelper/helper/UseFormValidationEffct.js";
+import { validateFieldHelper } from "../../../../shared/EditAndAssignHelper/helper/ValidateFieldHelper.js";
+import { validateTemperaturesHelper } from "../../../../shared/EditAndAssignHelper/helper/ValidateTempratureHelper.js";
+import { handleSubmitHelper } from "../../../../shared/EditAndAssignHelper/helper/HandleSubmitHelper.js";
+import { handleCreateHelper } from "../../../../shared/EditAndAssignHelper/helper/HandleCreateHelper.js";
+import { convertScheduleDataFunc } from "../../../../shared/EditAndAssignHelper/helper/ConvertScheduleDataHelper.js";
 
 const AssignProgramModal = ({
   openModal,
@@ -21,7 +28,6 @@ const AssignProgramModal = ({
   const [selectedProgram, setSelectedProgram] = useState("");
   const [showError, setShowError] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
-  const [data, setData] = useState([]);
   const { generateToast } = useToast();
   const handleCloseModal = () => {
     handleCancelReplace();
@@ -47,43 +53,54 @@ const AssignProgramModal = ({
       handleConfirmReplace();
     }
   };
-  const [updatedR, setupdatedR] = useState(false);
-  let replaced = null;
 
   const handleConfirmReplace = () => {
-    const roomId = room.locationId;
+    // const roomId = room.locationId;
 
-    axios
-      .get(ApiUrls.SMARTHEATING_HEATINGSCHEDULE.DETAILS(selectedProgram))
+    // axios
+    //   .get(ApiUrls.SMARTHEATING_HEATINGSCHEDULE.DETAILS(selectedProgram))
 
-      .then((response) => response.data)
-      .then((data) => {
-        const existingRoomIds = data.locations || [];
-        const updatedRoomIds = [...existingRoomIds, roomId];
-        axios
-          .post(
-            ApiUrls.SMARTHEATING_HEATINGSCHEDULE.ASSIGN_ROOM(selectedProgram),
-            {
-              locations: updatedRoomIds,
-            }
-          )
-          .then((response) => response.data)
-          .then((data) => {
-            setSelectedProgram("");
-            generateToast(errors.PorgramAssignedSuccessfully, true);
-            assignSuccess();
-            handleCloseModal();
-          })
-          .catch((error) => {
-            generateToast(errors.PorgramAssignedFailed, false);
-          });
+    //   .then((response) => response.data)
+    //   .then((data) => {
+    //     const existingRoomIds = data.locations || [];
+    //     const updatedRoomIds = [...existingRoomIds, roomId];
+    //     axios
+    //       .post(
+    //         ApiUrls.SMARTHEATING_HEATINGSCHEDULE.ASSIGN_ROOM(selectedProgram),
+    //         {
+    //           locations: updatedRoomIds,
+    //         }
+    //       )
+    //       .then((response) => response.data)
+    //       .then((data) => {
+    //         setSelectedProgram("");
+    //         generateToast(errors.PorgramAssignedSuccessfully, true);
+    //         assignSuccess();
+    //         handleCloseModal();
+    //       })
+    //       .catch((error) => {
+    //         generateToast(errors.PorgramAssignedFailed, false);
+    //       });
 
-        setShowConfirmModal(false);
-      })
-      .catch((error) => {
-        console.error("Error fetching existing locations:", error);
-        generateToast(errors.ProgramReplacedFailed, false);
-      });
+    //     setShowConfirmModal(false);
+    //   })
+    //   .catch((error) => {
+    //     console.error("Error fetching existing locations:", error);
+    //     generateToast(errors.ProgramReplacedFailed, false);
+    //   });
+
+    handleConfirmReplaceHelper({
+      roomId: room.locationId,
+      selectedProgram,
+      generateToast,
+      setSelectedProgram,
+      ApiUrls,
+      errors,
+      specificCallback: assignSuccess,
+      handleCloseModal,
+      setShowConfirmModal,
+      isAssign: true, // This flag indicates a slight difference in behavior
+    });
   };
 
   const handleCancelReplace = () => {
@@ -150,46 +167,20 @@ const AssignProgramModal = ({
 
   useEffect(() => {
     if (formSubmitted) {
-      const allFieldsFilled = Object.values(formData).every(
-        (field) => field !== ""
-      );
+      // Call the reusable form validation function with custom validation
+      const { newErrors, allFieldsFilled } = validateForm({
+        formData,
+        errors,
+        createdHeatingScheduleNames: "createdHeatingScheduleNames", // Different programs for Component 2
+      });
+
       if (!allFieldsFilled) {
         setGeneralErrorMessage(errors.allFieldsRequired);
       } else {
         setGeneralErrorMessage("");
       }
 
-      const newErrors = {};
-
-      // Check for empty fields
-      Object.keys(formData).forEach((key) => {
-        if (formData[key] === "") {
-          newErrors[key] = errors.missingSelectionOrInformation;
-        }
-      });
-
-      // Validate temperature fields
-      const minTemp = parseFloat(formData.minTemp);
-      const maxTemp = parseFloat(formData.maxTemp);
-
-      if (!isNaN(minTemp) && (minTemp < 10 || minTemp > 29)) {
-        newErrors.minTemp = errors.minTempInvalid;
-      }
-      if (!isNaN(maxTemp) && (maxTemp < 11 || maxTemp > 30)) {
-        newErrors.maxTemp = errors.maxTempInvalid;
-      }
-      if (!isNaN(minTemp) && !isNaN(maxTemp) && maxTemp <= minTemp) {
-        newErrors.maxTemp = errors.maxTempLowerThanMinTemp;
-      }
-
-      const programName = formData.programName;
-      createdHeatingScheduleNames?.map((name, index) => {
-        if (programName == name) {
-          newErrors.programName = errors.ProgramWithNameAlreadyCreated;
-        }
-      });
-
-      if (Object.keys(newErrors).length > 0 || !allFieldsFilled) {
+      if (Object.keys(newErrors).length > 0) {
         setErrorMessages(newErrors);
       } else {
         setErrorMessages({});
@@ -198,185 +189,36 @@ const AssignProgramModal = ({
   }, [formSubmitted, formData]);
 
   const validateField = (id, value) => {
-    let error = "";
-
-    if (value === "") {
-      error = errors.missingSelectionOrInformation;
-    } else {
-      const minTemp =
-        id === "minTemp" ? parseFloat(value) : parseFloat(formData.minTemp);
-      const maxTemp =
-        id === "maxTemp" ? parseFloat(value) : parseFloat(formData.maxTemp);
-
-      if (id === "minTemp") {
-        if (isNaN(minTemp) || minTemp < 10 || minTemp > 29) {
-          error = errors.minTempInvalid;
-        } else if (maxTemp !== "" && minTemp >= maxTemp) {
-          // Update error state for maxTemp immediately
-          setErrorMessages((prev) => ({
-            ...prev,
-            maxTemp: errors.maxTempLowerThanMinTemp,
-          }));
-        } else {
-          // Clear error for maxTemp if minTemp is valid and lower than maxTemp
-          setErrorMessages((prev) => ({
-            ...prev,
-            maxTemp: "",
-          }));
-        }
-      }
-
-      if (id === "maxTemp") {
-        if (isNaN(maxTemp) || maxTemp < 11 || maxTemp > 30) {
-          error = errors.maxTempInvalid;
-        } else if (minTemp !== "" && maxTemp <= minTemp) {
-          error = errors.maxTempLowerThanMinTemp;
-        }
-      }
-    }
-
-    // Set error message for the current field
-    setErrorMessages((prev) => ({
-      ...prev,
-      [id]: error,
-    }));
+    validateFieldHelper({
+      id,
+      value,
+      formData,
+      errors,
+      setErrorMessages,
+    });
   };
 
   useEffect(() => {
-    const minTemp = parseFloat(formData.minTemp);
-    const maxTemp = parseFloat(formData.maxTemp);
-
-    // Convert minTemp and maxTemp to strings to safely use .includes
-    const minTempStr = formData.minTemp?.toString() || "";
-    const maxTempStr = formData.maxTemp?.toString() || "";
-    // Cross-validate minTemp and maxTemp
-    if (minTemp !== "" && maxTemp !== "") {
-      if (minTemp >= maxTemp && maxTempStr.length >= 2) {
-        setErrorMessages((prev) => ({
-          ...prev,
-          maxTemp: errors.maxTempLowerThanMinTemp,
-        }));
-      } else {
-        // Clear error for maxTemp if cross-validation passes
-        setErrorMessages((prev) => ({
-          ...prev,
-          maxTemp: "", // Clear the error message for maxTemp
-        }));
-      }
-    }
+    validateTemperaturesHelper({
+      formData,
+      setErrorMessages,
+      errors,
+    });
   }, [formData]);
 
-  const handleChange = (e) => {
-    const { id, value } = e.target;
-
-    validateField(id, value);
-
-    // Check if the change is from the radio button groups
-    if (id === "childSafetyYes") {
-      setFormData((prev) => ({
-        ...prev,
-        childSafety: value,
-        minTemp: "min",
-        maxTemp: "max",
-      }));
-    } else if (id === "childSafetyNo") {
-      setFormData((prev) => ({
-        ...prev,
-        childSafety: value,
-        minTemp: formDataApi.deviceOverrideTemperatureMin,
-        maxTemp: formDataApi.deviceOverrideTemperatureMax,
-      }));
-    } else if (id === "applyAlgorithmYes" || id === "applyAlgorithmNo") {
-      setFormData((prev) => ({
-        ...prev,
-        applyAlgorithm: value,
-      }));
-    } else {
-      setFormData((prev) => ({
-        ...prev,
-        [id]: value,
-      }));
-    }
-
-    // Re-validate the related temperature field
-    if (id === "minTemp" && formData.maxTemp) {
-      validateField("maxTemp", formData.maxTemp);
-    }
-    if (id === "maxTemp" && formData.minTemp) {
-      validateField("minTemp", formData.minTemp);
-    }
-
-    const allFieldsFilled = Object.values({
-      ...formData,
-      [id]: value,
-    }).every((field) => field !== "");
-
-    if (allFieldsFilled) {
-      setErrorMessages({});
-      setGeneralErrorMessage(""); // Clear general error message if all fields are filled
-    }
-  };
-
   const handleSubmit = () => {
-    setFormSubmitted(true);
-
-    let allFieldsFilled = true; // Flag to check if all fields are filled
-    const newErrors = {};
-
-    // Check for empty fields
-    Object.keys(formData).forEach((key) => {
-      if (formData[key] === "") {
-        newErrors[key] = errors.missingSelectionOrInformation;
-        allFieldsFilled = false; // Set flag to false if any field is empty
-      }
+    const returnValue = handleSubmitHelper({
+      formData,
+      errors,
+      ApiUrls,
+      setErrorMessages,
+      setFormSubmitted,
+      fetchHeatingSchedules: "fetchHeatingSchedules",
+      createdHeatingScheduleNames: "createdHeatingScheduleNames", // No need to fetch schedule names in this component
+      checkProgramName: false,
+      assign: true,
     });
-    const fetchHeatingSchedules = async () => {
-      try {
-        const response = await axios.get(
-          ApiUrls.SMARTHEATING_HEATINGSCHEDULE.LIST
-        );
-        const data = await response.data;
-        const templateNames =
-          data.length > 0 ? data.map((template) => template.templateName) : [];
-        setCreatedHeatingScheduleNames(templateNames);
-      } catch (error) {
-        console.error("Error:", error);
-      }
-    };
-
-    fetchHeatingSchedules().then(() => {
-      // Continue execution after data is fetched
-
-      const programName = formData.programName;
-      createdHeatingScheduleNames &&
-        createdHeatingScheduleNames.map((name, index) => {
-          if (programName == name) {
-            newErrors.programName = errors.ProgramWithNameAlreadyCreated;
-          }
-        });
-
-      // Validate temperature fields
-
-      const minTemp = parseFloat(formData.minTemp);
-      const maxTemp = parseFloat(formData.maxTemp);
-
-      if (!isNaN(minTemp) && (minTemp < 10 || minTemp > 29)) {
-        newErrors.minTemp = errors.minTempInvalid;
-      }
-      if (!isNaN(maxTemp) && (maxTemp < 11 || maxTemp > 30)) {
-        newErrors.maxTemp = errors.maxTempInvalid;
-      }
-      if (!isNaN(minTemp) && !isNaN(maxTemp) && maxTemp <= minTemp) {
-        newErrors.maxTemp = errors.maxTempLowerThanMinTemp;
-      }
-
-      if (Object.keys(newErrors).length > 0 || !allFieldsFilled) {
-        setErrorMessages(newErrors);
-        return false;
-      } else {
-        return true;
-      }
-    });
+    return returnValue;
   };
 
   const [layouts, setLayouts] = useState({}); // State to hold layouts
@@ -433,62 +275,20 @@ const AssignProgramModal = ({
   }, [formData, finalScheduleData]);
 
   function convertScheduleData(data) {
-    const dayMapping = {
-      [daysOfWeek[0]]: 1,
-      [daysOfWeek[1]]: 2,
-      [daysOfWeek[2]]: 3,
-      [daysOfWeek[3]]: 4,
-      [daysOfWeek[4]]: 5,
-      [daysOfWeek[5]]: 6,
-      [daysOfWeek[6]]: 7,
-    };
+    const result = convertScheduleDataFunc(data, daysOfWeek);
 
-    const result = { days: [] };
-
-    const normalizeTime = (value) => {
-      const hours = Math.floor((value * 24) / 96);
-      const minutes = Math.floor(((value * 24 * 60) / 96) % 60);
-      return `${hours.toString().padStart(2, "0")}:${minutes
-        .toString()
-        .padStart(2, "0")}`;
-    };
-
-    for (const [dayName, entries] of Object.entries(data)) {
-      const day = dayMapping[dayName];
-      entries.forEach((entry) => {
-        const from = normalizeTime(entry.y);
-        let to = normalizeTime(entry.y + entry.h);
-        const targetTemperature = parseInt(entry.temperature, 10);
-
-        if (to === "24:00") {
-          to = "23:59";
-        }
-
-        result.days.push({
-          day,
-          from,
-          to,
-          targetTemperature,
-        });
-      });
-    }
-
-    return result.days;
+    return result;
   }
 
   const handleCreate = async () => {
     let scheduleDataTemp = {};
-
     if (handleCheckRef.current) {
       handleCheckRef.current();
     }
-
     if (newCheck !== null && !newCheck) {
       setFinalScheduleData(layoutsRef.current);
       scheduleDataTemp = layoutsRef.current;
-
       const data = convertScheduleData(scheduleDataTemp);
-
       const requestBody = {
         templateName: combinedData.formData.programName,
         allowDeviceOverride:
@@ -496,7 +296,6 @@ const AssignProgramModal = ({
         locations: [room.id],
         days: data,
       };
-
       if (combinedData.formData.childSafety !== "Yes") {
         requestBody.deviceOverrideTemperatureMin = parseInt(
           combinedData.formData.minTemp
@@ -520,26 +319,22 @@ const AssignProgramModal = ({
           console.error("Error:", error);
         }
       };
-
       try {
         const resp = await axios.post(
           ApiUrls.SMARTHEATING_HEATINGSCHEDULE.HEATINGSCHEDULE_FROM_EDIT,
           requestBody
         );
-
         if (resp.status >= 400) {
           const errorText = await resp.data; // Get response text for error details
           throw new Error(
             `HTTP error! Status: ${resp.status}, Details: ${errorText}`
           );
         }
-
         const respData = resp.data;
         if (respData.active) {
           handleOpenModal();
           resetModalState();
           generateToast(errors.heatingScheduleEditedSuccessfull, true);
-
           handleCloseModal();
           await fetchHeatingSchedules();
         } else {
@@ -549,6 +344,27 @@ const AssignProgramModal = ({
         console.error("Error during fetch operation:", error);
       }
     }
+    // await handleCreateHelper({
+    //   handleCheckRef,
+    //   newCheck,
+    //   layoutsRef,
+    //   setFinalScheduleData,
+    //   convertScheduleData,
+    //   combinedData,
+    //   room,
+    //   ApiUrls,
+    //   setCreatedHeatingScheduleNames: "setCreatedHeatingScheduleNames",
+    //   errors,
+    //   setErrorMessages,
+    //   createdHeatingScheduleNames: "createdHeatingScheduleNames",
+    //   generateToast,
+    //   resetModalState,
+    //   handleCloseModal,
+    //   fetchFloorDetails: "fetchFloorDetails",
+    //   updateReplaced: "updateReplaced",
+    //   fetchHeatingSchedulesFlag: true, // Enable fetching schedules for this component
+    //   handleOpenModal: null, // No modal handling in this component
+    // });
   };
 
   const resetModalState = () => {
