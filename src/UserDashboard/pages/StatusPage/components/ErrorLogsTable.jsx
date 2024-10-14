@@ -140,7 +140,7 @@ const ErrorLogsTable = () => {
         const transformedData = transformData(response.data);
         setFilteredLocations(transformedData);
         setLocationsData(transformedData);
-  
+
         const extractedFloors = transformedData
           .map((location) => location.children)
           .flat();
@@ -151,17 +151,7 @@ const ErrorLogsTable = () => {
         console.log("Error fetching locations:", error);
       });
   };
-  
-  useEffect(() => {
-    if (!filtersSelected) getAllLocations();
-  }, [filtersSelected]);
-  
-  const [tableData, setTableData] = useState([]);
-  useEffect(() => {
-    if (selectedEventFilters !== null) {
-      getData(ApiLocationsToBeSend);
-    }
-  }, [selectedEventFilters]);
+
   const [currentPage, setCurrentPage] = useState(1);
   const [totalRows, setTotalRows] = useState(0);
   const [selectedKeys, setSelectedKeys] = useState({});
@@ -368,39 +358,56 @@ const ErrorLogsTable = () => {
   //   currentPage,
   // ]);
   const getData = (locations) => {
-  const eventTypeLevel =
-    (selectedEventFilters !== null &&
-      selectedEventFilters.map((filter) => filter.name).join(",")) ||
-    null;
+    const eventTypeLevel =
+      (selectedEventFilters !== null &&
+        selectedEventFilters.map((filter) => filter.name).join(",")) ||
+      null;
 
-  fetchEventLogsData(currentPage, itemsPerPage, locations, eventTypeLevel, dateTo, dateFrom)
-    .then((data) => {
-      const filteredData = data.rows.filter(
-        (item) =>
-          item.eventTypeLevel !== "Information" &&
-          item.eventTypeLevel !== "Behoben"
-      );
-      
-      setTotalRows(filteredData.length);
-      setTableData(filteredData);
-    })
-    .catch((error) => {
-      console.log("Error fetching event logs:", error);
-    });
-};
- const [dateTo, setdateTo] = useState(null);
+    fetchEventLogsData(
+      currentPage,
+      itemsPerPage,
+      locations,
+      eventTypeLevel,
+      dateTo,
+      dateFrom
+    )
+      .then((data) => {
+        const filteredData = data.rows.filter(
+          (item) =>
+            item.eventTypeLevel !== "Information" &&
+            item.eventTypeLevel !== "Behoben"
+        );
+
+        setTotalRows(filteredData.length);
+        setTableData(filteredData);
+      })
+      .catch((error) => {
+        console.log("Error fetching event logs:", error);
+      });
+  };
+  const [dateTo, setdateTo] = useState(null);
   const [dateFrom, setdateFrom] = useState(null);
 
-useEffect(() => {
-  getData(ApiLocationsToBeSend);
-}, [
-  ApiLocationsToBeSend,
-  apiLocationsToBeSendCounter,
-  dateTo,
-  dateFrom,
-  currentPage,
-]);
+  useEffect(() => {
+    getData(ApiLocationsToBeSend);
+  }, [
+    ApiLocationsToBeSend,
+    apiLocationsToBeSendCounter,
+    selectedEventFilters,
+    dateTo,
+    dateFrom,
+    currentPage,
+  ]);
+  useEffect(() => {
+    if (!filtersSelected) getAllLocations();
+  }, [filtersSelected]);
 
+  const [tableData, setTableData] = useState([]);
+  // useEffect(() => {
+  //   if (selectedEventFilters !== null) {
+  //     getData(ApiLocationsToBeSend);
+  //   }
+  // }, [selectedEventFilters]);
   const itemsPerPage = 10;
   const totalItems = totalRows && totalRows;
   const totalPages = Math.ceil(totalItems / itemsPerPage);

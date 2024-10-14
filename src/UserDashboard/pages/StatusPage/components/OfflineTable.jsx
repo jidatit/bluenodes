@@ -122,15 +122,18 @@ const OfflineTable = () => {
   //   if (filtersSelected === false) getAllLocations();
   // }, [filtersSelected]);
   const getAllLocations = () => {
-    axios.get(ApiUrls.SMARTHEATING_LOCATIONS.LIST)
+    axios
+      .get(ApiUrls.SMARTHEATING_LOCATIONS.LIST)
       .then((response) => {
         const transformedData = transformData(response.data);
-  
+
         setFilteredLocations(transformedData);
         setLocationsData(transformedData);
-  
-        const extractedFloors = transformedData.map((location) => location.children).flat();
-        
+
+        const extractedFloors = transformedData
+          .map((location) => location.children)
+          .flat();
+
         // Update the floors state with the extracted children
         setFloors(extractedFloors);
       })
@@ -138,11 +141,10 @@ const OfflineTable = () => {
         console.log(error);
       });
   };
-  
+
   useEffect(() => {
     if (filtersSelected === false) getAllLocations();
   }, [filtersSelected]);
-  
 
   const [tableData, setTableData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -357,7 +359,7 @@ const OfflineTable = () => {
       (selectedEventFilters !== null &&
         selectedEventFilters.map((filter) => filter.name).join(",")) ||
       null;
-  
+
     fetchDevicesOfflineData(
       currentPage,
       itemsPerPage,
@@ -374,14 +376,14 @@ const OfflineTable = () => {
         console.log(error);
       });
   };
-  
+
   const [dateTo, setdateTo] = useState(null);
   const [dateFrom, setdateFrom] = useState(null);
-  
-  useEffect(() => {
-    getData();
-  }, [currentPage]);
-  
+
+  // useEffect(() => {
+  //   getData();
+  // }, [currentPage]);
+
   useEffect(() => {
     getData(ApiLocationsToBeSend);
   }, [
@@ -391,11 +393,11 @@ const OfflineTable = () => {
     dateFrom,
     currentPage,
   ]);
-  
-  useEffect(() => {
-    getData(ApiLocationsToBeSend);
-  }, [selectedEventFilters]);
-  
+
+  // useEffect(() => {
+  //   getData(ApiLocationsToBeSend);
+  // }, [selectedEventFilters]);
+
   const totalItems = totalRows;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
 

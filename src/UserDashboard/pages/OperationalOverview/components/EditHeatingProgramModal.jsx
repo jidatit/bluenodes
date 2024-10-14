@@ -7,12 +7,13 @@ import { errorMessages as errors } from "../../../../globals/errorMessages"; // 
 import ProgressStepper from "../../HeatingSchedule/CreateHeating/components/ProgressStepper";
 import GeneralInformation from "../../HeatingSchedule/CreateHeating/Steps/GeneralInformation/GeneralInformation";
 import HeatingSchedule from "../../HeatingSchedule/CreateHeating/Steps/HeatingSchedule/HeatingSchedule";
-import HeatingScheduleTable from "../../HeatingSchedule/components/HeatingScheduleTable";
+
 import useHeatingSchedule from "../../../../hooks/useHeatingSchedule";
 import axios from "axios";
 import ApiUrls from "../../../../globals/apiURL.js";
 import { daysOfWeek } from "../../../../globals/daysofWeek.js";
 import { useToast } from "./ToastContext.jsx";
+import HeatingPlanTempDetails from "../../../../shared/components/HeatingPlanTempDetails.jsx";
 
 const EditHeatingProgramModal = ({
   openModal,
@@ -107,7 +108,7 @@ const EditHeatingProgramModal = ({
   const [locationDetails, setLocationDetails] = useState([]);
   const [formDataApi, setFormDataApi] = useState();
   // const fetchHeatingScheduleForRoom = async (heatingScheduleId) => {
-    
+
   //   try {
   //     const resp = await axios.get(
   //       ApiUrls.SMARTHEATING_HEATINGSCHEDULE.HEATINGSCHEDULE_ID(
@@ -138,10 +139,14 @@ const EditHeatingProgramModal = ({
 
   const fetchHeatingScheduleForRoom = (heatingScheduleId) => {
     axios
-      .get(ApiUrls.SMARTHEATING_HEATINGSCHEDULE.HEATINGSCHEDULE_ID(heatingScheduleId))
+      .get(
+        ApiUrls.SMARTHEATING_HEATINGSCHEDULE.HEATINGSCHEDULE_ID(
+          heatingScheduleId
+        )
+      )
       .then((response) => {
         const data = response.data; // Access data directly from response
-  
+
         // Set states with the fetched data
         setLocationDetails(data);
         setFormDataApi(data);
@@ -158,13 +163,13 @@ const EditHeatingProgramModal = ({
         console.error("Error fetching heating schedule:", error);
       });
   };
-  
+
   useEffect(() => {
     if (room) {
       fetchHeatingScheduleForRoom(room.heatingSchedule?.id);
     }
   }, [room]);
-  
+
   const [errorMessages, setErrorMessages] = useState({
     programName: "",
     childSafety: "",
@@ -398,14 +403,15 @@ const EditHeatingProgramModal = ({
         .then((response) => {
           const data = response.data;
           const templateNames =
-            data.length > 0 ? data.map((template) => template.templateName) : [];
+            data.length > 0
+              ? data.map((template) => template.templateName)
+              : [];
           setCreatedHeatingScheduleNames(templateNames);
         })
         .catch((error) => {
           console.error("Error:", error);
         });
     };
-    
 
     fetchHeatingSchedules();
     const programName = formData.programName;
@@ -673,61 +679,59 @@ const EditHeatingProgramModal = ({
     setSelectedAction("");
   };
 
-    // const handleCheckName = () => {
-    //   const fetchHeatingSchedules = async () => {
-    //     try {
-    //       const response = await axios.get(
-    //         ApiUrls.SMARTHEATING_HEATINGSCHEDULE.LIST
-    //       );
-    //       const data = await response.data;
-    //       const templateNames =
-    //         data.length > 0 ? data.map((template) => template.templateName) : [];
-    //       setCreatedHeatingScheduleNames(templateNames);
-    //     } catch (error) {
-    //       console.error("Error:", error);
-    //     }
-    //   };
-    //   fetchHeatingSchedules();
-    //   const exists =
-    //     createdHeatingScheduleNames &&
-    //     createdHeatingScheduleNames.includes(formData.programName);
-    //   if (exists) {
-    //     setErrorMessages((prev) => ({
-    //       ...prev,
-    //       programName: errors.ProgramWithNameAlreadyCreated,
-    //     }));
-    //   }
-    // };
-    const handleCheckName = () => {
-      axios
-        .get(ApiUrls.SMARTHEATING_HEATINGSCHEDULE.LIST)
-        .then((response) => {
-          const data = response.data;
-          const templateNames =
-            data.length > 0 ? data.map((template) => template.templateName) : [];
-          setCreatedHeatingScheduleNames(templateNames);
-    
-          const exists =
-            templateNames &&
-            templateNames.includes(formData.programName);
-          
-          if (exists) {
-            setErrorMessages((prev) => ({
-              ...prev,
-              programName: errors.ProgramWithNameAlreadyCreated,
-            }));
-          } else {
-            setErrorMessages((prev) => ({
-              ...prev,
-              programName: "",
-            }));
-          }
-        })
-        .catch((error) => {
-          console.error("Error:", error);
-        });
-    };
-    
+  // const handleCheckName = () => {
+  //   const fetchHeatingSchedules = async () => {
+  //     try {
+  //       const response = await axios.get(
+  //         ApiUrls.SMARTHEATING_HEATINGSCHEDULE.LIST
+  //       );
+  //       const data = await response.data;
+  //       const templateNames =
+  //         data.length > 0 ? data.map((template) => template.templateName) : [];
+  //       setCreatedHeatingScheduleNames(templateNames);
+  //     } catch (error) {
+  //       console.error("Error:", error);
+  //     }
+  //   };
+  //   fetchHeatingSchedules();
+  //   const exists =
+  //     createdHeatingScheduleNames &&
+  //     createdHeatingScheduleNames.includes(formData.programName);
+  //   if (exists) {
+  //     setErrorMessages((prev) => ({
+  //       ...prev,
+  //       programName: errors.ProgramWithNameAlreadyCreated,
+  //     }));
+  //   }
+  // };
+  const handleCheckName = () => {
+    axios
+      .get(ApiUrls.SMARTHEATING_HEATINGSCHEDULE.LIST)
+      .then((response) => {
+        const data = response.data;
+        const templateNames =
+          data.length > 0 ? data.map((template) => template.templateName) : [];
+        setCreatedHeatingScheduleNames(templateNames);
+
+        const exists =
+          templateNames && templateNames.includes(formData.programName);
+
+        if (exists) {
+          setErrorMessages((prev) => ({
+            ...prev,
+            programName: errors.ProgramWithNameAlreadyCreated,
+          }));
+        } else {
+          setErrorMessages((prev) => ({
+            ...prev,
+            programName: "",
+          }));
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  };
 
   return (
     <>
@@ -968,75 +972,12 @@ const ViewTableComponent = ({ selectedProgram }) => {
   }, [heatingScheduleId]);
 
   return (
-    <div className="w-full p-5">
-      <div className="flex items-start w-full">
-        <div className="w-[25%] flex flex-col gap-4">
-          <h3 className="text-[16px] text-gray-500 font-semibold">
-            Einstellungen
-          </h3>
-          <div className="flex flex-col gap-2 text-sm font-normal text-gray-900">
-            <div className="flex flex-col gap-2">
-              <p className="font-semibold">Kindersicherung</p>
-              <p>{temperatureDetails?.templateName || "N/A"}</p>{" "}
-              {/* Replace hardcoded value */}
-            </div>
-            <div className="flex flex-col gap-2">
-              <p className="font-semibold">Kindersicherung</p>
-              <p>
-                {temperatureDetails?.allowDeviceOverride ? "Aus" : "An"}
-              </p>{" "}
-              {/* Replace hardcoded value */}
-            </div>
-            {temperatureDetails?.allowDeviceOverride && (
-              <>
-                <div className="flex flex-col gap-2">
-                  <p className="flex items-center gap-1 font-semibold">
-                    Mindesttemperatur
-                    <Tooltip
-                      className="px-3 py-1.5 text-center max-w-96"
-                      content="Die Mindesttemperatur, die am Thermostat manuell eingestellt werden kann.."
-                      style="light"
-                    >
-                      <IoInformationCircleOutline color="#6B7280" />
-                    </Tooltip>
-                  </p>
-                  <p>
-                    {temperatureDetails?.deviceOverrideTemperatureMin || "N/A"}
-                    °C
-                  </p>{" "}
-                  {/* Replace hardcoded value */}
-                </div>
-                <div className="flex flex-col gap-2">
-                  <p className="flex items-center gap-1 font-semibold">
-                    Höchsttemperatur
-                    <Tooltip
-                      className="px-3 py-1.5 text-center max-w-96"
-                      content="Die Höchsttemperatur, die am Thermostat manuell eingestellt werden kann."
-                      style="light"
-                    >
-                      <IoInformationCircleOutline color="#6B7280" />
-                    </Tooltip>
-                  </p>
-                  <p>
-                    {temperatureDetails?.deviceOverrideTemperatureMax || "N/A"}
-                    °C
-                  </p>{" "}
-                  {/* Replace hardcoded value */}
-                </div>
-              </>
-            )}
-          </div>
-        </div>
-        <div className="w-[75%] border-l flex flex-col gap-4 border-gray-200 pl-4">
-          <div className="max-h-[400px] overflow-y-auto overflow-x-hidden">
-            {/* {console.log("temp", temperatureDetails)} */}
-            {temperatureDetails && (
-              <HeatingScheduleTable locationDetails={temperatureDetails} />
-            )}
-          </div>
-        </div>
-      </div>
-    </div>
+    <HeatingPlanTempDetails
+      temperatureDetails={temperatureDetails}
+      isAlternate={true}
+      title="Einstellungen"
+      showTemplateName={true}
+    />
   );
 };
 
