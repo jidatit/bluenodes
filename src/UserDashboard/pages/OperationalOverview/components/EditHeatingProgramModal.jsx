@@ -20,6 +20,8 @@ import { validateTemperaturesHelper } from "../../../../shared/EditAndAssignHelp
 import { handleSubmitHelper } from "../../../../shared/EditAndAssignHelper/helper/HandleSubmitHelper.js";
 import { convertScheduleDataFunc } from "../../../../shared/EditAndAssignHelper/helper/ConvertScheduleDataHelper.js";
 import { handleCreateHelper } from "../../../../shared/EditAndAssignHelper/helper/HandleCreateHelper.js";
+import ConfirmModal from "../../../../shared/components/ConfirmReplaceModal.jsx";
+import ProgramSelector from "../../../../shared/components/ProgramSelector.jsx";
 
 const EditHeatingProgramModal = ({
   openModal,
@@ -308,7 +310,7 @@ const EditHeatingProgramModal = ({
     layoutsRef.current = updatedLayouts;
   };
 
-  let newCheck = null;
+  let newCheck;
   // Function to handle layout updates
   const handleCheckUpdate = (updatedCheck) => {
     newCheck = updatedCheck;
@@ -356,119 +358,34 @@ const EditHeatingProgramModal = ({
   }
 
   const handleCreate = async () => {
-    handleCheckName();
-
-    let scheduleDataTemp = {};
-
-    if (handleCheckRef.current) {
-      handleCheckRef.current();
+    try {
+      handleCheckName();
+      await handleCreateHelper(
+        handleCheckRef,
+        newCheck,
+        layoutsRef,
+        setFinalScheduleData,
+        convertScheduleData,
+        combinedData,
+        formData,
+        room,
+        ApiUrls,
+        setCreatedHeatingScheduleNames,
+        errors,
+        setErrorMessages,
+        createdHeatingScheduleNames,
+        generateToast,
+        resetModalState,
+        handleCloseModal,
+        fetchFloorDetails,
+        updateReplaced,
+        handleOpenModal
+      );
+    } catch (error) {
+      console.error("Error in handleCreate:", error);
+      // Handle the error appropriately, such as showing a toast or modal
     }
-
-    if (newCheck !== null && !newCheck) {
-      setFinalScheduleData(layoutsRef.current);
-      scheduleDataTemp = layoutsRef.current;
-
-      const data = convertScheduleData(scheduleDataTemp);
-
-      const requestBody = {
-        templateName: combinedData.formData.programName,
-        allowDeviceOverride:
-          combinedData.formData.childSafety == "No" ? true : false,
-        locations: [room.id],
-        days: data,
-      };
-
-      if (combinedData.formData.childSafety !== "Yes") {
-        requestBody.deviceOverrideTemperatureMin = parseInt(
-          combinedData.formData.minTemp
-        );
-        requestBody.deviceOverrideTemperatureMax = parseInt(
-          combinedData.formData.maxTemp
-        );
-      }
-      const fetchHeatingSchedules = async () => {
-        try {
-          const response = await axios.get(
-            ApiUrls.SMARTHEATING_HEATINGSCHEDULE.LIST
-          );
-          const data = await response.data;
-          const templateNames =
-            data.length > 0
-              ? data.map((template) => template.templateName)
-              : [];
-          setCreatedHeatingScheduleNames(templateNames);
-        } catch (error) {
-          console.error("Error:", error);
-        }
-      };
-      const exists =
-        createdHeatingScheduleNames &&
-        createdHeatingScheduleNames.includes(formData.programName);
-      if (exists) {
-        setErrorMessages((prev) => ({
-          ...prev,
-          programName: errors.ProgramWithNameAlreadyCreated,
-        }));
-      }
-
-      try {
-        const resp = await axios.post(
-          ApiUrls.SMARTHEATING_HEATINGSCHEDULE.HEATINGSCHEDULE_FROM_EDIT,
-          requestBody
-        );
-
-        if (resp.status >= 400) {
-          const errorText = await resp.data; // Get response text for error details
-          throw new Error(
-            `HTTP error! Status: ${resp.status}, Details: ${errorText}`
-          );
-        }
-
-        const respData = await resp.data;
-        if (respData.active) {
-          generateToast(errors.heatingScheduleEditedSuccessfull, true);
-
-          // handleOpenModal();
-          if (room) {
-            fetchFloorDetails(room.parentId);
-          }
-          handleCloseModal();
-          updateReplaced();
-          resetModalState();
-        } else {
-          generateToast(errors.heatingScheduleEditedFailed, false);
-        }
-      } catch (error) {
-        generateToast(errors.heatingScheduleEditedFailed, false);
-        console.error("Error during fetch operation:", error);
-      }
-    }
-
-    // handleCreateHelper({
-    //   handleCheckRef,
-    //   newCheck,
-    //   layoutsRef,
-    //   setFinalScheduleData,
-    //   convertScheduleData,
-    //   combinedData,
-    //   formData,
-    //   room,
-    //   ApiUrls,
-    //   setCreatedHeatingScheduleNames,
-    //   errors,
-    //   setErrorMessages,
-    //   createdHeatingScheduleNames,
-    //   generateToast,
-    //   resetModalState,
-    //   handleCloseModal,
-    //   fetchFloorDetails,
-    //   updateReplaced,
-    //   // fetchHeatingSchedulesFlag: false, // Disable fetching schedules for this component
-    //   // handleOpenModal: handleOpenModal, // Pass modal handler function
-    //   // fetchHeatingSchedules: fetchHeatingSchedules,
-    // });
   };
-
   const resetModalState = () => {
     setCurrentStep(1);
     setFormData({
@@ -710,50 +627,62 @@ const ReplaceProgram = ({
   }, []);
 
   return (
-    <div className="flex flex-col items-start justify-start w-full gap-4 md:flex-row md:items-center">
-      <div className="flex flex-col items-start justify-start w-full md:w-1/3">
-        <label
-          htmlFor="program"
-          value="Program"
-          className={`mb-2 text-sm pt-3 font-semibold ${
-            showError ? "text-red-500" : "text-gray-700"
-          }`}
-        >
-          {" "}
-        </label>
-        <select
-          id="program"
-          required
-          className={` mt-1.5 w-full rounded-lg border-gray-300 text-gray-700 sm:text-sm`}
-          value={selectedProgram}
-          onChange={handleProgramChange}
-        >
-          <option value="">Heizplan auswählen</option>
-          {data.map((program) => (
-            <option
-              className={`block rounded-lg px-4 py-2 text-sm ${
-                program.id === room.heatingSchedule.id
-                  ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-                  : "hover:bg-blue-100 hover:text-blue-700"
-              }`}
-              key={program.id}
-              value={program.id}
-              disabled={program.id === room.heatingSchedule.id}
-            >
-              {program.templateName.length > 50
-                ? `${program.templateName.slice(0, 50)}...`
-                : program.templateName}
-            </option>
-          ))}
-        </select>
+    // <div className="flex flex-col items-start justify-start w-full gap-4 md:flex-row md:items-center">
+    //   <div className="flex flex-col items-start justify-start w-full md:w-1/3">
+    //     <label
+    //       htmlFor="program"
+    //       value="Program"
+    //       className={`mb-2 text-sm pt-3 font-semibold ${
+    //         showError ? "text-red-500" : "text-gray-700"
+    //       }`}
+    //     >
+    //       {" "}
+    //     </label>
+    //     <select
+    //       id="program"
+    //       required
+    //       className={` mt-1.5 w-full rounded-lg border-gray-300 text-gray-700 sm:text-sm`}
+    //       value={selectedProgram}
+    //       onChange={handleProgramChange}
+    //     >
+    // <option value="">Heizplan auswählen</option>
+    // {data.map((program) => (
+    //   <option
+    //     className={`block rounded-lg px-4 py-2 text-sm ${
+    //       program.id === room.heatingSchedule.id
+    //         ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+    //         : "hover:bg-blue-100 hover:text-blue-700"
+    //     }`}
+    //     key={program.id}
+    //     value={program.id}
+    //     disabled={program.id === room.heatingSchedule.id}
+    //   >
+    //     {program.templateName.length > 50
+    //       ? `${program.templateName.slice(0, 50)}...`
+    //       : program.templateName}
+    //   </option>
+    //       ))}
+    //     </select>
 
-        {showError && (
-          <p className="mt-1 text-sm text-red-500">
-            Bitte einen Heizplan auswählen.
-          </p>
-        )}
-      </div>
-    </div>
+    //     {showError && (
+    //       <p className="mt-1 text-sm text-red-500">
+    //         Bitte einen Heizplan auswählen.
+    //       </p>
+    //     )}
+    //   </div>
+    // </div>
+
+    <ProgramSelector
+      label="Program"
+      placeholder="Heizplan auswählen"
+      errorMessage="Bitte einen Heizplan auswählen."
+      data={data}
+      selectedProgram={selectedProgram}
+      handleProgramChange={handleProgramChange}
+      showError={showError}
+      disabledProgramId={room?.heatingSchedule?.id} // The ID of the program to disable
+      componentType="edit" // To manage context if needed later
+    />
   );
 };
 
@@ -796,28 +725,13 @@ const ViewTableComponent = ({ selectedProgram }) => {
 
 const ConfirmReplaceModal = ({ show, onClose, onConfirm }) => {
   return (
-    <Modal show={show} onClose={onClose} size="lg">
-      <Modal.Header className="flex items-center justify-between">
-        <span className="text-lg font-semibold text-gray-900">
-          Ersetzen des Programms bestätigen
-        </span>
-        <button
-          onClick={onClose}
-          className="text-gray-600 hover:text-gray-900"
-        ></button>
-      </Modal.Header>
-      <Modal.Body className="text-[#6B7280]">
-        <p className="mt-2">Sind Sie sicher, dass Sie fortfahren möchten?</p>
-      </Modal.Body>
-      <Modal.Footer>
-        <Button onClick={onConfirm} className="bg-primary">
-          Ja
-        </Button>
-        <Button color="gray" onClick={onClose}>
-          Abbrechen
-        </Button>
-      </Modal.Footer>
-    </Modal>
+    <ConfirmModal
+      show={show}
+      onClose={onClose}
+      onConfirm={onConfirm}
+      title="Ersetzen des Programms bestätigen"
+      bodyText="Sind Sie sicher, dass Sie fortfahren möchten?"
+    />
   );
 };
 

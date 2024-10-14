@@ -1,7 +1,7 @@
 import axios from "axios";
+import { assign } from "lodash";
 
-export const handleCreateHelper = async ({
-  handleCheckName,
+export const handleCreateHelper = async (
   handleCheckRef,
   newCheck,
   layoutsRef,
@@ -20,17 +20,17 @@ export const handleCreateHelper = async ({
   handleCloseModal,
   fetchFloorDetails,
   updateReplaced,
-  // fetchHeatingSchedulesFlag = false, // flag to conditionally fetch schedules
-  // handleOpenModal = null, // option to handle modal opening
-  // fetchHeatingSchedules,
-}) => {
+  handleOpenModal
+) => {
   let scheduleDataTemp = {};
 
   if (handleCheckRef.current) {
-    handleCheckRef.current();
+    await handleCheckRef.current();
+    console.log("handleCheckRef.current222");
   }
 
   if (newCheck !== null && !newCheck) {
+    console.log("handleCheckRef.current333");
     setFinalScheduleData(layoutsRef.current);
     scheduleDataTemp = layoutsRef.current;
 
@@ -52,27 +52,30 @@ export const handleCreateHelper = async ({
         combinedData.formData.maxTemp
       );
     }
-    // const fetchHeatingSchedules = async () => {
-    //   try {
-    //     const response = await axios.get(
-    //       ApiUrls.SMARTHEATING_HEATINGSCHEDULE.LIST
-    //     );
-    //     const data = await response.data;
-    //     const templateNames =
-    //       data.length > 0 ? data.map((template) => template.templateName) : [];
-    //     setCreatedHeatingScheduleNames(templateNames);
-    //   } catch (error) {
-    //     console.error("Error:", error);
-    //   }
-    // };
-    const exists =
-      createdHeatingScheduleNames &&
-      createdHeatingScheduleNames.includes(formData.programName);
-    if (exists) {
-      setErrorMessages((prev) => ({
-        ...prev,
-        programName: errors.ProgramWithNameAlreadyCreated,
-      }));
+    const fetchHeatingSchedules = async () => {
+      try {
+        const response = await axios.get(
+          ApiUrls.SMARTHEATING_HEATINGSCHEDULE.LIST
+        );
+        const data = await response.data;
+        const templateNames =
+          data.length > 0 ? data.map((template) => template.templateName) : [];
+        setCreatedHeatingScheduleNames(templateNames);
+      } catch (error) {
+        console.error("Error:", error);
+      }
+    };
+    if (assign === true) {
+      const exists =
+        createdHeatingScheduleNames &&
+        createdHeatingScheduleNames.includes(formData.programName);
+      if (exists) {
+        console.log("handleCheckRef.current444");
+        setErrorMessages((prev) => ({
+          ...prev,
+          programName: errors.ProgramWithNameAlreadyCreated,
+        }));
+      }
     }
 
     try {
@@ -90,21 +93,34 @@ export const handleCreateHelper = async ({
 
       const respData = await resp.data;
       if (respData.active) {
-        generateToast(errors.heatingScheduleEditedSuccessfull, true);
+        if (assign === true) {
+          console.log("handleCheckRef.current555");
+          generateToast(errors.heatingScheduleEditedSuccessfull, true);
 
-        // handleOpenModal();
-        if (room) {
-          fetchFloorDetails(room.parentId);
+          // handleOpenModal();
+          if (room) {
+            console.log("handleCheckRef.current666");
+            fetchFloorDetails(room.parentId);
+          }
+          handleCloseModal();
+          updateReplaced();
+          resetModalState();
+        } else {
+          handleOpenModal();
+          resetModalState();
+          generateToast(errors.heatingScheduleEditedSuccessfull, true);
+          handleCloseModal();
+          await fetchHeatingSchedules();
         }
-        handleCloseModal();
-        updateReplaced();
-        resetModalState();
       } else {
+        console.log("handleCheckRef.current777");
         generateToast(errors.heatingScheduleEditedFailed, false);
       }
     } catch (error) {
       generateToast(errors.heatingScheduleEditedFailed, false);
       console.error("Error during fetch operation:", error);
+      console.log("handleCheckRef.current888");
     }
   }
+  console.log("handleCheckRef.current999");
 };

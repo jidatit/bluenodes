@@ -16,6 +16,8 @@ import { validateTemperaturesHelper } from "../../../../shared/EditAndAssignHelp
 import { handleSubmitHelper } from "../../../../shared/EditAndAssignHelper/helper/HandleSubmitHelper.js";
 import { handleCreateHelper } from "../../../../shared/EditAndAssignHelper/helper/HandleCreateHelper.js";
 import { convertScheduleDataFunc } from "../../../../shared/EditAndAssignHelper/helper/ConvertScheduleDataHelper.js";
+import ConfirmModal from "../../../../shared/components/ConfirmReplaceModal.jsx";
+import ProgramSelector from "../../../../shared/components/ProgramSelector.jsx";
 
 const AssignProgramModal = ({
   openModal,
@@ -55,40 +57,6 @@ const AssignProgramModal = ({
   };
 
   const handleConfirmReplace = () => {
-    // const roomId = room.locationId;
-
-    // axios
-    //   .get(ApiUrls.SMARTHEATING_HEATINGSCHEDULE.DETAILS(selectedProgram))
-
-    //   .then((response) => response.data)
-    //   .then((data) => {
-    //     const existingRoomIds = data.locations || [];
-    //     const updatedRoomIds = [...existingRoomIds, roomId];
-    //     axios
-    //       .post(
-    //         ApiUrls.SMARTHEATING_HEATINGSCHEDULE.ASSIGN_ROOM(selectedProgram),
-    //         {
-    //           locations: updatedRoomIds,
-    //         }
-    //       )
-    //       .then((response) => response.data)
-    //       .then((data) => {
-    //         setSelectedProgram("");
-    //         generateToast(errors.PorgramAssignedSuccessfully, true);
-    //         assignSuccess();
-    //         handleCloseModal();
-    //       })
-    //       .catch((error) => {
-    //         generateToast(errors.PorgramAssignedFailed, false);
-    //       });
-
-    //     setShowConfirmModal(false);
-    //   })
-    //   .catch((error) => {
-    //     console.error("Error fetching existing locations:", error);
-    //     generateToast(errors.ProgramReplacedFailed, false);
-    //   });
-
     handleConfirmReplaceHelper({
       roomId: room.locationId,
       selectedProgram,
@@ -281,90 +249,32 @@ const AssignProgramModal = ({
   }
 
   const handleCreate = async () => {
-    let scheduleDataTemp = {};
-    if (handleCheckRef.current) {
-      handleCheckRef.current();
+    try {
+      await handleCreateHelper({
+        handleCheckRef,
+        newCheck,
+        layoutsRef,
+        setFinalScheduleData,
+        convertScheduleData,
+        combinedData,
+        formData,
+        room,
+        ApiUrls,
+        setCreatedHeatingScheduleNames: "setCreatedHeatingScheduleNames",
+        errors,
+        setErrorMessages,
+        createdHeatingScheduleNames: "createdHeatingScheduleNames",
+        generateToast,
+        resetModalState,
+        handleCloseModal,
+        fetchFloorDetails: "fetchFloorDetails",
+        updateReplaced: "updateReplaced",
+        handleOpenModal,
+      });
+    } catch (error) {
+      console.error("Error in handleCreate:", error);
+      // Handle the error appropriately, such as showing a toast or modal
     }
-    if (newCheck !== null && !newCheck) {
-      setFinalScheduleData(layoutsRef.current);
-      scheduleDataTemp = layoutsRef.current;
-      const data = convertScheduleData(scheduleDataTemp);
-      const requestBody = {
-        templateName: combinedData.formData.programName,
-        allowDeviceOverride:
-          combinedData.formData.childSafety == "No" ? true : false,
-        locations: [room.id],
-        days: data,
-      };
-      if (combinedData.formData.childSafety !== "Yes") {
-        requestBody.deviceOverrideTemperatureMin = parseInt(
-          combinedData.formData.minTemp
-        );
-        requestBody.deviceOverrideTemperatureMax = parseInt(
-          combinedData.formData.maxTemp
-        );
-      }
-      const fetchHeatingSchedules = async () => {
-        try {
-          const response = await axios.get(
-            ApiUrls.SMARTHEATING_HEATINGSCHEDULE.LIST
-          );
-          const data = await response.data;
-          const templateNames =
-            data.length > 0
-              ? data.map((template) => template.templateName)
-              : [];
-          setCreatedHeatingScheduleNames(templateNames);
-        } catch (error) {
-          console.error("Error:", error);
-        }
-      };
-      try {
-        const resp = await axios.post(
-          ApiUrls.SMARTHEATING_HEATINGSCHEDULE.HEATINGSCHEDULE_FROM_EDIT,
-          requestBody
-        );
-        if (resp.status >= 400) {
-          const errorText = await resp.data; // Get response text for error details
-          throw new Error(
-            `HTTP error! Status: ${resp.status}, Details: ${errorText}`
-          );
-        }
-        const respData = resp.data;
-        if (respData.active) {
-          handleOpenModal();
-          resetModalState();
-          generateToast(errors.heatingScheduleEditedSuccessfull, true);
-          handleCloseModal();
-          await fetchHeatingSchedules();
-        } else {
-          generateToast(errors.heatingScheduleEditedFailed, false);
-        }
-      } catch (error) {
-        console.error("Error during fetch operation:", error);
-      }
-    }
-    // await handleCreateHelper({
-    //   handleCheckRef,
-    //   newCheck,
-    //   layoutsRef,
-    //   setFinalScheduleData,
-    //   convertScheduleData,
-    //   combinedData,
-    //   room,
-    //   ApiUrls,
-    //   setCreatedHeatingScheduleNames: "setCreatedHeatingScheduleNames",
-    //   errors,
-    //   setErrorMessages,
-    //   createdHeatingScheduleNames: "createdHeatingScheduleNames",
-    //   generateToast,
-    //   resetModalState,
-    //   handleCloseModal,
-    //   fetchFloorDetails: "fetchFloorDetails",
-    //   updateReplaced: "updateReplaced",
-    //   fetchHeatingSchedulesFlag: true, // Enable fetching schedules for this component
-    //   handleOpenModal: null, // No modal handling in this component
-    // });
   };
 
   const resetModalState = () => {
@@ -388,32 +298,6 @@ const AssignProgramModal = ({
     setLayouts({});
     setFinalScheduleData({});
     setSelectedAction("");
-  };
-
-  const handleCheckName = () => {
-    const fetchHeatingSchedules = async () => {
-      try {
-        const response = await axios.get(
-          ApiUrls.SMARTHEATING_HEATINGSCHEDULE.LIST
-        );
-        const data = await response.data;
-        const templateNames =
-          data.length > 0 ? data.map((template) => template.templateName) : [];
-        setCreatedHeatingScheduleNames(templateNames);
-      } catch (error) {
-        console.error("Error:", error);
-      }
-    };
-    fetchHeatingSchedules();
-    const exists =
-      createdHeatingScheduleNames &&
-      createdHeatingScheduleNames.includes(formData.programName);
-    if (exists) {
-      setErrorMessages((prev) => ({
-        ...prev,
-        programName: errors.ProgramWithNameAlreadyCreated,
-      }));
-    }
   };
 
   return (
@@ -510,41 +394,52 @@ const ReplaceProgram = ({
   }, []);
 
   return (
-    <div className="w-full flex flex-col md:flex-row justify-start items-start md:items-center gap-4">
-      <div className="flex flex-col justify-start items-start w-full md:w-1/3">
-        <label
-          htmlFor="program"
-          value="Program"
-          className={`mb-2 text-sm pt-3 font-semibold ${
-            showError ? "text-red-500" : "text-gray-700"
-          }`}
-        >
-          {" "}
-        </label>
-        <select
-          id="program"
-          required
-          className={` mt-1.5 w-full rounded-lg border-gray-300 text-gray-700 sm:text-sm`}
-          value={selectedProgram}
-          onChange={handleProgramChange}
-        >
-          <option value="">Heizplan auswählen</option>
-          {data.map((program) => (
-            <option key={program.id} value={program.id}>
-              {program.templateName.length > 50
-                ? `${program.templateName.slice(0, 50)}...`
-                : program.templateName}
-            </option>
-          ))}
-        </select>
+    // <div className="w-full flex flex-col md:flex-row justify-start items-start md:items-center gap-4">
+    //   <div className="flex flex-col justify-start items-start w-full md:w-1/3">
+    //     <label
+    //       htmlFor="program"
+    //       value="Program"
+    //       className={`mb-2 text-sm pt-3 font-semibold ${
+    //         showError ? "text-red-500" : "text-gray-700"
+    //       }`}
+    //     >
+    //       {" "}
+    //     </label>
+    //     <select
+    //       id="program"
+    //       required
+    //       className={` mt-1.5 w-full rounded-lg border-gray-300 text-gray-700 sm:text-sm`}
+    //       value={selectedProgram}
+    //       onChange={handleProgramChange}
+    //     >
+    //       <option value="">Heizplan auswählen</option>
+    //       {data.map((program) => (
+    //         <option key={program.id} value={program.id}>
+    //           {program.templateName.length > 50
+    //             ? `${program.templateName.slice(0, 50)}...`
+    //             : program.templateName}
+    //         </option>
+    //       ))}
+    //     </select>
 
-        {showError && (
-          <p className="text-red-500 text-sm mt-1">
-            Ein Programm muss ausgewählt werden.
-          </p>
-        )}
-      </div>
-    </div>
+    //     {showError && (
+    //       <p className="text-red-500 text-sm mt-1">
+    //         Ein Programm muss ausgewählt werden.
+    //       </p>
+    //     )}
+    //   </div>
+    // </div>
+    <ProgramSelector
+      label="Program"
+      placeholder="Heizplan auswählen"
+      errorMessage="Ein Programm muss ausgewählt werden."
+      data={data}
+      selectedProgram={selectedProgram}
+      handleProgramChange={handleProgramChange}
+      showError={showError}
+      disabledProgramId={room?.heatingSchedule?.id}
+      componentType="assign"
+    />
   );
 };
 
@@ -587,32 +482,13 @@ const ViewTableComponent = ({ selectedProgram }) => {
 
 const ConfirmReplaceModal = ({ show, onClose, onConfirm }) => {
   return (
-    <Modal show={show} onClose={onClose} size="lg">
-      <Modal.Header className="flex justify-between items-center">
-        <span className="text-lg font-semibold text-gray-900">
-          Zuweisung des Programms bestätigen
-        </span>
-        <button
-          onClick={onClose}
-          className="text-gray-600 hover:text-gray-900"
-        ></button>
-      </Modal.Header>
-      <Modal.Body className="text-[#6B7280]">
-        <p>
-          Das Zuweisen eines Programms wird alle Informationen des vorherigen
-          Programms entfernen.
-        </p>
-        <p className="mt-2">Sind Sie sicher, dass Sie fortfahren möchten?</p>
-      </Modal.Body>
-      <Modal.Footer>
-        <Button onClick={onConfirm} className="bg-primary">
-          Ja
-        </Button>
-        <Button color="gray" onClick={onClose}>
-          Abbrechen
-        </Button>
-      </Modal.Footer>
-    </Modal>
+    <ConfirmModal
+      show={show}
+      onClose={onClose}
+      onConfirm={onConfirm}
+      title="Zuweisung des Programms bestätigen"
+      bodyText="Das Zuweisen eines Programms wird alle Informationen des vorherigen Programms entfernen. Sind Sie sicher, dass Sie fortfahren möchten?"
+    />
   );
 };
 
