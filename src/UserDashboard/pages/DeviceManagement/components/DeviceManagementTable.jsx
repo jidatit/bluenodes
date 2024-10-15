@@ -547,7 +547,7 @@ const DeviceManagementTable = () => {
   };
 
   const findDeviceName = (id) => {
-    const device = tableData?.find((item) => item?.id === id);
+    const device = tableData?.find((item) => item?.deviceMappingId === id);
 
     return device ? device.deviceName : "";
   };
@@ -766,7 +766,7 @@ const DeviceManagementTable = () => {
                   <tr
                     onClick={async () => {
                       try {
-                        await handleRowClick(index, item?.id);
+                        await handleRowClick(index, item?.deviceMappingId);
                       } catch (error) {
                         console.error("Error during row click:", error);
                       }
@@ -775,7 +775,7 @@ const DeviceManagementTable = () => {
                   >
                     <td
                       onClick={async () =>
-                        await handleRowClick(index, item?.id)
+                        await handleRowClick(index, item?.deviceMappingId)
                       }
                     >
                       {" "}
@@ -789,7 +789,7 @@ const DeviceManagementTable = () => {
                       {item?.devEui}
                     </td>
                     <td className="relative px-4 py-4 truncate">
-                      {editMode && editingItemId === item?.id ? (
+                      {editMode && editingItemId === item?.deviceMappingId ? (
                         <TextInput
                           type="text"
                           value={editedName}
@@ -823,7 +823,7 @@ const DeviceManagementTable = () => {
                         </>
                       )}
 
-                      {editMode && editingItemId === item?.id ? (
+                      {editMode && editingItemId === item?.deviceMappingId ? (
                         <div className="absolute top-1/2 transform -translate-y-1/2 right-2 flex gap-[2px]">
                           <button
                             onClick={(e) => {
@@ -837,7 +837,7 @@ const DeviceManagementTable = () => {
                           <button
                             onClick={async (e) => {
                               e.stopPropagation();
-                              await handleSave(item?.id);
+                              await handleSave(item?.deviceMappingId);
                             }}
                             className="p-1 text-green-800 hover:bg-gray-300 hover:shadow-md hover:rounded-md"
                           >
@@ -848,7 +848,7 @@ const DeviceManagementTable = () => {
                         <FaEdit
                           onClick={(e) => {
                             e.stopPropagation(); // Prevent the row click handler from being called
-                            handleEditClick(item?.id);
+                            handleEditClick(item?.deviceMappingId);
                           }}
                           className="absolute p-[2px] hover:rounded-md hover:shadow-md hover:bg-gray-300 w-5 h-5 top-1/2 bottom-1/2 right-0 transform -translate-y-1/2"
                         />
