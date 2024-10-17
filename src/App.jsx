@@ -9,43 +9,45 @@ import Loginpage from "./Auth/Loginpage";
 import Signuppage from "./Auth/SignupPage";
 import ALayout from "./Auth/ALayout";
 import { AuthProvider } from "./AuthContext";
+import Onboarding from "./UserDashboard/pages/OnBoarding";
 
 const App = () => (
-	<AuthProvider>
-		<BrowserRouter>
-			<Routes>
-				<Route path={NAVIGATION_PATH.authLayout} element={<ALayout />}>
-					<Route index element={<Loginpage />} />
-					<Route path={NAVIGATION_PATH.signup} element={<Signuppage />} />
-				</Route>
+  <AuthProvider>
+    <BrowserRouter>
+      <Routes>
+        <Route path={NAVIGATION_PATH.authLayout} element={<ALayout />}>
+          <Route index element={<Loginpage />} />
+          <Route path={NAVIGATION_PATH.signup} element={<Signuppage />} />
+        </Route>
 
-				<Route path={NAVIGATION_PATH.dashboardLayout} element={<Layout />}>
-					<Route index element={<MainPage />} />
-					<Route
-						path={NAVIGATION_PATH.heatingprograms}
-						element={<HeatingSchedulePage />}
-					/>
-					<Route
-						path={NAVIGATION_PATH.operationalOverview}
-						element={<OverviewPage />}
-					/>
-					<Route
-						path={NAVIGATION_PATH.deviceManagement}
-						element={<DeviceManagementPage />}
-					/>
-					<Route
-						path="*"
-						element={<Navigate to={NAVIGATION_PATH.statuspage} />}
-					/>
-				</Route>
+        <Route path={NAVIGATION_PATH.dashboardLayout} element={<Layout />}>
+          <Route index element={<MainPage />} />
+          <Route
+            path={NAVIGATION_PATH.heatingprograms}
+            element={<HeatingSchedulePage />}
+          />
+          <Route
+            path={NAVIGATION_PATH.operationalOverview}
+            element={<OverviewPage />}
+          />
+          <Route
+            path={NAVIGATION_PATH.deviceManagement}
+            element={<DeviceManagementPage />}
+          />
+          <Route path={NAVIGATION_PATH.onboarding} element={<Onboarding />} />
+          <Route
+            path="*"
+            element={<Navigate to={NAVIGATION_PATH.statuspage} />}
+          />
+        </Route>
 
-				<Route
-					path="*"
-					element={<Navigate to={NAVIGATION_PATH.authLayout} />}
-				/>
-			</Routes>
-		</BrowserRouter>
-	</AuthProvider>
+        <Route
+          path="*"
+          element={<Navigate to={NAVIGATION_PATH.authLayout} />}
+        />
+      </Routes>
+    </BrowserRouter>
+  </AuthProvider>
 );
 
 export default App;

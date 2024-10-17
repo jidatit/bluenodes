@@ -18,6 +18,8 @@ import { Modal } from "flowbite-react";
 import { Button } from "flowbite-react";
 import axios from "axios";
 import ApiUrls from "../../globals/apiURL";
+import GetStartedCard from "./GetStartedCard";
+import CompactGetStartedCard from "./GetStartedCard";
 
 const user = {
   name: "Bonnie Green",
@@ -176,39 +178,27 @@ const ExampleSidebar = () => {
 };
 
 const BottomMenu = ({ isCollapsed, isHovered }) => {
-  const [userDetails, setUserDetails] = useState([]);
-
-  // const fetchUserDetails = async () => {
-  //   try {
-  //     const response = await axios.get(ApiUrls.USER.PROFILE);
-  //     const data = await response.data;
-  //     setUserDetails(data);
-  //   } catch (error) {
-  //     console.error("Error:", error);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   fetchUserDetails();
+  const [userDetails, setUserDetails] = useState({});
 
   const fetchUserDetails = () => {
     axios
       .get(ApiUrls.USER.PROFILE)
       .then((response) => {
-        const data = response.data; // Directly access the data
+        const data = response.data;
         setUserDetails(data);
       })
       .catch((error) => {
         console.error("Error:", error);
       });
   };
-  
+
   useEffect(() => {
     fetchUserDetails();
   }, []);
-  
+
   return (
-    <div className="flex items-center justify-center gap-x-5">
+    <div className="flex flex-col w-full">
+      <CompactGetStartedCard isCollapsed={isCollapsed} isHovered={isHovered} />
       <div className="flex items-center justify-between w-full ">
         <img src={user.avatar} />
         <div

@@ -1,0 +1,58 @@
+import React, { useState } from "react";
+import { Card, Progress } from "flowbite-react";
+import { Link } from "react-router-dom";
+import { NAVIGATION_PATH } from "../../globals/navPaths";
+
+const CompactGetStartedCard = ({ isCollapsed, isHovered }) => {
+  const [progress, setProgress] = useState(25);
+  const [isStarted, setIsStarted] = useState(false);
+
+  const handleStart = () => {
+    setIsStarted(true);
+    // Simulating progress increase
+    const interval = setInterval(() => {
+      setProgress((prevProgress) => {
+        if (prevProgress >= 100) {
+          clearInterval(interval);
+          return 100;
+        }
+        return prevProgress + 25;
+      });
+    }, 1000);
+  };
+
+  if (isCollapsed && !isHovered) {
+    return null; // Don't render when sidebar is collapsed and not hovered
+  }
+
+  return (
+    <Card className="w-full  bg-gray-50 shadow-none mb-4">
+      <h6 className="text-sm font-semibold text-gray-900 dark:text-white">
+        Get Started
+      </h6>
+      <p className="text-xs text-gray-600 dark:text-gray-400 ">
+        Watch quick videos to master your smart heating system.
+      </p>
+      <div className="flex justify-between items-center ">
+        <span className="text-xs font-medium text-gray-700 dark:text-gray-300">
+          Your Progress
+        </span>
+        <span className="text-xs font-medium text-gray-700 dark:text-gray-300">
+          {progress}%
+        </span>
+      </div>
+      <Progress progress={progress} color="cyan" size="sm" className="mb-2" />
+      <Link to={NAVIGATION_PATH.onboarding}>
+        <button
+          // onClick={handleStart}
+          disabled={isStarted}
+          className="w-full px-2 py-2 text-sm font-medium text-center text-black bg-[white] focuse:bg-gray-100 rounded-lg hover:bg-gray-50  focus:outline-none border border-gray-200"
+        >
+          {isStarted ? "Onboarding..." : "Start onboarding"}
+        </button>
+      </Link>
+    </Card>
+  );
+};
+
+export default CompactGetStartedCard;
