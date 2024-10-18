@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Progress, Button } from "flowbite-react";
 import { FaAngleRight, FaAngleLeft } from "react-icons/fa";
 import { IoPlayCircleOutline } from "react-icons/io5";
@@ -6,30 +6,33 @@ import { IoPlayCircleOutline } from "react-icons/io5";
 import CheckIcon from "./components/CheckCircle";
 import Accordion from "./components/Accordion"; // Import the custom Accordion component
 
-const OnboardingStep = ({ title, completed, onClick }) => {
+const OnboardingStep = ({ title, completed, isActive, onClick }) => {
   return (
     <div
-      className={`flex justify-between items-center px-2 py-2 rounded-md mb-2 cursor-pointer hover:bg-gray-100`}
+      className={`flex justify-between items-center px-2 py-2 rounded-md mb-2 cursor-pointer hover:bg-gray-100 ${
+        isActive ? "bg-gray-100" : ""
+      }`} // Apply 'bg-gray-200' if the step is active
       onClick={onClick}
     >
       <span>{title}</span>
-      <CheckIcon checked={completed} />
+      {completed && <CheckIcon checked={completed} />}
     </div>
   );
 };
 
-const VideoPlayer = ({ videoSrc }) => (
-  <div className="relative aspect-video rounded-lg overflow-hidden">
-    <img
-      src={videoSrc}
-      alt="Video thumbnail"
-      className="w-full h-full object-cover p-4"
-    />
-    <div className="absolute inset-0 flex items-center justify-center">
-      <IoPlayCircleOutline className="w-16 h-16 text-black opacity-80" />
+const VideoPlayer = ({ videoSrc }) => {
+  return (
+    <div className="relative aspect-video rounded-lg overflow-hidden">
+      <iframe
+        src={videoSrc}
+        webkitAllowFullScreen
+        mozAllowFullScreen
+        allowFullScreen
+        className="absolute top-0 left-0 w-full h-full"
+      ></iframe>
     </div>
-  </div>
-);
+  );
+};
 
 const Onboarding = () => {
   const sections = [
@@ -58,7 +61,7 @@ const Onboarding = () => {
   ];
 
   const videos = [
-    "/api/placeholder/640/360",
+    "https://www.loom.com/embed/d08c6dd0ae66405e9573170c4faae7d6?autoplay=0",
     "/api/placeholder/640/360?2",
     "/api/placeholder/640/360?3",
     "/api/placeholder/640/360?4",
@@ -72,61 +75,141 @@ const Onboarding = () => {
   const [completedSteps, setCompletedSteps] = useState({});
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [openSectionIndex, setOpenSectionIndex] = useState(0);
+  const [openIndices, setOpenIndices] = useState([0]); // Initialize first section as open
 
   const allSteps = sections.flatMap((section) => section.steps);
 
+  // const handleStepComplete = () => {
+  //   const currentStep = allSteps[currentStepIndex];
+  //   setCompletedSteps((prev) => ({ ...prev, [currentStep]: true }));
+  //   setProgress((prev) => Math.min(prev + 100 / allSteps.length, 100));
+
+  //   if (currentStepIndex < allSteps.length - 1) {
+  //     setCurrentStepIndex((prev) => prev + 1);
+  //   }
+
+  //   const currentSectionIndex = sections.findIndex((section) =>
+  //     section.steps.includes(currentStep)
+  //   );
+  //   // setOpenIndices([currentSectionIndex]);
+  //   const completedInSection = sections[currentSectionIndex].steps.filter(
+  //     (step) => completedSteps[step] || step === currentStep
+  //   ).length;
+
+  //   if (completedInSection === 2 && openSectionIndex < sections.length - 1) {
+  //     setOpenIndices((prev) => [...prev, openSectionIndex + 1]);
+  //     setOpenSectionIndex((prev) => prev + 1);
+  //   }
+  // };
   const handleStepComplete = () => {
     const currentStep = allSteps[currentStepIndex];
+
+    // Mark the current step as completed
     setCompletedSteps((prev) => ({ ...prev, [currentStep]: true }));
     setProgress((prev) => Math.min(prev + 100 / allSteps.length, 100));
 
-    // Increment current step index
+    // Move to the next step if not at the last step
     if (currentStepIndex < allSteps.length - 1) {
-      setCurrentStepIndex((prev) => prev + 1);
+      setCurrentStepIndex((prev) => {
+        const newIndex = prev + 1;
+        // Open the section of the next step
+        const nextSectionIndex = sections.findIndex((section) =>
+          section.steps.includes(allSteps[newIndex])
+        );
+        setOpenIndices([nextSectionIndex]); // Only keep the next section open
+        return newIndex;
+      });
     }
 
-    // Check if two steps are completed in the current section
     const currentSectionIndex = sections.findIndex((section) =>
       section.steps.includes(currentStep)
     );
+
     const completedInSection = sections[currentSectionIndex].steps.filter(
       (step) => completedSteps[step] || step === currentStep
     ).length;
 
+    // Optionally, open the next section if all steps in the current section are completed
     if (completedInSection === 2 && openSectionIndex < sections.length - 1) {
+      setOpenIndices((prev) => [...prev, openSectionIndex + 1]);
       setOpenSectionIndex((prev) => prev + 1);
     }
   };
 
-  const accordionItems = sections.map((section) => ({
+  // const handlePreviousStep = () => {
+  //   if (currentStepIndex > 0) {
+  //     setCurrentStepIndex((prev) => prev - 1);
+
+  //     const currentStep = allSteps[currentStepIndex - 1];
+  //     const currentSectionIndex = sections.findIndex((section) =>
+  //       section.steps.includes(currentStep)
+  //     );
+
+  //     // Ensure the accordion opens the correct section on 'Previous'
+  //     setOpenIndices([currentSectionIndex]);
+  //   }
+  // };
+  const handlePreviousStep = () => {
+    if (currentStepIndex > 0) {
+      setCurrentStepIndex((prev) => {
+        const newIndex = prev - 1;
+        // Open the section of the previous step
+        const prevSectionIndex = sections.findIndex((section) =>
+          section.steps.includes(allSteps[newIndex])
+        );
+        setOpenIndices([prevSectionIndex]); // Only keep the previous section open
+        return newIndex;
+      });
+    }
+  };
+
+  const handleNextStep = () => {
+    if (currentStepIndex < allSteps.length - 1) {
+      setCurrentStepIndex((prev) => prev + 1);
+
+      const currentStep = allSteps[currentStepIndex + 1];
+      const currentSectionIndex = sections.findIndex((section) =>
+        section.steps.includes(currentStep)
+      );
+
+      // Ensure the accordion opens the correct section on 'Next'
+      setOpenIndices([currentSectionIndex]);
+    }
+  };
+
+  const accordionItems = sections.map((section, sectionIndex) => ({
     title: section.title,
     content: (
       <div>
-        {section.steps.map((step, stepIndex) => (
-          <OnboardingStep
-            key={stepIndex}
-            title={step}
-            completed={false}
-            onClick={() => {}}
-          />
-        ))}
+        {section.steps.map((step, stepIndex) => {
+          const globalStepIndex = allSteps.indexOf(step);
+
+          return (
+            <OnboardingStep
+              key={stepIndex}
+              title={step}
+              completed={!!completedSteps[step]}
+              isActive={globalStepIndex === currentStepIndex}
+              onClick={() => setCurrentStepIndex(globalStepIndex)}
+            />
+          );
+        })}
       </div>
     ),
   }));
-
-  const [openIndices, setOpenIndices] = useState([]);
-
   const handleToggle = (index) => {
     setOpenIndices((prev) => {
       if (prev.includes(index)) {
-        // If the index is already open, remove it (toggle close)
         return prev.filter((i) => i !== index);
       } else {
-        // Otherwise, add it to the open indices (toggle open)
         return [...prev, index];
       }
     });
   };
+
+  useEffect(() => {
+    setOpenIndices([0]);
+  }, []);
 
   return (
     <div className="container mx-auto p-4 flex">
@@ -171,13 +254,13 @@ const Onboarding = () => {
               <Button
                 color="gray"
                 disabled={currentStepIndex === 0}
-                onClick={() => setCurrentStepIndex((prev) => prev - 1)}
+                onClick={handlePreviousStep}
               >
                 <FaAngleLeft className="mr-2 h-5 w-5" />
                 Previous
               </Button>
               <Button color="cyan" onClick={handleStepComplete}>
-                Next
+                {currentStepIndex === 7 ? "Complete" : "Next"}
                 <FaAngleRight className="ml-2 h-5 w-5" />
               </Button>
             </div>

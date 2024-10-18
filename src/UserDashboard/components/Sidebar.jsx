@@ -199,6 +199,7 @@ const BottomMenu = ({ isCollapsed, isHovered }) => {
   return (
     <div className="flex flex-col w-full">
       <CompactGetStartedCard isCollapsed={isCollapsed} isHovered={isHovered} />
+      <div className="h-px bg-gray-200 my-1" />
       <div className="flex items-center justify-between w-full ">
         <img src={user.avatar} />
         <div

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Card, Progress } from "flowbite-react";
 import { Link } from "react-router-dom";
 import { NAVIGATION_PATH } from "../../globals/navPaths";
+import VideoSVG from "./VideoSvg"; // No need to specify the extension if you use .jsx
 
 const CompactGetStartedCard = ({ isCollapsed, isHovered }) => {
   const [progress, setProgress] = useState(25);
@@ -22,11 +23,31 @@ const CompactGetStartedCard = ({ isCollapsed, isHovered }) => {
   };
 
   if (isCollapsed && !isHovered) {
-    return null; // Don't render when sidebar is collapsed and not hovered
+    return (
+      <Link to={NAVIGATION_PATH.onboarding}>
+        <div className="flex items-center mb-4 justify-center">
+          <VideoSVG />
+        </div>
+      </Link>
+    ); // Render SVG when sidebar is collapsed and not hovered
+  }
+
+  // Render the SVG and text when progress is 100
+  if (progress >= 100) {
+    return (
+      <Link to={NAVIGATION_PATH.onboarding}>
+        <div className="flex items-center mb-4 justify-start ml-4">
+          <VideoSVG />
+          <span className="ml-2 text-base text-gray/900 font-semibold">
+            Onboarding
+          </span>
+        </div>
+      </Link>
+    );
   }
 
   return (
-    <Card className="w-full  bg-gray-50 shadow-none mb-4">
+    <Card className="w-full bg-gray-50 shadow-none mb-4">
       <h6 className="text-sm font-semibold text-gray-900 dark:text-white">
         Get Started
       </h6>
@@ -44,9 +65,9 @@ const CompactGetStartedCard = ({ isCollapsed, isHovered }) => {
       <Progress progress={progress} color="cyan" size="sm" className="mb-2" />
       <Link to={NAVIGATION_PATH.onboarding}>
         <button
-          // onClick={handleStart}
+          onClick={handleStart}
           disabled={isStarted}
-          className="w-full px-2 py-2 text-sm font-medium text-center text-black bg-[white] focuse:bg-gray-100 rounded-lg hover:bg-gray-50  focus:outline-none border border-gray-200"
+          className="w-full px-2 py-2 text-sm font-medium text-center text-black bg-[white] focus:bg-gray-100 rounded-lg hover:bg-gray-50 focus:outline-none border border-gray-200"
         >
           {isStarted ? "Onboarding..." : "Start onboarding"}
         </button>
