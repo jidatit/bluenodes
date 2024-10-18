@@ -3,7 +3,7 @@ import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 
 const AccordionItem = ({ title, children, isOpen, onToggle }) => {
   return (
-    <div className="border-b border-gray-200 last:border-b-0">
+    <div className="">
       <div
         className={`cursor-pointer transition-all duration-300 ease-in-out ${
           isOpen ? "bg-gray-50" : "hover:bg-gray-50"
@@ -22,7 +22,7 @@ const AccordionItem = ({ title, children, isOpen, onToggle }) => {
         </div>
       </div>
       {isOpen && (
-        <div className="py-4 px-6 bg-gray-50">
+        <div className="py-4 !pt-0 px-3 bg-gray-50">
           <div className="prose max-w-none text-gray-700">{children}</div>
         </div>
       )}
@@ -32,7 +32,7 @@ const AccordionItem = ({ title, children, isOpen, onToggle }) => {
 
 const Accordion = ({ items, openIndices, onItemClick }) => {
   return (
-    <div className="rounded-lg border border-gray-200 shadow-sm overflow-hidden">
+    <div className="overflow-hidden">
       {items.map((item, index) => (
         <AccordionItem
           key={index}

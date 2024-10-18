@@ -4,7 +4,8 @@ import { FaAngleRight, FaAngleLeft } from "react-icons/fa";
 import { IoPlayCircleOutline } from "react-icons/io5";
 
 import CheckIcon from "./components/CheckCircle";
-import Accordion from "./components/Accordion"; // Import the custom Accordion component
+import Accordion from "./components/Accordion";
+import { IoCheckmarkCircle } from "react-icons/io5";
 
 const OnboardingStep = ({ title, completed, isActive, onClick }) => {
   return (
@@ -14,8 +15,13 @@ const OnboardingStep = ({ title, completed, isActive, onClick }) => {
       }`} // Apply 'bg-gray-200' if the step is active
       onClick={onClick}
     >
-      <span>{title}</span>
-      {completed && <CheckIcon checked={completed} />}
+      <span className="pl-4">{title}</span>
+      {/* {completed && <CheckIcon checked={completed} />} */}
+      {completed && (
+        <span className="text-primary text-2xl">
+          <IoCheckmarkCircle />
+        </span>
+      )}
     </div>
   );
 };
@@ -62,13 +68,13 @@ const Onboarding = () => {
 
   const videos = [
     "https://www.loom.com/embed/d08c6dd0ae66405e9573170c4faae7d6?autoplay=0",
-    "/api/placeholder/640/360?2",
-    "/api/placeholder/640/360?3",
-    "/api/placeholder/640/360?4",
-    "/api/placeholder/640/360?5",
-    "/api/placeholder/640/360?6",
-    "/api/placeholder/640/360?7",
-    "/api/placeholder/640/360?8",
+    "https://www.loom.com/embed/d08c6dd0ae66405e9573170c4faae7d6?autoplay=2",
+    "https://www.loom.com/embed/d08c6dd0ae66405e9573170c4faae7d6?autoplay=3",
+    "https://www.loom.com/embed/d08c6dd0ae66405e9573170c4faae7d6?autoplay=4",
+    "https://www.loom.com/embed/d08c6dd0ae66405e9573170c4faae7d6?autoplay=5",
+    "https://www.loom.com/embed/d08c6dd0ae66405e9573170c4faae7d6?autoplay=6",
+    "https://www.loom.com/embed/d08c6dd0ae66405e9573170c4faae7d6?autoplay=7",
+    "https://www.loom.com/embed/d08c6dd0ae66405e9573170c4faae7d6?autoplay=8",
   ];
 
   const [progress, setProgress] = useState(0);
@@ -226,6 +232,7 @@ const Onboarding = () => {
           </div>
           <Progress progress={progress} color="cyan" size="md" />
         </div>
+        <div className="h-px bg-gray-200 w-full mt-6 mb-2"></div>
         <Accordion
           items={accordionItems}
           openIndices={openIndices}

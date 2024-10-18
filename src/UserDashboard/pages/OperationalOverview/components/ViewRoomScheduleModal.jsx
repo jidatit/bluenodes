@@ -1,4 +1,4 @@
-import { Button, Modal, Tooltip } from "flowbite-react";
+import { Button, Modal, Tabs, Tooltip } from "flowbite-react";
 import customTheme from "../../HeatingSchedule/CreateHeating/ModalTheme";
 import { IoInformationCircleOutline } from "react-icons/io5";
 import { useEffect, useState } from "react";
@@ -8,6 +8,8 @@ import { Spinner } from "flowbite-react";
 import axios from "axios";
 import ApiUrls from "../../../../globals/apiURL.js";
 import HeatingPlanOverview from "../../../../shared/components/HeatingPlanOverview.jsx";
+import Dashboard from "./DashboardGraph.jsx";
+import CustomTabs from "./Tabs.jsx";
 
 export function ViewRoomScheduleModal({
   openModal,
@@ -40,6 +42,69 @@ export function ViewRoomScheduleModal({
     }
   }, [heatingScheduleId]);
 
+  const tabs = [
+    {
+      label: "Dashboard",
+      content: <Dashboard />,
+    },
+    {
+      label: "Heating Schedule",
+      content: (
+        <>
+          <div className="h-auto p-5 overflow-hidden">
+            <div className="flex items-start">
+              <HeatingPlanOverview locationDetails={locationDetails} />
+              <div className="flex flex-col w-full gap-4 pl-4 border-l border-gray-200">
+                <h3 className="text-[16px] text-gray-500 font-semibold">
+                  Heizplan
+                </h3>
+
+                {!isChecked ? (
+                  <div className="max-h-[400px] overflow-y-auto overflow-x-hidden pr-2">
+                    {locationDetails && (
+                      <HeatingScheduleTableStatic
+                        locationDetails={locationDetails}
+                      />
+                    )}
+                  </div>
+                ) : (
+                  <div className="max-h-[400px] overflow-y-auto overflow-x-hidden">
+                    <HeatingScheduleComparison
+                      initialLayouts={locationDetails}
+                      noHeading={true}
+                    />
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+
+          <div className="flex justify-end gap-4 mt-4">
+            <Button
+              onClick={() => {
+                if (room.heatingSchedule !== null) {
+                  handleCloseModal();
+                  handleOpenEditModal(room ? room : null);
+                }
+              }}
+              className="bg-primary"
+            >
+              Bearbeiten
+            </Button>
+
+            <Button
+              className="font-black"
+              color="gray"
+              onClick={handleCloseModal}
+            >
+              Schließen
+            </Button>
+          </div>
+        </>
+      ),
+    },
+  ];
+
   return (
     <>
       <Modal
@@ -58,54 +123,69 @@ export function ViewRoomScheduleModal({
             <Modal.Header className=" text-lg text-gray-900 [&>*]:font-semibold">
               {roomName}
             </Modal.Header>
-            <Modal.Body className="h-auto p-5 overflow-hidden">
-              <div className="flex items-start ">
-                <HeatingPlanOverview locationDetails={locationDetails} />
-                <div className="flex flex-col w-full gap-4 pl-4 border-l border-gray-200 ">
-                  <h3 className="text-[16px] text-gray-500 font-semibold">
-                    Heizplan
-                  </h3>
+            {/* <Modal.Header className=" text-lg text-gray-900 [&>*]:font-semibold">
+              {roomName}
+            </Modal.Header>
+            <Tabs aria-label="Pills" variant="pills">
+              <Tabs.Item
+                className="border-none outline-none bg-blue-500"
+                active
+                title="Dashboard"
+              >
+                <Dashboard />
+              </Tabs.Item>
+              <Tabs.Item title="Heating Schedule">
+                <Modal.Body className="h-auto p-5 overflow-hidden">
+                  <div className="flex items-start ">
+                    <HeatingPlanOverview locationDetails={locationDetails} />
+                    <div className="flex flex-col w-full gap-4 pl-4 border-l border-gray-200 ">
+                      <h3 className="text-[16px] text-gray-500 font-semibold">
+                        Heizplan
+                      </h3>
 
-                  {!isChecked ? (
-                    <div className="max-h-[400px] overflow-y-auto overflow-x-hidden pr-2">
-                      {locationDetails && (
-                        <HeatingScheduleTableStatic
-                          locationDetails={locationDetails}
-                        />
+                      {!isChecked ? (
+                        <div className="max-h-[400px] overflow-y-auto overflow-x-hidden pr-2">
+                          {locationDetails && (
+                            <HeatingScheduleTableStatic
+                              locationDetails={locationDetails}
+                            />
+                          )}
+                        </div>
+                      ) : (
+                        <div className="max-h-[400px] overflow-y-auto overflow-x-hidden">
+                          <HeatingScheduleComparison
+                            initialLayouts={locationDetails}
+                            noHeading={true}
+                          />
+                        </div>
                       )}
                     </div>
-                  ) : (
-                    <div className="max-h-[400px] overflow-y-auto overflow-x-hidden">
-                      <HeatingScheduleComparison
-                        initialLayouts={locationDetails}
-                        noHeading={true}
-                      />
-                    </div>
-                  )}
-                </div>
-              </div>
-            </Modal.Body>
-            <Modal.Footer>
-              <Button
-                onClick={() => {
-                  if (room.heatingSchedule !== null) {
-                    handleCloseModal();
-                    handleOpenEditModal(room ? room : null);
-                  }
-                }}
-                className="bg-primary"
-              >
-                Bearbeiten
-              </Button>
+                  </div>
+                </Modal.Body>
+                <Modal.Footer>
+                  <Button
+                    onClick={() => {
+                      if (room.heatingSchedule !== null) {
+                        handleCloseModal();
+                        handleOpenEditModal(room ? room : null);
+                      }
+                    }}
+                    className="bg-primary"
+                  >
+                    Bearbeiten
+                  </Button>
 
-              <Button
-                className="font-black"
-                color="gray"
-                onClick={handleCloseModal}
-              >
-                Schließen
-              </Button>
-            </Modal.Footer>
+                  <Button
+                    className="font-black"
+                    color="gray"
+                    onClick={handleCloseModal}
+                  >
+                    Schließen
+                  </Button>
+                </Modal.Footer>
+              </Tabs.Item>
+            </Tabs> */}
+            <CustomTabs tabs={tabs} defaultTab={0} />
           </>
         )}
       </Modal>
