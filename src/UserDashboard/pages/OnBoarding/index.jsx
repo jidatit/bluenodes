@@ -6,6 +6,8 @@ import { IoPlayCircleOutline } from "react-icons/io5";
 import CheckIcon from "./components/CheckCircle";
 import Accordion from "./components/Accordion";
 import { IoCheckmarkCircle } from "react-icons/io5";
+import { useNavigate } from "react-router-dom";
+import { NAVIGATION_PATH } from "../../../globals/navPaths";
 
 const OnboardingStep = ({ title, completed, isActive, onClick }) => {
   return (
@@ -82,6 +84,7 @@ const Onboarding = () => {
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [openSectionIndex, setOpenSectionIndex] = useState(0);
   const [openIndices, setOpenIndices] = useState([0]); // Initialize first section as open
+  const navigate = useNavigate();
 
   const allSteps = sections.flatMap((section) => section.steps);
 
@@ -107,12 +110,27 @@ const Onboarding = () => {
   //     setOpenSectionIndex((prev) => prev + 1);
   //   }
   // };
+
+  const handleComplete = () => {
+    const currentStep = allSteps[currentStepIndex];
+  
+    // Only mark the current step as complete if it's not already marked
+    if (!completedSteps[currentStep]) {
+      setCompletedSteps((prev) => ({ ...prev, [currentStep]: true }));
+      
+      // Update progress based on the total number of steps
+      const completedStepCount = Object.keys(completedSteps).length + 1; // +1 for the current step being marked
+      const newProgress = (completedStepCount / allSteps.length) * 100;
+  
+      setProgress(newProgress);
+    }
+  };
   const handleStepComplete = () => {
     const currentStep = allSteps[currentStepIndex];
 
     // Mark the current step as completed
-    setCompletedSteps((prev) => ({ ...prev, [currentStep]: true }));
-    setProgress((prev) => Math.min(prev + 100 / allSteps.length, 100));
+    // setCompletedSteps((prev) => ({ ...prev, [currentStep]: true }));
+    // setProgress((prev) => Math.min(prev + 100 / allSteps.length, 100));
 
     // Move to the next step if not at the last step
     if (currentStepIndex < allSteps.length - 1) {
@@ -244,9 +262,15 @@ const Onboarding = () => {
         <div className="mt-4">
           <div className="flex justify-between items-center mb-4">
             <div className="text-primary text-xl font-semibold">
-              {allSteps[currentStepIndex]}
+                        {
+                sections.find((section) =>
+                  section.steps.includes(allSteps[currentStepIndex])
+                )?.title
+              }
             </div>
-            <CheckIcon checked={completedSteps[allSteps[currentStepIndex]]} />
+            <div onClick={handleComplete}> 
+            <CheckIcon  checked={completedSteps[allSteps[currentStepIndex]]} />
+            </div>
           </div>
           <div className="text-black text-xl font-semibold">
             {allSteps[currentStepIndex]}
@@ -266,10 +290,20 @@ const Onboarding = () => {
                 <FaAngleLeft className="mr-2 h-5 w-5" />
                 Previous
               </Button>
-              <Button color="cyan" onClick={handleStepComplete}>
-                {currentStepIndex === 7 ? "Complete" : "Next"}
-                <FaAngleRight className="ml-2 h-5 w-5" />
-              </Button>
+              <Button
+              color="cyan"
+              onClick={() => {
+                if (currentStepIndex === 7 && progress === 100) {
+                  // If it's the last step and progress is 100%, navigate to the desired path
+                  navigate(`${NAVIGATION_PATH.dashboardLayout}`); // Use your routing logic here, like `useNavigate` from React Router
+                } else {
+                  handleStepComplete(); // Proceed to the next step
+                }
+              }}
+            >
+              {currentStepIndex === 7 && progress === 100 ? "Complete" : "Next"}
+              <FaAngleRight className="ml-2 h-5 w-5" />
+            </Button>
             </div>
           </div>
         </div>
