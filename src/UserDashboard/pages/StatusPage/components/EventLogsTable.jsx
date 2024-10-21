@@ -15,6 +15,7 @@ import DateFilter from "./dateFilter/DateFilter";
 import "../../../../index.css";
 import formatTimestamp from "../../../../utils/formatTimeStamp";
 import { CiCircleRemove } from "react-icons/ci";
+import SkeletonTable from "./SkeltonTable";
 const EventLogsTable = () => {
   const [selectedEventFilters, setSelectedEventFilters] = useState(null);
   const [ApiLocationsToBeSend, setApiLocationsToBeSend] = useState(null);
@@ -147,6 +148,7 @@ const EventLogsTable = () => {
     if (filtersSelected === false) getAllLocations();
   }, [filtersSelected]);
   const [tableData, setTableData] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalRows, setTotalRows] = useState(0);
   const [selectedKeys, setSelectedKeys] = useState({});
@@ -350,20 +352,32 @@ const EventLogsTable = () => {
       (selectedEventFilters !== null &&
         selectedEventFilters.map((filter) => filter.name).join(",")) ||
       null;
-  
-    fetchEventLogsData(currentPage, itemsPerPage, locations, eventTypeLevel, dateTo, dateFrom)
+
+    fetchEventLogsData(
+      currentPage,
+      itemsPerPage,
+      locations,
+      eventTypeLevel,
+      dateTo,
+      dateFrom
+    )
       .then((data) => {
         setTotalRows(data.count);
         setTableData(data.rows);
+        setLoading(false);
+        // setTotalRows(0);
+        // const testTableData = [];
+        // setTableData(testTableData);
       })
       .catch((error) => {
+        setLoading(false);
         console.log("Error fetching event logs:", error);
       });
   };
-  
+
   const [dateTo, setdateTo] = useState(null);
   const [dateFrom, setdateFrom] = useState(null);
-  
+
   useEffect(() => {
     getData(ApiLocationsToBeSend);
   }, [
@@ -373,7 +387,7 @@ const EventLogsTable = () => {
     dateFrom,
     currentPage,
   ]);
-  
+
   useEffect(() => {
     if (selectedEventFilters !== null) {
       getData(ApiLocationsToBeSend);
@@ -387,8 +401,16 @@ const EventLogsTable = () => {
     setCurrentPage(page);
   };
 
-  const startIndex = (currentPage - 1) * itemsPerPage + 1;
-  const endIndex = Math.min(currentPage * itemsPerPage, totalItems);
+  // const startIndex = (currentPage - 1) * itemsPerPage + 1;
+  // const endIndex = Math.min(currentPage * itemsPerPage, totalItems);
+
+  const startIndex =
+    totalItems > 0 && itemsPerPage > 0
+      ? (currentPage - 1) * itemsPerPage + 1
+      : 0;
+
+  const endIndex =
+    itemsPerPage > 0 ? Math.min(currentPage * itemsPerPage, totalItems) : 0;
 
   const paginationRange = 1;
 
@@ -454,144 +476,146 @@ const EventLogsTable = () => {
         <h1 className=" font-[500] text-lg text-gray-900">Event Übersicht</h1>
       </div>
       <div className="relative w-full overflow-x-auto bg-white shadow-md sm:rounded-lg z-10">
-        <div className="flex flex-column my-2 bg-transparent mx-2 sm:flex-row flex-wrap space-y-4 sm:space-y-0 items-center justify-between z-10 ">
+        <div className="flex flex-column my-3 bg-transparent mx-2 sm:flex-row flex-wrap space-y-4 sm:space-y-0 items-center justify-between z-10 ">
           {/* Filter buttons */}
-          <div className="flex flex-row justify-center items-center gap-4 ">
-            <div className="flex flex-row gap-x-2">
-              <TreeSelect
-                value={selectedKeys}
-                options={filteredLocations}
-                onChange={onNodeSelectChange}
-                onClick={handleTreeSelectClick}
-                expandedKeys={expandedKeys}
-                onShow={openBuildingFilter}
-                onHide={hideBuildingFilter} // Use expandedKeys to manage expanded nodes
-                onToggle={handleNodeToggle} // Handle node expand/collapse event
-                selectionMode="multiple"
-                placeholder="Alle Gebäude"
-                filter
-                filterBy="label"
-                filterValue={filterValue}
-                className="w-full md:w-20rem"
-                closeIcon="false"
-                panelStyle={{
-                  border: "0.5px solid #bababa",
-                  borderRadius: "4px",
-                  outline: "none",
-                  boxShadow: "none",
-                }}
-                style={{
-                  outline: "none",
-                  boxShadow: "none",
-                }}
-                filterTemplate={({ filterInputProps }) => (
-                  <div
-                    style={{
-                      backgroundColor: "#f5f5f5",
-                      padding: "10px",
-                      display: "flex",
-                      width: "100%",
-                      alignItems: "center",
-                      borderRadius: "6px",
-                      border: "1px solid #d5ddde",
-                    }}
-                  >
-                    <span
+          {tableData.length > 0 && (
+            <div className="flex flex-row justify-center items-center gap-4 ">
+              <div className="flex flex-row gap-x-2">
+                <TreeSelect
+                  value={selectedKeys}
+                  options={filteredLocations}
+                  onChange={onNodeSelectChange}
+                  onClick={handleTreeSelectClick}
+                  expandedKeys={expandedKeys}
+                  onShow={openBuildingFilter}
+                  onHide={hideBuildingFilter} // Use expandedKeys to manage expanded nodes
+                  onToggle={handleNodeToggle} // Handle node expand/collapse event
+                  selectionMode="multiple"
+                  placeholder="Alle Gebäude"
+                  filter
+                  filterBy="label"
+                  filterValue={filterValue}
+                  className="w-full md:w-20rem"
+                  closeIcon="false"
+                  panelStyle={{
+                    border: "0.5px solid #bababa",
+                    borderRadius: "4px",
+                    outline: "none",
+                    boxShadow: "none",
+                  }}
+                  style={{
+                    outline: "none",
+                    boxShadow: "none",
+                  }}
+                  filterTemplate={({ filterInputProps }) => (
+                    <div
                       style={{
-                        marginLeft: "8px",
-                        marginRight: "8px",
-                        color: "#9e9e9e",
-                        fontSize: "18px",
+                        backgroundColor: "#f5f5f5",
+                        padding: "10px",
+                        display: "flex",
+                        width: "100%",
+                        alignItems: "center",
+                        borderRadius: "6px",
+                        border: "1px solid #d5ddde",
                       }}
                     >
-                      <IoSearch />
-                    </span>
-                    <input
-                      {...filterInputProps}
-                      value={filterValue}
-                      onChange={handleFilterChange}
-                      style={{
-                        border: "none",
-                        width: "100%",
-                        backgroundColor: "transparent",
-                        outline: "none",
-                        color: "#6e6e6e",
-                      }}
-                      placeholder="Suche"
-                    />
-                  </div>
-                )}
-              />
+                      <span
+                        style={{
+                          marginLeft: "8px",
+                          marginRight: "8px",
+                          color: "#9e9e9e",
+                          fontSize: "18px",
+                        }}
+                      >
+                        <IoSearch />
+                      </span>
+                      <input
+                        {...filterInputProps}
+                        value={filterValue}
+                        onChange={handleFilterChange}
+                        style={{
+                          border: "none",
+                          width: "100%",
+                          backgroundColor: "transparent",
+                          outline: "none",
+                          color: "#6e6e6e",
+                        }}
+                        placeholder="Suche"
+                      />
+                    </div>
+                  )}
+                />
 
-              {Object.keys(selectedKeys).length > 0 && (
+                {Object.keys(selectedKeys).length > 0 && (
+                  <button
+                    className="text-xl text-red-500 rounded-lg"
+                    onClick={clearBuildingFilter}
+                  >
+                    <CiCircleRemove size={36} />
+                  </button>
+                )}
+              </div>
+              <div className="flex flex-row gap-x-2">
+                <MultiSelect
+                  value={selectedEventFilters}
+                  onShow={handleMultiSelectClick}
+                  onHide={handleMultiSelectHide}
+                  onChange={(e) => setSelectedEventFilters(e.value)}
+                  showSelectAll={false}
+                  options={eventFilterOptions}
+                  optionLabel="germanLabel" // Use the German label for the UI
+                  filter
+                  placeholder="Alle Ereignisse" // German translation for "All Events"
+                  display="chip"
+                  className="w-full md:w-20rem"
+                  panelStyle={{
+                    border: "0.5px solid #bababa",
+                    borderRadius: "4px",
+                  }}
+                />
+                {selectedEventFilters?.length > 0 && (
+                  <button
+                    className="text-xl text-red-500 rounded-lg"
+                    onClick={clearEventFilter}
+                  >
+                    <CiCircleRemove size={36} />
+                  </button>
+                )}
+              </div>
+              <div className="dummy" ref={dateFilterRef}>
+                <DateFilter
+                  setSelectedDropdownOption={setSelectedDropdownOption}
+                  selectedDropdownOption={selectedDropdownOption}
+                  setDropDownValue={setDropDownValue}
+                  dropDownValue={dropDownValue}
+                  setDates={setDates}
+                  dates={dates}
+                  dateRef={dateFilterRef}
+                  closeDropdown={closeDateFilter}
+                  setCloseDateFilter={setCloseDateFilter}
+                  onDatesChange={handleDatesChange}
+                  setApiLocationsToBeSend={setApiLocationsToBeSend}
+                  selectedLocationFilter={selectedLocationFilter}
+                  setSubDropdownValue={setSubDropdownValue}
+                  subDropdownValue={subDropdownValue}
+                />
+              </div>
+              {(selectedEventFilters?.length > 0 ||
+                Object.keys(selectedKeys).length > 0 ||
+                dates ||
+                (subDropdownValue && subDropdownValue.length > 0)) && (
                 <button
-                  className="text-xl text-red-500 rounded-lg"
-                  onClick={clearBuildingFilter}
+                  className="bg-red-500 px-2 text-[11px] py-3 h-[34%] text-white shadow-lg rounded-lg"
+                  onClick={clearAllFilters}
                 >
-                  <CiCircleRemove size={36} />
+                  Alle zurücksetzen
                 </button>
               )}
             </div>
-            <div className="flex flex-row gap-x-2">
-              <MultiSelect
-                value={selectedEventFilters}
-                onShow={handleMultiSelectClick}
-                onHide={handleMultiSelectHide}
-                onChange={(e) => setSelectedEventFilters(e.value)}
-                showSelectAll={false}
-                options={eventFilterOptions}
-                optionLabel="germanLabel" // Use the German label for the UI
-                filter
-                placeholder="Alle Ereignisse" // German translation for "All Events"
-                display="chip"
-                className="w-full md:w-20rem"
-                panelStyle={{
-                  border: "0.5px solid #bababa",
-                  borderRadius: "4px",
-                }}
-              />
-              {selectedEventFilters?.length > 0 && (
-                <button
-                  className="text-xl text-red-500 rounded-lg"
-                  onClick={clearEventFilter}
-                >
-                  <CiCircleRemove size={36} />
-                </button>
-              )}
-            </div>
-            <div className="dummy" ref={dateFilterRef}>
-              <DateFilter
-                setSelectedDropdownOption={setSelectedDropdownOption}
-                selectedDropdownOption={selectedDropdownOption}
-                setDropDownValue={setDropDownValue}
-                dropDownValue={dropDownValue}
-                setDates={setDates}
-                dates={dates}
-                dateRef={dateFilterRef}
-                closeDropdown={closeDateFilter}
-                setCloseDateFilter={setCloseDateFilter}
-                onDatesChange={handleDatesChange}
-                setApiLocationsToBeSend={setApiLocationsToBeSend}
-                selectedLocationFilter={selectedLocationFilter}
-                setSubDropdownValue={setSubDropdownValue}
-                subDropdownValue={subDropdownValue}
-              />
-            </div>
-            {(selectedEventFilters?.length > 0 ||
-              Object.keys(selectedKeys).length > 0 ||
-              dates ||
-              (subDropdownValue && subDropdownValue.length > 0)) && (
-              <button
-                className="bg-red-500 px-2 text-[11px] py-3 h-[34%] text-white shadow-lg rounded-lg"
-                onClick={clearAllFilters}
-              >
-                Alle zurücksetzen
-              </button>
-            )}
-          </div>
+          )}
         </div>
         {/* Table */}
-        <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 z-10 min-h-[30rem] overflow-x-hidden">
+        <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 z-10 h-full overflow-x-hidden">
           <thead className="text-xs font-semibold text-gray-500 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
             <tr>
               <th scope="col" className="p-4">
@@ -614,8 +638,11 @@ const EventLogsTable = () => {
               </th>
             </tr>
           </thead>
+
+          {loading && <SkeletonTable />}
+
           {tableData.length > 0 && (
-            <tbody>
+            <tbody className="">
               {tableData.map((item, index) => (
                 <tr
                   key={index}

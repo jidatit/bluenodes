@@ -10,6 +10,8 @@ import { errorMessages as errors } from "../../../../globals/errorMessages"; // 
 import { CiCircleRemove } from "react-icons/ci";
 import { useToast } from "../../OperationalOverview/components/ToastContext";
 import AssignProgramModal from "./AssignProgramModal";
+import SkeletonTable from "./SkeltonTable";
+import UnassignedSkeletonTable from "./SkeltonUnassigned";
 
 const UnassignedTable = ({ assignUpdate }) => {
   const [selectedEventFilters, setSelectedEventFilters] = useState(null);
@@ -22,6 +24,7 @@ const UnassignedTable = ({ assignUpdate }) => {
   const [selectedLocationFilter, setSelectedLocationFilter] = useState(0);
   const [closeDateFilter, setCloseDateFilter] = useState(false); // State to manage dropdown visibility
   const [parentNodes, setParentNodes] = useState(null);
+  const [loading, setLoading] = useState(true);
   const dateFilterRef = useRef(null);
   const [floors, setFloors] = useState([]);
   // Function to handle click outside of the DateFilter
@@ -112,11 +115,11 @@ const UnassignedTable = ({ assignUpdate }) => {
         const transformedData = transformData(response.data);
         setFilteredLocations(transformedData);
         setLocationsData(transformedData);
-        
-        const extractedFloors = transformedData.map(
-          (location) => location.children
-        ).flat();
-  
+
+        const extractedFloors = transformedData
+          .map((location) => location.children)
+          .flat();
+
         // Update the floors state with the extracted children
         setFloors(extractedFloors);
       })
@@ -124,11 +127,10 @@ const UnassignedTable = ({ assignUpdate }) => {
         console.log(error);
       });
   };
-  
+
   useEffect(() => {
     if (filtersSelected === false) getAllLocations();
   }, [filtersSelected]);
-  
 
   const [tableData, setTableData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -338,46 +340,48 @@ const UnassignedTable = ({ assignUpdate }) => {
   //   }
   // }, [selectedEventFilters]);
   const getData = (locations) => {
-  const eventTypeLevel =
-    (selectedEventFilters !== null &&
-      selectedEventFilters.map((filter) => filter.name).join(",")) ||
-    null;
+    const eventTypeLevel =
+      (selectedEventFilters !== null &&
+        selectedEventFilters.map((filter) => filter.name).join(",")) ||
+      null;
 
-  fetchUnassignedRoomsData(
-    currentPage,
-    itemsPerPage,
-    locations,
-    eventTypeLevel,
-    dateTo,
-    dateFrom
-  )
-    .then((data) => {
-      setTotalRows(data.count);
-      setTableData(data.rows);
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-};
+    fetchUnassignedRoomsData(
+      currentPage,
+      itemsPerPage,
+      locations,
+      eventTypeLevel,
+      dateTo,
+      dateFrom
+    )
+      .then((data) => {
+        setTotalRows(data.count);
+        setTableData(data.rows);
+        setLoading(false);
+      })
+      .catch((error) => {
+        setLoading(false);
+        console.log(error);
+      });
+  };
 
-const [dateTo, setdateTo] = useState(null);
-const [dateFrom, setdateFrom] = useState(null);
+  const [dateTo, setdateTo] = useState(null);
+  const [dateFrom, setdateFrom] = useState(null);
 
-useEffect(() => {
-  getData(ApiLocationsToBeSend);
-}, [
-  ApiLocationsToBeSend,
-  apiLocationsToBeSendCounter,
-  dateTo,
-  dateFrom,
-  currentPage,
-]);
-
-useEffect(() => {
-  if (selectedEventFilters !== null) {
+  useEffect(() => {
     getData(ApiLocationsToBeSend);
-  }
-}, [selectedEventFilters]);
+  }, [
+    ApiLocationsToBeSend,
+    apiLocationsToBeSendCounter,
+    dateTo,
+    dateFrom,
+    currentPage,
+  ]);
+
+  useEffect(() => {
+    if (selectedEventFilters !== null) {
+      getData(ApiLocationsToBeSend);
+    }
+  }, [selectedEventFilters]);
 
   const itemsPerPage = 10;
   const totalItems = totalRows && totalRows;
@@ -387,7 +391,10 @@ useEffect(() => {
     setCurrentPage(page);
   };
 
-  const startIndex = (currentPage - 1) * itemsPerPage + 1;
+  const startIndex =
+    totalItems > 0 && itemsPerPage > 0
+      ? (currentPage - 1) * itemsPerPage + 1
+      : 0;
   const endIndex = Math.min(currentPage * itemsPerPage, totalItems);
 
   const paginationRange = 1;
@@ -444,83 +451,85 @@ useEffect(() => {
       <div className="relative w-full overflow-x-auto bg-white shadow-md sm:rounded-lg">
         <div className="flex flex-column my-2 bg-transparent mx-2 sm:flex-row flex-wrap space-y-4 sm:space-y-0 items-center justify-between">
           {/* Filter buttons */}
-          <div className="flex flex-row justify-center items-center gap-1">
-            <TreeSelect
-              value={selectedKeys}
-              options={filteredLocations}
-              onChange={onNodeSelectChange}
-              onClick={handleTreeSelectClick}
-              expandedKeys={expandedKeys} // Use expandedKeys to manage expanded nodes
-              onToggle={handleNodeToggle} // Handle node expand/collapse event
-              selectionMode="multiple"
-              onShow={openBuildingFilter}
-              onHide={hideBuildingFilter}
-              placeholder="Alle Gebäude"
-              filter
-              filterBy="label"
-              filterValue={filterValue}
-              className="w-full md:w-20rem"
-              closeIcon="false"
-              panelStyle={{
-                border: "0.5px solid #bababa",
-                borderRadius: "4px",
-                outline: "none",
-                boxShadow: "none",
-              }}
-              style={{
-                outline: "none",
-                boxShadow: "none",
-              }}
-              filterTemplate={({ filterInputProps }) => (
-                <div
-                  style={{
-                    backgroundColor: "#f5f5f5",
-                    padding: "10px",
-                    display: "flex",
-                    width: "100%",
-                    alignItems: "center",
-                    borderRadius: "6px",
-                    border: "1px solid #d5ddde",
-                  }}
-                >
-                  <span
+          {tableData.length > 0 && (
+            <div className="flex flex-row justify-center items-center gap-1">
+              <TreeSelect
+                value={selectedKeys}
+                options={filteredLocations}
+                onChange={onNodeSelectChange}
+                onClick={handleTreeSelectClick}
+                expandedKeys={expandedKeys} // Use expandedKeys to manage expanded nodes
+                onToggle={handleNodeToggle} // Handle node expand/collapse event
+                selectionMode="multiple"
+                onShow={openBuildingFilter}
+                onHide={hideBuildingFilter}
+                placeholder="Alle Gebäude"
+                filter
+                filterBy="label"
+                filterValue={filterValue}
+                className="w-full md:w-20rem"
+                closeIcon="false"
+                panelStyle={{
+                  border: "0.5px solid #bababa",
+                  borderRadius: "4px",
+                  outline: "none",
+                  boxShadow: "none",
+                }}
+                style={{
+                  outline: "none",
+                  boxShadow: "none",
+                }}
+                filterTemplate={({ filterInputProps }) => (
+                  <div
                     style={{
-                      marginLeft: "8px",
-                      marginRight: "8px",
-                      color: "#9e9e9e",
-                      fontSize: "18px",
+                      backgroundColor: "#f5f5f5",
+                      padding: "10px",
+                      display: "flex",
+                      width: "100%",
+                      alignItems: "center",
+                      borderRadius: "6px",
+                      border: "1px solid #d5ddde",
                     }}
                   >
-                    <IoSearch />
-                  </span>
-                  <input
-                    {...filterInputProps}
-                    value={filterValue}
-                    onChange={handleFilterChange}
-                    style={{
-                      border: "none",
-                      width: "100%",
-                      backgroundColor: "transparent",
-                      outline: "none",
-                      color: "#6e6e6e",
-                    }}
-                    placeholder="Suche"
-                  />
-                </div>
+                    <span
+                      style={{
+                        marginLeft: "8px",
+                        marginRight: "8px",
+                        color: "#9e9e9e",
+                        fontSize: "18px",
+                      }}
+                    >
+                      <IoSearch />
+                    </span>
+                    <input
+                      {...filterInputProps}
+                      value={filterValue}
+                      onChange={handleFilterChange}
+                      style={{
+                        border: "none",
+                        width: "100%",
+                        backgroundColor: "transparent",
+                        outline: "none",
+                        color: "#6e6e6e",
+                      }}
+                      placeholder="Suche"
+                    />
+                  </div>
+                )}
+              />
+              {Object.keys(selectedKeys).length > 0 && (
+                <button
+                  className="text-xl text-red-500 rounded-lg"
+                  onClick={clearBuildingFilter}
+                >
+                  <CiCircleRemove size={36} />
+                </button>
               )}
-            />
-            {Object.keys(selectedKeys).length > 0 && (
-              <button
-                className="text-xl text-red-500 rounded-lg"
-                onClick={clearBuildingFilter}
-              >
-                <CiCircleRemove size={36} />
-              </button>
-            )}
-          </div>
+            </div>
+          )}
         </div>
         {/* Table */}
-        <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 min-h-[10rem]">
+        <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 ">
           <thead className="text-xs font-semibold text-gray-500 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
             <tr className=" uppercase">
               <th scope="col" className="p-4 w-[20%]">
@@ -537,6 +546,7 @@ useEffect(() => {
               </th>
             </tr>
           </thead>
+          {loading && <UnassignedSkeletonTable />}
           <tbody>
             {tableData.length > 0 &&
               tableData.map((item, index) => (

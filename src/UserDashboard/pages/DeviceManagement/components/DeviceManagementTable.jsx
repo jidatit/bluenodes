@@ -1,6 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Tooltip, TextInput } from "flowbite-react";
-import { IoChevronBackOutline, IoChevronForwardOutline } from "react-icons/io5";
+import { Tooltip, TextInput, Modal, Button } from "flowbite-react";
+import {
+  IoChevronBackOutline,
+  IoChevronForwardOutline,
+  IoInformationCircleOutline,
+} from "react-icons/io5";
 import { FaRegCircleCheck } from "react-icons/fa6";
 import { AiOutlineExclamationCircle } from "react-icons/ai";
 import { BsFillCalendarDateFill } from "react-icons/bs";
@@ -35,18 +39,20 @@ import formatTimestamp from "../../../../utils/formatTimeStamp";
 import ApiUrls from "../../../../globals/apiURL";
 import { CiCircleRemove } from "react-icons/ci";
 import { useToast } from "../../OperationalOverview/components/ToastContext";
+import { MdOutlineBatteryUnknown } from "react-icons/md";
+import { BatteryUnknownIcon, NoText } from "../../../../utils/icons";
+import SkeletonDeviceManagementTable from "./SkeltonDevice";
 const getBatteryImage = (battery_level) => {
-  const level = battery_level;
-  if (level === "full") {
+  if (battery_level === "full") {
     return BatteryFull;
-  } else if (level === "high") {
+  } else if (battery_level === "high") {
     return BatteryFull;
-  } else if (level === "medium") {
+  } else if (battery_level === "medium") {
     return BatteryMedium;
-  } else if (level === "low") {
+  } else if (battery_level === "low") {
     return BatteryLow;
   } else {
-    return BatteryEmpty;
+    return null;
   }
 };
 
@@ -208,6 +214,7 @@ const DeviceManagementTable = () => {
 
   const [selectedKeys, setSelectedKeys] = useState({});
   const [selectedRoomIds, setSelectedRoomIds] = useState(new Set());
+  const [refereshEdit, setRefereshEdit] = useState(false);
 
   const [expandedKeys, setExpandedKeys] = useState({});
 
@@ -408,6 +415,7 @@ const DeviceManagementTable = () => {
   //   status,
   //   batteryLevel,
   // ]);
+  const [loading, setLoading] = useState(true);
   const getData = (locations) => {
     fetchDeviceManagementList(
       currentPage,
@@ -419,21 +427,23 @@ const DeviceManagementTable = () => {
       .then((data) => {
         setTotalRows(data.count);
 
-        // Sorting tableData by roomName, handling null values
+        // Sorting tableData by deviceName, handling null values
         const sortedData = data.rows.sort((a, b) => {
           // Handle null values by putting them at the end
-          if (!a.roomName) return 1;
-          if (!b.roomName) return -1;
+          if (!a.deviceName) return 1; // If a.deviceName is null, place it last
+          if (!b.deviceName) return -1; // If b.deviceName is null, place it last
 
-          // Compare roomName in a case-insensitive manner
-          return a.roomName.localeCompare(b.roomName);
+          // Compare deviceName in a case-insensitive manner
+          return a.deviceName.localeCompare(b.deviceName);
         });
 
         // Set sorted data to the table
         setTableData(sortedData);
+        setLoading(false);
       })
       .catch((error) => {
         console.log("Error fetching data:", error);
+        setLoading(false);
       });
   };
 
@@ -446,6 +456,7 @@ const DeviceManagementTable = () => {
     currentPage,
     status,
     batteryLevel,
+    refereshEdit,
   ]);
 
   // useEffect(() => {
@@ -481,7 +492,10 @@ const DeviceManagementTable = () => {
     setCurrentPage(page);
   };
 
-  const startIndex = (currentPage - 1) * itemsPerPage + 1;
+  const startIndex =
+    totalItems > 0 && itemsPerPage > 0
+      ? (currentPage - 1) * itemsPerPage + 1
+      : 0;
   const endIndex = Math.min(currentPage * itemsPerPage, totalItems);
 
   const paginationRange = 1;
@@ -506,14 +520,62 @@ const DeviceManagementTable = () => {
   };
 
   const [editMode, setEditMode] = useState(false);
+
   const [editingItemId, setEditingItemId] = useState(null);
   const [editedName, setEditedName] = useState("");
-
-  const handleEditClick = (id) => {
-    setEditingItemId(id);
-    setEditedName(findDeviceName(id));
-    setEditMode(true);
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [editingDevice, setEditingDevice] = useState(null);
+  const handleEditClick = (deviceMappingId) => {
+    const deviceToEdit = tableData.find(
+      (item) => item.deviceMappingId === deviceMappingId
+    );
+    setEditingDevice(deviceToEdit);
+    setEditModalOpen(true);
   };
+  const handleDeviceSave = async () => {
+    if (!editingDevice) return;
+
+    const url = ApiUrls.SMARTHEATING_DEVICESETTINGS.UPDATE_DEVICE_SETTINGS(
+      editingDevice.deviceMappingId
+    );
+    const body = {
+      deviceName: editingDevice.deviceName,
+      temperatureOffset: editingDevice.temperatureOffset,
+    };
+
+    try {
+      const response = await axios.post(url, body);
+      if (response.status === 201) {
+        getData(ApiLocationsToBeSend);
+        generateToast(errors.DeviceNameUpdatedSuccessfully, true);
+      }
+    } catch (error) {
+      if (error.response) {
+        switch (error.response.status) {
+          case 400:
+            generateToast(
+              "Invalid input data or device mapping not found",
+              false
+            );
+            break;
+          case 401:
+            generateToast("Unauthorized access", false);
+            break;
+          case 404:
+            generateToast("Device mapping entry not found", false);
+            break;
+          default:
+            generateToast(errors.DeviceNameUpdatedFailed, false);
+        }
+      } else {
+        generateToast(errors.DeviceNameUpdatedFailed, false);
+      }
+    } finally {
+      setEditModalOpen(false);
+      setEditingDevice(null);
+    }
+  };
+
   const handleSave = async (id) => {
     // Convert deviceName to numeric string if possible
 
@@ -590,142 +652,145 @@ const DeviceManagementTable = () => {
       <div className="relative w-full overflow-x-auto bg-white shadow-md sm:rounded-lg">
         <div className="flex flex-wrap items-center justify-between mx-2 my-2 space-y-4 bg-transparent flex-column sm:flex-row sm:space-y-0">
           {/* Filter buttons */}
-          <div className="flex flex-row items-center justify-center gap-1">
-            <div className="flex flex-row gap-x-2">
-              <TreeSelect
-                value={selectedKeys}
-                options={filteredLocations}
-                onChange={onNodeSelectChange}
-                onHide={hideBuildingFilter}
-                onShow={openBuildingFilter}
-                expandedKeys={expandedKeys} // Use expandedKeys to manage expanded nodes
-                onToggle={handleNodeToggle} // Handle node expand/collapse event
-                selectionMode="multiple"
-                placeholder="Alle Gebäude"
-                filter
-                filterBy="label"
-                filterValue={filterValue}
-                className="w-full md:w-20rem"
-                closeIcon="false"
-                panelStyle={{
-                  border: "0.5px solid #bababa",
-                  borderRadius: "4px",
-                  outline: "none",
-                  boxShadow: "none",
-                }}
-                style={{
-                  outline: "none",
-                  boxShadow: "none",
-                }}
-                filterTemplate={({ filterInputProps }) => (
-                  <div
-                    style={{
-                      backgroundColor: "#f5f5f5",
-                      padding: "10px",
-                      display: "flex",
-                      width: "100%",
-                      alignItems: "center",
-                      borderRadius: "6px",
-                      border: "1px solid #d5ddde",
-                    }}
-                  >
-                    <span
+          {tableData.length > 0 && (
+            <div className="flex flex-row items-center justify-center gap-1">
+              <div className="flex flex-row gap-x-2">
+                <TreeSelect
+                  value={selectedKeys}
+                  options={filteredLocations}
+                  onChange={onNodeSelectChange}
+                  onHide={hideBuildingFilter}
+                  onShow={openBuildingFilter}
+                  expandedKeys={expandedKeys} // Use expandedKeys to manage expanded nodes
+                  onToggle={handleNodeToggle} // Handle node expand/collapse event
+                  selectionMode="multiple"
+                  placeholder="Alle Gebäude"
+                  filter
+                  filterBy="label"
+                  filterValue={filterValue}
+                  className="w-full md:w-20rem"
+                  closeIcon="false"
+                  panelStyle={{
+                    border: "0.5px solid #bababa",
+                    borderRadius: "4px",
+                    outline: "none",
+                    boxShadow: "none",
+                  }}
+                  style={{
+                    outline: "none",
+                    boxShadow: "none",
+                  }}
+                  filterTemplate={({ filterInputProps }) => (
+                    <div
                       style={{
-                        marginLeft: "8px",
-                        marginRight: "8px",
-                        color: "#9e9e9e",
-                        fontSize: "18px",
+                        backgroundColor: "#f5f5f5",
+                        padding: "10px",
+                        display: "flex",
+                        width: "100%",
+                        alignItems: "center",
+                        borderRadius: "6px",
+                        border: "1px solid #d5ddde",
                       }}
                     >
-                      <IoSearch />
-                    </span>
-                    <input
-                      {...filterInputProps}
-                      value={filterValue}
-                      onChange={handleFilterChange}
-                      style={{
-                        border: "none",
-                        width: "100%",
-                        backgroundColor: "transparent",
-                        outline: "none",
-                        color: "#6e6e6e",
-                      }}
-                      placeholder="Suche"
-                    />
-                  </div>
+                      <span
+                        style={{
+                          marginLeft: "8px",
+                          marginRight: "8px",
+                          color: "#9e9e9e",
+                          fontSize: "18px",
+                        }}
+                      >
+                        <IoSearch />
+                      </span>
+                      <input
+                        {...filterInputProps}
+                        value={filterValue}
+                        onChange={handleFilterChange}
+                        style={{
+                          border: "none",
+                          width: "100%",
+                          backgroundColor: "transparent",
+                          outline: "none",
+                          color: "#6e6e6e",
+                        }}
+                        placeholder="Suche"
+                      />
+                    </div>
+                  )}
+                />
+                {Object.keys(selectedKeys).length > 0 && (
+                  <button
+                    className="text-xl text-red-500 rounded-lg"
+                    onClick={clearBuildingFilter}
+                  >
+                    <CiCircleRemove size={36} />
+                  </button>
                 )}
-              />
-              {Object.keys(selectedKeys).length > 0 && (
+              </div>
+              <div className="flex flex-row gap-x-2">
+                <MultiSelect
+                  value={selectedStatusFilter}
+                  onShow={handleMultiSelectClick}
+                  onChange={handleStatusChange}
+                  showSelectAll={false}
+                  options={eventFilterOptions}
+                  placeholder="Status"
+                  display="chip"
+                  className="w-full md:w-20rem"
+                  panelStyle={{
+                    border: "0.5px solid #bababa",
+                    borderRadius: "4px",
+                  }}
+                  maxSelectedLabels={1}
+                  optionLabel={(option) => option.germanLabel} // Display German label in the UI
+                />
+                {selectedStatusFilter && (
+                  <button
+                    className="text-xl text-red-500 rounded-lg"
+                    onClick={clearStatusFilter}
+                  >
+                    <CiCircleRemove size={36} />
+                  </button>
+                )}
+              </div>
+              <div className="flex flex-row gap-x-2">
+                <MultiSelect
+                  value={selectedBatteryLevels}
+                  onShow={handleMultiSelectClick}
+                  onChange={handleBatteryLevelChange}
+                  showSelectAll={false}
+                  options={batteryLevelOptions}
+                  placeholder="Batteriestand"
+                  display="chip"
+                  className="w-full md:w-20rem"
+                  panelStyle={{
+                    border: "0.5px solid #bababa",
+                    borderRadius: "4px",
+                  }}
+                  optionLabel={(option) => option.germanLabel} // Display German label in the UI
+                />{" "}
+                {selectedBatteryLevels?.length > 0 && (
+                  <button
+                    className="text-xl text-red-500  rounded-lg"
+                    onClick={clearBatteryFilter}
+                  >
+                    <CiCircleRemove size={36} />
+                  </button>
+                )}
+              </div>
+              {(selectedStatusFilter ||
+                Object.keys(selectedKeys).length > 0 ||
+                (selectedBatteryLevels &&
+                  selectedBatteryLevels.length > 0)) && (
                 <button
-                  className="text-xl text-red-500 rounded-lg"
-                  onClick={clearBuildingFilter}
+                  className="bg-red-500 px-2 text-[11px] py-3 h-[34%] text-white shadow-lg rounded-lg"
+                  onClick={clearAllFilters}
                 >
-                  <CiCircleRemove size={36} />
+                  Alle zurücksetzen
                 </button>
               )}
             </div>
-            <div className="flex flex-row gap-x-2">
-              <MultiSelect
-                value={selectedStatusFilter}
-                onShow={handleMultiSelectClick}
-                onChange={handleStatusChange}
-                showSelectAll={false}
-                options={eventFilterOptions}
-                placeholder="Status"
-                display="chip"
-                className="w-full md:w-20rem"
-                panelStyle={{
-                  border: "0.5px solid #bababa",
-                  borderRadius: "4px",
-                }}
-                maxSelectedLabels={1}
-                optionLabel={(option) => option.germanLabel} // Display German label in the UI
-              />
-              {selectedStatusFilter && (
-                <button
-                  className="text-xl text-red-500 rounded-lg"
-                  onClick={clearStatusFilter}
-                >
-                  <CiCircleRemove size={36} />
-                </button>
-              )}
-            </div>
-            <div className="flex flex-row gap-x-2">
-              <MultiSelect
-                value={selectedBatteryLevels}
-                onShow={handleMultiSelectClick}
-                onChange={handleBatteryLevelChange}
-                showSelectAll={false}
-                options={batteryLevelOptions}
-                placeholder="Batteriestand"
-                display="chip"
-                className="w-full md:w-20rem"
-                panelStyle={{
-                  border: "0.5px solid #bababa",
-                  borderRadius: "4px",
-                }}
-                optionLabel={(option) => option.germanLabel} // Display German label in the UI
-              />{" "}
-              {selectedBatteryLevels?.length > 0 && (
-                <button
-                  className="text-xl text-red-500  rounded-lg"
-                  onClick={clearBatteryFilter}
-                >
-                  <CiCircleRemove size={36} />
-                </button>
-              )}
-            </div>
-            {(selectedStatusFilter ||
-              Object.keys(selectedKeys).length > 0 ||
-              (selectedBatteryLevels && selectedBatteryLevels.length > 0)) && (
-              <button
-                className="bg-red-500 px-2 text-[11px] py-3 h-[34%] text-white shadow-lg rounded-lg"
-                onClick={clearAllFilters}
-              >
-                Alle zurücksetzen
-              </button>
-            )}
-          </div>
+          )}
           {/* Search bar */}
         </div>
         {/* Table */}
@@ -757,8 +822,15 @@ const DeviceManagementTable = () => {
               <th scope="col" className="p-4">
                 STATUS
               </th>
+              <th scope="col" className="p-4">
+                <p className="flex row justify-center items-center">
+                  Offset <IoInformationCircleOutline className="w-4 h-4 ml-1" />
+                </p>
+              </th>
+              <th scope="col" className="p-4"></th>
             </tr>
           </thead>
+          {loading && <SkeletonDeviceManagementTable />}
           <tbody>
             {tableData?.length > 0 &&
               tableData.map((item, index) => (
@@ -789,70 +861,19 @@ const DeviceManagementTable = () => {
                       {item?.devEui}
                     </td>
                     <td className="relative px-4 py-4 truncate">
-                      {editMode && editingItemId === item?.deviceMappingId ? (
-                        <TextInput
-                          type="text"
-                          value={editedName}
-                          onChange={(e) => {
-                            e.stopPropagation(); // Prevent the row click handler from being called
-                            if (e.target.value.length <= 25) {
-                              // Check if the length is within the limit
-                              handleInputChange(e); // Call the original input change handler
-                            }
-                          }}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                          }}
-                          maxLength={25} // Set the maximum length to 25
-                          className="w-[68%] mr-2"
-                          sizing="sm"
-                        />
-                      ) : (
-                        <>
-                          {item?.deviceName &&
-                          item.deviceName.toString().length > 20 ? (
-                            <>
-                              <p className="mr-2">
-                                {item.deviceName.toString().slice(0, 20)}{" "}
-                                <span>...</span>
-                              </p>
-                            </>
-                          ) : (
-                            <p className="pr-1">{item.deviceName}</p>
-                          )}
-                        </>
-                      )}
-
-                      {editMode && editingItemId === item?.deviceMappingId ? (
-                        <div className="absolute top-1/2 transform -translate-y-1/2 right-2 flex gap-[2px]">
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation(); // Prevent the row click handler from being called
-                              handleCancel();
-                            }}
-                            className="p-1 text-red-700 hover:bg-gray-300 hover:shadow-md hover:rounded-md"
-                          >
-                            <ImCancelCircle className="w-4 h-4" />
-                          </button>
-                          <button
-                            onClick={async (e) => {
-                              e.stopPropagation();
-                              await handleSave(item?.deviceMappingId);
-                            }}
-                            className="p-1 text-green-800 hover:bg-gray-300 hover:shadow-md hover:rounded-md"
-                          >
-                            <FaCheck className="w-4 h-4" />
-                          </button>
-                        </div>
-                      ) : (
-                        <FaEdit
-                          onClick={(e) => {
-                            e.stopPropagation(); // Prevent the row click handler from being called
-                            handleEditClick(item?.deviceMappingId);
-                          }}
-                          className="absolute p-[2px] hover:rounded-md hover:shadow-md hover:bg-gray-300 w-5 h-5 top-1/2 bottom-1/2 right-0 transform -translate-y-1/2"
-                        />
-                      )}
+                      <>
+                        {item?.deviceName &&
+                        item.deviceName.toString().length > 20 ? (
+                          <>
+                            <p className="mr-2">
+                              {item.deviceName.toString().slice(0, 20)}{" "}
+                              <span>...</span>
+                            </p>
+                          </>
+                        ) : (
+                          <p className="pr-1">{item.deviceName}</p>
+                        )}
+                      </>
                     </td>
 
                     <td className="px-4 py-4 truncate">{item?.deviceType}</td>
@@ -865,16 +886,25 @@ const DeviceManagementTable = () => {
                     <td className="px-4 py-4 truncate">
                       <Tooltip
                         className="p-3"
-                        content={getBatteryLevelText(item?.batteryLevel)}
+                        content={
+                          item?.batteryLevel
+                            ? getBatteryLevelText(item?.batteryLevel)
+                            : "No Payload"
+                        }
                         style="light"
                         animation="duration-500"
                       >
                         <div className="flex items-center gap-1">
-                          <img
-                            src={getBatteryImage(item?.batteryLevel)}
-                            alt="Battery Level"
-                            className="w-4 h-4 mr-2"
-                          />
+                          {item?.batteryLevel ? (
+                            <img
+                              src={getBatteryImage(item?.batteryLevel)}
+                              alt="Battery Level"
+                              className="w-4 h-4 mr-2"
+                            />
+                          ) : (
+                            <BatteryUnknownIcon />
+                          )}
+
                           {item.batteryLevel === "low" && (
                             <p className="text-sm font-bold text-red-500">
                               Bald leer
@@ -899,10 +929,20 @@ const DeviceManagementTable = () => {
                         <p className="text-xs font-medium">{item?.status}</p>
                       </div>
                     </td>
+                    <td className="px-4 py-4">{item?.temperatureOffset}</td>
+                    <td className="px-4 py-4">
+                      <FaEdit
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleEditClick(item.deviceMappingId);
+                        }}
+                        className="w-5 h-5 p-[2px] rounded-md text-gray-800  hover:scale-110 transition-all duration-200 ease-in-out cursor-pointer"
+                      />
+                    </td>
                   </tr>
                   {expandedRow === index && (
                     <tr className="w-full bg-gray-100 dark:bg-gray-700">
-                      <td colSpan="9" className="w-full p-6">
+                      <td colSpan="11" className="w-full p-6">
                         {item?.deviceType === "Wandthermostat" && (
                           <div className="flex flex-row items-start justify-around gap-24 px-2">
                             <div className="flex flex-col items-start justify-start gap-2">
@@ -1122,8 +1162,9 @@ const DeviceManagementTable = () => {
                               />
                               <h2> Ventilöffnung in % </h2>
                               <h1 className="text-base font-medium text-black">
-                                {`${deviceData.valvePositionInPercent}%` ||
-                                  "--"}
+                                {`${deviceData.valvePositionInPercent}%` || (
+                                  <NoText />
+                                )}
                               </h1>
                             </div>
                             <div
@@ -1222,6 +1263,96 @@ const DeviceManagementTable = () => {
               ))}
           </tbody>
         </table>
+        <Modal
+          dismissible={true}
+          show={editModalOpen}
+          onClose={() => setEditModalOpen(false)}
+          className="custom-modal"
+        >
+          <Modal.Header>Edit device #{editingDevice?.devEui}</Modal.Header>
+          <Modal.Body>
+            <div className="space-y-6">
+              <div>
+                <label
+                  htmlFor="deviceName"
+                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                >
+                  Device name
+                </label>
+                <TextInput
+                  id="deviceName"
+                  value={editingDevice?.deviceName || ""}
+                  onChange={(e) =>
+                    setEditingDevice({
+                      ...editingDevice,
+                      deviceName: e.target.value,
+                    })
+                  }
+                  required
+                />
+              </div>
+              <div>
+                <label
+                  htmlFor="offset"
+                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                >
+                  Offset
+                </label>
+                <div className="flex items-center">
+                  <div className="flex items-center">
+                    <button
+                      onClick={() =>
+                        setEditingDevice({
+                          ...editingDevice,
+                          temperatureOffset:
+                            (editingDevice.temperatureOffset || 0) - 1,
+                        })
+                      }
+                      className="w-[56px] text-xl h-[42px] border-l border-t border-b border-gray-300 text-gray-900 px-[var(--5)] py-[var(--3)] gap-[var(--2)] rounded-l-lg bg-gray-100"
+                    >
+                      -
+                    </button>
+                  </div>
+                  <input
+                    type="text"
+                    id="offset"
+                    value={editingDevice?.temperatureOffset || 0}
+                    onChange={(e) =>
+                      setEditingDevice({
+                        ...editingDevice,
+                        temperatureOffset: parseInt(e.target.value),
+                      })
+                    }
+                    className="w-[46px] text-center border-t border-b border-gray-300"
+                  />
+                  <button
+                    onClick={() =>
+                      setEditingDevice({
+                        ...editingDevice,
+                        temperatureOffset:
+                          (editingDevice.temperatureOffset || 0) + 1,
+                      })
+                    }
+                    className="w-[56px] text-xl h-[42px] border-t border-r border-b border-gray-300 text-gray-900 px-[var(--5)] py-[var(--3)] gap-[var(--2)] rounded-r-lg bg-gray-100"
+                  >
+                    +
+                  </button>
+                </div>
+                <p className="mt-2 text-sm text-gray-500">
+                  Helper text explaining offset
+                </p>
+              </div>
+            </div>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button className="bg-primary" onClick={handleDeviceSave}>
+              Save device
+            </Button>
+            <Button color="gray" onClick={() => setEditModalOpen(false)}>
+              Cancel
+            </Button>
+          </Modal.Footer>
+        </Modal>
 
         {tableData.length === 0 && (
           <div className="flex flex-col items-center justify-center w-full bg-slate-100">

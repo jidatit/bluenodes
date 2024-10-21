@@ -14,6 +14,8 @@ import { TreeSelect } from "primereact/treeselect";
 import formatTimestamp from "../../../../utils/formatTimeStamp";
 import { CiCircleRemove } from "react-icons/ci";
 import axios from "axios";
+import { BatteryUnknownIcon } from "../../../../utils/icons";
+import OfflineSkeletonTable from "./OfflineSkeltonTable";
 
 const getBatteryImage = (battery_level) => {
   const level = battery_level;
@@ -42,6 +44,7 @@ const OfflineTable = () => {
   const dateFilterRef = useRef(null);
   const [floors, setFloors] = useState([]);
   const [filtersSelected, setFiltersSelected] = useState(false);
+  const [loading, setLoading] = useState(true);
   const handleTreeSelectClick = () => {
     setCloseDateFilter(true);
 
@@ -371,9 +374,11 @@ const OfflineTable = () => {
       .then((data) => {
         setTotalRows(data.count);
         setTableData(data.rows);
+        setLoading(false);
       })
       .catch((error) => {
         console.log(error);
+        setLoading(false);
       });
   };
 
@@ -405,7 +410,10 @@ const OfflineTable = () => {
     setCurrentPage(page);
   };
 
-  const startIndex = (currentPage - 1) * itemsPerPage + 1;
+  const startIndex =
+    totalItems > 0 && itemsPerPage > 0
+      ? (currentPage - 1) * itemsPerPage + 1
+      : 0;
   const endIndex = Math.min(currentPage * itemsPerPage, totalItems);
 
   const paginationRange = 1;
@@ -491,85 +499,87 @@ const OfflineTable = () => {
         <h1 className=" font-[500] text-lg text-gray-900">Geräte offline</h1>
       </div>
       <div className="relative w-full overflow-x-auto bg-white shadow-md sm:rounded-lg">
-        <div className="flex flex-column my-2 bg-transparent mx-2 sm:flex-row flex-wrap space-y-4 sm:space-y-0 items-center justify-between">
+        <div className="flex flex-column my-3 bg-transparent mx-2 sm:flex-row flex-wrap space-y-4 sm:space-y-0 items-center justify-between">
           {/* Filter buttons */}
-          <div className="flex flex-row justify-center items-center gap-1">
-            <TreeSelect
-              value={selectedKeys}
-              options={filteredLocations}
-              onChange={onNodeSelectChange}
-              onShow={openBuildingFilter}
-              onHide={hideBuildingFilter}
-              onClick={handleTreeSelectClick}
-              expandedKeys={expandedKeys} // Use expandedKeys to manage expanded nodes
-              onToggle={handleNodeToggle} // Handle node expand/collapse event
-              selectionMode="multiple"
-              placeholder="Alle Gebäude"
-              filter
-              filterBy="label"
-              filterValue={filterValue}
-              className="w-full md:w-20rem"
-              closeIcon="false"
-              panelStyle={{
-                border: "0.5px solid #bababa",
-                borderRadius: "4px",
-                outline: "none",
-                boxShadow: "none",
-              }}
-              style={{
-                outline: "none",
-                boxShadow: "none",
-              }}
-              filterTemplate={({ filterInputProps }) => (
-                <div
-                  style={{
-                    backgroundColor: "#f5f5f5",
-                    padding: "10px",
-                    display: "flex",
-                    width: "100%",
-                    alignItems: "center",
-                    borderRadius: "6px",
-                    border: "1px solid #d5ddde",
-                  }}
-                >
-                  <span
+          {tableData.length > 0 && (
+            <div className="flex flex-row justify-center items-center gap-1">
+              <TreeSelect
+                value={selectedKeys}
+                options={filteredLocations}
+                onChange={onNodeSelectChange}
+                onShow={openBuildingFilter}
+                onHide={hideBuildingFilter}
+                onClick={handleTreeSelectClick}
+                expandedKeys={expandedKeys} // Use expandedKeys to manage expanded nodes
+                onToggle={handleNodeToggle} // Handle node expand/collapse event
+                selectionMode="multiple"
+                placeholder="Alle Gebäude"
+                filter
+                filterBy="label"
+                filterValue={filterValue}
+                className="w-full md:w-20rem"
+                closeIcon="false"
+                panelStyle={{
+                  border: "0.5px solid #bababa",
+                  borderRadius: "4px",
+                  outline: "none",
+                  boxShadow: "none",
+                }}
+                style={{
+                  outline: "none",
+                  boxShadow: "none",
+                }}
+                filterTemplate={({ filterInputProps }) => (
+                  <div
                     style={{
-                      marginLeft: "8px",
-                      marginRight: "8px",
-                      color: "#9e9e9e",
-                      fontSize: "18px",
+                      backgroundColor: "#f5f5f5",
+                      padding: "10px",
+                      display: "flex",
+                      width: "100%",
+                      alignItems: "center",
+                      borderRadius: "6px",
+                      border: "1px solid #d5ddde",
                     }}
                   >
-                    <IoSearch />
-                  </span>
-                  <input
-                    {...filterInputProps}
-                    value={filterValue}
-                    onChange={handleFilterChange}
-                    style={{
-                      border: "none",
-                      width: "100%",
-                      backgroundColor: "transparent",
-                      outline: "none",
-                      color: "#6e6e6e",
-                    }}
-                    placeholder="Suche"
-                  />
-                </div>
+                    <span
+                      style={{
+                        marginLeft: "8px",
+                        marginRight: "8px",
+                        color: "#9e9e9e",
+                        fontSize: "18px",
+                      }}
+                    >
+                      <IoSearch />
+                    </span>
+                    <input
+                      {...filterInputProps}
+                      value={filterValue}
+                      onChange={handleFilterChange}
+                      style={{
+                        border: "none",
+                        width: "100%",
+                        backgroundColor: "transparent",
+                        outline: "none",
+                        color: "#6e6e6e",
+                      }}
+                      placeholder="Suche"
+                    />
+                  </div>
+                )}
+              />
+              {Object.keys(selectedKeys).length > 0 && (
+                <button
+                  className="text-xl text-red-500 rounded-lg"
+                  onClick={clearBuildingFilter}
+                >
+                  <CiCircleRemove size={36} />
+                </button>
               )}
-            />
-            {Object.keys(selectedKeys).length > 0 && (
-              <button
-                className="text-xl text-red-500 rounded-lg"
-                onClick={clearBuildingFilter}
-              >
-                <CiCircleRemove size={36} />
-              </button>
-            )}
-          </div>
+            </div>
+          )}
         </div>
         {/* Table */}
-        <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 min-h-[10rem]">
+        <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 ">
           <thead className="text-xs font-semibold text-gray-500 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
             <tr className="uppercase">
               <th scope="col" className="p-4">
@@ -595,6 +605,7 @@ const OfflineTable = () => {
               </th>
             </tr>
           </thead>
+          {loading && <OfflineSkeletonTable />}
           <tbody>
             {tableData.length > 0 &&
               tableData.map((item, index) => (
@@ -613,16 +624,25 @@ const OfflineTable = () => {
                   <td className="px-4 py-4 truncate">
                     <Tooltip
                       className="p-3"
-                      content={getBatteryLevelText(item?.batteryLevel)}
+                      content={
+                        item?.batteryLevel
+                          ? getBatteryLevelText(item?.batteryLevel)
+                          : "No Payload"
+                      }
                       style="light"
                       animation="duration-500"
                     >
                       <div className="flex items-center gap-1">
-                        <img
-                          src={getBatteryImage(item?.batteryLevel)}
-                          alt="Battery Level"
-                          className="w-4 h-4 mr-2"
-                        />
+                        {item?.batteryLevel ? (
+                          <img
+                            src={getBatteryImage(item?.batteryLevel)}
+                            alt="Battery Level"
+                            className="w-4 h-4 mr-2"
+                          />
+                        ) : (
+                          <BatteryUnknownIcon />
+                        )}
+
                         {item.batteryLevel === "low" && (
                           <p className="text-sm font-bold text-red-500">
                             Bald leer

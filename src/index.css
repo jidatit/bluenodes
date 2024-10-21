@@ -57,6 +57,11 @@
 @tailwind components;
 @tailwind utilities;
 
+.custom-modal button:focus {
+  outline: none;
+  box-shadow: none;
+}
+
 .p-treeselect {
   max-width: 400px !important;
 }

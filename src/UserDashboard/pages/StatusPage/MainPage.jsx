@@ -11,6 +11,7 @@ import OfflineTable from "./components/OfflineTable";
 import { tableData } from "./components/data/tableData";
 import celeAnimation from "../../../assets/icons/celeb.gif";
 import { fetchStatusPageStats } from "./data/Statuspageapis";
+import SkeletonLoader from "./components/CardsSkelton";
 
 function MainPage() {
   const [activeCard, setActiveCard] = useState(null);
@@ -52,31 +53,32 @@ function MainPage() {
   // }, []);
   const fetchData = () => {
     fetchStatusPageStats()
-      .then(({ 
-        numberOfDevices, 
-        numberOfDevicesOffline, 
-        numberOfErrors, 
-        numberOfRooms, 
-        unassignedNumberOfRooms 
-      }) => {
-        setStatsData({
+      .then(
+        ({
           numberOfDevices,
           numberOfDevicesOffline,
           numberOfErrors,
           numberOfRooms,
           unassignedNumberOfRooms,
-        });
-        setDataLoaded(true);
-      })
+        }) => {
+          setStatsData({
+            numberOfDevices,
+            numberOfDevicesOffline,
+            numberOfErrors,
+            numberOfRooms,
+            unassignedNumberOfRooms,
+          });
+          setDataLoaded(true);
+        }
+      )
       .catch((error) => {
         console.error("Failed to fetch stats:", error);
       });
   };
-  
+
   useEffect(() => {
     fetchData();
   }, []);
-  
 
   const handleCardClick = (card) => {
     setLoading(true);
@@ -135,13 +137,17 @@ function MainPage() {
               Klicken Sie auf eine Kachel, um Details anzuzeigen.
             </p>
           </div>
-          {dataLoaded &&
-            (statsData.numberOfDevicesOffline === 0 &&
+
+          {!dataLoaded ? (
+            <SkeletonLoader />
+          ) : statsData.numberOfDevicesOffline === 0 &&
             statsData.numberOfErrors === 0 &&
             statsData.unassignedNumberOfRooms === 0 ? (
-              <Card />
-            ) : (
-              <div className="flex gap-4">
+            <Card />
+          ) : (
+            <div className="flex gap-4">
+              {/* General Error Card */}
+              {statsData.numberOfErrors > 0 && (
                 <div
                   onClick={() => handleCardClick("generalError")}
                   className={`w-1/3 bg-white flex p-6 gap-4 rounded-lg shadow-sm items-center justify-start transition-transform duration-300 ${
@@ -162,6 +168,10 @@ function MainPage() {
                     </p>
                   </div>
                 </div>
+              )}
+
+              {/* Unassigned Error Card */}
+              {statsData.unassignedNumberOfRooms > 0 && (
                 <div
                   onClick={() => handleCardClick("unassignedError")}
                   className={`w-1/3 bg-white flex p-6 gap-4 rounded-lg shadow-sm items-center justify-start transition-transform duration-300 ${
@@ -183,11 +193,15 @@ function MainPage() {
                     </p>
                   </div>
                 </div>
+              )}
+
+              {/* Offline Error Card */}
+              {statsData.numberOfDevicesOffline > 0 && (
                 <div
                   onClick={() => handleCardClick("offlineError")}
                   className={`w-1/3 bg-white flex p-6 gap-4 rounded-lg shadow-sm items-center justify-start transition-transform duration-300 ${
                     activeCard === "offlineError"
-                      ? "ring-primary-400 ring-2 scale-105 "
+                      ? "ring-primary-400 ring-2 scale-105"
                       : "hover:ring-primary-200 hover:ring-2 cursor-pointer"
                   }`}
                 >
@@ -204,8 +218,9 @@ function MainPage() {
                     </p>
                   </div>
                 </div>
-              </div>
-            ))}
+              )}
+            </div>
+          )}
         </div>
         {!activeCard && !loading && <EventLogsTable />}
         {activeCard === "generalError" && (
