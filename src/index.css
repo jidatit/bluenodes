@@ -57,6 +57,10 @@
 @tailwind components;
 @tailwind utilities;
 
+input[type='checkbox']:focus{
+  outline: none;
+  box-shadow: none;
+}
 .custom-modal button:focus {
   outline: none;
   box-shadow: none;
