@@ -835,7 +835,7 @@ function HeatingSchedule({
 						</div>
 					))}
 				</div>
-				<div className=" max-h-[2920px] overflow-hidden" style={{ display: "flex", zIndex: "10" }}>
+				<div className="overflow-y-auto max-h-[50vh] w-full scrollbar-custom overflow-x-hidden" style={{ display: "flex", zIndex: "10" }}>
 					<div style={{ width: "60px" }}>{timeLabels}</div>
 					<div
 						style={{
@@ -847,7 +847,7 @@ function HeatingSchedule({
 							zIndex: "10",
 						}}
 						onClick={handleContainerClick}
-						className="custom"
+						className="custom pr-4"
 					>
 						<div
 							className="absolute top-[22px] left-0 bottom-0 right-0 w-full h-full flex flex-col z-10"
@@ -875,7 +875,7 @@ function HeatingSchedule({
 								}}
 							>
 									<GridLayout
-										className="layout pt-[18px] z-10"
+										className="layout pt-[18px] z-10 "
 										maxRows={96}
 										compactType={null}
 										layout={layouts[day]}

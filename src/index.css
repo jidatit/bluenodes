@@ -241,3 +241,18 @@ input[type="radio"]:focus {
   outline: 2px solid #3dd3f1;
   margin-top: 7px !important;
 }
+
+/* Custom scrollbar for WebKit-based browsers (Chrome, Safari, Edge) */
+.scrollbar-custom::-webkit-scrollbar {
+  width: 8px; /* Width of the scrollbar */
+}
+.scrollbar-custom::-webkit-scrollbar-track {
+  background: #F1F1F1; /* Scrollbar track color */
+}
+.scrollbar-custom::-webkit-scrollbar-thumb {
+  background-color: #D9D9D9; /* Scrollbar thumb (the handle) color */
+  border: 2px solid #F1F1F1; /* Border around the thumb */
+}
+.scrollbar-custom::-webkit-scrollbar-thumb:hover {
+  background-color: #D9D9D9; /* Thumb color when hovered */
+}
