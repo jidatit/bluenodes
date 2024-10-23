@@ -681,7 +681,7 @@ function AssignRoomsModal({
                                             (room) => (
                                               <Table.Row
                                                 key={room.id}
-                                                className={`border-t border-gray-300 ${
+                                                className={`border-t w-[10%] border-gray-300 ${
                                                   room.assigned
                                                     ? "bg-primary-200"
                                                     : "bg-white"
@@ -699,14 +699,14 @@ function AssignRoomsModal({
                                                     }
                                                   />
                                                 </Table.Cell>
-                                                <Table.Cell className="whitespace-nowrap font-bold text-gray-900 dark:text-white">
+                                                <Table.Cell className=" w-[30%] whitespace-nowrap font-bold text-gray-900 dark:text-white">
                                                   {room.name}{" "}
                                                   <span className=" text-xs font-normal py-0.5 px-2.5 bg-gray-100 rounded-3xl">
                                                     {room.type}
                                                   </span>
                                                 </Table.Cell>
 
-                                                <Table.Cell>
+                                                <Table.Cell className="w-[40%]">
                                                   {room.programAssigned ? (
                                                     <span className=" text-primary">
                                                       {room.programAssigned}
@@ -715,7 +715,7 @@ function AssignRoomsModal({
                                                     "-"
                                                   )}
                                                 </Table.Cell>
-                                                <Table.Cell className="text-gray-900">
+                                                <Table.Cell className="text-gray-900 w-[20%]">
                                                   {room?.currentTemperature?.toFixed(
                                                     1
                                                   )}
