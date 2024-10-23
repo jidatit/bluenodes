@@ -20,8 +20,8 @@ const OnboardingStep = ({ title, completed, isActive, onClick }) => {
       <span className="pl-4">{title}</span>
       {/* {completed && <CheckIcon checked={completed} />} */}
       {completed && (
-        <span className="text-primary text-2xl">
-          <IoCheckmarkCircle />
+        <span className="text-primary ">
+          <IoCheckmarkCircle className="text-[20px]" />
         </span>
       )}
     </div>
@@ -113,15 +113,15 @@ const Onboarding = () => {
 
   const handleComplete = () => {
     const currentStep = allSteps[currentStepIndex];
-  
+
     // Only mark the current step as complete if it's not already marked
     if (!completedSteps[currentStep]) {
       setCompletedSteps((prev) => ({ ...prev, [currentStep]: true }));
-      
+
       // Update progress based on the total number of steps
       const completedStepCount = Object.keys(completedSteps).length + 1; // +1 for the current step being marked
       const newProgress = (completedStepCount / allSteps.length) * 100;
-  
+
       setProgress(newProgress);
     }
   };
@@ -260,50 +260,58 @@ const Onboarding = () => {
       <div className="w-2/3 p-4 bg-white border-gray-200 rounded-lg">
         <VideoPlayer videoSrc={videos[currentStepIndex]} />
         <div className="mt-4">
-          <div className="flex justify-between items-center mb-4">
-            <div className="text-primary text-xl font-semibold">
-                        {
-                sections.find((section) =>
-                  section.steps.includes(allSteps[currentStepIndex])
-                )?.title
-              }
+          <div className="flex flex-col gap-[8px] mb-4">
+            <div className="flex justify-between items-center ">
+              <div className="text-primary text-[14px] font-semibold font-inter">
+                {
+                  sections.find((section) =>
+                    section.steps.includes(allSteps[currentStepIndex])
+                  )?.title
+                }
+              </div>
+              <div onClick={handleComplete}>
+                <CheckIcon
+                  checked={completedSteps[allSteps[currentStepIndex]]}
+                />
+              </div>
             </div>
-            <div onClick={handleComplete}> 
-            <CheckIcon  checked={completedSteps[allSteps[currentStepIndex]]} />
+            <div className="text-black text-[20px] font-semibold font-inter">
+              {allSteps[currentStepIndex]}
             </div>
           </div>
-          <div className="text-black text-xl font-semibold">
-            {allSteps[currentStepIndex]}
-          </div>
-          <p className="text-gray-600 mt-2">
+          <p className="text-gray-600 text-[16px] font-inter leading-[24px]">
             Learn the basics of how BlueNodes can automate your heating system
             for maximum efficiency and comfort. Understand the key features that
             will help you save energy and reduce costs.
           </p>
-          <div className="mt-4 mb-4">
+          <div className="mt-7 mb-4">
             <div className="flex justify-between mt-4">
-              <Button
-                color="gray"
+              <button
                 disabled={currentStepIndex === 0}
                 onClick={handlePreviousStep}
+                className="text-[14px] font-inter flex items-center justify-center px-5 py-2.5 text-black bg-white border border-gray-300 rounded-md hover:bg-gray-200 outline-none cursor-pointer"
               >
-                <FaAngleLeft className="mr-2 h-5 w-5" />
-                Previous
-              </Button>
-              <Button
-              color="cyan"
-              onClick={() => {
-                if (currentStepIndex === 7 && progress === 100) {
-                  // If it's the last step and progress is 100%, navigate to the desired path
-                  navigate(`${NAVIGATION_PATH.dashboardLayout}`); // Use your routing logic here, like `useNavigate` from React Router
-                } else {
-                  handleStepComplete(); // Proceed to the next step
-                }
-              }}
-            >
-              {currentStepIndex === 7 && progress === 100 ? "Complete" : "Next"}
-              <FaAngleRight className="ml-2 h-5 w-5" />
-            </Button>
+                <FaAngleLeft className="mr-1.5 h-5 w-5 mt-[1.5px] font-inter" />
+                <p className="text-[14px] ml-1 font-inter">Previous</p>
+              </button>
+              <button
+                onClick={() => {
+                  if (currentStepIndex === 7 && progress === 100) {
+                    // Navigate if on the last step and progress is 100%
+                    navigate(`${NAVIGATION_PATH.dashboardLayout}`);
+                  } else {
+                    handleStepComplete();
+                  }
+                }}
+                className="text-[14px] font-inter flex items-center justify-center px-5 py-3 text-black bg-white border border-gray-300 rounded-md hover:bg-gray-200 outline-none"
+              >
+                <p className="font-inter text-[14px]">
+                  {currentStepIndex === 7 && progress === 100
+                    ? "Complete"
+                    : "Next"}
+                </p>
+                <FaAngleRight className="ml-2 h-5 w-5 mt-[1.5px] font-inter" />
+              </button>
             </div>
           </div>
         </div>
