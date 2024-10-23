@@ -6,7 +6,6 @@ import { errorMessages as errors } from "../../../../globals/errorMessages"; // 
 import ProgressStepper from "../../HeatingSchedule/CreateHeating/components/ProgressStepper";
 import GeneralInformation from "../../HeatingSchedule/CreateHeating/Steps/GeneralInformation/GeneralInformation";
 import HeatingSchedule from "../../HeatingSchedule/CreateHeating/Steps/HeatingSchedule/HeatingSchedule";
-
 import useHeatingSchedule from "../../../../hooks/useHeatingSchedule";
 import axios from "axios";
 import ApiUrls from "../../../../globals/apiURL.js";
