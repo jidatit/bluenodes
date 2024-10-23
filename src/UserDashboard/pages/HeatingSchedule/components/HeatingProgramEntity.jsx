@@ -146,7 +146,7 @@ const HeatingProgramEntity = ({
         console.error("Error fetching heating schedule details:", error);
       });
   };
-  
+
   // Function to recursively count the rooms
   const countRooms = (node) => {
     if (node.type === "raum") {

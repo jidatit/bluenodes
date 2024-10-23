@@ -24,7 +24,9 @@ function AssignRoomsModal({
   initialData,
 }) {
   const [data, setData] = useState(initialData);
+  const [firstData, setFirstData] = useState();
   const { generateToast } = useToast();
+  const [initialAssignedRooms, setInitialAssignedRooms] = useState([]);
   const fetchAllLocations = () => {
     axios
       .get(ApiUrls.SMARTHEATING_LOCATIONS.LOCATIONS(true, true, true, true))
@@ -67,6 +69,7 @@ function AssignRoomsModal({
         };
 
         setData(apiData);
+        setFirstData(apiData);
       })
       .catch((error) => console.error("Error:", error));
   };
@@ -185,32 +188,44 @@ function AssignRoomsModal({
 
     setData(newData);
   };
-
+  const [select, setselect] = useState(true);
   const handleSelectAllRooms = (buildingId, floorId, isSelected) => {
-    const newData = _.cloneDeep(data);
+    const newData = _.cloneDeep(firstData);
     const building = newData.buildings.find((b) => b.id === buildingId);
     const floor = building.floors.find((f) => f.id === floorId);
+    let count = floor.roomsAssigned;
 
     floor.rooms.forEach((room) => {
+      // Update the room's assigned state and properties
       room.assigned = isSelected;
       if (isSelected) {
         room.programAssigned = program.templateName;
         room.algorithmOn = formData.applyAlgorithm;
-        room.assigned = true;
       } else {
         const defaultValues = defaultValuesMap[room.id];
-        room.programAssigned = defaultValues.programAssigned;
+        room.programAssigned =
+          defaultValues.programAssigned === program.templateName
+            ? ""
+            : defaultValues.programAssigned;
         room.algorithmOn = defaultValues.algorithmOn;
-        room.assigned = defaultValues.assigned;
+        if (defaultValues.programAssigned === program.templateName) {
+          console.log("hdgh");
+          count = count - 1;
+        }
       }
     });
 
-    // Update rooms assigned count
+    // Update the assigned counts
     const previouslyAssigned = floor.roomsAssigned;
-    const newlyAssigned = isSelected ? floor.totalRooms : 0;
-    const difference = newlyAssigned - previouslyAssigned;
+    console.log(count);
+    const newlyAssigned = isSelected ? floor.totalRooms : count > 0 ? count : 0;
     floor.roomsAssigned = newlyAssigned;
+
+    // Update building assigned count
+    const difference = newlyAssigned - previouslyAssigned;
     building.roomsAssigned += difference;
+
+    // Update state
     setData(newData);
   };
 
@@ -517,7 +532,7 @@ function AssignRoomsModal({
                                           (room) => (
                                             <Table.Row
                                               key={room.id}
-                                              className={`border-t border-gray-300 ${
+                                              className={`border-t w-[10%]  border-gray-300 ${
                                                 room.assigned
                                                   ? "bg-primary-200"
                                                   : "bg-white"
@@ -535,23 +550,23 @@ function AssignRoomsModal({
                                                   }
                                                 />
                                               </Table.Cell>
-                                              <Table.Cell className="whitespace-nowrap font-bold text-gray-900 dark:text-white">
+                                              <Table.Cell className="  w-[30%]  whitespace-nowrap font-bold text-gray-900 dark:text-white">
                                                 {room.name}{" "}
                                                 <span className=" text-xs font-normal py-0.5 px-2.5 bg-gray-100 rounded-3xl">
                                                   {room.type}
                                                 </span>
                                               </Table.Cell>
 
-                                              <Table.Cell>
+                                              <Table.Cell className="w-[40%] ">
                                                 {room.programAssigned ? (
-                                                  <span className=" text-primary">
+                                                  <span className=" text-primary ">
                                                     {room.programAssigned}
                                                   </span>
                                                 ) : (
                                                   "-"
                                                 )}
                                               </Table.Cell>
-                                              <Table.Cell className="text-gray-900">
+                                              <Table.Cell className="text-gray-900 w-[20%]">
                                                 {room?.currentTemperature?.toFixed(
                                                   1
                                                 )}
