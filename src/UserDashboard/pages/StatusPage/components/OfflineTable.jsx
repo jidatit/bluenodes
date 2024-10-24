@@ -500,11 +500,11 @@ const OfflineTable = () => {
   }, [tableData]);
   const columnWidths = {
     devEui: "w-[15%] ",
-    deviceName: "w-[15%] ",
+    deviceName: "w-[14%] ",
     deviceType: "w-[14%] ",
-    buildingFloor: "w-[20%] ",
-    roomName: "w-[10%] ",
-    lastSeen: "w-[10%] ",
+    buildingFloor: "w-[16%] ",
+    roomName: "w-[12%] ",
+    lastSeen: "w-[13%] ",
     battery: "w-[7%] ",
     status: "w-[9%] ",
   };

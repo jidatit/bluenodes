@@ -665,11 +665,11 @@ const DeviceManagementTable = () => {
     }
   }, [tableData]);
   const columnWidths = {
-    expand: "w-[5%]",        // Small width for the expand icon
-    devEui: "w-[15%]",       // Fixed width for Device EUI column
+    expand: "w-[4%]",        // Small width for the expand icon
+    devEui: "w-[14%]",       // Fixed width for Device EUI column
     deviceName: "w-[10%]",    // Fixed width for device names
-    deviceType: "w-[10%]",    // Fixed width for Device type column
-    buildingFloor: "w-[14%]", // Fixed width for Building & Floor info
+    deviceType: "w-[11%]",    // Fixed width for Device type column
+    buildingFloor: "w-[15%]", // Fixed width for Building & Floor info
     roomName: "w-[12%]",      // Fixed width for Room name
     lastSeen: "w-[11%]",      // Fixed width for Last seen timestamp
     battery: "w-[6%]",        // Reduced width for Battery level
