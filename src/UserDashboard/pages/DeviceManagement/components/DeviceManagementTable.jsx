@@ -937,7 +937,7 @@ const DeviceManagementTable = () => {
                           {item.building_floor_string.split(" - ")[1]}
                         </>
                       ) : (
-                        "-"
+                        "--"
                       )}
                     </td>
 
@@ -981,7 +981,7 @@ const DeviceManagementTable = () => {
                       </Tooltip>
                     </td>
 
-                    <td className={`${columnWidths.status}  py-4 `}>
+                    <td className={`${columnWidths.status}  py-4`}>
                       <div
                         className={`py-0.5 px-2.5 rounded-md flex items-center justify-center gap-1 w-fit ${
                           item.status === "online"
@@ -1527,74 +1527,81 @@ const DeviceManagementTable = () => {
           )}
 
           {/* Pagination */}
-          <div className="flex justify-end border border-gray-200 rounded-md w-fit">
-            <button
-              onClick={() => handlePageChange(currentPage - 1)}
-              className={`inline-flex items-center  py-2 text-sm font-medium rounded-sm ${
-                currentPage === 1
-                  ? "text-gray-300 cursor-not-allowed"
-                  : "text-primary bg-[#CFF4FB] hover:bg-primary-300"
-              }`}
-              disabled={currentPage === 1}
-            >
-              <IoChevronBackOutline />
-            </button>
-            {startPage > 1 && (
-              <button
-                onClick={() => handlePageChange(1)}
-                className="inline-flex items-center  py-2 text-sm font-medium text-gray-500 bg-white rounded-sm hover:bg-gray-100"
-              >
-                1
-              </button>
-            )}
-            {startPage > 2 && (
-              <span className="inline-flex items-center  py-2 text-sm font-medium text-gray-500 bg-white rounded-sm">
-                ...
-              </span>
-            )}
-            {Array.from({ length: endPage - startPage + 1 }, (_, index) => (
-              <button
-                key={startPage + index}
-                onClick={() => handlePageChange(startPage + index)}
-                className={`inline-flex items-center  py-2 text-sm font-medium rounded-sm ${
-                  currentPage === startPage + index
-                    ? "text-primary bg-[#CFF4FB] hover:bg-primary-300"
-                    : "text-gray-500 bg-white hover:bg-gray-100"
-                }`}
-              >
-                {startPage + index}
-              </button>
-            ))}
-            {endPage < totalPages - 1 && (
-              <span className="inline-flex items-center  py-2 text-sm font-medium text-gray-500 bg-white rounded-sm">
-                ...
-              </span>
-            )}
-            {endPage < totalPages && (
-              <button
-                onClick={() => handlePageChange(totalPages)}
-                className={`inline-flex items-center  py-2 text-sm font-medium rounded-sm ${
-                  currentPage === totalPages
-                    ? "text-gray-300 cursor-not-allowed"
-                    : "text-gray-500 bg-white hover:bg-gray-100"
-                }`}
-                disabled={currentPage === totalPages}
-              >
-                {totalPages}
-              </button>
-            )}
-            <button
-              onClick={() => handlePageChange(currentPage + 1)}
-              className={`inline-flex items-center  py-2 text-sm font-medium rounded-sm ${
-                currentPage === totalPages
-                  ? "text-gray-300 cursor-not-allowed"
-                  : "text-primary bg-[#CFF4FB] hover:bg-primary-300"
-              }`}
-              disabled={currentPage === totalPages}
-            >
-              <IoChevronForwardOutline />
-            </button>
-          </div>
+          <div className="flex justify-end border border-gray-200 rounded-md w-auto">
+  <button
+    onClick={() => handlePageChange(currentPage - 1)}
+    className={`inline-flex items-center py-2 px-3 text-sm font-medium rounded-sm ${
+      currentPage === 1
+        ? "text-gray-300 cursor-not-allowed"
+        : "text-primary bg-[#CFF4FB] hover:bg-primary-300"
+    }`}
+    disabled={currentPage === 1}
+  >
+    <IoChevronBackOutline />
+  </button>
+  
+  {startPage > 1 && (
+    <button
+      onClick={() => handlePageChange(1)}
+      className="inline-flex items-center py-2 px-3 text-sm font-medium text-gray-500 bg-white rounded-sm hover:bg-gray-100"
+    >
+      1
+    </button>
+  )}
+  
+  {startPage > 2 && (
+    <span className="inline-flex items-center py-2 px-3 text-sm font-medium text-gray-500 bg-white rounded-sm">
+      ...
+    </span>
+  )}
+  
+  {Array.from({ length: endPage - startPage + 1 }, (_, index) => (
+    <button
+      key={startPage + index}
+      onClick={() => handlePageChange(startPage + index)}
+      className={`inline-flex items-center py-2 px-3 text-sm font-medium rounded-sm ${
+        currentPage === startPage + index
+          ? "text-primary bg-[#CFF4FB] hover:bg-primary-300"
+          : "text-gray-500 bg-white hover:bg-gray-100"
+      }`}
+    >
+      {startPage + index}
+    </button>
+  ))}
+  
+  {endPage < totalPages - 1 && (
+    <span className="inline-flex items-center py-2 px-3 text-sm font-medium text-gray-500 bg-white rounded-sm">
+      ...
+    </span>
+  )}
+  
+  {endPage < totalPages && (
+    <button
+      onClick={() => handlePageChange(totalPages)}
+      className={`inline-flex items-center py-2 px-3 text-sm font-medium rounded-sm ${
+        currentPage === totalPages
+          ? "text-gray-300 cursor-not-allowed"
+          : "text-gray-500 bg-white hover:bg-gray-100"
+      }`}
+      disabled={currentPage === totalPages}
+    >
+      {totalPages}
+    </button>
+  )}
+  
+  <button
+    onClick={() => handlePageChange(currentPage + 1)}
+    className={`inline-flex items-center py-2 px-3 text-sm font-medium rounded-sm ${
+      currentPage === totalPages
+        ? "text-gray-300 cursor-not-allowed"
+        : "text-primary bg-[#CFF4FB] hover:bg-primary-300"
+    }`}
+    disabled={currentPage === totalPages}
+  >
+    <IoChevronForwardOutline />
+  </button>
+</div>
+
         </div>
       </div>
     </div>

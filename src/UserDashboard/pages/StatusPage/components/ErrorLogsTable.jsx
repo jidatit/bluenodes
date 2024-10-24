@@ -628,13 +628,13 @@ const ErrorLogsTable = () => {
               <th scope="col" className="p-4 w-[20%]">
                 GEBÄUDE - ETAGE
               </th>
-              <th scope="col" className="p-4 w-[10%]">
+              <th scope="col" className="p-4 w-[15%]">
                 DATUM - UHRZEIT
               </th>
               <th scope="col" className="p-4 w-[15%]">
                 Fehlermeldung
               </th>
-              <th scope="col" className="p-4 w-[40%]">
+              <th scope="col" className="p-4 w-[35%]">
                 NACHRICHT
               </th>
             </tr>
@@ -649,15 +649,15 @@ const ErrorLogsTable = () => {
                 <td className="px-4 py-4 font-medium text-gray-900 w-[15%] min-w-[240px] whitespace-nowrap dark:text-white">
                   {item.roomName ? item.roomName : "--"}{" "}
                 </td>
-                <td className="px-4 py-4 w-[20%] min-w-[320px] ">
+                <td className="px-4 py-4 w-[15%]  ">
                   {item.building_floor_string
                     ? item.building_floor_string
                     : "--"}
                 </td>
-                <td className="px-4 py-4 w-[10%] min-w-[160px]   ">
+                <td className="px-4 py-4 w-[20%]   ">
                   {item.createdAt ? formatTimestamp(item?.createdAt) : "--"}
                 </td>
-                <td className="px-4 py-4 w-[15%] min-w-[190px] ">
+                <td className="px-4 py-4 w-[15%]  ">
                   <div className="flex items-center gap-x-2">
                     <Tooltip content={item.eventTypeLevel} style="light">
                       {item.eventTypeLevel === "Information" ? (
@@ -671,11 +671,11 @@ const ErrorLogsTable = () => {
                       )}
                     </Tooltip>
                     <span className="text-sm">
-                      {item.eventTypeMessage ? item.eventTypeMessage : "-"}
+                      {item.eventTypeMessage ? item.eventTypeMessage : "--"}
                     </span>
                   </div>
                 </td>
-                <td className="px-4 py-4 w-[40%] min-w-[265px] ">
+                <td className="px-4 py-4 w-[35%]  ">
                   <Tooltip content={item.message} style="light">
                     {item.message ? `${item.message}` : "--"}
                   </Tooltip>

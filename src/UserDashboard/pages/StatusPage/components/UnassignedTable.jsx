@@ -536,19 +536,19 @@ const UnassignedTable = ({ assignUpdate }) => {
           )}
         </div>
         {/* Table */}
-        <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 ">
+        <table className="w-full table-fixed text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 ">
           <thead className="text-xs font-semibold text-gray-500 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
             <tr className=" uppercase">
-              <th scope="col" className="p-4 w-[20%]">
+              <th scope="col" className="p-4 w-[10%]">
                 ID
               </th>
               <th scope="col" className="p-4 w-[30%]">
                 RAUM
               </th>
-              <th scope="col" className="p-4 w-[60%]">
+              <th scope="col" className="p-4 w-[40%]">
                 GEBÄUDE - ETAGE
               </th>
-              <th scope="col" className="p-4">
+              <th scope="col" className="p-4 w-[20%]">
                 {/* Action */}
               </th>
             </tr>
@@ -561,21 +561,21 @@ const UnassignedTable = ({ assignUpdate }) => {
                   key={index}
                   className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
                 >
-                  <td className="px-4 py-4 w-[20%] min-w-[284px] font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                  <td className="px-4 py-4 w-[10%]  font-medium text-gray-900 whitespace-nowrap dark:text-white">
                     {item.locationId ? item.locationId : "--"}
                   </td>
-                  <td className="px-4 py-4 w-[30%] min-w-[440px] font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                  <td className="px-4 py-4 w-[30%]  font-medium text-gray-900 whitespace-nowrap dark:text-white">
                     {item.name ? item.name : "--"}{" "}
                     {/* <span className="text-[12px] py-0.5 px-2.5 font-semibold bg-gray-100 rounded-[80px] p-1">
                       {item.tag ? item.tag : "N/A"}
                     </span> */}
                   </td>
-                  <td className="px-4 py-4 w-[60%] min-w-[707px]">
+                  <td className="px-4 py-4 w-[40%] ">
                     {item.building_floor_string
                       ? item.building_floor_string
                       : "--"}
                   </td>
-                  <td className="px-4 py-4 min-w-[125px]">
+                  <td className="px-4 py-4 w-[20%] ">
                     <Button
                       onClick={() => {
                         handleOpenEditModal(item ? item : null);

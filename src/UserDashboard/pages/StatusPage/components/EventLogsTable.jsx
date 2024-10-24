@@ -655,10 +655,10 @@ const EventLogsTable = () => {
                   className="text-sm bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
                 >
                   <td className="px-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white w-[9%]">
-                    {item.id ? item.id : "-"}
+                    {item.id ? item.id : "--"}
                   </td>
                   <td className="px-4 py-4 font-medium text-gray-900 break-words dark:text-white w-[15%]">
-                    {item.roomName ? item.roomName : "-"}{" "}
+                    {item.roomName ? item.roomName : "--"}{" "}
                   </td>
                   <td className="px-4 py-4 w-[16%]">
                     {item.building_floor_string ? (
@@ -668,11 +668,11 @@ const EventLogsTable = () => {
                         {item.building_floor_string.split(" - ")[1]}
                       </>
                     ) : (
-                      "-"
+                      "--"
                     )}
                   </td>
                   <td className="px-4 py-4 w-[13%]">
-                    {item.createdAt ? formatTimestamp(item.createdAt) : "-"}
+                    {item.createdAt ? formatTimestamp(item.createdAt) : "--"}
                   </td>
                   <td className="px-4 py-4 w-[15%]">
                     <div className="flex items-center gap-x-2">
@@ -691,13 +691,13 @@ const EventLogsTable = () => {
                         )}
                       </Tooltip>
                       <span className="text-sm">
-                        {item.eventTypeMessage ? item.eventTypeMessage : "-"}
+                        {item.eventTypeMessage ? item.eventTypeMessage : "--"}
                       </span>
                     </div>
                   </td>
                   <td className="px-4 py-4 w-[26%]">
                     <Tooltip content={item.message} style="light">
-                      {item.message ? `${item.message}` : "-"}
+                      {item.message ? `${item.message}` : "--"}
                     </Tooltip>
                   </td>
                 </tr>

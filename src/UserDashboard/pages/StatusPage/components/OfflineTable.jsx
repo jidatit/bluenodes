@@ -499,14 +499,14 @@ const OfflineTable = () => {
     }
   }, [tableData]);
   const columnWidths = {
-    devEui: "w-[15%] min-w-[258px]",
-    deviceName: "w-[15%] min-w-[254px]",
-    deviceType: "w-[10%] min-w-[254]",
-    buildingFloor: "w-[15%] min-w-[330px]",
-    roomName: "w-[15%] min-w-[245px]",
-    lastSeen: "w-[10%] min-w-[168px]",
-    battery: "w-[10%] min-w-[168px]",
-    status: "w-[10%] min-w-[102px]",
+    devEui: "w-[15%] ",
+    deviceName: "w-[15%] ",
+    deviceType: "w-[14%] ",
+    buildingFloor: "w-[20%] ",
+    roomName: "w-[10%] ",
+    lastSeen: "w-[10%] ",
+    battery: "w-[7%] ",
+    status: "w-[9%] ",
   };
 
   return (
@@ -595,50 +595,35 @@ const OfflineTable = () => {
           )}
         </div>
         {/* Table */}
-        <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 ">
+        <table className="w-full table-fixed text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 ">
           <thead className="text-xs font-semibold text-gray-500 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-            <tr className="uppercase">
-              <th scope="col" className="p-4 w-[10%]">
-                {" "}
-                {/* ID */}
-                ID
-              </th>
-              <th scope="col" className="p-4 w-[10%]">
-                {" "}
-                {/* GERÄTE Name */}
-                GERÄTE Name
-              </th>
-              <th scope="col" className="p-4 w-[15%]">
-                {" "}
-                {/* GERÄTE-typ */}
-                GERÄTE-typ
-              </th>
-              <th scope="col" className="p-4 w-[20%]">
-                {" "}
-                {/* GEBÄUDE - ETAGE */}
-                GEBÄUDE - ETAGE
-              </th>
-              <th scope="col" className="p-4 w-[10%]">
-                {" "}
-                {/* RAUM */}
-                RAUM
-              </th>
-              <th scope="col" className="p-4 w-[10%]">
-                {" "}
-                {/* DATUM - UHRZEIT */}
-                DATUM - UHRZEIT
-              </th>
-              <th scope="col" className="p-4 w-[5%]">
-                {" "}
-                {/* BATTERIE */}
-                BATTERIE
-              </th>
-              <th scope="col" className="p-4 w-[5%]">
-                {" "}
-                {/* STATUS */}
-                STATUS
-              </th>
-            </tr>
+          <tr className="uppercase">
+  <th scope="col" className={`${columnWidths.devEui} p-4`}>
+    ID
+  </th>
+  <th scope="col" className={`${columnWidths.deviceName} p-4`}>
+    GERÄTE Name
+  </th>
+  <th scope="col" className={`${columnWidths.deviceType} p-4`}>
+    GERÄTE-typ
+  </th>
+  <th scope="col" className={`${columnWidths.buildingFloor} p-4`}>
+    GEBÄUDE - ETAGE
+  </th>
+  <th scope="col" className={`${columnWidths.roomName} p-4`}>
+    RAUM
+  </th>
+  <th scope="col" className={`${columnWidths.lastSeen} p-4`}>
+    DATUM - UHRZEIT
+  </th>
+  <th scope="col" className={`${columnWidths.battery} p-4`}>
+    BATTERIE
+  </th>
+  <th scope="col" className={`${columnWidths.status} p-4`}>
+    STATUS
+  </th>
+</tr>
+
           </thead>
           {loading && <OfflineSkeletonTable />}
           <tbody>
@@ -673,7 +658,7 @@ const OfflineTable = () => {
                   </td>
 
                   <td className={`${columnWidths.lastSeen} px-4 py-4`}>
-                    {item.lastSeen ? formatTimestamp(item?.lastSeen) : "-"}
+                    {item.lastSeen ? formatTimestamp(item?.lastSeen) : "--"}
                   </td>
 
                   <td className={`${columnWidths.battery} px-4 py-4 truncate`}>
@@ -706,15 +691,15 @@ const OfflineTable = () => {
                     </Tooltip>
                   </td>
 
-                  <td className={`${columnWidths.status} px-4 py-4 truncate`}>
+                  <td className={`${columnWidths.status} px-4 py-4  truncate `}>
                     <div
-                      className={`py-0.5 px-2.5 rounded-md flex items-center justify-center gap-1 w-fit
+                      className={`py-0.5 px-2.5 rounded-md flex items-center justify-center gap-1 
                       ${
                         item.status === "online"
                           ? "bg-green-100 text-green-800"
                           : "bg-gray-100 text-gray-900"
                       } 
-                      text-[10px]`}
+                      text-[12px]`}
                     >
                       {item.status === "online" ? (
                         <FaRegCircleCheck />
