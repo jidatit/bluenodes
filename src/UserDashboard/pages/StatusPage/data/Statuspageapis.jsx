@@ -35,6 +35,65 @@ export const fetchUnassignedRoomsData = async (
   }
 };
 
+export const fetchErrorLogsData = async (
+  page = 1,
+  limit,
+  locations,
+  eventTypeLevel,
+  dateTo,
+  dateFrom
+) => {
+  if (eventTypeLevel === null) {
+    try {
+      const data = await axios.get(
+        ApiUrls.SMARTHEATING_STATUSPAGE.ERROR_LOGS(
+          page,
+          limit,
+          locations,
+          eventTypeLevel,
+          dateTo,
+          dateFrom
+        )
+      );
+      return data.data;
+    } catch (error) {
+      console.log(error);
+    }
+  } else if (eventTypeLevel !== null && locations === null) {
+    locations = null;
+    try {
+      const data = await axios.get(
+        ApiUrls.SMARTHEATING_STATUSPAGE.ERROR_LOGS(
+          page,
+          limit,
+          locations,
+          eventTypeLevel,
+          dateTo,
+          dateFrom
+        )
+      );
+      return data.data;
+    } catch (error) {
+      console.log(error);
+    }
+  } else if (eventTypeLevel !== null && locations !== null) {
+    try {
+      const data = await axios.get(
+        ApiUrls.SMARTHEATING_STATUSPAGE.ERROR_LOGS(
+          page,
+          limit,
+          locations,
+          eventTypeLevel,
+          dateTo,
+          dateFrom
+        )
+      );
+      return data.data;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+};
 export const fetchEventLogsData = async (
   page = 1,
   limit,

@@ -27,6 +27,11 @@ const ProgramAssignment = ({
       ? heatingData
       : _.cloneDeep(initialData)
   );
+  const [firstData, setFirstData] = useState(
+    heatingData && Object.keys(heatingData).length > 0
+      ? heatingData
+      : _.cloneDeep(initialData)
+  );
   const [filter, setFilter] = useState("All");
 
   // Function to create a mapping of room IDs to their default values
@@ -127,9 +132,10 @@ const ProgramAssignment = ({
   }, []);
 
   const handleSelectAllRooms = (buildingId, floorId, isSelected) => {
-    const newData = _.cloneDeep(data);
+    const newData = _.cloneDeep(firstData);
     const building = newData.buildings.find((b) => b.id === buildingId);
     const floor = building.floors.find((f) => f.id === floorId);
+    let count = floor.roomsAssigned;
     let newVar = 0;
 
     floor.rooms.forEach((room) => {
@@ -137,20 +143,27 @@ const ProgramAssignment = ({
       if (isSelected) {
         room.programAssigned = formData.programName;
         room.algorithmOn = formData.applyAlgorithm;
-        room.assigned = true;
       } else {
         const defaultValues = defaultValuesMap[room.id];
-        room.programAssigned = defaultValues.programAssigned;
+        room.programAssigned =
+          defaultValues.programAssigned === formData.programName
+            ? ""
+            : defaultValues.programAssigned;
         room.algorithmOn = defaultValues.algorithmOn;
-        room.assigned = defaultValues.assigned;
+        // room.assigned = defaultValues.assigned;
+        if (defaultValues.programAssigned === formData.programName) {
+          count = count - 1;
+        }
       }
     });
 
-    // Update rooms assigned count
     const previouslyAssigned = floor.roomsAssigned;
-    const newlyAssigned = isSelected ? floor.totalRooms : 0;
-    const difference = newlyAssigned - previouslyAssigned;
+
+    const newlyAssigned = isSelected ? floor.totalRooms : count > 0 ? count : 0;
     floor.roomsAssigned = newlyAssigned;
+
+    // Update building assigned count
+    const difference = newlyAssigned - previouslyAssigned;
     building.roomsAssigned += difference;
     setData(newData);
   };
@@ -417,7 +430,7 @@ const ProgramAssignment = ({
                                   {filterRooms(floor.rooms).map((room) => (
                                     <Table.Row
                                       key={room.id}
-                                      className={`border-t border-gray-300 ${
+                                      className={`border-t w-[10%] border-gray-300 ${
                                         room.assigned
                                           ? "bg-primary-200"
                                           : "bg-white"
@@ -435,14 +448,14 @@ const ProgramAssignment = ({
                                           }
                                         />
                                       </Table.Cell>
-                                      <Table.Cell className="whitespace-nowrap font-bold text-gray-900 dark:text-white">
+                                      <Table.Cell className="w-[30%] whitespace-nowrap font-bold text-gray-900 dark:text-white">
                                         {room.name}{" "}
                                         <span className=" text-xs font-normal py-0.5 px-2.5 bg-gray-100 rounded-3xl">
                                           {room.type}
                                         </span>
                                       </Table.Cell>
                                       {/* <Table.Cell className=' text-green-700 text-xl'>{room.algorithmOn ? <FaCheck/>:''}</Table.Cell> */}
-                                      <Table.Cell>
+                                      <Table.Cell className="w-[40%]">
                                         {room.programAssigned ? (
                                           <span className=" text-primary">
                                             {room.programAssigned}
@@ -451,7 +464,7 @@ const ProgramAssignment = ({
                                           "-"
                                         )}
                                       </Table.Cell>
-                                      <Table.Cell className="text-gray-900">
+                                      <Table.Cell className="text-gray-900 w-[20%]">
                                         {room?.currentTemperature?.toFixed(1)}°C
                                       </Table.Cell>
                                     </Table.Row>
@@ -559,13 +572,13 @@ const ProgramAssignment = ({
                                     {filterRooms(floor.rooms).map((room) => (
                                       <Table.Row
                                         key={room.id}
-                                        className={`border-t border-gray-300 ${
+                                        className={`border-t  border-gray-300 ${
                                           room.assigned
                                             ? "bg-primary-200"
                                             : "bg-white"
                                         }`}
                                       >
-                                        <Table.Cell className="pl-4">
+                                        <Table.Cell className=" w-[10%] pl-4">
                                           <Checkbox
                                             checked={room.assigned}
                                             onChange={() =>
@@ -577,16 +590,16 @@ const ProgramAssignment = ({
                                             }
                                           />
                                         </Table.Cell>
-                                        <Table.Cell className="whitespace-nowrap font-bold text-gray-900 dark:text-white">
+                                        <Table.Cell className="w-[20%] whitespace-nowrap font-bold text-gray-900 dark:text-white">
                                           {room.name}{" "}
                                           <span className=" text-xs font-normal py-0.5 px-2.5 bg-gray-100 rounded-3xl">
                                             {room.type}
                                           </span>
                                         </Table.Cell>
-                                        <Table.Cell className=" text-green-700 text-xl">
+                                        <Table.Cell className=" w-[20%] text-green-700 text-xl">
                                           {room.algorithmOn ? <FaCheck /> : ""}
                                         </Table.Cell>
-                                        <Table.Cell>
+                                        <Table.Cell className="w-[40%]">
                                           {room.programAssigned ? (
                                             <span className=" text-primary">
                                               {room.programAssigned}
@@ -595,7 +608,7 @@ const ProgramAssignment = ({
                                             "-"
                                           )}
                                         </Table.Cell>
-                                        <Table.Cell className=" text-gray-900">
+                                        <Table.Cell className="  w-[20%] text-gray-900">
                                           {room.currentTemperature}
                                         </Table.Cell>
                                       </Table.Row>

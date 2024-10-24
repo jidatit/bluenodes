@@ -1,5 +1,5 @@
 const formatTimestamp = (timestamp) => {
-  if (!timestamp) return "No Payload";
+  if (!timestamp) return "--";
 
   const date = new Date(timestamp);
 

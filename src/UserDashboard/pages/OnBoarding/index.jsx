@@ -286,32 +286,32 @@ const Onboarding = () => {
           </p>
           <div className="mt-7 mb-4">
             <div className="flex justify-between mt-4">
-              <button
-                disabled={currentStepIndex === 0}
+              <Button
                 onClick={handlePreviousStep}
-                className="text-[14px] font-inter flex items-center justify-center px-5 py-2.5 text-black bg-white border border-gray-300 rounded-md hover:bg-gray-200 outline-none cursor-pointer"
+                disabled={currentStepIndex === 0}
+                className=" w-[120px] h-[41px] px-5 py-2.5 gap-2 font-inter flex items-center justify-center  text-black bg-white border border-gray-300 rounded-lg hover:!bg-gray-200 focus:outline-none focus:ring-0"
+                pill={false}
               >
-                <FaAngleLeft className="mr-1.5 h-5 w-5 mt-[1.5px] font-inter" />
+                <FaAngleLeft className="mr-1.5 h-4 w-4 mt-[1.5px]" />
                 <p className="text-[14px] ml-1 font-inter">Previous</p>
-              </button>
-              <button
+              </Button>
+              <Button
                 onClick={() => {
                   if (currentStepIndex === 7 && progress === 100) {
-                    // Navigate if on the last step and progress is 100%
                     navigate(`${NAVIGATION_PATH.dashboardLayout}`);
                   } else {
                     handleStepComplete();
                   }
                 }}
-                className="text-[14px] font-inter flex items-center justify-center px-5 py-3 text-black bg-white border border-gray-300 rounded-md hover:bg-gray-200 outline-none"
+                className="w-[120px] h-[41px] px-5 py-2.5 gap-2 rounded-lg border border-gray-300 opacity-100 bg-white hover:!bg-gray-200 text-black flex items-center justify-center focus:outline-none focus:ring-0"
               >
                 <p className="font-inter text-[14px]">
                   {currentStepIndex === 7 && progress === 100
                     ? "Complete"
                     : "Next"}
                 </p>
-                <FaAngleRight className="ml-2 h-5 w-5 mt-[1.5px] font-inter" />
-              </button>
+                <FaAngleRight className="ml-2 h-4 w-4 mt-[1.5px] font-inter" />
+              </Button>
             </div>
           </div>
         </div>

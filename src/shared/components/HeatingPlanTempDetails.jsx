@@ -20,7 +20,7 @@ const HeatingPlanTempDetails = ({
                 <p className="font-semibold">
                   {isAlternate ? "Kindersicherung" : "Name des Heizplans"}
                 </p>
-                <p>{temperatureDetails?.templateName || "N/A"}</p>
+                <p>{temperatureDetails?.templateName || "--"}</p>
               </div>
             )}
 
@@ -43,7 +43,7 @@ const HeatingPlanTempDetails = ({
                     </Tooltip>
                   </p>
                   <p>
-                    {temperatureDetails?.deviceOverrideTemperatureMin || "N/A"}
+                    {temperatureDetails?.deviceOverrideTemperatureMin || "--"}
                     °C
                   </p>
                 </div>
@@ -60,7 +60,7 @@ const HeatingPlanTempDetails = ({
                     </Tooltip>
                   </p>
                   <p>
-                    {temperatureDetails?.deviceOverrideTemperatureMax || "N/A"}
+                    {temperatureDetails?.deviceOverrideTemperatureMax || "--"}
                     °C
                   </p>
                 </div>

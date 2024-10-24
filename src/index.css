@@ -57,7 +57,48 @@
 @tailwind components;
 @tailwind utilities;
 
-input[type='checkbox']:focus{
+/* For WebKit browsers (Chrome, Safari) */
+.custom-scrollbar::-webkit-scrollbar {
+  scrollbar-width: 2px !important;
+  scrollbar-color: #d1d5db #f9fafb; /* thumb color, track color */
+  width: 10px; /* Set width of scrollbar */
+  height: 0px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  width: 0px; /* Set width of scrollbar */
+  height: 0px; /* Set height of horizontal scrollbar */
+  background: #f9fafb; /* Track color */
+  border-radius: 10px; /* Rounded corners */
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #d1d5db; /* Thumb color */
+  border-radius: 10px; /* Rounded corners for thumb */
+}
+
+/* Optional: Change thumb color on hover */
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: #a1a1a1; /* Darker shade on hover */
+}
+
+.custom-multiselect {
+  padding: 0.25rem 0.4rem;
+}
+
+.custom-multiselect .p-multiselect-label {
+  padding: 0.2rem 0.2rem !important;
+}
+
+.custom-multiselect .p-multiselect {
+  height: 2rem; /* Smaller height */
+}
+
+.custom-multiselect-panel .p-multiselect-item {
+  padding: 0.25rem 0.5rem 0.5rem 0.5rem !important; /* Reduce padding for dropdown items */
+}
+
+input[type="checkbox"]:focus {
   outline: none;
   box-shadow: none;
 }
@@ -251,12 +292,12 @@ input[type="radio"]:focus {
   width: 8px; /* Width of the scrollbar */
 }
 .scrollbar-custom::-webkit-scrollbar-track {
-  background: #F1F1F1; /* Scrollbar track color */
+  background: #f1f1f1; /* Scrollbar track color */
 }
 .scrollbar-custom::-webkit-scrollbar-thumb {
-  background-color: #D9D9D9; /* Scrollbar thumb (the handle) color */
-  border: 2px solid #F1F1F1; /* Border around the thumb */
+  background-color: #d9d9d9; /* Scrollbar thumb (the handle) color */
+  border: 2px solid #f1f1f1; /* Border around the thumb */
 }
 .scrollbar-custom::-webkit-scrollbar-thumb:hover {
-  background-color: #D9D9D9; /* Thumb color when hovered */
+  background-color: #d9d9d9; /* Thumb color when hovered */
 }

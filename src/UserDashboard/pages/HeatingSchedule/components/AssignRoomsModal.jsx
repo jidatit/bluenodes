@@ -209,7 +209,6 @@ function AssignRoomsModal({
             : defaultValues.programAssigned;
         room.algorithmOn = defaultValues.algorithmOn;
         if (defaultValues.programAssigned === program.templateName) {
-          console.log("hdgh");
           count = count - 1;
         }
       }
@@ -217,7 +216,7 @@ function AssignRoomsModal({
 
     // Update the assigned counts
     const previouslyAssigned = floor.roomsAssigned;
-    console.log(count);
+
     const newlyAssigned = isSelected ? floor.totalRooms : count > 0 ? count : 0;
     floor.roomsAssigned = newlyAssigned;
 
@@ -532,13 +531,13 @@ function AssignRoomsModal({
                                           (room) => (
                                             <Table.Row
                                               key={room.id}
-                                              className={`border-t w-[10%]  border-gray-300 ${
+                                              className={`border-t   border-gray-300 ${
                                                 room.assigned
                                                   ? "bg-primary-200"
                                                   : "bg-white"
                                               }`}
                                             >
-                                              <Table.Cell className="pl-4">
+                                              <Table.Cell className="w-[10%] pl-4">
                                                 <Checkbox
                                                   checked={room.assigned}
                                                   onChange={() =>
@@ -550,14 +549,14 @@ function AssignRoomsModal({
                                                   }
                                                 />
                                               </Table.Cell>
-                                              <Table.Cell className="  w-[30%]  whitespace-nowrap font-bold text-gray-900 dark:text-white">
+                                              <Table.Cell className="w-[30%]  whitespace-nowrap font-bold text-gray-900 dark:text-white">
                                                 {room.name}{" "}
                                                 <span className=" text-xs font-normal py-0.5 px-2.5 bg-gray-100 rounded-3xl">
                                                   {room.type}
                                                 </span>
                                               </Table.Cell>
 
-                                              <Table.Cell className="w-[40%] ">
+                                              <Table.Cell className="w-[40%]">
                                                 {room.programAssigned ? (
                                                   <span className=" text-primary ">
                                                     {room.programAssigned}
@@ -681,13 +680,13 @@ function AssignRoomsModal({
                                             (room) => (
                                               <Table.Row
                                                 key={room.id}
-                                                className={`border-t w-[10%] border-gray-300 ${
+                                                className={`border-t  border-gray-300 ${
                                                   room.assigned
                                                     ? "bg-primary-200"
                                                     : "bg-white"
                                                 }`}
                                               >
-                                                <Table.Cell className="pl-4">
+                                                <Table.Cell className="w-[10%] pl-4">
                                                   <Checkbox
                                                     checked={room.assigned}
                                                     onChange={() =>
