@@ -665,19 +665,19 @@ const DeviceManagementTable = () => {
     }
   }, [tableData]);
   const columnWidths = {
-    expand: "w-[4%]", // Small width for the expand icon
-    devEui: "w-[12%] min-w-[180px]", // Reduced width for Device EUI column
-    deviceName: "w-[8%] min-w-[186px]", // Wider for potentially long device names
-    deviceType: "w-[10%] min-w-[175px]", // Reduced width for Device type column
-    buildingFloor: "w-[15%] min-w-[200px] ", // Increased width for Building & Floor info
-    roomName: "w-[8%] min-w-[155px]", // Reduced width for Room name
-    lastSeen: "w-[10%] min-w-[165px]", // Reduced width for Last seen timestamp
-    battery: "w-[7%] min-w-[140px]", // Reduced width for Battery level
-    status: "w-[5%] min-w-[127px]", // Status indicator
-    tempOffset: "w-[5%] min-w-[99px]", // Temperature offset
-    actions: "w-[5%]", // Action buttons
+    expand: "w-[5%]",        // Small width for the expand icon
+    devEui: "w-[15%]",       // Fixed width for Device EUI column
+    deviceName: "w-[10%]",    // Fixed width for device names
+    deviceType: "w-[10%]",    // Fixed width for Device type column
+    buildingFloor: "w-[14%]", // Fixed width for Building & Floor info
+    roomName: "w-[12%]",      // Fixed width for Room name
+    lastSeen: "w-[11%]",      // Fixed width for Last seen timestamp
+    battery: "w-[6%]",        // Reduced width for Battery level
+    status: "w-[9%]",        // Increased width for Status indicator
+    tempOffset: "w-[5%]",     // Increased width for Temperature offset
+    actions: "w-[3%]",        // Increased width for Action buttons
   };
-
+  
   return (
     <div className="flex flex-col w-full gap-4">
       <div className="relative w-full overflow-x-auto bg-white shadow-md sm:rounded-lg">
@@ -826,58 +826,58 @@ const DeviceManagementTable = () => {
           {/* Search bar */}
         </div>
         {/* Table */}
-        <table className="w-full text-sm text-left text-gray-500 rtl:text-right dark:text-gray-400">
+        <table className="w-full table-fixed text-sm text-left text-gray-500 rtl:text-right dark:text-gray-400">
           <thead className="text-xs font-semibold text-gray-500 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400 overflow-x-hidden">
             <tr className="uppercase">
-              <th className={`p-4 ${columnWidths.expand} `}></th>
-              <th scope="col" className={`p-4 ${columnWidths.devEui} `}>
+              <th className={`py-4 ${columnWidths.expand} `}></th>
+              <th scope="col" className={`py-4 ${columnWidths.devEui} `}>
                 {" "}
                 {/* ID */}
                 ID
               </th>
-              <th scope="col" className={`p-4 ${columnWidths.deviceName} `}>
+              <th scope="col" className={`py-4 ${columnWidths.deviceName} `}>
                 {" "}
                 {/* GERÄTENAME */}
                 GERÄTENAME
               </th>
-              <th scope="col" className={`p-4 ${columnWidths.deviceType} `}>
+              <th scope="col" className={`py-4 ${columnWidths.deviceType} `}>
                 {" "}
                 {/* TYP */}
                 TYP
               </th>
-              <th scope="col" className={`p-4 ${columnWidths.buildingFloor} `}>
+              <th scope="col" className={`py-4 ${columnWidths.buildingFloor} `}>
                 {" "}
                 {/* GEBÄUDE - ETAGE */}
                 GEBÄUDE - ETAGE
               </th>
-              <th scope="col" className={`p-4 ${columnWidths.roomName}`}>
+              <th scope="col" className={`py-4 ${columnWidths.roomName}`}>
                 {" "}
                 {/* RAUM */}
                 RAUM
               </th>
-              <th scope="col" className={`p-4 ${columnWidths.lastSeen}`}>
+              <th scope="col" className={`py-4 ${columnWidths.lastSeen}`}>
                 {" "}
                 {/* DATUM - UHRZEIT */}
                 DATUM - UHRZEIT
               </th>
-              <th scope="col" className={`p-4 ${columnWidths.lastSeen}`}>
+              <th scope="col" className={`py-4 ${columnWidths.battery}`}>
                 {" "}
                 {/* BATTERIE */}
                 BATTERIE
               </th>
-              <th scope="col" className={`p-4 ${columnWidths.status}`}>
+              <th scope="col" className={`py-4 ${columnWidths.status}`}>
                 {" "}
                 {/* STATUS */}
                 STATUS
               </th>
-              <th scope="col" className={`p-4 ${columnWidths.tempOffset}`}>
+              <th scope="col" className={`py-4 ${columnWidths.tempOffset}`}>
                 {" "}
                 {/* Offset */}
-                <p className="flex justify-center items-center">
+                <p className="flex items-center">
                   Offset <IoInformationCircleOutline className="w-4 h-4 ml-1" />
                 </p>
               </th>
-              <th scope="col" className={`p-4 ${columnWidths.actions}`}></th>
+              <th scope="col" className={`py-4 ${columnWidths.actions}`}></th>
             </tr>
           </thead>
           {loading && <SkeletonDeviceManagementTable />}
@@ -904,13 +904,13 @@ const DeviceManagementTable = () => {
                     </td>
 
                     <td
-                      className={`${columnWidths.devEui} px-4 py-4 truncate uppercase`}
+                      className={`${columnWidths.devEui}  py-4  uppercase`}
                     >
                       {item?.devEui}
                     </td>
 
                     <td
-                      className={`${columnWidths.deviceName} px-4 py-4 truncate`}
+                      className={`${columnWidths.deviceName}  py-4 `}
                     >
                       {item?.deviceName &&
                       item.deviceName.toString().length > 20 ? (
@@ -924,12 +924,12 @@ const DeviceManagementTable = () => {
                     </td>
 
                     <td
-                      className={`${columnWidths.deviceType} px-4 py-4 truncate`}
+                      className={`${columnWidths.deviceType}  py-4 `}
                     >
                       {item?.deviceType}
                     </td>
 
-                    <td className={`${columnWidths.buildingFloor} px-4 py-4`}>
+                    <td className={`${columnWidths.buildingFloor}  py-4`}>
                       {item.building_floor_string ? (
                         <>
                           {item.building_floor_string.split(" - ")[0] + " - "}
@@ -941,16 +941,16 @@ const DeviceManagementTable = () => {
                       )}
                     </td>
 
-                    <td className={`${columnWidths.roomName} px-4 py-4`}>
+                    <td className={`${columnWidths.roomName}  py-4`}>
                       {item?.roomName || "--"}
                     </td>
 
-                    <td className={`${columnWidths.lastSeen} px-4 py-4`}>
+                    <td className={`${columnWidths.lastSeen}  py-4`}>
                       {formatTimestamp(item?.lastSeen)}
                     </td>
 
                     <td
-                      className={`${columnWidths.battery} px-4 py-4 truncate`}
+                      className={`${columnWidths.battery}  py-4 `}
                     >
                       <Tooltip
                         className="p-3"
@@ -981,7 +981,7 @@ const DeviceManagementTable = () => {
                       </Tooltip>
                     </td>
 
-                    <td className={`${columnWidths.status} px-4 py-4 truncate`}>
+                    <td className={`${columnWidths.status}  py-4 `}>
                       <div
                         className={`py-0.5 px-2.5 rounded-md flex items-center justify-center gap-1 w-fit ${
                           item.status === "online"
@@ -998,11 +998,11 @@ const DeviceManagementTable = () => {
                       </div>
                     </td>
 
-                    <td className={`${columnWidths.tempOffset} px-4 py-4`}>
+                    <td className={`${columnWidths.tempOffset}  py-4`}>
                       {item?.temperatureOffset || "--"}
                     </td>
 
-                    <td className={`${columnWidths.actions} px-4 py-4`}>
+                    <td className={`${columnWidths.actions}  py-4`}>
                       <FaEdit
                         onClick={(e) => {
                           e.stopPropagation();
@@ -1530,7 +1530,7 @@ const DeviceManagementTable = () => {
           <div className="flex justify-end border border-gray-200 rounded-md w-fit">
             <button
               onClick={() => handlePageChange(currentPage - 1)}
-              className={`inline-flex items-center px-4 py-2 text-sm font-medium rounded-sm ${
+              className={`inline-flex items-center  py-2 text-sm font-medium rounded-sm ${
                 currentPage === 1
                   ? "text-gray-300 cursor-not-allowed"
                   : "text-primary bg-[#CFF4FB] hover:bg-primary-300"
@@ -1542,13 +1542,13 @@ const DeviceManagementTable = () => {
             {startPage > 1 && (
               <button
                 onClick={() => handlePageChange(1)}
-                className="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-500 bg-white rounded-sm hover:bg-gray-100"
+                className="inline-flex items-center  py-2 text-sm font-medium text-gray-500 bg-white rounded-sm hover:bg-gray-100"
               >
                 1
               </button>
             )}
             {startPage > 2 && (
-              <span className="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-500 bg-white rounded-sm">
+              <span className="inline-flex items-center  py-2 text-sm font-medium text-gray-500 bg-white rounded-sm">
                 ...
               </span>
             )}
@@ -1556,7 +1556,7 @@ const DeviceManagementTable = () => {
               <button
                 key={startPage + index}
                 onClick={() => handlePageChange(startPage + index)}
-                className={`inline-flex items-center px-4 py-2 text-sm font-medium rounded-sm ${
+                className={`inline-flex items-center  py-2 text-sm font-medium rounded-sm ${
                   currentPage === startPage + index
                     ? "text-primary bg-[#CFF4FB] hover:bg-primary-300"
                     : "text-gray-500 bg-white hover:bg-gray-100"
@@ -1566,14 +1566,14 @@ const DeviceManagementTable = () => {
               </button>
             ))}
             {endPage < totalPages - 1 && (
-              <span className="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-500 bg-white rounded-sm">
+              <span className="inline-flex items-center  py-2 text-sm font-medium text-gray-500 bg-white rounded-sm">
                 ...
               </span>
             )}
             {endPage < totalPages && (
               <button
                 onClick={() => handlePageChange(totalPages)}
-                className={`inline-flex items-center px-4 py-2 text-sm font-medium rounded-sm ${
+                className={`inline-flex items-center  py-2 text-sm font-medium rounded-sm ${
                   currentPage === totalPages
                     ? "text-gray-300 cursor-not-allowed"
                     : "text-gray-500 bg-white hover:bg-gray-100"
@@ -1585,7 +1585,7 @@ const DeviceManagementTable = () => {
             )}
             <button
               onClick={() => handlePageChange(currentPage + 1)}
-              className={`inline-flex items-center px-4 py-2 text-sm font-medium rounded-sm ${
+              className={`inline-flex items-center  py-2 text-sm font-medium rounded-sm ${
                 currentPage === totalPages
                   ? "text-gray-300 cursor-not-allowed"
                   : "text-primary bg-[#CFF4FB] hover:bg-primary-300"

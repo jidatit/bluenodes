@@ -102,8 +102,8 @@ export const handleCreateHelper = async (
             console.log("handleCheckRef.current666");
             fetchFloorDetails(room.parentId);
           }
-          handleCloseModal();
           updateReplaced();
+          handleCloseModal();
           resetModalState();
         } else {
           handleOpenModal();

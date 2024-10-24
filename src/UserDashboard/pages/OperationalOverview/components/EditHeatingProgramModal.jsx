@@ -380,6 +380,7 @@ const EditHeatingProgramModal = ({
         updateReplaced,
         handleOpenModal
       );
+      updateReplaced()
     } catch (error) {
       console.error("Error in handleCreate:", error);
       // Handle the error appropriately, such as showing a toast or modal
