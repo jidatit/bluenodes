@@ -7,6 +7,18 @@ const ApiUrls = {
   BASE_URL: `${BASE}${STAGE}`,
   AUTH_LOGIN: "/auth/login",
 
+  SMARTHEATING_CHART: {
+    ROOM_TEMPERATURE: (roomid, dateFrom, dateTo) => {
+      return `/smartheating/chart/room-temperature/${roomid}?dateFrom=${dateFrom}&dateTo=${dateTo}`;
+    },
+    ROOM_HUMIDITY: (roomid, dateFrom, dateTo) => {
+      return `/smartheating/chart/room-humidity/${roomid}?dateFrom=${dateFrom}&dateTo=${dateTo}`;
+    },
+    VALVE_POSITION: (roomid, dateFrom, dateTo) => {
+      return `/smartheating/chart/valve-position/${roomid}?dateFrom=${dateFrom}&dateTo=${dateTo}`;
+    },
+  },
+
   SMARTHEATING_STATUSPAGE: {
     STATS: "/smartheating/statuspage/report",
     ERROR_LOGS: (page, limit, locations, eventTypeLevel, dateTo, dateFrom) => {

@@ -2,6 +2,8 @@ import React, { useEffect, useRef, useState } from "react";
 import ReactApexChart from "react-apexcharts";
 import { MultiSelect } from "primereact/multiselect";
 import DateFilter from "../../StatusPage/components/dateFilter/DateFilter";
+import ApiUrls from "../../../../globals/apiURL";
+import axios from "axios";
 
 const generateDummyData = (points, min, max) => {
   return Array.from({ length: points }, (_, i) => ({
@@ -10,10 +12,11 @@ const generateDummyData = (points, min, max) => {
   }));
 };
 
-const Dashboard = () => {
+const Dashboard = (roomId) => {
   const [selectedDevice, setSelectedDevice] = useState([]);
   const temperatureData = generateDummyData(24, 15, 30);
-  const humidityData = generateDummyData(24, 30, 70);
+  // const humidityData = generateDummyData(24, 30, 70);
+  const [humidityData, setHumidityData] = useState([]);
   const [apiData, setApiData] = useState(null);
   const [dates, setDates] = useState(null);
   const [selectedDropdownOption, setSelectedDropdownOption] =
@@ -22,13 +25,19 @@ const Dashboard = () => {
   const [closeDateFilter, setCloseDateFilter] = useState(false);
   const dateFilterRef = useRef(null);
   const [subDropdownValue, setSubDropdownValue] = useState(null);
-  const [dateTo, setdateTo] = useState(null);
-  const [dateFrom, setdateFrom] = useState(null);
+
+  const getTodayDate = () => new Date().toISOString().split("T")[0];
+  const getThirtyDaysAgo = () => {
+    const date = new Date();
+    date.setDate(date.getDate() - 30);
+    return date.toISOString().split("T")[0];
+  };
+  const [dateTo, setdateTo] = useState(getTodayDate());
+  const [dateFrom, setdateFrom] = useState(getTodayDate());
   const handleDatesChange = (newDates) => {
-    console.log("datechanges");
     if (!newDates || !newDates[0]) {
-      setdateFrom(null);
-      setdateTo(null);
+      setdateFrom(getTodayDate());
+      setdateTo(getTodayDate());
       return;
     }
     if (newDates[0] && newDates[1]) {
@@ -48,7 +57,7 @@ const Dashboard = () => {
     chart: {
       height: 200,
       toolbar: { show: false },
-      zoom: { enabled: false },
+      zoom: { enabled: true },
     },
     dataLabels: { enabled: false },
     stroke: { curve: "smooth", width: 2 },
@@ -110,20 +119,53 @@ const Dashboard = () => {
       labels: { formatter: (value) => `${value}${value === 100 ? "" : "°C"}` },
     },
   };
+  const formatHumidityData = (data) => {
+    if (data.length === 0) return { formattedData: [], min: 0, max: 100 };
+
+    const formattedData = data.map((item) => {
+      const date = new Date(item.createdAt);
+      return {
+        x: date.toLocaleString(),
+        y: Math.round(item.humidity),
+        timestamp: date.getTime(),
+      };
+    });
+
+    // Calculate min and max humidity values
+    const humidityValues = formattedData.map((item) => item.y);
+    const minHumidity = Math.min(...humidityValues);
+    const maxHumidity = Math.max(...humidityValues);
+    const adjustedMin = Math.max(0, Math.floor((minHumidity - 5) / 5) * 5);
+    const adjustedMax = Math.min(100, Math.ceil((maxHumidity + 5) / 5) * 5);
+
+    return {
+      formattedData,
+      min: adjustedMin,
+      max: adjustedMax,
+      tickAmount: Math.min(10, adjustedMax - adjustedMin),
+    };
+  };
+
+  // Assuming humidityData is the incoming response
+
+  const { formattedData, min, max } = formatHumidityData(humidityData);
 
   const humidityOptions = {
     ...commonOptions,
-    chart: { ...commonOptions.chart, type: "area" },
+    chart: {
+      ...commonOptions.chart,
+      type: "area",
+    },
     title: {
       text: "Humidity",
       align: "left",
       style: {
-        fontFamily: "Inter, sans-serif", // Applying Inter font
-        fontSize: "14px", // Font size as requested
-        fontWeight: 700, // Make the font bold
-        lineHeight: "21px", // Line height as requested
-        textAlign: "left", // Text alignment
-        color: "#1F2937", // Gray/900 in hex (#1F2937)
+        fontFamily: "Inter, sans-serif",
+        fontSize: "14px",
+        fontWeight: 700,
+        lineHeight: "21px",
+        textAlign: "left",
+        color: "#1F2937",
       },
     },
     colors: ["#0CB4D5"],
@@ -131,19 +173,33 @@ const Dashboard = () => {
       type: "gradient",
       gradient: {
         shadeIntensity: 1,
-        opacityFrom: 0.4, // Make the start color lighter
-        opacityTo: 0, // Make the color fully transparent at the end
-        stops: [0, 60, 100], // Transition to transparency quickly
+        opacityFrom: 0.4,
+        opacityTo: 0,
+        stops: [0, 60, 100],
       },
     },
-
-    series: [{ name: "Humidity", data: humidityData }],
+    series: [
+      {
+        name: "Humidity",
+        data: formattedData,
+      },
+    ],
+    xaxis: {
+      type: "category",
+      labels: {
+        format: "HH:mm",
+      },
+    },
+    yaxis: {
+      min: min,
+      max: max,
+    },
     grid: {
-      borderColor: "#e0e0e0", // Set the grid line color
-      strokeDashArray: 5, // This makes the grid lines dotted (set the dash length)
+      borderColor: "#e0e0e0",
+      strokeDashArray: 5,
       padding: {
-        top: 10, // Adjust this value to control spacing at the top
-        bottom: 10, // Adjust this value to control spacing at the bottom
+        top: 10,
+        bottom: 10,
       },
     },
   };
@@ -214,6 +270,26 @@ const Dashboard = () => {
       console.error("Error fetching data:", error);
     }
   };
+
+  const fetchHumidityData = async () => {
+    try {
+      const url = ApiUrls.SMARTHEATING_CHART.ROOM_HUMIDITY(
+        roomId.roomId,
+        dateFrom,
+        dateTo
+      );
+      const response = await axios.get(`${ApiUrls.BASE_URL}${url}`);
+      setHumidityData(response.data);
+    } catch (error) {
+      console.error("Error fetching humidity data:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (roomId) {
+      fetchHumidityData();
+    }
+  }, [roomId, dateFrom, dateTo]);
 
   // useEffect(() => {
   // 	if (selectedDevice.length > 0) {
@@ -301,7 +377,7 @@ const Dashboard = () => {
             options={humidityOptions}
             series={humidityOptions.series}
             type="area"
-            height={270}
+            height={370}
           />
         </div>
         <div className=" p-2 relative">

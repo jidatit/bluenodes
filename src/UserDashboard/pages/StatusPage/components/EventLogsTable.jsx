@@ -683,11 +683,11 @@ const EventLogsTable = () => {
                         {item.eventTypeLevel === "Information" ? (
                           <FaCircleInfo className="w-4 h-4" />
                         ) : item.eventTypeLevel === "Warning" ? (
-                          <RiErrorWarningFill className="text-yellow-500 w-4 h-4" />
+                          <RiErrorWarningFill className="text-yellow-500 w-5 h-5" />
                         ) : item.eventTypeLevel === "Behoben" ? (
                           <FaCircleCheck className="text-green-600 w-4 h-4" />
                         ) : (
-                          <IoIosWarning className="text-red-700 w-4 h-4" />
+                          <IoIosWarning className="text-red-700 w-5 h-5" />
                         )}
                       </Tooltip>
                       <span className="text-sm">

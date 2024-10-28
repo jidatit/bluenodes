@@ -544,6 +544,7 @@ const DeviceManagementTable = () => {
       deviceName: editingDevice.deviceName,
       temperatureOffset: editingDevice.temperatureOffset,
     };
+    console.log("name", body);
 
     try {
       const response = await axios.post(url, body);
@@ -665,19 +666,19 @@ const DeviceManagementTable = () => {
     }
   }, [tableData]);
   const columnWidths = {
-    expand: "w-[4%]",        // Small width for the expand icon
-    devEui: "w-[14%]",       // Fixed width for Device EUI column
-    deviceName: "w-[10%]",    // Fixed width for device names
-    deviceType: "w-[11%]",    // Fixed width for Device type column
+    expand: "w-[4%]", // Small width for the expand icon
+    devEui: "w-[14%]", // Fixed width for Device EUI column
+    deviceName: "w-[10%]", // Fixed width for device names
+    deviceType: "w-[11%]", // Fixed width for Device type column
     buildingFloor: "w-[15%]", // Fixed width for Building & Floor info
-    roomName: "w-[12%]",      // Fixed width for Room name
-    lastSeen: "w-[11%]",      // Fixed width for Last seen timestamp
-    battery: "w-[6%]",        // Reduced width for Battery level
-    status: "w-[9%]",        // Increased width for Status indicator
-    tempOffset: "w-[5%]",     // Increased width for Temperature offset
-    actions: "w-[3%]",        // Increased width for Action buttons
+    roomName: "w-[12%]", // Fixed width for Room name
+    lastSeen: "w-[11%]", // Fixed width for Last seen timestamp
+    battery: "w-[6%]", // Reduced width for Battery level
+    status: "w-[9%]", // Increased width for Status indicator
+    tempOffset: "w-[5%]", // Increased width for Temperature offset
+    actions: "w-[3%]", // Increased width for Action buttons
   };
-  
+
   return (
     <div className="flex flex-col w-full gap-4">
       <div className="relative w-full overflow-x-auto bg-white shadow-md sm:rounded-lg">
@@ -903,15 +904,11 @@ const DeviceManagementTable = () => {
                       )}
                     </td>
 
-                    <td
-                      className={`${columnWidths.devEui}  py-4  uppercase`}
-                    >
+                    <td className={`${columnWidths.devEui}  py-4  uppercase`}>
                       {item?.devEui}
                     </td>
 
-                    <td
-                      className={`${columnWidths.deviceName}  py-4 `}
-                    >
+                    <td className={`${columnWidths.deviceName}  py-4 `}>
                       {item?.deviceName &&
                       item.deviceName.toString().length > 20 ? (
                         <p className="mr-2">
@@ -923,9 +920,7 @@ const DeviceManagementTable = () => {
                       )}
                     </td>
 
-                    <td
-                      className={`${columnWidths.deviceType}  py-4 `}
-                    >
+                    <td className={`${columnWidths.deviceType}  py-4 `}>
                       {item?.deviceType}
                     </td>
 
@@ -949,9 +944,7 @@ const DeviceManagementTable = () => {
                       {formatTimestamp(item?.lastSeen)}
                     </td>
 
-                    <td
-                      className={`${columnWidths.battery}  py-4 `}
-                    >
+                    <td className={`${columnWidths.battery}  py-4 `}>
                       <Tooltip
                         className="p-3"
                         content={
@@ -970,7 +963,12 @@ const DeviceManagementTable = () => {
                               className="w-4 h-4 mr-2"
                             />
                           ) : (
-                            "No Payload"
+                            // "No Payload"BatteryUnknownIcon
+                            <img
+                              src={BatteryEmpty}
+                              alt="Battery Level"
+                              className="w-4 h-4 mr-2"
+                            />
                           )}
                           {item.batteryLevel === "low" && (
                             <p className="text-sm font-bold text-red-500">
@@ -1181,14 +1179,17 @@ const DeviceManagementTable = () => {
                                 Letztes Datenpaket
                               </h2>
                               <h1
-                                className={`text-base font-medium text-black ${
-                                  deviceData?.timestamp !== undefined &&
-                                  deviceData.timestamp !== null
-                                    ? "opacity-100"
-                                    : "opacity-0"
-                                }`}
+                                className={`text-base font-medium text-black`}
                               >
-                                {deviceData?.timestamp
+                                {deviceData?.targetTemperature === undefined &&
+                                deviceData?.currentTemperature === undefined &&
+                                deviceData?.currentHumidity === undefined &&
+                                deviceData?.lightIntensity === undefined &&
+                                deviceData?.movementDetected === undefined &&
+                                deviceData?.error === undefined &&
+                                deviceData?.timestamp === undefined
+                                  ? "No Payload"
+                                  : deviceData?.timestamp
                                   ? formatTimestamp(deviceData.timestamp)
                                   : "--"}
                               </h1>
@@ -1366,14 +1367,17 @@ const DeviceManagementTable = () => {
                                 Letztes Datenpaket
                               </h2>
                               <h1
-                                className={`text-base font-medium text-black ${
-                                  deviceData?.timestamp !== undefined &&
-                                  deviceData.timestamp !== null
-                                    ? "opacity-100"
-                                    : "opacity-0"
-                                }`}
+                                className={`text-base font-medium text-black`}
                               >
-                                {deviceData?.timestamp
+                                {deviceData?.targetTemperature === undefined &&
+                                deviceData?.currentTemperature === undefined &&
+                                deviceData?.currentHumidity === undefined &&
+                                deviceData?.lightIntensity === undefined &&
+                                deviceData?.movementDetected === undefined &&
+                                deviceData?.error === undefined &&
+                                deviceData?.timestamp === undefined
+                                  ? "No Payload"
+                                  : deviceData?.timestamp
                                   ? formatTimestamp(deviceData.timestamp)
                                   : "--"}
                               </h1>
@@ -1438,7 +1442,8 @@ const DeviceManagementTable = () => {
                   onChange={(e) =>
                     setEditingDevice({
                       ...editingDevice,
-                      deviceName: e.target.value,
+                      deviceName:
+                        e.target.value.trim() === "" ? null : e.target.value,
                     })
                   }
                   required
@@ -1454,13 +1459,16 @@ const DeviceManagementTable = () => {
                 <div className="flex items-center">
                   <div className="flex items-center">
                     <button
-                      onClick={() =>
-                        setEditingDevice({
-                          ...editingDevice,
-                          temperatureOffset:
-                            (editingDevice.temperatureOffset || 0) - 1,
-                        })
-                      }
+                      onClick={() => {
+                        const newOffset =
+                          (editingDevice.temperatureOffset || 0) - 1;
+                        if (newOffset >= -5) {
+                          setEditingDevice({
+                            ...editingDevice,
+                            temperatureOffset: newOffset,
+                          });
+                        }
+                      }}
                       className="w-[56px] text-xl h-[42px] border-l border-t border-b border-gray-300 text-gray-900 px-[var(--5)] py-[var(--3)] gap-[var(--2)] rounded-l-lg bg-gray-100"
                     >
                       -
@@ -1470,27 +1478,34 @@ const DeviceManagementTable = () => {
                     type="text"
                     id="offset"
                     value={editingDevice?.temperatureOffset || 0}
-                    onChange={(e) =>
-                      setEditingDevice({
-                        ...editingDevice,
-                        temperatureOffset: parseInt(e.target.value),
-                      })
-                    }
+                    onChange={(e) => {
+                      const newValue = parseInt(e.target.value);
+                      if (newValue >= -5 && newValue <= 5) {
+                        setEditingDevice({
+                          ...editingDevice,
+                          temperatureOffset: newValue,
+                        });
+                      }
+                    }}
                     className="w-[46px] text-center border-t border-b border-gray-300"
                   />
                   <button
-                    onClick={() =>
-                      setEditingDevice({
-                        ...editingDevice,
-                        temperatureOffset:
-                          (editingDevice.temperatureOffset || 0) + 1,
-                      })
-                    }
+                    onClick={() => {
+                      const newOffset =
+                        (editingDevice.temperatureOffset || 0) + 1;
+                      if (newOffset <= 5) {
+                        setEditingDevice({
+                          ...editingDevice,
+                          temperatureOffset: newOffset,
+                        });
+                      }
+                    }}
                     className="w-[56px] text-xl h-[42px] border-t border-r border-b border-gray-300 text-gray-900 px-[var(--5)] py-[var(--3)] gap-[var(--2)] rounded-r-lg bg-gray-100"
                   >
                     +
                   </button>
                 </div>
+
                 <p className="mt-2 text-sm text-gray-500">
                   Helper text explaining offset
                 </p>
@@ -1507,7 +1522,7 @@ const DeviceManagementTable = () => {
           </Modal.Footer>
         </Modal>
 
-        {tableData.length === 0 && (
+        {tableData.length === 0 && !loading && (
           <div className="flex flex-col items-center justify-center w-full bg-slate-100">
             <p className="w-full py-2 italic font-semibold text-center">
               Keine Ergebnisse
@@ -1528,80 +1543,79 @@ const DeviceManagementTable = () => {
 
           {/* Pagination */}
           <div className="flex justify-end border border-gray-200 rounded-md w-auto">
-  <button
-    onClick={() => handlePageChange(currentPage - 1)}
-    className={`inline-flex items-center py-2 px-3 text-sm font-medium rounded-sm ${
-      currentPage === 1
-        ? "text-gray-300 cursor-not-allowed"
-        : "text-primary bg-[#CFF4FB] hover:bg-primary-300"
-    }`}
-    disabled={currentPage === 1}
-  >
-    <IoChevronBackOutline />
-  </button>
-  
-  {startPage > 1 && (
-    <button
-      onClick={() => handlePageChange(1)}
-      className="inline-flex items-center py-2 px-3 text-sm font-medium text-gray-500 bg-white rounded-sm hover:bg-gray-100"
-    >
-      1
-    </button>
-  )}
-  
-  {startPage > 2 && (
-    <span className="inline-flex items-center py-2 px-3 text-sm font-medium text-gray-500 bg-white rounded-sm">
-      ...
-    </span>
-  )}
-  
-  {Array.from({ length: endPage - startPage + 1 }, (_, index) => (
-    <button
-      key={startPage + index}
-      onClick={() => handlePageChange(startPage + index)}
-      className={`inline-flex items-center py-2 px-3 text-sm font-medium rounded-sm ${
-        currentPage === startPage + index
-          ? "text-primary bg-[#CFF4FB] hover:bg-primary-300"
-          : "text-gray-500 bg-white hover:bg-gray-100"
-      }`}
-    >
-      {startPage + index}
-    </button>
-  ))}
-  
-  {endPage < totalPages - 1 && (
-    <span className="inline-flex items-center py-2 px-3 text-sm font-medium text-gray-500 bg-white rounded-sm">
-      ...
-    </span>
-  )}
-  
-  {endPage < totalPages && (
-    <button
-      onClick={() => handlePageChange(totalPages)}
-      className={`inline-flex items-center py-2 px-3 text-sm font-medium rounded-sm ${
-        currentPage === totalPages
-          ? "text-gray-300 cursor-not-allowed"
-          : "text-gray-500 bg-white hover:bg-gray-100"
-      }`}
-      disabled={currentPage === totalPages}
-    >
-      {totalPages}
-    </button>
-  )}
-  
-  <button
-    onClick={() => handlePageChange(currentPage + 1)}
-    className={`inline-flex items-center py-2 px-3 text-sm font-medium rounded-sm ${
-      currentPage === totalPages
-        ? "text-gray-300 cursor-not-allowed"
-        : "text-primary bg-[#CFF4FB] hover:bg-primary-300"
-    }`}
-    disabled={currentPage === totalPages}
-  >
-    <IoChevronForwardOutline />
-  </button>
-</div>
+            <button
+              onClick={() => handlePageChange(currentPage - 1)}
+              className={`inline-flex items-center py-2 px-3 text-sm font-medium rounded-sm ${
+                currentPage === 1
+                  ? "text-gray-300 cursor-not-allowed"
+                  : "text-primary bg-[#CFF4FB] hover:bg-primary-300"
+              }`}
+              disabled={currentPage === 1}
+            >
+              <IoChevronBackOutline />
+            </button>
 
+            {startPage > 1 && (
+              <button
+                onClick={() => handlePageChange(1)}
+                className="inline-flex items-center py-2 px-3 text-sm font-medium text-gray-500 bg-white rounded-sm hover:bg-gray-100"
+              >
+                1
+              </button>
+            )}
+
+            {startPage > 2 && (
+              <span className="inline-flex items-center py-2 px-3 text-sm font-medium text-gray-500 bg-white rounded-sm">
+                ...
+              </span>
+            )}
+
+            {Array.from({ length: endPage - startPage + 1 }, (_, index) => (
+              <button
+                key={startPage + index}
+                onClick={() => handlePageChange(startPage + index)}
+                className={`inline-flex items-center py-2 px-3 text-sm font-medium rounded-sm ${
+                  currentPage === startPage + index
+                    ? "text-primary bg-[#CFF4FB] hover:bg-primary-300"
+                    : "text-gray-500 bg-white hover:bg-gray-100"
+                }`}
+              >
+                {startPage + index}
+              </button>
+            ))}
+
+            {endPage < totalPages - 1 && (
+              <span className="inline-flex items-center py-2 px-3 text-sm font-medium text-gray-500 bg-white rounded-sm">
+                ...
+              </span>
+            )}
+
+            {endPage < totalPages && (
+              <button
+                onClick={() => handlePageChange(totalPages)}
+                className={`inline-flex items-center py-2 px-3 text-sm font-medium rounded-sm ${
+                  currentPage === totalPages
+                    ? "text-gray-300 cursor-not-allowed"
+                    : "text-gray-500 bg-white hover:bg-gray-100"
+                }`}
+                disabled={currentPage === totalPages}
+              >
+                {totalPages}
+              </button>
+            )}
+
+            <button
+              onClick={() => handlePageChange(currentPage + 1)}
+              className={`inline-flex items-center py-2 px-3 text-sm font-medium rounded-sm ${
+                currentPage === totalPages
+                  ? "text-gray-300 cursor-not-allowed"
+                  : "text-primary bg-[#CFF4FB] hover:bg-primary-300"
+              }`}
+              disabled={currentPage === totalPages}
+            >
+              <IoChevronForwardOutline />
+            </button>
+          </div>
         </div>
       </div>
     </div>

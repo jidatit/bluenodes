@@ -32,7 +32,6 @@ const CompactGetStartedCard = ({ isCollapsed, isHovered }) => {
     ); // Render SVG when sidebar is collapsed and not hovered
   }
 
-  // Render the SVG and text when progress is 100
   if (progress >= 100) {
     return (
       <Link to={NAVIGATION_PATH.onboarding}>
@@ -47,32 +46,31 @@ const CompactGetStartedCard = ({ isCollapsed, isHovered }) => {
   }
 
   return (
-    <Card className="w-full bg-gray-50 shadow-none mb-4 border-0">
-      <h6 className="text-[18px] font-inter text-black dark:text-white">
+    <Card className="w-full bg-gray-50  shadow-none mb-4 border-0  ">
+      <h6 className="text-lg font-medium font-inter text-black dark:text-white">
         Get Started
       </h6>
-      <p className="text-[12px] font-inter text-[#6B7280] -mt-2 dark:text-gray-400 ">
+      <p className="text-sm font-normal font-inter text-[#6B7280] -mt-2  dark:text-gray-400 ">
         Watch quick videos to master your smart heating system.
       </p>
       <div className="flex justify-between items-center ">
-        <span className="text-[12px] font-inter text-[#6B7280] dark:text-gray-300">
+        <span className="text-xs font-medium font-inter text-[#6B7280] dark:text-gray-300">
           Your Progress
         </span>
-        <span className="text-[12px] font-medium text-gray-700 dark:text-gray-300">
+        <span className="text-xs font-medium text-[#6B7280] dark:text-gray-300">
           {progress}%
         </span>
       </div>
       <Progress
         progress={progress}
-        color="cyan"
         size="sm"
-        className="mb-2 -mt-3 [&>div]:bg-[#0BAAC9]"
+        className="mb-2 -mt-3 text-primary-700 [&>div]:bg-[#0BAAC9]"
       />
       <Link to={NAVIGATION_PATH.onboarding}>
         <button
           onClick={handleStart}
           disabled={isStarted}
-          className="w-full px-2 py-2 text-sm font-medium text-center text-black bg-[white] focus:bg-gray-100 rounded-lg hover:bg-gray-50 focus:outline-none border border-gray-200"
+          className="w-full px-2 py-2 text-sm font-medium text-center text-gray-900 bg-[white] focus:bg-gray-100 rounded-lg hover:bg-gray-50 focus:outline-none border border-gray-200"
         >
           {isStarted ? "Onboarding..." : "Start onboarding"}
         </button>

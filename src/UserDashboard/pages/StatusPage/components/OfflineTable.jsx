@@ -597,121 +597,126 @@ const OfflineTable = () => {
         {/* Table */}
         <table className="w-full table-fixed text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 ">
           <thead className="text-xs font-semibold text-gray-500 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-          <tr className="uppercase">
-  <th scope="col" className={`${columnWidths.devEui} p-4`}>
-    ID
-  </th>
-  <th scope="col" className={`${columnWidths.deviceName} p-4`}>
-    GERÄTE Name
-  </th>
-  <th scope="col" className={`${columnWidths.deviceType} p-4`}>
-    GERÄTE-typ
-  </th>
-  <th scope="col" className={`${columnWidths.buildingFloor} p-4`}>
-    GEBÄUDE - ETAGE
-  </th>
-  <th scope="col" className={`${columnWidths.roomName} p-4`}>
-    RAUM
-  </th>
-  <th scope="col" className={`${columnWidths.lastSeen} p-4`}>
-    DATUM - UHRZEIT
-  </th>
-  <th scope="col" className={`${columnWidths.battery} p-4`}>
-    BATTERIE
-  </th>
-  <th scope="col" className={`${columnWidths.status} p-4`}>
-    STATUS
-  </th>
-</tr>
-
+            <tr className="uppercase">
+              <th scope="col" className={`${columnWidths.devEui} p-4`}>
+                ID
+              </th>
+              <th scope="col" className={`${columnWidths.deviceName} p-4`}>
+                GERÄTE Name
+              </th>
+              <th scope="col" className={`${columnWidths.deviceType} p-4`}>
+                GERÄTE-typ
+              </th>
+              <th scope="col" className={`${columnWidths.buildingFloor} p-4`}>
+                GEBÄUDE - ETAGE
+              </th>
+              <th scope="col" className={`${columnWidths.roomName} p-4`}>
+                RAUM
+              </th>
+              <th scope="col" className={`${columnWidths.lastSeen} p-4`}>
+                DATUM - UHRZEIT
+              </th>
+              <th scope="col" className={`${columnWidths.battery} p-4`}>
+                BATTERIE
+              </th>
+              <th scope="col" className={`${columnWidths.status} p-4`}>
+                STATUS
+              </th>
+            </tr>
           </thead>
           {loading && <OfflineSkeletonTable />}
-          <tbody>
-            {tableData.length > 0 &&
-              tableData.map((item, index) => (
-                <tr
-                  key={index}
-                  className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
-                >
-                  <td className={`${columnWidths.devEui} px-4 py-4 truncate`}>
-                    {item.devEui}
-                  </td>
-
-                  <td
-                    className={`${columnWidths.deviceName} px-4 py-4 truncate`}
+          {!loading && (
+            <tbody>
+              {tableData.length > 0 &&
+                tableData.map((item, index) => (
+                  <tr
+                    key={index}
+                    className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
                   >
-                    {item.deviceName}
-                  </td>
+                    <td className={`${columnWidths.devEui} px-4 py-4 truncate`}>
+                      {item.devEui}
+                    </td>
 
-                  <td
-                    className={`${columnWidths.deviceType} px-4 py-4 truncate`}
-                  >
-                    {item.deviceType}
-                  </td>
-
-                  <td className={`${columnWidths.buildingFloor} px-4 py-4`}>
-                    {item.building_floor_string}
-                  </td>
-
-                  <td className={`${columnWidths.roomName} px-4 py-4`}>
-                    {item.roomName}
-                  </td>
-
-                  <td className={`${columnWidths.lastSeen} px-4 py-4`}>
-                    {item.lastSeen ? formatTimestamp(item?.lastSeen) : "--"}
-                  </td>
-
-                  <td className={`${columnWidths.battery} px-4 py-4 truncate`}>
-                    <Tooltip
-                      className="p-3"
-                      content={
-                        item?.batteryLevel
-                          ? getBatteryLevelText(item?.batteryLevel)
-                          : "No Payload"
-                      }
-                      style="light"
-                      animation="duration-500"
+                    <td
+                      className={`${columnWidths.deviceName} px-4 py-4 truncate`}
                     >
-                      <div className="flex items-center gap-1">
-                        {item?.batteryLevel ? (
-                          <img
-                            src={getBatteryImage(item?.batteryLevel)}
-                            alt="Battery Level"
-                            className="w-4 h-4 mr-2"
-                          />
-                        ) : (
-                          <BatteryUnknownIcon />
-                        )}
-                        {item.batteryLevel === "low" && (
-                          <p className="text-sm font-bold text-red-500">
-                            Bald leer
-                          </p>
-                        )}
-                      </div>
-                    </Tooltip>
-                  </td>
+                      {item.deviceName}
+                    </td>
 
-                  <td className={`${columnWidths.status} px-4 py-4  truncate `}>
-                    <div
-                      className={`py-0.5 px-2.5 rounded-md flex items-center justify-center gap-1 
+                    <td
+                      className={`${columnWidths.deviceType} px-4 py-4 truncate`}
+                    >
+                      {item.deviceType}
+                    </td>
+
+                    <td className={`${columnWidths.buildingFloor} px-4 py-4`}>
+                      {item.building_floor_string}
+                    </td>
+
+                    <td className={`${columnWidths.roomName} px-4 py-4`}>
+                      {item.roomName}
+                    </td>
+
+                    <td className={`${columnWidths.lastSeen} px-4 py-4`}>
+                      {item.lastSeen ? formatTimestamp(item?.lastSeen) : "--"}
+                    </td>
+
+                    <td
+                      className={`${columnWidths.battery} px-4 py-4 truncate`}
+                    >
+                      <Tooltip
+                        className="p-3"
+                        content={
+                          item?.batteryLevel
+                            ? getBatteryLevelText(item?.batteryLevel)
+                            : "No Payload"
+                        }
+                        style="light"
+                        animation="duration-500"
+                      >
+                        <div className="flex items-center gap-1">
+                          {item?.batteryLevel ? (
+                            <img
+                              src={getBatteryImage(item?.batteryLevel)}
+                              alt="Battery Level"
+                              className="w-4 h-4 mr-2"
+                            />
+                          ) : (
+                            <BatteryUnknownIcon />
+                          )}
+                          {item.batteryLevel === "low" && (
+                            <p className="text-sm font-bold text-red-500">
+                              Bald leer
+                            </p>
+                          )}
+                        </div>
+                      </Tooltip>
+                    </td>
+
+                    <td
+                      className={`${columnWidths.status} px-4 py-4  truncate `}
+                    >
+                      <div
+                        className={`py-0.5 px-2.5 rounded-md flex items-center justify-center gap-1 
                       ${
                         item.status === "online"
                           ? "bg-green-100 text-green-800"
                           : "bg-gray-100 text-gray-900"
                       } 
                       text-[12px]`}
-                    >
-                      {item.status === "online" ? (
-                        <FaRegCircleCheck />
-                      ) : (
-                        <AiOutlineExclamationCircle />
-                      )}
-                      <p className="text-xs font-medium">{item.status}</p>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-          </tbody>
+                      >
+                        {item.status === "online" ? (
+                          <FaRegCircleCheck />
+                        ) : (
+                          <AiOutlineExclamationCircle />
+                        )}
+                        <p className="text-xs font-medium">{item.status}</p>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+            </tbody>
+          )}
         </table>
 
         {tableData.length === 0 && !loading && (

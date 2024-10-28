@@ -17,11 +17,11 @@ const OnboardingStep = ({ title, completed, isActive, onClick }) => {
       }`} // Apply 'bg-gray-200' if the step is active
       onClick={onClick}
     >
-      <span className="pl-4">{title}</span>
+      <span className="pl-4 font-medium text-sm text-gray-900">{title}</span>
       {/* {completed && <CheckIcon checked={completed} />} */}
       {completed && (
-        <span className="text-primary ">
-          <IoCheckmarkCircle className="text-[20px]" />
+        <span className="text-primary  ">
+          <IoCheckmarkCircle className="w-[20px] h-[20px] text-[20px]" />
         </span>
       )}
     </div>
@@ -236,19 +236,23 @@ const Onboarding = () => {
   }, []);
 
   return (
-    <div className="container mx-auto p-4 flex">
+    <div className="container mx-auto p-4 !pl-0 !ml-0  flex">
       <div className="w-1/3 pr-4">
-        <h2 className="text-2xl font-bold mb-4">Onboarding</h2>
+        <h2 className="text-2xl text-gray-900 font-medium mb-4">Onboarding</h2>
         <div className="mb-4">
-          <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center justify-between mb-3">
             <span className="text-base text-gray-900 font-medium">
               Your progress
             </span>
-            <span className="text-gray-500 text-sm">
+            <span className="text-gray-500 text-sm font-medium">
               {Math.round(progress)}%
             </span>
           </div>
-          <Progress progress={progress} color="cyan" size="md" />
+          <Progress
+            className="[&>div]:bg-[#0BAAC9] "
+            progress={progress}
+            size="md"
+          />
         </div>
         <div className="h-px bg-gray-200 w-full mt-6 mb-2"></div>
         <Accordion
@@ -257,7 +261,10 @@ const Onboarding = () => {
           onItemClick={handleToggle}
         />
       </div>
-      <div className="w-2/3 p-4 bg-white border-gray-200 rounded-lg">
+      <div
+        className="w-2/3 p-4 bg-white border-gray-200 rounded-lg"
+        style={{ border: "1px solid var(--gray-200, #E5E7EB)" }}
+      >
         <VideoPlayer videoSrc={videos[currentStepIndex]} />
         <div className="mt-4">
           <div className="flex flex-col gap-[8px] mb-4">

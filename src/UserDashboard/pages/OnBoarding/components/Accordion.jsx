@@ -11,18 +11,18 @@ const AccordionItem = ({ title, children, isOpen, onToggle }) => {
         onClick={onToggle}
       >
         <div className="flex justify-between items-center py-4 px-6">
-          <h3 className="text-lg font-medium text-gray-900">{title}</h3>
+          <h3 className="text-base font-medium text-gray-900">{title}</h3>
           <span className="ml-6 flex-shrink-0">
             {isOpen ? (
-              <FaChevronUp className="h-5 w-5 text-gray-600" />
+              <FaChevronUp className="h-3 w-3 text-gray-900" />
             ) : (
-              <FaChevronDown className="h-5 w-5 text-gray-600" />
+              <FaChevronDown className="h-3 w-3 text-gray-900" />
             )}
           </span>
         </div>
       </div>
       {isOpen && (
-        <div className="py-4 !pt-0 px-3 bg-gray-50">
+        <div className="py-0 !pt-0 px-3 bg-gray-50">
           <div className="prose max-w-none text-gray-700">{children}</div>
         </div>
       )}
