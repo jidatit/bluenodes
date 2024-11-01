@@ -859,9 +859,9 @@ function HeatingSchedule({
 						className="custom"
 					>
 						<div
-							className="absolute top-[22px] left-0 bottom-0 right-0 w-full h-full flex flex-col z-10 edge-gap"
+							className="absolute top-[22px] left-0 bottom-0 right-0 w-full h-full flex flex-col z-10"
 							style={{
-								gap: `40px`,
+								// gap: `${zoomGap}rem`,
 								// transform: `scale(${zoomLevel})`,
 								transformOrigin: "top left",
 							}}
@@ -870,6 +870,11 @@ function HeatingSchedule({
 								<div
 									key={index}
 									className="w-full border-t-2 border-[#E8E8E8] border-dotted z-10"
+									style={{
+										marginBottom: `${zoomGap}rem`,
+										// transform: `scale(${zoomLevel})`,
+										// transformOrigin: "top left",
+									}}
 								></div>
 							))}
 						</div>
