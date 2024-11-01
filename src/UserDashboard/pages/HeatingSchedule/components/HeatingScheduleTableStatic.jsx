@@ -229,7 +229,7 @@ function HeatingScheduleTableStatic({ locationDetails, props }) {
             <div
               className="absolute top-[1px] left-0 bottom-0 right-0 w-full h-full flex flex-col"
               style={{
-                gap: `${rowHeight}px`, // Use rowHeight to match the height of labels
+                gap: `${rowHeight}px`,
                 zIndex: "10",
               }}
             >

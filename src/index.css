@@ -83,19 +83,19 @@
 }
 
 .custom-multiselect {
-  padding: 0.25rem 0.4rem;
+  width: 172px;
+  height: 37px;
+  background-color: #f9fafb;
+  /* margin-bottom: 4px; */
 }
 
 .custom-multiselect .p-multiselect-label {
-  padding: 0.2rem 0.2rem !important;
+  /* padding: 0.2rem 0.2rem !important; */
+  height: 5px;
 }
 
 .custom-multiselect .p-multiselect {
-  height: 2rem; /* Smaller height */
-}
-
-.custom-multiselect-panel .p-multiselect-item {
-  padding: 0.25rem 0.5rem 0.5rem 0.5rem !important; /* Reduce padding for dropdown items */
+  height: 5px; /* Smaller height */
 }
 
 input[type="checkbox"]:focus {

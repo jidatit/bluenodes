@@ -143,6 +143,7 @@ const DateFilter = ({
       setSubDropdownOpen(true);
       setShowCalendar(false);
       setDates(null); // Reset dates for the specific date range
+      setDropdownOpen(false);
     } else {
       setSubDropdownOpen(false);
       setShowCalendar(true);
