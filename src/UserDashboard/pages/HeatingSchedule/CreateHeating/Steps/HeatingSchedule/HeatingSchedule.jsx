@@ -862,6 +862,7 @@ function HeatingSchedule({
     className="absolute top-[22px] left-0 bottom-0 right-0 w-full h-full flex flex-col z-10"
     style={{
         gap: `${zoomGap}rem`,
+				rowGap:`${zoomGap}rem`,
         // Explicit px fallback for Edge
         '@supports (-ms-ime-align:auto)': { gap: `${zoomGap * 16}px` },
         transformOrigin: "top left",
