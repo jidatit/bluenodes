@@ -20,7 +20,7 @@ import axios from "axios";
 import ApiUrls from "../../globals/apiURL";
 import GetStartedCard from "./GetStartedCard";
 import CompactGetStartedCard from "./GetStartedCard";
-
+const STAGE = import.meta.env.VITE_STAGE;
 const user = {
   name: "Bonnie Green",
   email: "name@company.com",
@@ -198,7 +198,9 @@ const BottomMenu = ({ isCollapsed, isHovered }) => {
 
   return (
     <div className="flex flex-col w-full">
-      <CompactGetStartedCard isCollapsed={isCollapsed} isHovered={isHovered} />
+       {STAGE === "dev" && (
+        <CompactGetStartedCard isCollapsed={isCollapsed} isHovered={isHovered} />
+      )}
       <div className="h-px bg-gray-200 my-1" />
       <div className="flex items-center justify-between w-full ">
         <img src={user.avatar} />

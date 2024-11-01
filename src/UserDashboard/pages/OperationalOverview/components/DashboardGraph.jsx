@@ -53,7 +53,7 @@ const Dashboard = (roomId) => {
     chart: {
       // height: 200,
       toolbar: { show: false },
-      zoom: { enabled: true },
+      zoom: { enabled: false },
       fontFamily: "Inter, sans-serif", // Sets the global font to Inter
     },
     dataLabels: { enabled: false },
@@ -408,16 +408,7 @@ const Dashboard = (roomId) => {
         vertical: 4,
       },
     },
-    tooltip: {
-      y: {
-        formatter: function (
-          value,
-          { series, seriesIndex, dataPointIndex, w }
-        ) {
-          return value;
-        },
-      },
-    },
+
   };
 
   //FORMATIING THE VALVE POSTION DATA HERE
@@ -646,12 +637,16 @@ const Dashboard = (roomId) => {
       tickAmount: 4,
       tickPlacement: "between",
       min: valvePositionData.valveMin,
-      max: valvePositionData.valveMax,
+      max: 101, // Slightly above 100 to avoid cutoff
       labels: {
-        formatter: (val) => `${val}%`,
+        formatter: (val) => {
+          if (val > 100) return "100%";
+          return `${Math.floor(val)}%`; 
+        },
       },
       offset: 0,
     },
+    
     grid: {
       borderColor: "#e0e0e0",
       strokeDashArray: 5,
@@ -740,7 +735,7 @@ const Dashboard = (roomId) => {
             Dashboard={true}
           />
         </div>
-        <div className=" p-2">
+        <div className="">
           <ReactApexChart
             options={temperatureOptions}
             s
@@ -749,7 +744,7 @@ const Dashboard = (roomId) => {
             height={370}
           />
         </div>
-        <div className=" p-2">
+        <div className=" ">
           <ReactApexChart
             options={humidityOptions}
             series={humidityOptions.series}
@@ -757,7 +752,7 @@ const Dashboard = (roomId) => {
             height={370}
           />
         </div>
-        <div className=" p-2 relative">
+        <div className=" relative">
           <ReactApexChart
             options={valvePositionOptions}
             series={valvePositionOptions.series}

@@ -62,13 +62,13 @@
   scrollbar-width: 2px !important;
   scrollbar-color: #d1d5db #f9fafb; /* thumb color, track color */
   width: 10px; /* Set width of scrollbar */
-  height: 0px;
+  
 }
 
 .custom-scrollbar::-webkit-scrollbar-track {
   width: 0px; /* Set width of scrollbar */
-  height: 0px; /* Set height of horizontal scrollbar */
-  background: #f9fafb; /* Track color */
+  
+
   border-radius: 10px; /* Rounded corners */
 }
 
