@@ -53,7 +53,7 @@ const Dashboard = (roomId) => {
     chart: {
       // height: 200,
       toolbar: { show: false },
-      zoom: { enabled: false },
+      zoom: { enabled: true},
       fontFamily: "Inter, sans-serif", // Sets the global font to Inter
     },
     dataLabels: { enabled: false },
