@@ -861,7 +861,7 @@ function HeatingSchedule({
 						<div
 							className="absolute top-[22px] left-0 bottom-0 right-0 w-full h-full flex flex-col z-10 edge-gap"
 							style={{
-								gap: `${zoomGap}rem`,
+								gap: `40px`,
 								// transform: `scale(${zoomLevel})`,
 								transformOrigin: "top left",
 							}}

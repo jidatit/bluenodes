@@ -302,8 +302,4 @@ input[type="radio"]:focus {
   background-color: #d9d9d9; /* Thumb color when hovered */
 }
 
-@supports (-ms-ime-align:auto) {
-  .edge-gap {
-    gap: 27.2px !important; /* Calculated based on your 1.7rem value */
-  }
-}
+
