@@ -858,21 +858,22 @@ function HeatingSchedule({
 						onClick={handleContainerClick}
 						className="custom"
 					>
-						<div
-							className="absolute top-[22px] left-0 bottom-0 right-0 w-full h-full flex flex-col z-10"
-							style={{
-								gap: `${zoomGap}rem`,
-								// transform: `scale(${zoomLevel})`,
-								transformOrigin: "top left",
-							}}
-						>
-							{Array.from({ length: 24 * 4 + 1 }).map((_, index) => (
-								<div
-									key={index}
-									className="w-full border-t-2 border-[#E8E8E8] border-dotted z-10"
-								></div>
-							))}
-						</div>
+<div
+    className="absolute top-[22px] left-0 bottom-0 right-0 w-full h-full flex flex-col z-10"
+    style={{
+        gap: `${zoomGap}rem`,
+        // Explicit px fallback for Edge
+        '@supports (-ms-ime-align:auto)': { gap: `${zoomGap * 16}px` },
+        transformOrigin: "top left",
+    }}
+>
+    {Array.from({ length: 24 * 4 + 1 }).map((_, index) => (
+        <div
+            key={index}
+            className="w-full border-t-2 border-[#E8E8E8] border-dotted z-10"
+        ></div>
+    ))}
+</div>
 						{daysOfWeek.map((day) => (
 							<div
 								key={day}
