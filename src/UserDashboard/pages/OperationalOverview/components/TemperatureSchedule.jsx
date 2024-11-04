@@ -392,7 +392,7 @@ const TemperatureSchedule = ({
 									
 									 pr-2 py-0 [&>*]:p-0 focus:ring-transparent`}
                 >
-                  Heizplan ansehen
+                  Details öffnen
                 </Button>
 
                 <Tooltip

@@ -1023,7 +1023,7 @@ function HeatingSchedule({
                               onKeyDown={(e) =>
                                 handleTemperatureKeyPress(e, box.i, day)
                               }
-                              placeholder="Insert temp"
+                              placeholder="Temperatur"
                               onClick={(e) => e.stopPropagation()} // Prevent click event on input from bubbling up
                               style={{
                                 width: "100%",

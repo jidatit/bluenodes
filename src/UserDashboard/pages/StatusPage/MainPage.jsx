@@ -92,8 +92,8 @@ function MainPage() {
               {/* Zusammenfassung */}
               {activeCard && (
                 <Tooltip
-                  className="min-w-[130px]"
-                  content="Back to event Logs"
+                  className="min-w-[50px]"
+                  content="Zurück"
                   style="light"
                   animation="duration-500"
                 >

@@ -1426,7 +1426,7 @@ const DeviceManagementTable = () => {
           onClose={() => setEditModalOpen(false)}
           className="custom-modal"
         >
-          <Modal.Header>Edit device #{editingDevice?.devEui}</Modal.Header>
+          <Modal.Header>Gerät bearbeiten - {editingDevice?.devEui}</Modal.Header>
           <Modal.Body>
             <div className="space-y-6">
               <div>
@@ -1434,7 +1434,7 @@ const DeviceManagementTable = () => {
                   htmlFor="deviceName"
                   className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                 >
-                  Device name
+                  Gerätename
                 </label>
                 <TextInput
                   id="deviceName"
@@ -1507,17 +1507,18 @@ const DeviceManagementTable = () => {
                 </div>
 
                 <p className="mt-2 text-sm text-gray-500">
-                  Helper text explaining offset
+                  Der Offset kompensiert den Wärmestau am Heizthermostaten, wenn kein Wandthermostat oder externer Temperatursensor vorhanden ist.
+                  <p>Übliche Werte: +1 bei Wärmestau unter einer Fensterbank, -1 bei Kältebrücken</p>
                 </p>
               </div>
             </div>
           </Modal.Body>
           <Modal.Footer>
             <Button className="bg-primary" onClick={handleDeviceSave}>
-              Save device
+              Änderungen speichern
             </Button>
             <Button color="gray" onClick={() => setEditModalOpen(false)}>
-              Cancel
+              Abbrechen
             </Button>
           </Modal.Footer>
         </Modal>

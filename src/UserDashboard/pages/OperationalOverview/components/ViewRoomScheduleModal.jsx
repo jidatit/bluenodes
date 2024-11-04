@@ -44,12 +44,12 @@ export function ViewRoomScheduleModal({
 
 	const tabs = [
 		{
-			label: "Dashboard",
+			label: "Raumdaten",
 			content: <Dashboard roomId={room.id} />,
 			disabled: false,
 		},
 		{
-			label: "Heating Schedule",
+			label: "Heizplan",
 			content: (
 				<>
 					<div className="h-auto p-5 !pt-0 overflow-hidden">

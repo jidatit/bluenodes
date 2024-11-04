@@ -234,7 +234,7 @@ export function CreateHeatingModal({ openModal, handleOpenModal, onCreate }) {
 		setHeatingAssignmentData({});
 		setLayouts({});
 		setFinalScheduleData({});
-		setButtonText("Create");
+		setButtonText("Erstellen");
 	};
 
 	const [initialData, setInitialData] = useState({});

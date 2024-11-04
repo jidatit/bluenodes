@@ -187,7 +187,7 @@ const Dashboard = (roomId) => {
       type: "area",
     },
     title: {
-      text: "Humidity",
+      text: "Luftfeuchtigkeit",
       align: "left",
       style: {
         fontFamily: "Inter, sans-serif",
@@ -339,7 +339,7 @@ const Dashboard = (roomId) => {
     ...commonOptions,
     chart: { ...commonOptions.chart, type: "area", width: "100%" },
     title: {
-      text: "Room temperature",
+      text: "Raumtemperaturen",
       align: "left",
       style: {
         fontFamily: "Inter, sans-serif",
@@ -362,9 +362,9 @@ const Dashboard = (roomId) => {
     },
 
     series: [
-      { name: "Current temperature", data: temperatureData.currentTemp },
+      { name: "Raumtemperatur", data: temperatureData.currentTemp },
       {
-        name: "Target temperature",
+        name: "Soll-Temperatur",
         // data: temperatureData.map((point) => ({ ...point, y: 19 })),
         data: temperatureData.targetTemp,
       },
@@ -593,7 +593,7 @@ const Dashboard = (roomId) => {
       toolbar: { show: false },
     },
     title: {
-      text: "Valve position",
+      text: "Ventilstellungen",
       align: "left",
       style: {
         fontFamily: "Inter, sans-serif", // Applying Inter font

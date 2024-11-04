@@ -264,14 +264,14 @@ const ProgramAssignment = ({
               onClick={handleViewSelected}
               className=" hover:!bg-transparent hover:opacity-80 border-none text-primary bg-transparent pr-2 py-0 [&>*]:p-0 focus:ring-transparent"
             >
-              View Selected
+              Auswahl anzeigen
             </Button>
           ) : (
             <Button
               onClick={handleViewAll}
               className=" hover:!bg-transparent hover:opacity-80 border-none text-primary bg-transparent pr-2 py-0 [&>*]:p-0 focus:ring-transparent"
             >
-              View All
+              Alle anzeigen
             </Button>
           )}
         </div>
@@ -338,7 +338,7 @@ const ProgramAssignment = ({
       </div>
       <div className=" flex items-center justify-between gap-2">
         <p className=" text-sm text-gray-500">
-          Select rooms to assign a heating program.
+          
         </p>
         <Button
           onClick={resetAssignments}
@@ -402,8 +402,8 @@ const ProgramAssignment = ({
                             {filterRooms(floor.rooms).length === 0 ? (
                               <p className="text-gray-500">
                                 {filter === "Selected" || filter === "Assigned"
-                                  ? "No selected room on this floor"
-                                  : "All rooms selected on this floor"}
+                                  ? "Nichts ausgewählt"
+                                  : "Alle Räume ausgewählt"}
                               </p>
                             ) : (
                               <Table theme={customTableTheme} hoverable>
@@ -539,8 +539,8 @@ const ProgramAssignment = ({
                                 <p className="text-gray-500">
                                   {filter === "Selected" ||
                                   filter === "Assigned"
-                                    ? "No selected room on this floor"
-                                    : "All rooms selected on this floor"}
+                                    ? "Nichts ausgewählt"
+                                    : "Alle Räume ausgewählt"}
                                 </p>
                               ) : (
                                 <Table theme={customTableTheme} hoverable>
@@ -557,15 +557,15 @@ const ProgramAssignment = ({
                                         }
                                       />
                                     </Table.HeadCell>
-                                    <Table.HeadCell>Rooms</Table.HeadCell>
+                                    <Table.HeadCell>Räume</Table.HeadCell>
                                     <Table.HeadCell>
-                                      Algorithm On?
+                                       
                                     </Table.HeadCell>
                                     <Table.HeadCell>
-                                      Program Assigned
+                                      Aktiver Heizplan
                                     </Table.HeadCell>
                                     <Table.HeadCell>
-                                      Current Temperature
+                                      Raumtemperatur
                                     </Table.HeadCell>
                                   </Table.Head>
                                   <Table.Body className="">
