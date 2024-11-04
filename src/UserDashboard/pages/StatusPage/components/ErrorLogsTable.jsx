@@ -44,6 +44,7 @@ const ErrorLogsTable = () => {
     { name: "Error", code: "err", germanLabel: "Fehler" },
     { name: "Warning", code: "warn", germanLabel: "Warnung" },
   ];
+  const [dateOpen, setDateOpen] = useState(false);
   // Function to handle click outside of the DateFilter
   const handleMultiSelectClick = () => {
     if (selectedLocationFilter === 0) {
@@ -486,12 +487,20 @@ const ErrorLogsTable = () => {
       setShowFilters(true);
     }
   }, [tableData]);
+  const dateOpen1 = (value) => {
+    setDateOpen(value);
+  };
+
   return (
     <div className="flex flex-col gap-4 w-full">
       <div className="flex flex-col justify-center items-start w-full">
         <h1 className="font-[500] text-lg text-gray-900">Error Übersicht</h1>
       </div>
-      <div className="relative w-full overflow-x-auto bg-white shadow-md sm:rounded-lg">
+      <div
+        className={`relative ${
+          dateOpen && "min-h-[32vh]"
+        } w-full overflow-x-auto bg-white shadow-md sm:rounded-lg z-10`}
+      >
         <div className="flex flex-column my-3 bg-transparent mx-2 sm:flex-row flex-wrap space-y-4 sm:space-y-0 items-center justify-between">
           {showFilters && (
             <div className="flex flex-row justify-center items-center gap-1">
@@ -588,7 +597,7 @@ const ErrorLogsTable = () => {
                   }}
                 />{" "}
               </div>
-              <div className="dummy" ref={dateFilterRef}>
+              {/* <div className="dummy" ref={dateFilterRef}>
                 <DateFilter
                   setSelectedDropdownOption={setSelectedDropdownOption}
                   selectedDropdownOption={selectedDropdownOption}
@@ -604,8 +613,9 @@ const ErrorLogsTable = () => {
                   selectedLocationFilter={selectedLocationFilter}
                   setSubDropdownValue={setSubDropdownValue}
                   subDropdownValue={subDropdownValue}
+                  dateOpen1={dateOpen1}
                 />
-              </div>
+              </div> */}
               {(Object.keys(selectedKeys).length > 0 ||
                 dates ||
                 (subDropdownValue && subDropdownValue.length > 0)) && (
@@ -663,11 +673,11 @@ const ErrorLogsTable = () => {
                       {item.eventTypeLevel === "Information" ? (
                         <FaCircleInfo className="w-4 h-4" />
                       ) : item.eventTypeLevel === "Warning" ? (
-                        <RiErrorWarningFill className="text-yellow-500 w-4 h-4" />
+                        <RiErrorWarningFill className="text-yellow-500 w-5 h-5" />
                       ) : item.eventTypeLevel === "Behoben" ? (
                         <FaCircleCheck className="text-green-600 w-4 h-4" />
                       ) : (
-                        <IoIosWarning className="text-red-700 w-4 h-4" />
+                        <IoIosWarning className="text-red-700 w-5 h-5" />
                       )}
                     </Tooltip>
                     <span className="text-sm">

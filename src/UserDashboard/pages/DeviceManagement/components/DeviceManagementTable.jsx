@@ -13,7 +13,7 @@ import BatteryFull from "../../../../assets/battery-icons/battery-100.png";
 import BatteryMedium from "../../../../assets/battery-icons/battery-51.png";
 import BatteryLow from "../../../../assets/battery-icons/battery-26.png";
 import BatteryEmpty from "../../../../assets/battery-icons/battery-0.png";
-import { FaChevronDown } from "react-icons/fa";
+import { FaChevronDown, FaRegEdit } from "react-icons/fa";
 import { FaChevronUp } from "react-icons/fa";
 import { FaEdit } from "react-icons/fa";
 import { ImCancelCircle } from "react-icons/im";
@@ -429,14 +429,15 @@ const DeviceManagementTable = () => {
       .then((data) => {
         setTotalRows(data.count);
 
-        // Sorting tableData by deviceName, handling null values
+        // Sorting tableData by roomName alphabetically, handling null values
         const sortedData = data.rows.sort((a, b) => {
-          // Handle null values by putting them at the end
-          if (!a.deviceName) return 1; // If a.deviceName is null, place it last
-          if (!b.deviceName) return -1; // If b.deviceName is null, place it last
+          if (!a.roomName) return 1;
+          if (!b.roomName) return -1;
 
-          // Compare deviceName in a case-insensitive manner
-          return a.deviceName.localeCompare(b.deviceName);
+          // Compare roomName in a case-insensitive manner
+          return a.roomName.localeCompare(b.roomName, undefined, {
+            sensitivity: "base",
+          });
         });
 
         // Set sorted data to the table
@@ -875,7 +876,8 @@ const DeviceManagementTable = () => {
                 {" "}
                 {/* Offset */}
                 <p className="flex items-center">
-                  Offset <IoInformationCircleOutline className="w-4 h-4 ml-1" />
+                  Offset
+                  {/* <IoInformationCircleOutline className="w-4 h-4 ml-1" /> */}
                 </p>
               </th>
               <th scope="col" className={`py-4 ${columnWidths.actions}`}></th>
@@ -1001,12 +1003,12 @@ const DeviceManagementTable = () => {
                     </td>
 
                     <td className={`${columnWidths.actions}  py-4`}>
-                      <FaEdit
+                      <FaRegEdit
                         onClick={(e) => {
                           e.stopPropagation();
                           handleEditClick(item.deviceMappingId);
                         }}
-                        className="w-5 h-5 p-[2px] rounded-md text-gray-800 hover:scale-110 transition-all duration-200 ease-in-out cursor-pointer"
+                        className="w-5 h-5 p-[2px]   text-[#1F2A37] hover:scale-110 transition-all duration-200 ease-in-out cursor-pointer"
                       />
                     </td>
                   </tr>
@@ -1169,7 +1171,18 @@ const DeviceManagementTable = () => {
                                   : "--"}
                               </h1>
                               <h2
-                                className={`${
+                                className={` ${
+                                  deviceData?.targetTemperature === undefined &&
+                                  deviceData?.currentTemperature ===
+                                    undefined &&
+                                  deviceData?.currentHumidity === undefined &&
+                                  deviceData?.lightIntensity === undefined &&
+                                  deviceData?.movementDetected === undefined &&
+                                  deviceData?.error === undefined &&
+                                  deviceData?.timestamp === undefined
+                                    ? "opacity-100"
+                                    : " "
+                                }${
                                   deviceData?.timestamp !== undefined &&
                                   deviceData.timestamp !== null
                                     ? "opacity-100"
@@ -1357,7 +1370,18 @@ const DeviceManagementTable = () => {
                                   : "--"}
                               </h1>
                               <h2
-                                className={`${
+                                className={` ${
+                                  deviceData?.targetTemperature === undefined &&
+                                  deviceData?.currentTemperature ===
+                                    undefined &&
+                                  deviceData?.currentHumidity === undefined &&
+                                  deviceData?.lightIntensity === undefined &&
+                                  deviceData?.movementDetected === undefined &&
+                                  deviceData?.error === undefined &&
+                                  deviceData?.timestamp === undefined
+                                    ? "opacity-100"
+                                    : " "
+                                } ${
                                   deviceData?.timestamp !== undefined &&
                                   deviceData.timestamp !== null
                                     ? "opacity-100"
@@ -1426,7 +1450,9 @@ const DeviceManagementTable = () => {
           onClose={() => setEditModalOpen(false)}
           className="custom-modal"
         >
-          <Modal.Header>Gerät bearbeiten - {editingDevice?.devEui}</Modal.Header>
+          <Modal.Header>
+            Gerät bearbeiten - {editingDevice?.devEui}
+          </Modal.Header>
           <Modal.Body>
             <div className="space-y-6">
               <div>
@@ -1507,8 +1533,13 @@ const DeviceManagementTable = () => {
                 </div>
 
                 <p className="mt-2 text-sm text-gray-500">
-                  Der Offset kompensiert den Wärmestau am Heizthermostaten, wenn kein Wandthermostat oder externer Temperatursensor vorhanden ist.
-                  <p>Übliche Werte: +1 bei Wärmestau unter einer Fensterbank, -1 bei Kältebrücken</p>
+                  Der Offset kompensiert den Wärmestau am Heizthermostaten, wenn
+                  kein Wandthermostat oder externer Temperatursensor vorhanden
+                  ist.
+                  <p>
+                    Übliche Werte: +1 bei Wärmestau unter einer Fensterbank, -1
+                    bei Kältebrücken
+                  </p>
                 </p>
               </div>
             </div>

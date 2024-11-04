@@ -23,6 +23,7 @@ const EventLogsTable = () => {
     useState(null);
   const [buildingOpen, setBuildingOpen] = useState(false);
   const [eventOpen, setEventOpen] = useState(false);
+  const [dateOpen, setDateOpen] = useState(false);
   const [filtersSelected, setFiltersSelected] = useState(false);
   const [selectedLocationFilter, setSelectedLocationFilter] = useState(0);
   const [subDropdownValue, setSubDropdownValue] = useState(null);
@@ -476,12 +477,20 @@ const EventLogsTable = () => {
     }
   }, [tableData]);
 
+  const dateOpen1 = (value) => {
+    setDateOpen(value);
+  };
+
   return (
     <div className=" flex flex-col gap-4 w-full overflow-hidden">
       <div className="flex flex-col justify-center items-start w-full">
         <h1 className=" font-[500] text-lg text-gray-900">Event Übersicht</h1>
       </div>
-      <div className="relative w-full overflow-x-auto bg-white shadow-md sm:rounded-lg z-10">
+      <div
+        className={`relative ${
+          dateOpen && "min-h-[32vh]"
+        } w-full overflow-x-auto bg-white shadow-md sm:rounded-lg z-10`}
+      >
         <div className="flex flex-column my-3 bg-transparent mx-2 sm:flex-row flex-wrap space-y-4 sm:space-y-0 items-center justify-between z-10 ">
           {/* Filter buttons */}
           {showFilters && (
@@ -604,6 +613,7 @@ const EventLogsTable = () => {
                   selectedLocationFilter={selectedLocationFilter}
                   setSubDropdownValue={setSubDropdownValue}
                   subDropdownValue={subDropdownValue}
+                  dateOpen1={dateOpen1}
                 />
               </div>
               {(selectedEventFilters?.length > 0 ||
@@ -621,25 +631,25 @@ const EventLogsTable = () => {
           )}
         </div>
         {/* Table */}
-        <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 z-10 h-full overflow-x-hidden">
+        <table className="w-full table-fixed text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 z-10 h-full overflow-x-hidden">
           <thead className="text-xs font-semibold text-gray-500 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
             <tr>
-              <th scope="col" className="p-4">
+              <th scope="col" className="p-4 w-[10%]">
                 EVENT ID
               </th>
-              <th scope="col" className="p-4">
+              <th scope="col" className="p-4 w-[15%]">
                 RAUM
               </th>
-              <th scope="col" className="p-4">
+              <th scope="col" className="p-4 w-[20%]">
                 GEBÄUDE - ETAGE
               </th>
-              <th scope="col" className="p-4">
+              <th scope="col" className="p-4 w-[10%]">
                 DATUM - UHRZEIT
               </th>
-              <th scope="col" className="p-4">
+              <th scope="col" className="p-4 w-[20%]">
                 EVENT
               </th>
-              <th scope="col" className="p-4">
+              <th scope="col" className="p-4 w-[25%]">
                 NACHRICHT
               </th>
             </tr>
@@ -654,13 +664,13 @@ const EventLogsTable = () => {
                   key={index}
                   className="text-sm bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
                 >
-                  <td className="px-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white w-[9%]">
+                  <td className="px-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white w-[10%]">
                     {item.id ? item.id : "--"}
                   </td>
                   <td className="px-4 py-4 font-medium text-gray-900 break-words dark:text-white w-[15%]">
                     {item.roomName ? item.roomName : "--"}{" "}
                   </td>
-                  <td className="px-4 py-4 w-[16%]">
+                  <td className="px-4 py-4 w-[20%]">
                     {item.building_floor_string ? (
                       <>
                         {item.building_floor_string.split(" - ")[0] + " - "}
@@ -671,10 +681,10 @@ const EventLogsTable = () => {
                       "--"
                     )}
                   </td>
-                  <td className="px-4 py-4 w-[13%]">
+                  <td className="px-4 py-4 w-[10%]">
                     {item.createdAt ? formatTimestamp(item.createdAt) : "--"}
                   </td>
-                  <td className="px-4 py-4 w-[15%]">
+                  <td className="px-4 py-4 w-[20%]">
                     <div className="flex items-center gap-x-2">
                       <Tooltip
                         content={getEventTypeText(item.eventTypeLevel)}
@@ -695,7 +705,7 @@ const EventLogsTable = () => {
                       </span>
                     </div>
                   </td>
-                  <td className="px-4 py-4 w-[26%]">
+                  <td className="px-4 py-4 w-[25%]">
                     <Tooltip content={item.message} style="light">
                       {item.message ? `${item.message}` : "--"}
                     </Tooltip>

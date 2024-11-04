@@ -97,12 +97,16 @@ const DateFilter = ({
   dropDownValue,
   setDropDownValue,
   Dashboard,
+  dateOpen1,
 }) => {
   const [showCalendar, setShowCalendar] = useState(false);
 
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const [subDropdownOpen, setSubDropdownOpen] = useState(false);
+  useEffect(() => {
+    dateOpen1(dropdownOpen);
+  }, [dropdownOpen]);
   const subDropdownOptions = [
     { key: "Today", label: "Today", germanLabel: "Heute" },
     { key: "Yesterday", label: "Yesterday", germanLabel: "Gestern" },
@@ -117,6 +121,13 @@ const DateFilter = ({
       setShowCalendar(false);
     }
   }, [closeDropdown]);
+  useEffect(() => {
+    if (Dashboard) {
+      setSelectedDropdownOption("Schnellauswahl");
+      setSubDropdownValue("Today");
+      handleSubDropdownChange({ target: { value: "Today" } });
+    }
+  }, [Dashboard]);
 
   const handleBestim = () => {
     setDropDownValue("Bestimmter Datumsbereich");

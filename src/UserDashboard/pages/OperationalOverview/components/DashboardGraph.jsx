@@ -20,10 +20,10 @@ const Dashboard = (roomId) => {
   const [dates, setDates] = useState(null);
   const [selectedDropdownOption, setSelectedDropdownOption] =
     useState("Schnellauswahl");
-  const [dropDownValue, setDropDownValue] = useState("Schnellauswahl");
+  const [dropDownValue, setDropDownValue] = useState("Heute");
   const [closeDateFilter, setCloseDateFilter] = useState(false);
   const dateFilterRef = useRef(null);
-  const [subDropdownValue, setSubDropdownValue] = useState(null);
+  const [subDropdownValue, setSubDropdownValue] = useState("Today");
   const [valvePositionData, setValvePositionData] = useState({
     valveFormattedData: [],
     valveMin: 0,
@@ -51,35 +51,57 @@ const Dashboard = (roomId) => {
 
   const commonOptions = {
     chart: {
-      // height: 200,
       toolbar: { show: false },
-      zoom: { enabled: true},
-      fontFamily: "Inter, sans-serif", // Sets the global font to Inter
+      zoom: { enabled: false },
+      fontFamily: "Inter, sans-serif",
     },
     dataLabels: { enabled: false },
-    stroke: { curve: "smooth", width: 2 },
+    stroke: { width: 2 },
     xaxis: {
       type: "datetime",
       labels: {
         format: "HH:mm",
-        style: { fontFamily: "Inter, sans-serif" }, // Apply Inter font to x-axis labels
+        style: {
+          fontFamily: "Inter, sans-serif !important",
+          fontSize: "12px !important",
+          fontWeight: 500,
+          lineHeight: "18px !important",
+          textAlign: "center !important",
+        },
       },
     },
+
     yaxis: {
       labels: {
         formatter: (value) => `${value}${value === 100 ? "" : "%"}`,
-        style: { fontFamily: "Inter, sans-serif" }, // Apply Inter font to y-axis labels
+        style: {
+          fontFamily: "Inter, sans-serif",
+          fontSize: "12px !important",
+          fontWeight: 500,
+          lineHeight: "18px !important",
+          textAlign: "right !important",
+          color: "#6B7280 ",
+        },
       },
     },
+
     tooltip: {
       x: {
         format: "HH:mm",
-        style: { fontFamily: "Inter, sans-serif" }, // Apply Inter font to tooltip
+        style: { fontFamily: "Inter, sans-serif" },
       },
     },
-    title: {
-      style: { fontFamily: "Inter, sans-serif" }, // Apply Inter font to the chart title if present
-    },
+    // title: {
+    //   style: {
+    //     fontFamily: "Inter",
+    //     color: "#11192B",
+    //     fontSize: "14px",
+    //     fontWeight: 500,
+    //     lineHeight: "21px",
+    //     textAlign: "left",
+    //   },
+    // },
+
     legend: {
       fontFamily: "Inter, sans-serif", // Apply Inter font to the legend text if used
     },
@@ -124,12 +146,14 @@ const Dashboard = (roomId) => {
     if (data.length === 0) return { formattedData: [], min: 0, max: 100 };
 
     const formattedData = data.map((item) => {
-      const dateG = convertUTCToGermanTime(item.createdAt);
       const date = new Date(item.createdAt);
+      const localDate = new Date(
+        date.getTime() - date.getTimezoneOffset() * 60000
+      );
 
       return {
-        x: date.toLocaleString(),
-        y: Math.round(item.humidity),
+        x: localDate.toISOString(),
+        y: item.humidity,
         timestamp: date.getTime(),
       };
     });
@@ -192,10 +216,10 @@ const Dashboard = (roomId) => {
       style: {
         fontFamily: "Inter, sans-serif",
         fontSize: "14px",
-        fontWeight: 700,
+        fontWeight: 500,
         lineHeight: "21px",
         textAlign: "left",
-        color: "#1F2937",
+        fill: "#11192B",
       },
     },
     colors: ["#0CB4D5"],
@@ -274,19 +298,25 @@ const Dashboard = (roomId) => {
 
     const currentTemp = apiData.roomTemperature.map((item) => {
       const date = new Date(item.createdAt);
+      const localDate = new Date(
+        date.getTime() - date.getTimezoneOffset() * 60000
+      );
       return {
-        x: date.toLocaleString(),
-        y: Math.round(item.temperature),
-        timestamp: date.getTime(),
+        x: localDate.toISOString(),
+        y: item.temperature,
+        timestamp: localDate.getTime(),
       };
     });
 
     const targetTemp = apiData.targetTemperature.map((item) => {
       const date = new Date(item.createdAt);
+      const localDate = new Date(
+        date.getTime() - date.getTimezoneOffset() * 60000
+      );
       return {
-        x: date.toLocaleString(),
-        y: Math.round(item.temperature),
-        timestamp: date.getTime(),
+        x: localDate.toISOString(),
+        y: item.temperature,
+        timestamp: localDate.getTime(),
       };
     });
 
@@ -316,7 +346,7 @@ const Dashboard = (roomId) => {
       (endTime.getMonth() - startTime.getMonth());
 
     if (timeDifference < oneDay) {
-      sequence = "dd:mm";
+      sequence = "HH:mm";
     } else if (timeDifference < oneWeek) {
       sequence = "dd.MM";
     } else if (monthsDifference < 12) {
@@ -337,38 +367,48 @@ const Dashboard = (roomId) => {
 
   const temperatureOptions = {
     ...commonOptions,
-    chart: { ...commonOptions.chart, type: "area", width: "100%" },
+    chart: {
+      ...commonOptions.chart,
+      width: "100%",
+    },
     title: {
       text: "Raumtemperaturen",
       align: "left",
       style: {
         fontFamily: "Inter, sans-serif",
         fontSize: "14px",
-        fontWeight: 700,
+        fontWeight: 500,
         lineHeight: "21px",
-        textAlign: "left",
-        color: "#1F2937",
+        fill: "#11192B",
       },
     },
     colors: ["#0CB4D5", "#048FAB"],
+    series: [
+      {
+        name: "Raumtemperatur",
+        type: "area",
+        data: temperatureData.currentTemp,
+      },
+      {
+        name: "Soll-Temperatur",
+        type: "area",
+        data: temperatureData.targetTemp,
+      },
+    ],
+    stroke: {
+      curve: ["smooth", "stepline"],
+      width: [2, 2],
+    },
+
     fill: {
       type: "gradient",
       gradient: {
         shadeIntensity: 1,
-        opacityFrom: 0.4,
+        opacityFrom: 0.3,
         opacityTo: 0,
-        stops: [0, 35, 100],
+        stops: [0, 55, 100],
       },
     },
-
-    series: [
-      { name: "Raumtemperatur", data: temperatureData.currentTemp },
-      {
-        name: "Soll-Temperatur",
-        // data: temperatureData.map((point) => ({ ...point, y: 19 })),
-        data: temperatureData.targetTemp,
-      },
-    ],
     xaxis: {
       type: "datetime",
       labels: {
@@ -389,14 +429,14 @@ const Dashboard = (roomId) => {
       min: temperatureData.min,
       max: temperatureData.max,
       labels: {
-        formatter: (value) => `${value}${value === 100 ? "°C" : "°C"}`,
+        formatter: (value) => `${value}°C`,
       },
     },
     legend: {
       show: true,
       position: "bottom",
       horizontalAlign: "left",
-      offsetY: 10, // Adds some top margin to the legend
+      offsetY: 10,
       fontFamily: "Inter, sans-serif",
       fontSize: "12px",
       markers: {
@@ -408,7 +448,6 @@ const Dashboard = (roomId) => {
         vertical: 4,
       },
     },
-
   };
 
   //FORMATIING THE VALVE POSTION DATA HERE
@@ -534,10 +573,13 @@ const Dashboard = (roomId) => {
       name: device.deviceName,
       data: device.data.map((item) => {
         const date = new Date(item.createdAt);
+        const localDate = new Date(
+          date.getTime() - date.getTimezoneOffset() * 60000
+        );
         return {
-          x: date.toLocaleString(),
+          x: localDate.toISOString(),
           y: Math.round(item.valvePosition / 25) * 25,
-          timestamp: date.getTime(),
+          timestamp: localDate.getTime(),
         };
       }),
     }));
@@ -596,12 +638,12 @@ const Dashboard = (roomId) => {
       text: "Ventilstellungen",
       align: "left",
       style: {
-        fontFamily: "Inter, sans-serif", // Applying Inter font
-        fontSize: "14px", // Font size as requested
-        fontWeight: 700, // Make the font bold
-        lineHeight: "21px", // Line height as requested
-        textAlign: "left", // Text alignment
-        color: "#1F2937", // Gray/900 in hex (#1F2937)
+        fontFamily: "Inter, sans-serif",
+        fontSize: "14px",
+        fontWeight: 500,
+        lineHeight: "21px",
+        textAlign: "left",
+        fill: "#11192B",
       },
     },
     colors: ["#0CB4D5"],
@@ -613,7 +655,7 @@ const Dashboard = (roomId) => {
       type: "gradient",
       gradient: {
         shadeIntensity: 1,
-        opacityFrom: 0.5, // Make the start color lighter
+        opacityFrom: 0.5,
         opacityTo: 0, // Make the color fully transparent at the end
         stops: [0, 80, 100], // Transition to transparency quickly
       },
@@ -641,12 +683,12 @@ const Dashboard = (roomId) => {
       labels: {
         formatter: (val) => {
           if (val > 100) return "100%";
-          return `${Math.floor(val)}%`; 
+          return `${Math.floor(val)}%`;
         },
       },
       offset: 0,
     },
-    
+
     grid: {
       borderColor: "#e0e0e0",
       strokeDashArray: 5,
@@ -712,39 +754,46 @@ const Dashboard = (roomId) => {
       fetchValvePositionData();
     }
   }, [dateFrom, dateTo]);
+  const dateOpen1 = (value) => {};
+  // useEffect(() => {
+  //   if (Dashboard) {
+  //     setSelectedDropdownOption("Schnellauswahl");
+  //     setSubDropdownValue("Today");
+  //   }
+  // }, [Dashboard]);
 
   return (
     <div className="h-[70vh] flex flex-col">
-      <div className="flex-grow overflow-auto !pt-1 p-6 custom-scrollbar">
-        <div className="flex justify-end items-end ">
-          <DateFilter
-            setSelectedDropdownOption={setSelectedDropdownOption}
-            selectedDropdownOption={selectedDropdownOption}
-            setDropDownValue={setDropDownValue}
-            dropDownValue={dropDownValue}
-            setDates={setDates}
-            dates={dates}
-            dateRef={dateFilterRef}
-            closeDropdown={closeDateFilter}
-            setCloseDateFilter={setCloseDateFilter}
-            onDatesChange={handleDatesChange}
-            // setApiLocationsToBeSend={setApiLocationsToBeSend}
-            // selectedLocationFilter={selectedLocationFilter}
-            setSubDropdownValue={setSubDropdownValue}
-            subDropdownValue={subDropdownValue}
-            Dashboard={true}
-          />
-        </div>
+      <div className="flex justify-end items-end ">
+        <DateFilter
+          setSelectedDropdownOption={setSelectedDropdownOption}
+          selectedDropdownOption={selectedDropdownOption}
+          setDropDownValue={setDropDownValue}
+          dropDownValue={dropDownValue}
+          setDates={setDates}
+          dates={dates}
+          dateRef={dateFilterRef}
+          closeDropdown={closeDateFilter}
+          setCloseDateFilter={setCloseDateFilter}
+          onDatesChange={handleDatesChange}
+          // setApiLocationsToBeSend={setApiLocationsToBeSend}
+          // selectedLocationFilter={selectedLocationFilter}
+          setSubDropdownValue={setSubDropdownValue}
+          subDropdownValue={subDropdownValue}
+          Dashboard={true}
+          dateOpen1={dateOpen1}
+        />
+      </div>{" "}
+      <div className="flex-grow overflow-auto mt-4 !pt-1 p-6 custom-scrollbar">
         <div className="">
           <ReactApexChart
             options={temperatureOptions}
-            s
-            series={temperatureOptions.series}
             type="area"
+            series={temperatureOptions.series}
             height={370}
           />
         </div>
-        <div className=" ">
+        <div className="mt-4 ">
           <ReactApexChart
             options={humidityOptions}
             series={humidityOptions.series}
@@ -752,7 +801,7 @@ const Dashboard = (roomId) => {
             height={370}
           />
         </div>
-        <div className=" relative">
+        <div className=" mt-2 relative">
           <ReactApexChart
             options={valvePositionOptions}
             series={valvePositionOptions.series}

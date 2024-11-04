@@ -19,7 +19,25 @@
   width: 20px;
   height: 20px;
 }
-
+.apexcharts-title-text {
+  fill: #11192b;
+}
+.apexcharts-text .apexcharts-yaxis-label {
+  font-family: "Inter, sans-serif";
+  font-size: "12px !important";
+  font-weight: 500;
+  line-height: "18px !important";
+  text-align: "right !important";
+  fill: "#6B7280 ";
+}
+.apexcharts-text .apexcharts-xaxis-label {
+  font-family: "Inter, sans-serif";
+  font-size: "12px !important";
+  font-weight: 500;
+  line-height: "18px !important";
+  text-align: "right !important";
+  fill: "#6B7280 ";
+}
 .react-resizable-handle {
   background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M20 12L4 12" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 8L12 4L8 8" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 16L12 20L16 16" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>');
   background-size: 15px 15px; /* adjust size as necessary */
@@ -62,12 +80,10 @@
   scrollbar-width: 2px !important;
   scrollbar-color: #d1d5db #f9fafb; /* thumb color, track color */
   width: 10px; /* Set width of scrollbar */
-  
 }
 
 .custom-scrollbar::-webkit-scrollbar-track {
   width: 0px; /* Set width of scrollbar */
-  
 
   border-radius: 10px; /* Rounded corners */
 }

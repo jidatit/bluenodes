@@ -17,10 +17,11 @@ const OnboardingStep = ({ title, completed, isActive, onClick }) => {
       }`} // Apply 'bg-gray-200' if the step is active
       onClick={onClick}
     >
-      <span className="pl-4 font-medium text-sm text-gray-900">{title}</span>
+      <span className="pl-4 font-normal text-sm  text-gray-900">{title}</span>
+
       {/* {completed && <CheckIcon checked={completed} />} */}
       {completed && (
-        <span className="text-primary  ">
+        <span className="text-primary   ">
           <IoCheckmarkCircle className="w-[20px] h-[20px] text-[20px]" />
         </span>
       )}

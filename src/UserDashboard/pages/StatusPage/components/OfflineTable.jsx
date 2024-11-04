@@ -633,7 +633,9 @@ const OfflineTable = () => {
                     key={index}
                     className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
                   >
-                    <td className={`${columnWidths.devEui} px-4 py-4 truncate`}>
+                    <td
+                      className={`${columnWidths.devEui} px-4 py-4 truncate uppercase`}
+                    >
                       {item.devEui}
                     </td>
 
