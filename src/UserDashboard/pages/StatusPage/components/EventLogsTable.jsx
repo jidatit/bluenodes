@@ -348,7 +348,17 @@ const EventLogsTable = () => {
   //   dateTo,
   //   dateFrom,
   //   currentPage,
-  // ]);
+  const [delayedLoading, setDelayedLoading] = useState(false);
+
+  useEffect(() => {
+    if (loading) {
+      const timer = setTimeout(() => setDelayedLoading(true), 400);
+
+      return () => clearTimeout(timer);
+    } else {
+      setDelayedLoading(false);
+    }
+  }, [loading]);
   const getData = (locations) => {
     const eventTypeLevel =
       (selectedEventFilters !== null &&
@@ -364,16 +374,13 @@ const EventLogsTable = () => {
       dateFrom
     )
       .then((data) => {
-        setTotalRows(data.count);
         setTableData(data.rows);
+        setTotalRows(data.count);
         setLoading(false);
-        // setTotalRows(0);
-        // const testTableData = [];
-        // setTableData(testTableData);
       })
       .catch((error) => {
+        console.error("Error fetching event logs:", error);
         setLoading(false);
-        console.log("Error fetching event logs:", error);
       });
   };
 
@@ -655,9 +662,9 @@ const EventLogsTable = () => {
             </tr>
           </thead>
 
-          {/* {loading && <SkeletonTable />} */}
+          {delayedLoading && <SkeletonTable />}
 
-          {tableData.length > 0 && (
+          {tableData.length > 0 && !delayedLoading && (
             <tbody className="">
               {tableData.map((item, index) => (
                 <tr

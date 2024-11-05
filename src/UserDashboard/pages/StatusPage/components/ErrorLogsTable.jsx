@@ -361,6 +361,17 @@ const ErrorLogsTable = () => {
   //   dateFrom,
   //   currentPage,
   // ]);
+
+  const [delayedLoading, setDelayedLoading] = useState(false);
+  useEffect(() => {
+    if (loading) {
+      const timer = setTimeout(() => setDelayedLoading(true), 400);
+
+      return () => clearTimeout(timer);
+    } else {
+      setDelayedLoading(false);
+    }
+  }, [loading]);
   const getData = (locations) => {
     const eventTypeLevel =
       (selectedEventFilters !== null &&
@@ -649,50 +660,52 @@ const ErrorLogsTable = () => {
               </th>
             </tr>
           </thead>
-          {/* {loading && <SkeletonErrorTable />} */}
-          <tbody>
-            {tableData.map((item, index) => (
-              <tr
-                key={index}
-                className="text-sm bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
-              >
-                <td className="px-4 py-4 font-medium text-gray-900 w-[15%] min-w-[240px] whitespace-nowrap dark:text-white">
-                  {item.roomName ? item.roomName : "--"}{" "}
-                </td>
-                <td className="px-4 py-4 w-[15%]  ">
-                  {item.building_floor_string
-                    ? item.building_floor_string
-                    : "--"}
-                </td>
-                <td className="px-4 py-4 w-[20%]   ">
-                  {item.createdAt ? formatTimestamp(item?.createdAt) : "--"}
-                </td>
-                <td className="px-4 py-4 w-[15%]  ">
-                  <div className="flex items-center gap-x-1">
-                    <Tooltip content={item.eventTypeLevel} style="light">
-                      {item.eventTypeLevel === "Information" ? (
-                        <FaCircleInfo className="w-4 h-4" />
-                      ) : item.eventTypeLevel === "Warning" ? (
-                        <RiErrorWarningFill className="text-yellow-500 w-5 h-5" />
-                      ) : item.eventTypeLevel === "Behoben" ? (
-                        <FaCircleCheck className="text-green-600 w-4 h-4" />
-                      ) : (
-                        <IoIosWarning className="text-red-700 w-5 h-5" />
-                      )}
+          {delayedLoading && <SkeletonErrorTable />}
+          {tableData.length > 0 && !delayedLoading && (
+            <tbody>
+              {tableData.map((item, index) => (
+                <tr
+                  key={index}
+                  className="text-sm bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
+                >
+                  <td className="px-4 py-4 font-medium text-gray-900 w-[15%] min-w-[240px] whitespace-nowrap dark:text-white">
+                    {item.roomName ? item.roomName : "--"}{" "}
+                  </td>
+                  <td className="px-4 py-4 w-[15%]  ">
+                    {item.building_floor_string
+                      ? item.building_floor_string
+                      : "--"}
+                  </td>
+                  <td className="px-4 py-4 w-[20%]   ">
+                    {item.createdAt ? formatTimestamp(item?.createdAt) : "--"}
+                  </td>
+                  <td className="px-4 py-4 w-[15%]  ">
+                    <div className="flex items-center gap-x-1">
+                      <Tooltip content={item.eventTypeLevel} style="light">
+                        {item.eventTypeLevel === "Information" ? (
+                          <FaCircleInfo className="w-4 h-4" />
+                        ) : item.eventTypeLevel === "Warning" ? (
+                          <RiErrorWarningFill className="text-yellow-500 w-5 h-5" />
+                        ) : item.eventTypeLevel === "Behoben" ? (
+                          <FaCircleCheck className="text-green-600 w-4 h-4" />
+                        ) : (
+                          <IoIosWarning className="text-red-700 w-5 h-5" />
+                        )}
+                      </Tooltip>
+                      <span className="text-sm items-start flex justify-start ">
+                        {item.eventTypeMessage ? item.eventTypeMessage : "--"}
+                      </span>
+                    </div>
+                  </td>
+                  <td className="px-4 py-4 w-[35%]  ">
+                    <Tooltip content={item.message} style="light">
+                      {item.message ? `${item.message}` : "--"}
                     </Tooltip>
-                    <span className="text-sm items-start flex justify-start ">
-                      {item.eventTypeMessage ? item.eventTypeMessage : "--"}
-                    </span>
-                  </div>
-                </td>
-                <td className="px-4 py-4 w-[35%]  ">
-                  <Tooltip content={item.message} style="light">
-                    {item.message ? `${item.message}` : "--"}
-                  </Tooltip>
-                </td>
-              </tr>
-            ))}
-          </tbody>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          )}
         </table>
         {/* Pagination */}
         {tableData.length === 0 && !loading && (

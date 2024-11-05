@@ -418,6 +418,17 @@ const DeviceManagementTable = () => {
   //   batteryLevel,
   // ]);
   const [loading, setLoading] = useState(true);
+  const [delayedLoading, setDelayedLoading] = useState(false);
+
+  useEffect(() => {
+    if (loading) {
+      const timer = setTimeout(() => setDelayedLoading(true), 400);
+
+      return () => clearTimeout(timer);
+    } else {
+      setDelayedLoading(false);
+    }
+  }, [loading]);
   const getData = (locations) => {
     fetchDeviceManagementList(
       currentPage,
@@ -883,7 +894,7 @@ const DeviceManagementTable = () => {
               <th scope="col" className={`py-4 ${columnWidths.actions}`}></th>
             </tr>
           </thead>
-          {/* {loading && <SkeletonDeviceManagementTable />} */}
+          {delayedLoading && <SkeletonDeviceManagementTable />}
           <tbody>
             {tableData?.length > 0 &&
               tableData.map((item, index) => (

@@ -340,6 +340,17 @@ const UnassignedTable = ({ assignUpdate }) => {
   //     getData(ApiLocationsToBeSend);
   //   }
   // }, [selectedEventFilters]);
+
+  const [delayedLoading, setDelayedLoading] = useState(false);
+  useEffect(() => {
+    if (loading) {
+      const timer = setTimeout(() => setDelayedLoading(true), 400);
+
+      return () => clearTimeout(timer);
+    } else {
+      setDelayedLoading(false);
+    }
+  }, [loading]);
   const getData = (locations) => {
     const eventTypeLevel =
       (selectedEventFilters !== null &&
@@ -553,41 +564,43 @@ const UnassignedTable = ({ assignUpdate }) => {
               </th>
             </tr>
           </thead>
-          {/* {loading && <UnassignedSkeletonTable />} */}
-          <tbody>
-            {tableData.length > 0 &&
-              tableData.map((item, index) => (
-                <tr
-                  key={index}
-                  className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
-                >
-                  <td className="px-4 py-4 w-[10%]  font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                    {item.locationId ? item.locationId : "--"}
-                  </td>
-                  <td className="px-4 py-4 w-[30%]  font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                    {item.name ? item.name : "--"}{" "}
-                    {/* <span className="text-[12px] py-0.5 px-2.5 font-semibold bg-gray-100 rounded-[80px] p-1">
+          {delayedLoading && <UnassignedSkeletonTable />}
+          {tableData.length > 0 && !delayedLoading && (
+            <tbody>
+              {tableData.length > 0 &&
+                tableData.map((item, index) => (
+                  <tr
+                    key={index}
+                    className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
+                  >
+                    <td className="px-4 py-4 w-[10%]  font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                      {item.locationId ? item.locationId : "--"}
+                    </td>
+                    <td className="px-4 py-4 w-[30%]  font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                      {item.name ? item.name : "--"}{" "}
+                      {/* <span className="text-[12px] py-0.5 px-2.5 font-semibold bg-gray-100 rounded-[80px] p-1">
                       {item.tag ? item.tag : "N/A"}
                     </span> */}
-                  </td>
-                  <td className="px-4 py-4 w-[40%] ">
-                    {item.building_floor_string
-                      ? item.building_floor_string
-                      : "--"}
-                  </td>
-                  <td className="px-4 py-4 w-[20%] ">
-                    <Button
-                      onClick={() => {
-                        handleOpenEditModal(item ? item : null);
-                      }}
-                      className="whitespace-nowrap hover:!bg-transparent hover:opacity-80 border-none text-primary bg-transparent pr-2 py-0 [&>*]:p-0 focus:ring-transparent"
-                    >
-                      Heizplan zuweisen
-                    </Button>
-                  </td>
-                </tr>
-              ))}
-          </tbody>
+                    </td>
+                    <td className="px-4 py-4 w-[40%] ">
+                      {item.building_floor_string
+                        ? item.building_floor_string
+                        : "--"}
+                    </td>
+                    <td className="px-4 py-4 w-[20%] ">
+                      <Button
+                        onClick={() => {
+                          handleOpenEditModal(item ? item : null);
+                        }}
+                        className="whitespace-nowrap hover:!bg-transparent hover:opacity-80 border-none text-primary bg-transparent pr-2 py-0 [&>*]:p-0 focus:ring-transparent"
+                      >
+                        Heizplan zuweisen
+                      </Button>
+                    </td>
+                  </tr>
+                ))}
+            </tbody>
+          )}
         </table>
 
         {tableData.length === 0 && !loading && (
