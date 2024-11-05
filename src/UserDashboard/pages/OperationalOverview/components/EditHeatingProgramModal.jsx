@@ -544,6 +544,7 @@ const EditHeatingProgramModal = ({
                               clone={true}
                               staticTemp={true}
                               locationDetails={locationDetails}
+                              smWidth={true}
                             />
                           </div>
                         )}

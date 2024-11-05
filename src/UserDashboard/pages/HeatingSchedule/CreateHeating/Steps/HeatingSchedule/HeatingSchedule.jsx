@@ -21,6 +21,7 @@ function HeatingSchedule({
   finalScheduleData,
   clone,
   locationDetails,
+  smWidth
 }) {
   // Helper function to convert time to units
   const convertTimeToUnits = (time) => {
@@ -729,6 +730,8 @@ function HeatingSchedule({
     }
   }, [zoomLevel]);
 
+  
+
   return (
     <div className="flex flex-col gap-4 w-full">
       <h3 className="text-[16px] text-gray-500 font-semibold flex items-center gap-2">
@@ -847,17 +850,17 @@ function HeatingSchedule({
         >
           <div style={{ width: "60px" }}>{timeLabels}</div>
           <div
-            style={{
-              display: "flex",
-              justifyContent: "flex-start",
-              gap: "12px",
-              width: "100%",
-              position: "relative",
-              zIndex: "10",
-            }}
-            onClick={handleContainerClick}
-            className="custom"
-          >
+  style={{
+    display: "flex",
+    justifyContent: "flex-start",
+    gap: "12px",
+    width: smWidth ? "93%" : "94%", // Corrected line
+    position: "relative",
+    zIndex: 10, // Optional: No quotes needed for numbers
+  }}
+  onClick={handleContainerClick}
+  className="custom"
+>
             <div
               className="absolute top-[22px] left-0 bottom-0 right-0 w-full h-full flex flex-col z-10"
               style={{

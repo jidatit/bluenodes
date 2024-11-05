@@ -227,7 +227,9 @@ const DateFilter = ({
   };
   return (
     <div
-      className={`relative flex w-fit items-start space-y-2 z-50`}
+      className={`relative flex w-fit items-start space-y-2 z-50 ${
+        Dashboard ? "mr-12" : "mr-0"
+      }`}
       ref={dateRef}
     >
       <div className="relative w-full flex flex-col gap-x-2">

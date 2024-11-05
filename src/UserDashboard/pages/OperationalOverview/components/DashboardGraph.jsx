@@ -429,7 +429,7 @@ const Dashboard = (roomId) => {
       min: temperatureData.min,
       max: temperatureData.max,
       labels: {
-        formatter: (value) => `${value}°C`,
+        formatter: (value) => `${Math.round(value)}°C`,
       },
     },
     legend: {
@@ -697,13 +697,30 @@ const Dashboard = (roomId) => {
         bottom: 10, // Adjust this value to control spacing at the bottom
       },
     },
+    // legend: {
+    //   show: true,
+ 
+    // },
     legend: {
       show: true,
+      position: "bottom",
+      horizontalAlign: "left",
+      offsetY: 10,
+      fontFamily: "Inter, sans-serif",
       onItemClick: {
         toggleDataSeries: true, // Enables toggling series by clicking on legend
       },
       onItemHover: {
         highlightDataSeries: true,
+      },
+      fontSize: "12px",
+      markers: {
+        width: 10,
+        height: 10,
+        radius: 5,
+      },
+      itemMargin: {
+        vertical: 4,
       },
     },
   };

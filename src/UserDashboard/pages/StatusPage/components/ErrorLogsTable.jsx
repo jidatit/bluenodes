@@ -498,7 +498,7 @@ const ErrorLogsTable = () => {
       </div>
       <div
         className={`relative ${
-          dateOpen && "min-h-[32vh]"
+          dateOpen && "min-h-[327px]"
         } w-full overflow-x-auto bg-white shadow-md sm:rounded-lg z-10`}
       >
         <div className="flex flex-column my-3 bg-transparent mx-2 sm:flex-row flex-wrap space-y-4 sm:space-y-0 items-center justify-between">

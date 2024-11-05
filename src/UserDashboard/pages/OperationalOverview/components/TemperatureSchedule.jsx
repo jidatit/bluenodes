@@ -529,7 +529,7 @@ const TemperatureSchedule = ({
                           }}
                         ></div>
                         <div
-                          className=" absolute top-[-4px] flex flex-col text-sm text-gray-500 items-end ml-[2px]"
+                          className=" absolute top-[-4px] flex flex-col text-xs text-gray-500 items-end ml-[2px]"
                           style={{
                             left: `${parseTimeToPercentage(element.from)}%  `,
                             width: `calc(${
@@ -549,17 +549,25 @@ const TemperatureSchedule = ({
                               position: "absolute",
                               top: "20px", // Adjust vertical spacing below the separator
                               left: `${
-                                parseTimeToPercentage(element.to) -
-                                  parseTimeToPercentage(element.from) <
-                                5
-                                  ? "-10px"
-                                  : "0px"
+                                index === 0 && parseTimeToPercentage(element.to) - parseTimeToPercentage(element.from) < 5
+                                  ? "-30px" // For index 0 and time difference less than 5
+                                  : index === 0 && parseTimeToPercentage(element.to) - parseTimeToPercentage(element.from) >= 5
+                                  ? "-25px" // For index 0 and time difference greater than or equal to 5
+                                  : index > 0 && parseTimeToPercentage(element.to) - parseTimeToPercentage(element.from) < 5
+                                  ? "-10px" // For other indexes and time difference less than 5
+                                  : index > 0 && parseTimeToPercentage(element.to) - parseTimeToPercentage(element.from) >= 5
+                                  ? "0px" // For other indexes and time difference greater than or equal to 5
+                                  : "0px" // Fallback in case none of the above conditions are met
                               }`, // Align with the left edge of the separator
                               transform: index === 0 ? "" : "translateX(-50%)",
                               whiteSpace: "nowrap", // Prevent text wrapping
                             }}
                           >
-                            {index === 0 ? "Heute " : ""}
+                                {/* Display "Heute" only if index is 0 and time difference is not less than 5 */}
+                            {index === 0 &&
+                              parseTimeToPercentage(element.to) - parseTimeToPercentage(element.from) >= 5
+                              ? "Heute"
+                              : ""}
                             {formatTime(element.from)}
                           </span>
                           {index ===

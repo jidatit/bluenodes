@@ -4,6 +4,10 @@
   font-family: "Inter", sans-serif;
 }
 
+.page {
+  scrollbar-gutter: stable;
+}
+
 .box {
   width: 100% !important;
 }
@@ -21,6 +25,12 @@
   fill: #11192b;
   line-height: 14px;
   font-size: 14px;
+}
+
+.apexcharts-legend-text {
+  color: #6B7280 !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
 }
 .custom-icon {
   position: absolute;

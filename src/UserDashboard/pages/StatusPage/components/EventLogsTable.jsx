@@ -488,7 +488,7 @@ const EventLogsTable = () => {
       </div>
       <div
         className={`relative ${
-          dateOpen && "min-h-[32vh]"
+          dateOpen && "min-h-[327px]"
         } w-full overflow-x-auto bg-white shadow-md sm:rounded-lg z-10`}
       >
         <div className="flex flex-column my-3 bg-transparent mx-2 sm:flex-row flex-wrap space-y-4 sm:space-y-0 items-center justify-between z-10 ">
@@ -640,13 +640,13 @@ const EventLogsTable = () => {
               <th scope="col" className="p-4 w-[15%]">
                 RAUM
               </th>
-              <th scope="col" className="p-4 w-[20%]">
+              <th scope="col" className="p-4 w-[18%]">
                 GEBÄUDE - ETAGE
               </th>
-              <th scope="col" className="p-4 w-[10%]">
+              <th scope="col" className="p-4 w-[14%]">
                 DATUM - UHRZEIT
               </th>
-              <th scope="col" className="p-4 w-[20%]">
+              <th scope="col" className="p-4 w-[18%]">
                 EVENT
               </th>
               <th scope="col" className="p-4 w-[25%]">
@@ -670,7 +670,7 @@ const EventLogsTable = () => {
                   <td className="px-4 py-4 font-medium text-gray-900 break-words dark:text-white w-[15%]">
                     {item.roomName ? item.roomName : "--"}{" "}
                   </td>
-                  <td className="px-4 py-4 w-[20%]">
+                  <td className="px-4 py-4 w-[18%]">
                     {item.building_floor_string ? (
                       <>
                         {item.building_floor_string.split(" - ")[0] + " - "}
@@ -681,10 +681,10 @@ const EventLogsTable = () => {
                       "--"
                     )}
                   </td>
-                  <td className="px-4 py-4 w-[10%]">
+                  <td className="px-4 py-4 w-[14%]">
                     {item.createdAt ? formatTimestamp(item.createdAt) : "--"}
                   </td>
-                  <td className="px-4 py-4 w-[20%]">
+                  <td className="px-4 py-4 w-[18%]">
                     <div className="flex items-center gap-x-1">
                       <Tooltip
                         content={getEventTypeText(item.eventTypeLevel)}

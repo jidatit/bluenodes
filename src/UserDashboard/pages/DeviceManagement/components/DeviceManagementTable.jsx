@@ -682,7 +682,7 @@ const DeviceManagementTable = () => {
 
   return (
     <div className="flex flex-col w-full gap-4">
-      <div className="relative w-full overflow-x-auto bg-white shadow-md sm:rounded-lg">
+      <div className="relative w-full overflow-x-auto overflow-y-hidden bg-white shadow-md sm:rounded-lg">
         <div className="flex flex-wrap items-center justify-between mx-2 my-2 space-y-4 bg-transparent flex-column sm:flex-row sm:space-y-0">
           {/* Filter buttons */}
 

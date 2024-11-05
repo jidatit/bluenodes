@@ -47,7 +47,7 @@ const CompactGetStartedCard = ({ isCollapsed, isHovered }) => {
 
   return (
     <Card className="w-full bg-gray-50  shadow-none mb-4 border-0  ">
-      <h6 className="text-lg font-medium font-inter text-black dark:text-white">
+      <h6 className="text-lg font-medium font-inter text-gray-900 dark:text-white">
         Get Started
       </h6>
       <p className="text-sm font-normal font-inter text-[#6B7280] -mt-2  dark:text-gray-400 ">

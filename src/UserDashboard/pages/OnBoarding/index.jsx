@@ -283,11 +283,11 @@ const Onboarding = () => {
                 />
               </div>
             </div>
-            <div className="text-black text-[20px] font-semibold font-inter">
+            <div className="text-gray-900 text-[20px] font-semibold font-inter">
               {allSteps[currentStepIndex]}
             </div>
           </div>
-          <p className="text-gray-600 text-[16px] font-inter leading-[24px]">
+          <p className="text-gray-900 text-[16px] font-normal font-inter leading-[24px]">
             Learn the basics of how BlueNodes can automate your heating system
             for maximum efficiency and comfort. Understand the key features that
             will help you save energy and reduce costs.
@@ -301,7 +301,7 @@ const Onboarding = () => {
                 pill={false}
               >
                 <FaAngleLeft className="mr-1.5 h-4 w-4 mt-[1.5px]" />
-                <p className="text-[14px] ml-1 font-inter">Previous</p>
+                <p className="text-[14px] ml-1 font-inter font-medium text-gray-900">Previous</p>
               </Button>
               <Button
                 onClick={() => {
@@ -313,7 +313,7 @@ const Onboarding = () => {
                 }}
                 className="w-[120px] h-[41px] px-5 py-2.5 gap-2 rounded-lg border border-gray-300 opacity-100 bg-white hover:!bg-gray-200 text-black flex items-center justify-center focus:outline-none focus:ring-0"
               >
-                <p className="font-inter text-[14px]">
+                <p className="font-inter font-medium text-gray-900 text-[14px]">
                   {currentStepIndex === 7 && progress === 100
                     ? "Complete"
                     : "Next"}

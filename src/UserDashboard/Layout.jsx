@@ -45,7 +45,7 @@ const MainContent = ({ children }) => {
   return (
     <main
       className={classNames(
-        "overflow-y-auto absolute top-0 left-0 right-0 bottom-0  bg-[#F9FAFB] z-10 p-6",
+        "overflow-y-auto absolute top-0 left-0 right-0 bottom-0  bg-[#F9FAFB] z-10 p-6 page",
         !isCollapsed ? "lg:ml-64" : isHovered ? "lg:ml-64" : "lg:ml-16"
       )}
     >
