@@ -702,7 +702,7 @@ const EventLogsTable = () => {
                           )}
                         </span>
                       </Tooltip>
-                      <span className="text-sm items-start flex ">
+                      <span className="text-sm items-start flex justify-start ">
                         {item.eventTypeMessage ? item.eventTypeMessage : "--"}
                       </span>
                     </div>
