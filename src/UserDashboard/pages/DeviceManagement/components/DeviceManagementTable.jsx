@@ -883,7 +883,7 @@ const DeviceManagementTable = () => {
               <th scope="col" className={`py-4 ${columnWidths.actions}`}></th>
             </tr>
           </thead>
-          {loading && <SkeletonDeviceManagementTable />}
+          {/* {loading && <SkeletonDeviceManagementTable />} */}
           <tbody>
             {tableData?.length > 0 &&
               tableData.map((item, index) => (

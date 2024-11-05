@@ -649,7 +649,7 @@ const ErrorLogsTable = () => {
               </th>
             </tr>
           </thead>
-          {loading && <SkeletonErrorTable />}
+          {/* {loading && <SkeletonErrorTable />} */}
           <tbody>
             {tableData.map((item, index) => (
               <tr
@@ -668,7 +668,7 @@ const ErrorLogsTable = () => {
                   {item.createdAt ? formatTimestamp(item?.createdAt) : "--"}
                 </td>
                 <td className="px-4 py-4 w-[15%]  ">
-                  <div className="flex items-center gap-x-2">
+                  <div className="flex items-center gap-x-1">
                     <Tooltip content={item.eventTypeLevel} style="light">
                       {item.eventTypeLevel === "Information" ? (
                         <FaCircleInfo className="w-4 h-4" />
@@ -680,7 +680,7 @@ const ErrorLogsTable = () => {
                         <IoIosWarning className="text-red-700 w-5 h-5" />
                       )}
                     </Tooltip>
-                    <span className="text-sm">
+                    <span className="text-sm items-start flex justify-start ">
                       {item.eventTypeMessage ? item.eventTypeMessage : "--"}
                     </span>
                   </div>

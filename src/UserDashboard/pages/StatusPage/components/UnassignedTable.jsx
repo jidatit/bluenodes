@@ -553,7 +553,7 @@ const UnassignedTable = ({ assignUpdate }) => {
               </th>
             </tr>
           </thead>
-          {loading && <UnassignedSkeletonTable />}
+          {/* {loading && <UnassignedSkeletonTable />} */}
           <tbody>
             {tableData.length > 0 &&
               tableData.map((item, index) => (

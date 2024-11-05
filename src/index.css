@@ -11,7 +11,17 @@
 .react-grid-item > .react-resizable-handle::after {
   display: none;
 }
-
+.apexcharts-tooltip-text-y-label {
+  fill: #6b7280;
+  font-weight: 400;
+  line-height: 12px;
+  font-size: 12px;
+}
+.apexcharts-tooltip-text-y-value {
+  fill: #11192b;
+  line-height: 14px;
+  font-size: 14px;
+}
 .custom-icon {
   position: absolute;
   right: 3px;

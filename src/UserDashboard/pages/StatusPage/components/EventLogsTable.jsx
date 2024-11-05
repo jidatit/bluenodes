@@ -655,7 +655,7 @@ const EventLogsTable = () => {
             </tr>
           </thead>
 
-          {loading && <SkeletonTable />}
+          {/* {loading && <SkeletonTable />} */}
 
           {tableData.length > 0 && (
             <tbody className="">
@@ -685,22 +685,24 @@ const EventLogsTable = () => {
                     {item.createdAt ? formatTimestamp(item.createdAt) : "--"}
                   </td>
                   <td className="px-4 py-4 w-[20%]">
-                    <div className="flex items-center gap-x-2">
+                    <div className="flex items-center gap-x-1">
                       <Tooltip
                         content={getEventTypeText(item.eventTypeLevel)}
                         style="light"
                       >
-                        {item.eventTypeLevel === "Information" ? (
-                          <FaCircleInfo className="w-4 h-4" />
-                        ) : item.eventTypeLevel === "Warning" ? (
-                          <RiErrorWarningFill className="text-yellow-500 w-5 h-5" />
-                        ) : item.eventTypeLevel === "Behoben" ? (
-                          <FaCircleCheck className="text-green-600 w-4 h-4" />
-                        ) : (
-                          <IoIosWarning className="text-red-700 w-5 h-5" />
-                        )}
+                        <span className="flex items-end justify-center w-6">
+                          {item.eventTypeLevel === "Information" ? (
+                            <FaCircleInfo className="w-4 h-4" />
+                          ) : item.eventTypeLevel === "Warning" ? (
+                            <RiErrorWarningFill className="text-yellow-500 w-5 h-5" />
+                          ) : item.eventTypeLevel === "Behoben" ? (
+                            <FaCircleCheck className="text-green-600 w-4 h-4" />
+                          ) : (
+                            <IoIosWarning className="text-red-700 w-5 h-5" />
+                          )}
+                        </span>
                       </Tooltip>
-                      <span className="text-sm">
+                      <span className="text-sm items-start flex ">
                         {item.eventTypeMessage ? item.eventTypeMessage : "--"}
                       </span>
                     </div>

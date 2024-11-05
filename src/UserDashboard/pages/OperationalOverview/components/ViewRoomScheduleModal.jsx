@@ -81,7 +81,7 @@ export function ViewRoomScheduleModal({
           </div>
 
           <div className="flex justify-end gap-4 mt-4">
-            <Button
+            {/* <Button
               onClick={() => {
                 if (room.heatingSchedule !== null) {
                   handleCloseModal();
@@ -91,7 +91,7 @@ export function ViewRoomScheduleModal({
               className="bg-primary"
             >
               Bearbeiten
-            </Button>
+            </Button> */}
 
             <Button
               className="font-black"
