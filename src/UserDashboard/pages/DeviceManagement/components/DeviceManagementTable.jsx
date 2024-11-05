@@ -78,7 +78,6 @@ const DeviceManagementTable = () => {
   const [filtersSelected, setFiltersSelected] = useState(false);
   const [selectedLocationFilter, setSelectedLocationFilter] = useState(0);
   const { generateToast } = useToast();
-  const [showFilters, setShowFilters] = useState(false);
 
   const handleMultiSelectClick = () => {
     if (selectedLocationFilter === 0) {
@@ -672,11 +671,6 @@ const DeviceManagementTable = () => {
         return "Undefined";
     }
   };
-  useEffect(() => {
-    if (tableData.length > 0) {
-      setShowFilters(true);
-    }
-  }, [tableData]);
   const columnWidths = {
     expand: "w-[4%]", // Small width for the expand icon
     devEui: "w-[14%]", // Fixed width for Device EUI column
@@ -697,7 +691,6 @@ const DeviceManagementTable = () => {
         <div className="flex flex-wrap items-center justify-between mx-2 my-2 space-y-4 bg-transparent flex-column sm:flex-row sm:space-y-0">
           {/* Filter buttons */}
 
-          {showFilters && (
             <div className="flex flex-row items-center justify-center gap-1">
               <div className="flex flex-row gap-x-2">
                 <TreeSelect
@@ -835,7 +828,6 @@ const DeviceManagementTable = () => {
                 </button>
               )}
             </div>
-          )}
           {/* Search bar */}
         </div>
         {/* Table */}

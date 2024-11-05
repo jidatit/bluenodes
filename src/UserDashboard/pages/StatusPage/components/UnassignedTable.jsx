@@ -27,7 +27,7 @@ const UnassignedTable = ({ assignUpdate }) => {
   const [loading, setLoading] = useState(true);
   const dateFilterRef = useRef(null);
   const [floors, setFloors] = useState([]);
-  const [showFilters, setShowFilters] = useState(false);
+  
   // Function to handle click outside of the DateFilter
   useEffect(() => {
     // Function to handle click outside of the DateFilter
@@ -456,20 +456,14 @@ const UnassignedTable = ({ assignUpdate }) => {
     setExpandedKeys(e.value); // Update expanded keys state
   };
 
-  useEffect(() => {
-    if (tableData.length > 0) {
-      setShowFilters(true);
-    }
-  }, [tableData]);
   return (
     <div className=" flex flex-col gap-4 w-full">
       <div className="flex flex-col justify-center items-start w-full">
         <h1 className=" font-[500] text-lg text-gray-900">Rooms Unassigned</h1>
       </div>
-      <div className="relative w-full overflow-x-auto bg-white shadow-md sm:rounded-lg">
+      <div className="relative w-full overflow-x-auto overflow-y-hidden bg-white shadow-md sm:rounded-lg">
         <div className="flex flex-column my-2 bg-transparent mx-2 sm:flex-row flex-wrap space-y-4 sm:space-y-0 items-center justify-between">
           {/* Filter buttons */}
-          {showFilters && (
             <div className="flex flex-row justify-center items-center gap-1">
               <TreeSelect
                 value={selectedKeys}
@@ -544,7 +538,6 @@ const UnassignedTable = ({ assignUpdate }) => {
                 </button>
               )}
             </div>
-          )}
         </div>
         {/* Table */}
         <table className="w-full table-fixed text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 ">

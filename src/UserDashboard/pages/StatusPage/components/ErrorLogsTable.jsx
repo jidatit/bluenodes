@@ -36,7 +36,6 @@ const ErrorLogsTable = () => {
   const [loading, setLoading] = useState(true);
   const [floors, setFloors] = useState([]);
   const [dates, setDates] = useState(null);
-  const [showFilters, setShowFilters] = useState(false);
   const [selectedDropdownOption, setSelectedDropdownOption] =
     useState("Schnellauswahl");
   const [dropDownValue, setDropDownValue] = useState("Schnellauswahl");
@@ -493,11 +492,6 @@ const ErrorLogsTable = () => {
     setExpandedKeys(e.value); // Update expanded keys state
   };
 
-  useEffect(() => {
-    if (tableData.length > 0) {
-      setShowFilters(true);
-    }
-  }, [tableData]);
   const dateOpen1 = (value) => {
     setDateOpen(value);
   };
@@ -510,10 +504,9 @@ const ErrorLogsTable = () => {
       <div
         className={`relative ${
           dateOpen && "min-h-[327px]"
-        } w-full overflow-x-auto bg-white shadow-md sm:rounded-lg z-10`}
+        } w-full overflow-x-auto overflow-y-hidden bg-white shadow-md sm:rounded-lg z-10`}
       >
         <div className="flex flex-column my-3 bg-transparent mx-2 sm:flex-row flex-wrap space-y-4 sm:space-y-0 items-center justify-between">
-          {showFilters && (
             <div className="flex flex-row justify-center items-center gap-1">
               <div className="flex flex-row gap-x-2">
                 <TreeSelect
@@ -638,7 +631,6 @@ const ErrorLogsTable = () => {
                 </button>
               )}
             </div>
-          )}
         </div>
         <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 table-fixed">
           <thead className="text-xs font-semibold text-gray-500 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">

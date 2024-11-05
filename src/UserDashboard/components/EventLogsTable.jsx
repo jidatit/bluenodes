@@ -75,7 +75,7 @@ const EventLogsTable = ({ tableData }) => {
       <div className="flex flex-col items-start justify-center w-full">
         <h1 className=" font-[500] text-lg text-gray-900">Event Übersicht</h1>
       </div>
-      <div className="relative w-full overflow-x-auto bg-white shadow-md sm:rounded-lg">
+      <div className="relative w-full overflow-x-auto overflow-y-hidden bg-white shadow-md sm:rounded-lg">
         <div className="flex flex-wrap items-center justify-between mx-2 my-2 space-y-4 bg-transparent flex-column sm:flex-row sm:space-y-0">
           {/* Filter buttons */}
           <div className="flex flex-row items-center justify-center gap-1">

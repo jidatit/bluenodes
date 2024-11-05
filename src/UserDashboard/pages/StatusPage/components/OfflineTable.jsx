@@ -43,7 +43,6 @@ const OfflineTable = () => {
   const [closeDateFilter, setCloseDateFilter] = useState(false);
   const dateFilterRef = useRef(null);
   const [floors, setFloors] = useState([]);
-  const [showFilters, setShowFilters] = useState(false);
   const [filtersSelected, setFiltersSelected] = useState(false);
   const [loading, setLoading] = useState(true);
   const handleTreeSelectClick = () => {
@@ -503,11 +502,7 @@ const OfflineTable = () => {
         return "Undefined";
     }
   };
-  useEffect(() => {
-    if (tableData.length > 0) {
-      setShowFilters(true);
-    }
-  }, [tableData]);
+
   const columnWidths = {
     devEui: "w-[15%] ",
     deviceName: "w-[14%] ",
@@ -524,10 +519,10 @@ const OfflineTable = () => {
       <div className="flex flex-col justify-center items-start w-full">
         <h1 className=" font-[500] text-lg text-gray-900">Geräte offline</h1>
       </div>
-      <div className="relative w-full overflow-x-auto bg-white shadow-md sm:rounded-lg">
+      <div className="relative w-full overflow-x-auto overflow-y-hidden bg-white shadow-md sm:rounded-lg">
         <div className="flex flex-column my-3 bg-transparent mx-2 sm:flex-row flex-wrap space-y-4 sm:space-y-0 items-center justify-between">
           {/* Filter buttons */}
-          {showFilters && (
+
             <div className="flex flex-row justify-center items-center gap-1">
               <TreeSelect
                 value={selectedKeys}
@@ -602,7 +597,6 @@ const OfflineTable = () => {
                 </button>
               )}
             </div>
-          )}
         </div>
         {/* Table */}
         <table className="w-full table-fixed text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 ">

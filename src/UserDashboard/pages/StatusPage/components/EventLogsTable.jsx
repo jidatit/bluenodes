@@ -29,7 +29,7 @@ const EventLogsTable = () => {
   const [subDropdownValue, setSubDropdownValue] = useState(null);
   const [closeDateFilter, setCloseDateFilter] = useState(false); // State to manage dropdown visibility
   const [dates, setDates] = useState(null);
-  const [showFilters, setShowFilters] = useState(false);
+  // const [showFilters, setShowFilters] = useState(false);
   const dateFilterRef = useRef(null);
   const [selectedDropdownOption, setSelectedDropdownOption] =
     useState("Schnellauswahl");
@@ -478,11 +478,11 @@ const EventLogsTable = () => {
         return "Fehler";
     }
   };
-  useEffect(() => {
-    if (tableData.length > 0) {
-      setShowFilters(true);
-    }
-  }, [tableData]);
+  // useEffect(() => {
+  //   if (tableData.length > 0) {
+  //     setShowFilters(true);
+  //   }
+  // }, [tableData]);
 
   const dateOpen1 = (value) => {
     setDateOpen(value);
@@ -496,11 +496,11 @@ const EventLogsTable = () => {
       <div
         className={`relative ${
           dateOpen && "min-h-[327px]"
-        } w-full overflow-x-auto bg-white shadow-md sm:rounded-lg z-10`}
+        } w-full overflow-x-auto overflow-y-hidden bg-white shadow-md sm:rounded-lg z-10`}
       >
         <div className="flex flex-column my-3 bg-transparent mx-2 sm:flex-row flex-wrap space-y-4 sm:space-y-0 items-center justify-between z-10 ">
           {/* Filter buttons */}
-          {showFilters && (
+
             <div className="flex flex-row justify-center items-center gap-4 ">
               <div className="flex flex-row gap-x-2">
                 <TreeSelect
@@ -635,28 +635,28 @@ const EventLogsTable = () => {
                 </button>
               )}
             </div>
-          )}
+
         </div>
         {/* Table */}
         <table className="w-full table-fixed text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 z-10 h-full overflow-x-hidden">
           <thead className="text-xs font-semibold text-gray-500 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
             <tr>
-              <th scope="col" className="p-4 w-[10%]">
+              <th scope="col" className="p-4 w-[8%]">
                 EVENT ID
               </th>
-              <th scope="col" className="p-4 w-[15%]">
+              <th scope="col" className="p-4 w-[17%]">
                 RAUM
               </th>
-              <th scope="col" className="p-4 w-[18%]">
+              <th scope="col" className="p-4 w-[16%]">
                 GEBÄUDE - ETAGE
               </th>
               <th scope="col" className="p-4 w-[14%]">
                 DATUM - UHRZEIT
               </th>
-              <th scope="col" className="p-4 w-[18%]">
+              <th scope="col" className="p-4 w-[19%]">
                 EVENT
               </th>
-              <th scope="col" className="p-4 w-[25%]">
+              <th scope="col" className="p-4 w-[26%]">
                 NACHRICHT
               </th>
             </tr>
