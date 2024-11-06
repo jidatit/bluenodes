@@ -52,7 +52,7 @@ const Dashboard = (roomId) => {
   const commonOptions = {
     chart: {
       toolbar: { show: false },
-      zoom: { enabled: true },
+      zoom: { enabled: false },
       fontFamily: "Inter, sans-serif",
     },
     dataLabels: { enabled: false },
@@ -594,10 +594,10 @@ const Dashboard = (roomId) => {
         const localDate = new Date(
           date.getTime() - date.getTimezoneOffset() * 60000
         );
-        console.log("local date", localDate);
+
         return {
           x: localDate.toISOString(),
-          y: Math.round(item.valvePosition / 25) * 25,
+          y: item.valvePosition,
           timestamp: localDate.getTime(),
         };
       }),
@@ -802,8 +802,8 @@ const Dashboard = (roomId) => {
   // }, [Dashboard]);
 
   return (
-    <div className="h-[70vh] flex flex-col">
-      <div className="flex justify-end items-end ">
+    <div className="h-[70vh] relative flex flex-col">
+      <div className="flex justify-end absolute -top-[4.7rem] -right-4 items-end ">
         <DateFilter
           setSelectedDropdownOption={setSelectedDropdownOption}
           selectedDropdownOption={selectedDropdownOption}
@@ -823,7 +823,7 @@ const Dashboard = (roomId) => {
           dateOpen1={dateOpen1}
         />
       </div>{" "}
-      <div className="flex-grow overflow-auto mt-4 !pt-1 p-6 custom-scrollbar">
+      <div className="flex-grow overflow-auto px-2 py-2 -mt-4 custom-scrollbar">
         <div className="">
           <ReactApexChart
             options={temperatureOptions}

@@ -16,17 +16,57 @@
   display: none;
 }
 .apexcharts-tooltip-text-y-label {
+  fill: #6B7280;
+  color: #6B7280;
+  font-weight: 400;
+  font-family: "Inter", sans-serif;
+  line-height: 12px;
+  font-size: 14px;
+}
+.apexcharts-tooltip-text-y-value {
+  fill: #11192B;
+  color: #11192B;
+  font-family: "Inter", sans-serif;
+  line-height: 14px;
+  font-size: 14px;
+  font-weight: 400;
+}
+.apexcharts-tooltip-text-x-label {
   fill: #6b7280;
   font-weight: 400;
+  font-family: "Inter", sans-serif;
   line-height: 12px;
   font-size: 12px;
 }
-.apexcharts-tooltip-text-y-value {
+.apexcharts-tooltip-text-x-value {
   fill: #11192b;
+  font-family: "Inter", sans-serif;
   line-height: 14px;
+  font-weight: 400;
   font-size: 14px;
 }
+.apexcharts-tooltip-title
+{ font-family: "Inter", sans-serif;
 
+font-weight: 400;
+font-size: 12px;
+fill: #6B7280;
+color: #6B7280;
+}
+.apexcharts-tooltip-text-z-label {
+  fill: #6b7280;
+  font-weight: 400;
+  font-family: "Inter", sans-serif;
+  line-height: 12px;
+  font-size: 12px;
+}
+.apexcharts-tooltip-text-z-value {
+  fill: #11192b;
+  font-family: "Inter", sans-serif;
+  line-height: 14px;
+  font-size: 14px;
+  font-weight: 400;
+}
 .apexcharts-legend-text {
   color: #6b7280 !important;
   font-size: 12px !important;
@@ -41,14 +81,15 @@
 }
 .apexcharts-title-text {
   fill: #11192b;
+  font-family: "Inter", sans-serif;
   color: #11192b;
-  font-weight: 600;
+  font-weight: 500;
   font-size: 14px;
   line-height: 21px;
 }
 
 .apexcharts-text .apexcharts-yaxis-label {
-  font-family: "Inter, sans-serif";
+  font-family: "Inter", sans-serif;
   font-size: "12px !important";
   font-weight: 500;
   line-height: "18px !important";
@@ -56,7 +97,7 @@
   fill: "#6B7280 ";
 }
 .apexcharts-text .apexcharts-xaxis-label {
-  font-family: "Inter, sans-serif";
+  font-family: "Inter", sans-serif;
   font-size: "12px !important";
   font-weight: 500;
   line-height: "18px !important";
