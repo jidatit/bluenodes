@@ -175,6 +175,27 @@ function HeatingScheduleTableStatic({ locationDetails, props }) {
     }
   }, [zoomLevel]);
 
+  function overrideTranslateX(element, newX) {
+    const transform = window.getComputedStyle(element).transform;
+  
+    if (transform && transform !== 'none') {
+      // Extract matrix values from the transform
+      const matrix = new DOMMatrix(transform);
+      const currentY = matrix.m42; // m42 is translateY in the matrix
+  
+      // Apply your custom X value and retain the Y value from the library
+      element.style.transform = `translate(${newX}px, ${currentY}px)`;
+    } else {
+      // If no transform is applied yet, just set the new X value
+      element.style.transform = `translate(${newX}px, 0px)`;
+    }
+  }
+  
+  // Example usage: Override translateX on all elements with the class 'box'
+  document.querySelectorAll('.layout .box').forEach(box => {
+    overrideTranslateX(box, 0); // Set translateX to 100px
+  });
+
   return (
     <div
       className={`flex flex-col gap-4 ${
@@ -187,7 +208,7 @@ function HeatingScheduleTableStatic({ locationDetails, props }) {
             display: "flex",
             justifyContent: "flex-start",
             gap: "12px",
-            marginLeft: "60px",
+            marginLeft: "48px",
             alignItems: "center",
             marginBottom: "10px",
             zIndex: "1000",
@@ -203,7 +224,7 @@ function HeatingScheduleTableStatic({ locationDetails, props }) {
                 margin: "0",
               }}
             >
-              <div className="text-[#0BAAC9] bg-[#E7F9FD] w-full font-medium rounded-lg text-xs px-3 py-2 me-2 mb-2 border border-[#0BAAC9] flex items-center justify-between ">
+              <div className="text-[#0BAAC9] bg-[#E7F9FD] w-full font-medium rounded-lg text-xs py-2 me-2 mb-2 border border-[#0BAAC9] flex items-center justify-center ">
                 {day}
               </div>
             </div>

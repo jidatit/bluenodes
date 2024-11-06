@@ -131,43 +131,88 @@ const ProgramAssignment = ({
     setData(newData);
   }, []);
 
-  const handleSelectAllRooms = (buildingId, floorId, isSelected) => {
-    const newData = _.cloneDeep(firstData);
-    const building = newData.buildings.find((b) => b.id === buildingId);
-    const floor = building.floors.find((f) => f.id === floorId);
-    let count = floor.roomsAssigned;
-    let newVar = 0;
+  // const handleSelectAllRooms = (buildingId, floorId, isSelected) => {
+  //   const newData = _.cloneDeep(firstData);
+  //   const building = newData.buildings.find((b) => b.id === buildingId);
+  //   const floor = building.floors.find((f) => f.id === floorId);
+  //   let count = floor.roomsAssigned;
+  //   let newVar = 0;
 
-    floor.rooms.forEach((room) => {
-      room.assigned = isSelected;
+  //   floor.rooms.forEach((room) => {
+  //     room.assigned = isSelected;
+  //     if (isSelected) {
+  //       room.programAssigned = formData.programName;
+  //       room.algorithmOn = formData.applyAlgorithm;
+  //     } else {
+  //       const defaultValues = defaultValuesMap[room.id];
+  //       room.programAssigned =
+  //         defaultValues.programAssigned === formData.programName
+  //           ? ""
+  //           : defaultValues.programAssigned;
+  //       room.algorithmOn = defaultValues.algorithmOn;
+  //       // room.assigned = defaultValues.assigned;
+  //       if (defaultValues.programAssigned === formData.programName) {
+  //         count = count - 1;
+  //       }
+  //     }
+  //   });
+
+  //   const previouslyAssigned = floor.roomsAssigned;
+
+  //   const newlyAssigned = isSelected ? floor.totalRooms : count > 0 ? count : 0;
+  //   floor.roomsAssigned = newlyAssigned;
+
+  //   // Update building assigned count
+  //   const difference = newlyAssigned - previouslyAssigned;
+  //   building.roomsAssigned += difference;
+  //   setData(newData);
+  // };
+
+  const handleSelectAllRooms = (buildingId, floorId, isSelected) => {
+    const newData = _.cloneDeep(firstData); // Generate newData as before
+    const buildingInNewData = newData.buildings.find((b) => b.id === buildingId);
+    const floorInNewData = buildingInNewData.floors.find((f) => f.id === floorId);
+  
+    // Make a clone of current data to avoid full replacement
+    const updatedData = _.cloneDeep(data);
+    const buildingInData = updatedData.buildings.find((b) => b.id === buildingId);
+    const floorInData = buildingInData.floors.find((f) => f.id === floorId);
+  
+    let count = floorInNewData.roomsAssigned;
+  
+    floorInNewData.rooms.forEach((newRoom) => {
+      const roomInData = floorInData.rooms.find((room) => room.id === newRoom.id);
+      
+      roomInData.assigned = isSelected;
+  
       if (isSelected) {
-        room.programAssigned = formData.programName;
-        room.algorithmOn = formData.applyAlgorithm;
+        roomInData.programAssigned = formData.programName;
+        roomInData.algorithmOn = formData.applyAlgorithm;
       } else {
-        const defaultValues = defaultValuesMap[room.id];
-        room.programAssigned =
+        const defaultValues = defaultValuesMap[newRoom.id];
+  
+        roomInData.programAssigned =
           defaultValues.programAssigned === formData.programName
             ? ""
             : defaultValues.programAssigned;
-        room.algorithmOn = defaultValues.algorithmOn;
-        // room.assigned = defaultValues.assigned;
+        roomInData.algorithmOn = defaultValues.algorithmOn;
+  
         if (defaultValues.programAssigned === formData.programName) {
-          count = count - 1;
+          count -= 1;
         }
       }
     });
-
-    const previouslyAssigned = floor.roomsAssigned;
-
-    const newlyAssigned = isSelected ? floor.totalRooms : count > 0 ? count : 0;
-    floor.roomsAssigned = newlyAssigned;
-
-    // Update building assigned count
+  
+    const previouslyAssigned = floorInData.roomsAssigned;
+    const newlyAssigned = isSelected ? floorInNewData.totalRooms : count > 0 ? count : 0;
+    floorInData.roomsAssigned = newlyAssigned;
+  
     const difference = newlyAssigned - previouslyAssigned;
-    building.roomsAssigned += difference;
-    setData(newData);
+    buildingInData.roomsAssigned += difference;
+  
+    setData(updatedData); // Only set the updated parts of data
   };
-
+  
   const isAllRoomsSelected = (floor) => {
     return floor.rooms.every((room) => room.assigned);
   };

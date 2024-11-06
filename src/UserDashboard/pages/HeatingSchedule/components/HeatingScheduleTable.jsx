@@ -193,7 +193,7 @@ function HeatingScheduleTable({ locationDetails, props }) {
   
   // Example usage: Override translateX on all elements with the class 'box'
   document.querySelectorAll('.layout .box').forEach(box => {
-    overrideTranslateX(box, 2); // Set translateX to 100px
+    overrideTranslateX(box, 0); // Set translateX to 100px
   });
 
   return (
@@ -221,10 +221,10 @@ function HeatingScheduleTable({ locationDetails, props }) {
                 width: "100%",
                 textAlign: "center",
                 position: "relative",
-                margin: "0",
+                marginBottom: "0",
               }}
             >
-              <div className="text-[#0BAAC9] bg-[#E7F9FD] w-full font-medium rounded-lg text-xs px-4 py-2 me-2 mb-2 border border-[#0BAAC9] flex items-center justify-between ">
+              <div className="text-[#0BAAC9] bg-[#E7F9FD] w-full me-2 mb-2 font-medium rounded-lg text-xs py-2 border border-[#0BAAC9] flex items-center justify-center ">
                 {day}
               </div>
             </div>
@@ -272,6 +272,7 @@ function HeatingScheduleTable({ locationDetails, props }) {
                   margin: "0 ",
                   position: "relative",
                   zIndex: "10",
+                  marginTop:"10px"
                 }}
               >
                 <GridLayout

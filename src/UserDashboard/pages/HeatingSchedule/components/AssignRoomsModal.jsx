@@ -190,43 +190,54 @@ function AssignRoomsModal({
   };
   const [select, setselect] = useState(true);
   const handleSelectAllRooms = (buildingId, floorId, isSelected) => {
-    const newData = _.cloneDeep(firstData);
-    const building = newData.buildings.find((b) => b.id === buildingId);
-    const floor = building.floors.find((f) => f.id === floorId);
-    let count = floor.roomsAssigned;
-
-    floor.rooms.forEach((room) => {
-      // Update the room's assigned state and properties
-      room.assigned = isSelected;
+    const newData = _.cloneDeep(firstData); // Reference original data from API
+    const buildingInNewData = newData.buildings.find((b) => b.id === buildingId);
+    const floorInNewData = buildingInNewData.floors.find((f) => f.id === floorId);
+  
+    // Clone current data to selectively update
+    const updatedData = _.cloneDeep(data);
+    const buildingInData = updatedData.buildings.find((b) => b.id === buildingId);
+    const floorInData = buildingInData.floors.find((f) => f.id === floorId);
+  
+    let count = floorInNewData.roomsAssigned;
+  
+    // Iterate through rooms and apply changes based on selection
+    floorInNewData.rooms.forEach((newRoom) => {
+      const roomInData = floorInData.rooms.find((room) => room.id === newRoom.id);
+  
+      // Update room state based on selection or deselection
+      roomInData.assigned = isSelected;
       if (isSelected) {
-        room.programAssigned = program.templateName;
-        room.algorithmOn = formData.applyAlgorithm;
+        roomInData.programAssigned = program.templateName;
+        roomInData.algorithmOn = formData.applyAlgorithm;
       } else {
-        const defaultValues = defaultValuesMap[room.id];
-        room.programAssigned =
+        const defaultValues = defaultValuesMap[newRoom.id];
+  
+        // Reset to defaults if deselected, adjusting count accordingly
+        roomInData.programAssigned =
           defaultValues.programAssigned === program.templateName
             ? ""
             : defaultValues.programAssigned;
-        room.algorithmOn = defaultValues.algorithmOn;
+        roomInData.algorithmOn = defaultValues.algorithmOn;
+  
         if (defaultValues.programAssigned === program.templateName) {
-          count = count - 1;
+          count -= 1; // Decrease count if deselecting a previously assigned room
         }
       }
     });
-
-    // Update the assigned counts
-    const previouslyAssigned = floor.roomsAssigned;
-
-    const newlyAssigned = isSelected ? floor.totalRooms : count > 0 ? count : 0;
-    floor.roomsAssigned = newlyAssigned;
-
-    // Update building assigned count
+  
+    // Update floor assignment count
+    const previouslyAssigned = floorInData.roomsAssigned;
+    const newlyAssigned = isSelected ? floorInNewData.totalRooms : count > 0 ? count : 0;
+    floorInData.roomsAssigned = newlyAssigned;
+  
+    // Update building assigned count based on floor change
     const difference = newlyAssigned - previouslyAssigned;
-    building.roomsAssigned += difference;
-
-    // Update state
-    setData(newData);
+    buildingInData.roomsAssigned += difference;
+  
+    setData(updatedData); // Set only the updated data sections
   };
+  
 
   const isAllRoomsSelected = (floor) => {
     return floor.rooms.every((room) => room.assigned);

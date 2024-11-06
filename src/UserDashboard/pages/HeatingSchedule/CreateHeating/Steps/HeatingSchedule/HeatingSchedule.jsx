@@ -765,7 +765,7 @@ function HeatingSchedule({
             display: "flex",
             justifyContent: "flex-start",
             gap: "12px",
-            marginLeft: "60px",
+            marginLeft: "70px",
             alignItems: "center",
             marginBottom: "10px",
             zIndex: "1000",
@@ -781,7 +781,7 @@ function HeatingSchedule({
                 margin: "0",
               }}
             >
-              <div className="text-[#0BAAC9] bg-[#E7F9FD] w-full font-medium rounded-lg text-sm px-3 py-2 me-2 mb-2 border border-[#0BAAC9] flex items-center justify-between ">
+              <div className="text-[#0BAAC9] bg-[#E7F9FD] w-full font-medium rounded-lg text-sm px-3 py-2 mb-2 border border-[#0BAAC9] flex items-center justify-between ">
                 {day}
                 <button
                   className=" text-[#111928] hover:text-white"
