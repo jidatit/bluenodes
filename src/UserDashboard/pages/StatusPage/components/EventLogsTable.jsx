@@ -501,141 +501,140 @@ const EventLogsTable = () => {
         <div className="flex flex-column my-3 bg-transparent mx-2 sm:flex-row flex-wrap space-y-4 sm:space-y-0 items-center justify-between z-10 ">
           {/* Filter buttons */}
 
-            <div className="flex flex-row justify-center items-center gap-4 ">
-              <div className="flex flex-row gap-x-2">
-                <TreeSelect
-                  value={selectedKeys}
-                  options={filteredLocations}
-                  onChange={onNodeSelectChange}
-                  onClick={handleTreeSelectClick}
-                  expandedKeys={expandedKeys}
-                  onShow={openBuildingFilter}
-                  onHide={hideBuildingFilter} // Use expandedKeys to manage expanded nodes
-                  onToggle={handleNodeToggle} // Handle node expand/collapse event
-                  selectionMode="multiple"
-                  placeholder="Alle Gebäude"
-                  filter
-                  filterBy="label"
-                  filterValue={filterValue}
-                  className="w-full md:w-20rem"
-                  closeIcon="false"
-                  panelStyle={{
-                    border: "0.5px solid #bababa",
-                    borderRadius: "4px",
-                    outline: "none",
-                    boxShadow: "none",
-                  }}
-                  style={{
-                    outline: "none",
-                    boxShadow: "none",
-                  }}
-                  filterTemplate={({ filterInputProps }) => (
-                    <div
+          <div className="flex flex-row justify-center items-center gap-4 ">
+            <div className="flex flex-row gap-x-2">
+              <TreeSelect
+                value={selectedKeys}
+                options={filteredLocations}
+                onChange={onNodeSelectChange}
+                onClick={handleTreeSelectClick}
+                expandedKeys={expandedKeys}
+                onShow={openBuildingFilter}
+                onHide={hideBuildingFilter} // Use expandedKeys to manage expanded nodes
+                onToggle={handleNodeToggle} // Handle node expand/collapse event
+                selectionMode="multiple"
+                placeholder="Alle Gebäude"
+                filter
+                filterBy="label"
+                filterValue={filterValue}
+                className="w-full md:w-20rem"
+                closeIcon="false"
+                panelStyle={{
+                  border: "0.5px solid #bababa",
+                  borderRadius: "4px",
+                  outline: "none",
+                  boxShadow: "none",
+                }}
+                style={{
+                  outline: "none",
+                  boxShadow: "none",
+                }}
+                filterTemplate={({ filterInputProps }) => (
+                  <div
+                    style={{
+                      backgroundColor: "#f5f5f5",
+                      padding: "10px",
+                      display: "flex",
+                      width: "100%",
+                      alignItems: "center",
+                      borderRadius: "6px",
+                      border: "1px solid #d5ddde",
+                    }}
+                  >
+                    <span
                       style={{
-                        backgroundColor: "#f5f5f5",
-                        padding: "10px",
-                        display: "flex",
-                        width: "100%",
-                        alignItems: "center",
-                        borderRadius: "6px",
-                        border: "1px solid #d5ddde",
+                        marginLeft: "8px",
+                        marginRight: "8px",
+                        color: "#9e9e9e",
+                        fontSize: "18px",
                       }}
                     >
-                      <span
-                        style={{
-                          marginLeft: "8px",
-                          marginRight: "8px",
-                          color: "#9e9e9e",
-                          fontSize: "18px",
-                        }}
-                      >
-                        <IoSearch />
-                      </span>
-                      <input
-                        {...filterInputProps}
-                        value={filterValue}
-                        onChange={handleFilterChange}
-                        style={{
-                          border: "none",
-                          width: "100%",
-                          backgroundColor: "transparent",
-                          outline: "none",
-                          color: "#6e6e6e",
-                        }}
-                        placeholder="Suche"
-                      />
-                    </div>
-                  )}
-                />
+                      <IoSearch />
+                    </span>
+                    <input
+                      {...filterInputProps}
+                      value={filterValue}
+                      onChange={handleFilterChange}
+                      style={{
+                        border: "none",
+                        width: "100%",
+                        backgroundColor: "transparent",
+                        outline: "none",
+                        color: "#6e6e6e",
+                      }}
+                      placeholder="Suche"
+                    />
+                  </div>
+                )}
+              />
 
-                {Object.keys(selectedKeys).length > 0 && (
-                  <button
-                    className="text-xl text-red-500 rounded-lg"
-                    onClick={clearBuildingFilter}
-                  >
-                    <CiCircleRemove size={36} />
-                  </button>
-                )}
-              </div>
-              <div className="flex flex-row gap-x-2">
-                <MultiSelect
-                  value={selectedEventFilters}
-                  onShow={handleMultiSelectClick}
-                  onHide={handleMultiSelectHide}
-                  onChange={(e) => setSelectedEventFilters(e.value)}
-                  showSelectAll={false}
-                  options={eventFilterOptions}
-                  optionLabel="germanLabel"
-                  filter
-                  placeholder="Alle Ereignisse"
-                  display="chip"
-                  className="w-full md:w-20rem"
-                  panelStyle={{
-                    border: "0.5px solid #bababa",
-                    borderRadius: "4px",
-                  }}
-                />
-                {selectedEventFilters?.length > 0 && (
-                  <button
-                    className="text-xl text-red-500 rounded-lg"
-                    onClick={clearEventFilter}
-                  >
-                    <CiCircleRemove size={36} />
-                  </button>
-                )}
-              </div>
-              <div className="dummy" ref={dateFilterRef}>
-                <DateFilter
-                  setSelectedDropdownOption={setSelectedDropdownOption}
-                  selectedDropdownOption={selectedDropdownOption}
-                  setDropDownValue={setDropDownValue}
-                  dropDownValue={dropDownValue}
-                  setDates={setDates}
-                  dates={dates}
-                  dateRef={dateFilterRef}
-                  closeDropdown={closeDateFilter}
-                  setCloseDateFilter={setCloseDateFilter}
-                  onDatesChange={handleDatesChange}
-                  setApiLocationsToBeSend={setApiLocationsToBeSend}
-                  selectedLocationFilter={selectedLocationFilter}
-                  setSubDropdownValue={setSubDropdownValue}
-                  subDropdownValue={subDropdownValue}
-                  dateOpen1={dateOpen1}
-                />
-              </div>
-              {(selectedEventFilters?.length > 0 ||
-                Object.keys(selectedKeys).length > 0 ||
-                dates ||
-                (subDropdownValue && subDropdownValue.length > 0)) && (
+              {Object.keys(selectedKeys).length > 0 && (
                 <button
-                  className="bg-red-500 px-2 text-[11px] py-3 h-[34%] text-white shadow-lg rounded-lg"
-                  onClick={clearAllFilters}
+                  className="text-xl text-red-500 rounded-lg"
+                  onClick={clearBuildingFilter}
                 >
-                  Alle zurücksetzen
+                  <CiCircleRemove size={36} />
                 </button>
               )}
             </div>
-
+            <div className="flex flex-row gap-x-2">
+              <MultiSelect
+                value={selectedEventFilters}
+                onShow={handleMultiSelectClick}
+                onHide={handleMultiSelectHide}
+                onChange={(e) => setSelectedEventFilters(e.value)}
+                showSelectAll={false}
+                options={eventFilterOptions}
+                optionLabel="germanLabel"
+                filter
+                placeholder="Alle Ereignisse"
+                display="chip"
+                className="w-full md:w-20rem"
+                panelStyle={{
+                  border: "0.5px solid #bababa",
+                  borderRadius: "4px",
+                }}
+              />
+              {selectedEventFilters?.length > 0 && (
+                <button
+                  className="text-xl text-red-500 rounded-lg"
+                  onClick={clearEventFilter}
+                >
+                  <CiCircleRemove size={36} />
+                </button>
+              )}
+            </div>
+            <div className="dummy" ref={dateFilterRef}>
+              <DateFilter
+                setSelectedDropdownOption={setSelectedDropdownOption}
+                selectedDropdownOption={selectedDropdownOption}
+                setDropDownValue={setDropDownValue}
+                dropDownValue={dropDownValue}
+                setDates={setDates}
+                dates={dates}
+                dateRef={dateFilterRef}
+                closeDropdown={closeDateFilter}
+                setCloseDateFilter={setCloseDateFilter}
+                onDatesChange={handleDatesChange}
+                setApiLocationsToBeSend={setApiLocationsToBeSend}
+                selectedLocationFilter={selectedLocationFilter}
+                setSubDropdownValue={setSubDropdownValue}
+                subDropdownValue={subDropdownValue}
+                dateOpen1={dateOpen1}
+              />
+            </div>
+            {(selectedEventFilters?.length > 0 ||
+              Object.keys(selectedKeys).length > 0 ||
+              dates ||
+              (subDropdownValue && subDropdownValue.length > 0)) && (
+              <button
+                className="bg-red-500 px-2 text-[11px] py-3 h-[34%] text-white shadow-lg rounded-lg"
+                onClick={clearAllFilters}
+              >
+                Alle zurücksetzen
+              </button>
+            )}
+          </div>
         </div>
         {/* Table */}
         <table className="w-full table-fixed text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 z-10 h-full overflow-x-hidden">
@@ -735,87 +734,89 @@ const EventLogsTable = () => {
           </>
         )}
 
-        <div className="w-full p-3 flex flex-row justify-between items-center">
-          {tableData && (
-            <p className="font-light text-sm text-gray-500">
-              {" "}
-              <span className="font-bold text-black">
-                {startIndex}-{endIndex}
-              </span>{" "}
-              von <span className="font-bold text-black">{totalItems}</span>
-            </p>
-          )}
+        {!loading && (
+          <div className="w-full p-3 flex flex-row justify-between items-center">
+            {tableData && (
+              <p className="font-light text-sm text-gray-500">
+                {" "}
+                <span className="font-bold text-black">
+                  {startIndex}-{endIndex}
+                </span>{" "}
+                von <span className="font-bold text-black">{totalItems}</span>
+              </p>
+            )}
 
-          {/* Pagination */}
-          <div className="flex justify-end border rounded-md border-gray-200 w-fit">
-            <button
-              onClick={() => handlePageChange(currentPage - 1)}
-              className={`inline-flex items-center px-4 py-2 text-sm font-medium rounded-sm ${
-                currentPage === 1
-                  ? "text-gray-300 cursor-not-allowed"
-                  : "text-primary bg-[#CFF4FB] hover:bg-primary-300"
-              }`}
-              disabled={currentPage === 1}
-            >
-              <IoChevronBackOutline />
-            </button>
-            {startPage > 1 && (
+            {/* Pagination */}
+            <div className="flex justify-end border rounded-md border-gray-200 w-fit">
               <button
-                onClick={() => handlePageChange(1)}
-                className="inline-flex items-center px-4 py-2 text-sm font-medium rounded-sm text-gray-500 bg-white hover:bg-gray-100"
-              >
-                1
-              </button>
-            )}
-            {startPage > 2 && (
-              <span className="inline-flex items-center px-4 py-2 text-sm font-medium rounded-sm text-gray-500 bg-white">
-                ...
-              </span>
-            )}
-            {Array.from({ length: endPage - startPage + 1 }, (_, index) => (
-              <button
-                key={startPage + index}
-                onClick={() => handlePageChange(startPage + index)}
+                onClick={() => handlePageChange(currentPage - 1)}
                 className={`inline-flex items-center px-4 py-2 text-sm font-medium rounded-sm ${
-                  currentPage === startPage + index
-                    ? "text-primary bg-[#CFF4FB] hover:bg-primary-300"
-                    : "text-gray-500 bg-white hover:bg-gray-100"
+                  currentPage === 1
+                    ? "text-gray-300 cursor-not-allowed"
+                    : "text-primary bg-[#CFF4FB] hover:bg-primary-300"
                 }`}
+                disabled={currentPage === 1}
               >
-                {startPage + index}
+                <IoChevronBackOutline />
               </button>
-            ))}
-            {endPage < totalPages - 1 && (
-              <span className="inline-flex items-center px-4 py-2 text-sm font-medium rounded-sm text-gray-500 bg-white">
-                ...
-              </span>
-            )}
-            {endPage < totalPages && (
+              {startPage > 1 && (
+                <button
+                  onClick={() => handlePageChange(1)}
+                  className="inline-flex items-center px-4 py-2 text-sm font-medium rounded-sm text-gray-500 bg-white hover:bg-gray-100"
+                >
+                  1
+                </button>
+              )}
+              {startPage > 2 && (
+                <span className="inline-flex items-center px-4 py-2 text-sm font-medium rounded-sm text-gray-500 bg-white">
+                  ...
+                </span>
+              )}
+              {Array.from({ length: endPage - startPage + 1 }, (_, index) => (
+                <button
+                  key={startPage + index}
+                  onClick={() => handlePageChange(startPage + index)}
+                  className={`inline-flex items-center px-4 py-2 text-sm font-medium rounded-sm ${
+                    currentPage === startPage + index
+                      ? "text-primary bg-[#CFF4FB] hover:bg-primary-300"
+                      : "text-gray-500 bg-white hover:bg-gray-100"
+                  }`}
+                >
+                  {startPage + index}
+                </button>
+              ))}
+              {endPage < totalPages - 1 && (
+                <span className="inline-flex items-center px-4 py-2 text-sm font-medium rounded-sm text-gray-500 bg-white">
+                  ...
+                </span>
+              )}
+              {endPage < totalPages && (
+                <button
+                  onClick={() => handlePageChange(totalPages)}
+                  className={`inline-flex items-center px-4 py-2 text-sm font-medium rounded-sm ${
+                    currentPage === totalPages
+                      ? "text-gray-300 cursor-not-allowed"
+                      : "text-gray-500 bg-white hover:bg-gray-100"
+                  }`}
+                  disabled={currentPage === totalPages}
+                >
+                  {totalPages}
+                </button>
+              )}
               <button
-                onClick={() => handlePageChange(totalPages)}
+                onClick={() => handlePageChange(currentPage + 1)}
                 className={`inline-flex items-center px-4 py-2 text-sm font-medium rounded-sm ${
                   currentPage === totalPages
                     ? "text-gray-300 cursor-not-allowed"
-                    : "text-gray-500 bg-white hover:bg-gray-100"
+                    : "text-primary bg-[#CFF4FB] hover:bg-primary-300"
                 }`}
                 disabled={currentPage === totalPages}
               >
-                {totalPages}
+                <IoChevronForwardOutline />
               </button>
-            )}
-            <button
-              onClick={() => handlePageChange(currentPage + 1)}
-              className={`inline-flex items-center px-4 py-2 text-sm font-medium rounded-sm ${
-                currentPage === totalPages
-                  ? "text-gray-300 cursor-not-allowed"
-                  : "text-primary bg-[#CFF4FB] hover:bg-primary-300"
-              }`}
-              disabled={currentPage === totalPages}
-            >
-              <IoChevronForwardOutline />
-            </button>
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );

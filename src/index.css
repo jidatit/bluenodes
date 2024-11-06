@@ -28,7 +28,7 @@
 }
 
 .apexcharts-legend-text {
-  color: #6B7280 !important;
+  color: #6b7280 !important;
   font-size: 12px !important;
   font-weight: 500 !important;
 }
@@ -41,7 +41,12 @@
 }
 .apexcharts-title-text {
   fill: #11192b;
+  color: #11192b;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 21px;
 }
+
 .apexcharts-text .apexcharts-yaxis-label {
   font-family: "Inter, sans-serif";
   font-size: "12px !important";

@@ -117,7 +117,7 @@ export function ViewRoomScheduleModal({
       >
         {/* {locationDetails && ( */}
         <>
-          <Modal.Header className=" text-lg text-gray-900 [&>*]:font-semibold">
+          <Modal.Header className=" text-lg text-gray-900 [&>*]:font-semibold ">
             {roomName}
           </Modal.Header>
 

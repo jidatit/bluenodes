@@ -52,7 +52,7 @@ const Dashboard = (roomId) => {
   const commonOptions = {
     chart: {
       toolbar: { show: false },
-      zoom: { enabled: false },
+      zoom: { enabled: true },
       fontFamily: "Inter, sans-serif",
     },
     dataLabels: { enabled: false },
@@ -67,6 +67,7 @@ const Dashboard = (roomId) => {
           fontWeight: 500,
           lineHeight: "18px !important",
           textAlign: "center !important",
+          margin: "22px !important",
         },
       },
     },
@@ -87,7 +88,7 @@ const Dashboard = (roomId) => {
 
     tooltip: {
       x: {
-        format: "HH:mm",
+        format: "dd.MM-HH:mm",
         style: { fontFamily: "Inter, sans-serif" },
       },
     },
@@ -228,7 +229,7 @@ const Dashboard = (roomId) => {
       gradient: {
         shadeIntensity: 1,
         opacityFrom: 0.3,
-        opacityTo: 0,
+        opacityTo: 0.3,
         stops: [0, 80, 100],
       },
     },
@@ -242,6 +243,9 @@ const Dashboard = (roomId) => {
       type: "datetime",
       labels: {
         format: sequence,
+      },
+      tooltip: {
+        enabled: false,
       },
     },
     yaxis: {
@@ -399,13 +403,12 @@ const Dashboard = (roomId) => {
       curve: ["smooth", "stepline"],
       width: [2, 2],
     },
-
     fill: {
       type: "gradient",
       gradient: {
         shadeIntensity: 1,
         opacityFrom: 0.3,
-        opacityTo: 0,
+        opacityTo: 0.3,
         stops: [0, 55, 100],
       },
     },
@@ -413,6 +416,9 @@ const Dashboard = (roomId) => {
       type: "datetime",
       labels: {
         format: temperatureData.sequence,
+      },
+      tooltip: {
+        enabled: false,
       },
     },
     grid: {
@@ -430,6 +436,18 @@ const Dashboard = (roomId) => {
       max: temperatureData.max,
       labels: {
         formatter: (value) => `${Math.round(value)}°C`,
+      },
+    },
+    tooltip: {
+      enabled: true,
+      y: {
+        formatter: (value) => `${value}°C`,
+      },
+      x: {
+        show: true,
+        type: "datetime",
+
+        format: "dd.MM-HH:mm",
       },
     },
     legend: {
@@ -576,6 +594,7 @@ const Dashboard = (roomId) => {
         const localDate = new Date(
           date.getTime() - date.getTimezoneOffset() * 60000
         );
+        console.log("local date", localDate);
         return {
           x: localDate.toISOString(),
           y: Math.round(item.valvePosition / 25) * 25,
@@ -655,8 +674,8 @@ const Dashboard = (roomId) => {
       type: "gradient",
       gradient: {
         shadeIntensity: 1,
-        opacityFrom: 0.5,
-        opacityTo: 0, // Make the color fully transparent at the end
+        opacityFrom: 0.4,
+        opacityTo: 0.4, // Make the color fully transparent at the end
         stops: [0, 80, 100], // Transition to transparency quickly
       },
     },
@@ -672,6 +691,9 @@ const Dashboard = (roomId) => {
       type: "datetime",
       labels: {
         format: valvePositionData.sequence,
+      },
+      tooltip: {
+        enabled: false,
       },
     },
     yaxis: {
@@ -699,7 +721,7 @@ const Dashboard = (roomId) => {
     },
     // legend: {
     //   show: true,
- 
+
     // },
     legend: {
       show: true,

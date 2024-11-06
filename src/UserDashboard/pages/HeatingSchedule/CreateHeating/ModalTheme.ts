@@ -2,7 +2,7 @@ import type { CustomFlowbiteTheme } from "flowbite-react";
 
 const customTheme: CustomFlowbiteTheme = {
   root: {
-    base: "fixed inset-x-0 top-0 z-50 h-screen overflow-y-auto overflow-x-hidden md:inset-0 md:h-full",
+    base: "fixed inset-x-0 top-0 z-50 h-screen overflow-y-auto overflow-x-hidden md:inset-0 md:h-full   ",
     show: {
       on: "flex bg-gray-900 bg-opacity-50 dark:bg-opacity-80",
       off: "hidden",
@@ -34,7 +34,7 @@ const customTheme: CustomFlowbiteTheme = {
   content: {
     base: "relative h-full w-full p-4 md:h-auto",
     inner:
-      "relative flex max-h-[90vh] flex-col rounded-lg bg-white shadow dark:bg-gray-700",
+      "relative flex max-h-[90vh] flex-col rounded-lg bg-white shadow dark:bg-gray-700 focus:outline-none",
   },
   body: {
     base: "flex-1 overflow-auto p-6",

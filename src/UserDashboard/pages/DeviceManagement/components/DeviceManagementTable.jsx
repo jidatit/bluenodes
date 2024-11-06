@@ -691,143 +691,142 @@ const DeviceManagementTable = () => {
         <div className="flex flex-wrap items-center justify-between mx-2 my-2 space-y-4 bg-transparent flex-column sm:flex-row sm:space-y-0">
           {/* Filter buttons */}
 
-            <div className="flex flex-row items-center justify-center gap-1">
-              <div className="flex flex-row gap-x-2">
-                <TreeSelect
-                  value={selectedKeys}
-                  options={filteredLocations}
-                  onChange={onNodeSelectChange}
-                  onHide={hideBuildingFilter}
-                  onShow={openBuildingFilter}
-                  expandedKeys={expandedKeys} // Use expandedKeys to manage expanded nodes
-                  onToggle={handleNodeToggle} // Handle node expand/collapse event
-                  selectionMode="multiple"
-                  placeholder="Alle Gebäude"
-                  filter
-                  filterBy="label"
-                  filterValue={filterValue}
-                  className="w-full md:w-20rem"
-                  closeIcon="false"
-                  panelStyle={{
-                    border: "0.5px solid #bababa",
-                    borderRadius: "4px",
-                    outline: "none",
-                    boxShadow: "none",
-                  }}
-                  style={{
-                    outline: "none",
-                    boxShadow: "none",
-                  }}
-                  filterTemplate={({ filterInputProps }) => (
-                    <div
+          <div className="flex flex-row items-center justify-center gap-1">
+            <div className="flex flex-row gap-x-2">
+              <TreeSelect
+                value={selectedKeys}
+                options={filteredLocations}
+                onChange={onNodeSelectChange}
+                onHide={hideBuildingFilter}
+                onShow={openBuildingFilter}
+                expandedKeys={expandedKeys} // Use expandedKeys to manage expanded nodes
+                onToggle={handleNodeToggle} // Handle node expand/collapse event
+                selectionMode="multiple"
+                placeholder="Alle Gebäude"
+                filter
+                filterBy="label"
+                filterValue={filterValue}
+                className="w-full md:w-20rem"
+                closeIcon="false"
+                panelStyle={{
+                  border: "0.5px solid #bababa",
+                  borderRadius: "4px",
+                  outline: "none",
+                  boxShadow: "none",
+                }}
+                style={{
+                  outline: "none",
+                  boxShadow: "none",
+                }}
+                filterTemplate={({ filterInputProps }) => (
+                  <div
+                    style={{
+                      backgroundColor: "#f5f5f5",
+                      padding: "10px",
+                      display: "flex",
+                      width: "100%",
+                      alignItems: "center",
+                      borderRadius: "6px",
+                      border: "1px solid #d5ddde",
+                    }}
+                  >
+                    <span
                       style={{
-                        backgroundColor: "#f5f5f5",
-                        padding: "10px",
-                        display: "flex",
-                        width: "100%",
-                        alignItems: "center",
-                        borderRadius: "6px",
-                        border: "1px solid #d5ddde",
+                        marginLeft: "8px",
+                        marginRight: "8px",
+                        color: "#9e9e9e",
+                        fontSize: "18px",
                       }}
                     >
-                      <span
-                        style={{
-                          marginLeft: "8px",
-                          marginRight: "8px",
-                          color: "#9e9e9e",
-                          fontSize: "18px",
-                        }}
-                      >
-                        <IoSearch />
-                      </span>
-                      <input
-                        {...filterInputProps}
-                        value={filterValue}
-                        onChange={handleFilterChange}
-                        style={{
-                          border: "none",
-                          width: "100%",
-                          backgroundColor: "transparent",
-                          outline: "none",
-                          color: "#6e6e6e",
-                        }}
-                        placeholder="Suche"
-                      />
-                    </div>
-                  )}
-                />
-                {Object.keys(selectedKeys).length > 0 && (
-                  <button
-                    className="text-xl text-red-500 rounded-lg"
-                    onClick={clearBuildingFilter}
-                  >
-                    <CiCircleRemove size={36} />
-                  </button>
+                      <IoSearch />
+                    </span>
+                    <input
+                      {...filterInputProps}
+                      value={filterValue}
+                      onChange={handleFilterChange}
+                      style={{
+                        border: "none",
+                        width: "100%",
+                        backgroundColor: "transparent",
+                        outline: "none",
+                        color: "#6e6e6e",
+                      }}
+                      placeholder="Suche"
+                    />
+                  </div>
                 )}
-              </div>
-              <div className="flex flex-row gap-x-2">
-                <MultiSelect
-                  value={selectedStatusFilter}
-                  onShow={handleMultiSelectClick}
-                  onChange={handleStatusChange}
-                  showSelectAll={false}
-                  options={eventFilterOptions}
-                  placeholder="Status"
-                  display="chip"
-                  className="w-full md:w-20rem"
-                  panelStyle={{
-                    border: "0.5px solid #bababa",
-                    borderRadius: "4px",
-                  }}
-                  maxSelectedLabels={1}
-                  optionLabel={(option) => option.germanLabel} // Display German label in the UI
-                />
-                {selectedStatusFilter && (
-                  <button
-                    className="text-xl text-red-500 rounded-lg"
-                    onClick={clearStatusFilter}
-                  >
-                    <CiCircleRemove size={36} />
-                  </button>
-                )}
-              </div>
-              <div className="flex flex-row gap-x-2">
-                <MultiSelect
-                  value={selectedBatteryLevels}
-                  onShow={handleMultiSelectClick}
-                  onChange={handleBatteryLevelChange}
-                  showSelectAll={false}
-                  options={batteryLevelOptions}
-                  placeholder="Batteriestand"
-                  display="chip"
-                  className="w-full md:w-20rem"
-                  panelStyle={{
-                    border: "0.5px solid #bababa",
-                    borderRadius: "4px",
-                  }}
-                  optionLabel={(option) => option.germanLabel} // Display German label in the UI
-                />{" "}
-                {selectedBatteryLevels?.length > 0 && (
-                  <button
-                    className="text-xl text-red-500  rounded-lg"
-                    onClick={clearBatteryFilter}
-                  >
-                    <CiCircleRemove size={36} />
-                  </button>
-                )}
-              </div>
-              {(selectedStatusFilter ||
-                Object.keys(selectedKeys).length > 0 ||
-                (selectedBatteryLevels &&
-                  selectedBatteryLevels.length > 0)) && (
+              />
+              {Object.keys(selectedKeys).length > 0 && (
                 <button
-                  className="bg-red-500 px-2 text-[11px] py-3 h-[34%] text-white shadow-lg rounded-lg"
-                  onClick={clearAllFilters}
+                  className="text-xl text-red-500 rounded-lg"
+                  onClick={clearBuildingFilter}
                 >
-                  Alle zurücksetzen
+                  <CiCircleRemove size={36} />
                 </button>
               )}
             </div>
+            <div className="flex flex-row gap-x-2">
+              <MultiSelect
+                value={selectedStatusFilter}
+                onShow={handleMultiSelectClick}
+                onChange={handleStatusChange}
+                showSelectAll={false}
+                options={eventFilterOptions}
+                placeholder="Status"
+                display="chip"
+                className="w-full md:w-20rem"
+                panelStyle={{
+                  border: "0.5px solid #bababa",
+                  borderRadius: "4px",
+                }}
+                maxSelectedLabels={1}
+                optionLabel={(option) => option.germanLabel} // Display German label in the UI
+              />
+              {selectedStatusFilter && (
+                <button
+                  className="text-xl text-red-500 rounded-lg"
+                  onClick={clearStatusFilter}
+                >
+                  <CiCircleRemove size={36} />
+                </button>
+              )}
+            </div>
+            <div className="flex flex-row gap-x-2">
+              <MultiSelect
+                value={selectedBatteryLevels}
+                onShow={handleMultiSelectClick}
+                onChange={handleBatteryLevelChange}
+                showSelectAll={false}
+                options={batteryLevelOptions}
+                placeholder="Batteriestand"
+                display="chip"
+                className="w-full md:w-20rem"
+                panelStyle={{
+                  border: "0.5px solid #bababa",
+                  borderRadius: "4px",
+                }}
+                optionLabel={(option) => option.germanLabel} // Display German label in the UI
+              />{" "}
+              {selectedBatteryLevels?.length > 0 && (
+                <button
+                  className="text-xl text-red-500  rounded-lg"
+                  onClick={clearBatteryFilter}
+                >
+                  <CiCircleRemove size={36} />
+                </button>
+              )}
+            </div>
+            {(selectedStatusFilter ||
+              Object.keys(selectedKeys).length > 0 ||
+              (selectedBatteryLevels && selectedBatteryLevels.length > 0)) && (
+              <button
+                className="bg-red-500 px-2 text-[11px] py-3 h-[34%] text-white shadow-lg rounded-lg"
+                onClick={clearAllFilters}
+              >
+                Alle zurücksetzen
+              </button>
+            )}
+          </div>
           {/* Search bar */}
         </div>
         {/* Table */}
@@ -1565,93 +1564,95 @@ const DeviceManagementTable = () => {
           </div>
         )}
 
-        <div className="flex flex-row items-center justify-between w-full p-3">
-          {tableData && (
-            <p className="text-sm font-light text-gray-500">
-              {" "}
-              <span className="font-bold text-black">
-                {startIndex}-{endIndex}
-              </span>{" "}
-              von <span className="font-bold text-black">{totalItems}</span>
-            </p>
-          )}
-
-          {/* Pagination */}
-          <div className="flex justify-end border border-gray-200 rounded-md w-auto">
-            <button
-              onClick={() => handlePageChange(currentPage - 1)}
-              className={`inline-flex items-center py-2 px-3 text-sm font-medium rounded-sm ${
-                currentPage === 1
-                  ? "text-gray-300 cursor-not-allowed"
-                  : "text-primary bg-[#CFF4FB] hover:bg-primary-300"
-              }`}
-              disabled={currentPage === 1}
-            >
-              <IoChevronBackOutline />
-            </button>
-
-            {startPage > 1 && (
-              <button
-                onClick={() => handlePageChange(1)}
-                className="inline-flex items-center py-2 px-3 text-sm font-medium text-gray-500 bg-white rounded-sm hover:bg-gray-100"
-              >
-                1
-              </button>
+        {!loading && (
+          <div className="flex flex-row items-center justify-between w-full p-3">
+            {tableData && (
+              <p className="text-sm font-light text-gray-500">
+                {" "}
+                <span className="font-bold text-black">
+                  {startIndex}-{endIndex}
+                </span>{" "}
+                von <span className="font-bold text-black">{totalItems}</span>
+              </p>
             )}
 
-            {startPage > 2 && (
-              <span className="inline-flex items-center py-2 px-3 text-sm font-medium text-gray-500 bg-white rounded-sm">
-                ...
-              </span>
-            )}
-
-            {Array.from({ length: endPage - startPage + 1 }, (_, index) => (
+            {/* Pagination */}
+            <div className="flex justify-end border border-gray-200 rounded-md w-auto">
               <button
-                key={startPage + index}
-                onClick={() => handlePageChange(startPage + index)}
+                onClick={() => handlePageChange(currentPage - 1)}
                 className={`inline-flex items-center py-2 px-3 text-sm font-medium rounded-sm ${
-                  currentPage === startPage + index
-                    ? "text-primary bg-[#CFF4FB] hover:bg-primary-300"
-                    : "text-gray-500 bg-white hover:bg-gray-100"
+                  currentPage === 1
+                    ? "text-gray-300 cursor-not-allowed"
+                    : "text-primary bg-[#CFF4FB] hover:bg-primary-300"
                 }`}
+                disabled={currentPage === 1}
               >
-                {startPage + index}
+                <IoChevronBackOutline />
               </button>
-            ))}
 
-            {endPage < totalPages - 1 && (
-              <span className="inline-flex items-center py-2 px-3 text-sm font-medium text-gray-500 bg-white rounded-sm">
-                ...
-              </span>
-            )}
+              {startPage > 1 && (
+                <button
+                  onClick={() => handlePageChange(1)}
+                  className="inline-flex items-center py-2 px-3 text-sm font-medium text-gray-500 bg-white rounded-sm hover:bg-gray-100"
+                >
+                  1
+                </button>
+              )}
 
-            {endPage < totalPages && (
+              {startPage > 2 && (
+                <span className="inline-flex items-center py-2 px-3 text-sm font-medium text-gray-500 bg-white rounded-sm">
+                  ...
+                </span>
+              )}
+
+              {Array.from({ length: endPage - startPage + 1 }, (_, index) => (
+                <button
+                  key={startPage + index}
+                  onClick={() => handlePageChange(startPage + index)}
+                  className={`inline-flex items-center py-2 px-3 text-sm font-medium rounded-sm ${
+                    currentPage === startPage + index
+                      ? "text-primary bg-[#CFF4FB] hover:bg-primary-300"
+                      : "text-gray-500 bg-white hover:bg-gray-100"
+                  }`}
+                >
+                  {startPage + index}
+                </button>
+              ))}
+
+              {endPage < totalPages - 1 && (
+                <span className="inline-flex items-center py-2 px-3 text-sm font-medium text-gray-500 bg-white rounded-sm">
+                  ...
+                </span>
+              )}
+
+              {endPage < totalPages && (
+                <button
+                  onClick={() => handlePageChange(totalPages)}
+                  className={`inline-flex items-center py-2 px-3 text-sm font-medium rounded-sm ${
+                    currentPage === totalPages
+                      ? "text-gray-300 cursor-not-allowed"
+                      : "text-gray-500 bg-white hover:bg-gray-100"
+                  }`}
+                  disabled={currentPage === totalPages}
+                >
+                  {totalPages}
+                </button>
+              )}
+
               <button
-                onClick={() => handlePageChange(totalPages)}
+                onClick={() => handlePageChange(currentPage + 1)}
                 className={`inline-flex items-center py-2 px-3 text-sm font-medium rounded-sm ${
                   currentPage === totalPages
                     ? "text-gray-300 cursor-not-allowed"
-                    : "text-gray-500 bg-white hover:bg-gray-100"
+                    : "text-primary bg-[#CFF4FB] hover:bg-primary-300"
                 }`}
                 disabled={currentPage === totalPages}
               >
-                {totalPages}
+                <IoChevronForwardOutline />
               </button>
-            )}
-
-            <button
-              onClick={() => handlePageChange(currentPage + 1)}
-              className={`inline-flex items-center py-2 px-3 text-sm font-medium rounded-sm ${
-                currentPage === totalPages
-                  ? "text-gray-300 cursor-not-allowed"
-                  : "text-primary bg-[#CFF4FB] hover:bg-primary-300"
-              }`}
-              disabled={currentPage === totalPages}
-            >
-              <IoChevronForwardOutline />
-            </button>
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );
