@@ -174,27 +174,7 @@ function HeatingScheduleTable({ locationDetails, props }) {
       }
     }
   }, [zoomLevel]);
-
-  function overrideTranslateX(element, newX) {
-    const transform = window.getComputedStyle(element).transform;
   
-    if (transform && transform !== 'none') {
-      // Extract matrix values from the transform
-      const matrix = new DOMMatrix(transform);
-      const currentY = matrix.m42; // m42 is translateY in the matrix
-  
-      // Apply your custom X value and retain the Y value from the library
-      element.style.transform = `translate(${newX}px, ${currentY}px)`;
-    } else {
-      // If no transform is applied yet, just set the new X value
-      element.style.transform = `translate(${newX}px, 0px)`;
-    }
-  }
-  
-  // Example usage: Override translateX on all elements with the class 'box'
-  document.querySelectorAll('.layout .box').forEach(box => {
-    overrideTranslateX(box, 0); // Set translateX to 100px
-  });
 
   return (
     <div
@@ -272,7 +252,8 @@ function HeatingScheduleTable({ locationDetails, props }) {
                   margin: "0 ",
                   position: "relative",
                   zIndex: "10",
-                  marginTop:"10px"
+                  marginLeft:"-6px",
+                  marginRight:"6px"
                 }}
               >
                 <GridLayout

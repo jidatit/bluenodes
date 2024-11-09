@@ -195,6 +195,10 @@ function HeatingScheduleTableStatic({ locationDetails, props }) {
   document.querySelectorAll('.layout .box').forEach(box => {
     overrideTranslateX(box, 0); // Set translateX to 100px
   });
+  // Example usage: Override translateX on all elements with the class 'box'
+  document.querySelectorAll('.react-grid-layout .react-grid-item').forEach(box => {
+    overrideTranslateX(box, 0); // Set translateX to 100px
+  });
 
   return (
     <div

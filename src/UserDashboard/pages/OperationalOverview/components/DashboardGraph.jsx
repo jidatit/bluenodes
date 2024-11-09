@@ -88,7 +88,7 @@ const Dashboard = (roomId) => {
 
     tooltip: {
       x: {
-        format: "dd.MM-HH:mm",
+        format: "dd.MM HH:mm",
         style: { fontFamily: "Inter, sans-serif" },
       },
     },
@@ -447,7 +447,7 @@ const Dashboard = (roomId) => {
         show: true,
         type: "datetime",
 
-        format: "dd.MM-HH:mm",
+        format: "dd.MM HH:mm",
       },
     },
     legend: {

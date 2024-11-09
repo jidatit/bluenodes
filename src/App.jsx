@@ -10,7 +10,7 @@ import Signuppage from "./Auth/SignupPage";
 import ALayout from "./Auth/ALayout";
 import { AuthProvider } from "./AuthContext";
 import Onboarding from "./UserDashboard/pages/OnBoarding";
-const STAGE = import.meta.env.VITE_STAGE;
+const STAGE = import.meta.env.VITE_APP_STAGE;
 const App = () => (
   <AuthProvider>
     <BrowserRouter>

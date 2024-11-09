@@ -20,7 +20,7 @@ import axios from "axios";
 import ApiUrls from "../../globals/apiURL";
 import GetStartedCard from "./GetStartedCard";
 import CompactGetStartedCard from "./GetStartedCard";
-const STAGE = import.meta.env.VITE_STAGE;
+const STAGE = import.meta.env.VITE_APP_STAGE;
 const user = {
   name: "Bonnie Green",
   email: "name@company.com",
