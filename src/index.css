@@ -12,20 +12,57 @@
   width: 100% !important;
 }
 
+.skeleton-chart {
+  width: 100%;
+  height: 370px;
+  background-color: #e0e0e0;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+.skeleton-title {
+  width: 30%;
+  height: 20px;
+  background-color: #d1d5db;
+  border-radius: 4px;
+  margin-bottom: 16px;
+}
+
+.skeleton-body {
+  flex: 1;
+  background-color: #d1d5db;
+  border-radius: 8px;
+}
+
+@keyframes pulse {
+  0% {
+    background-color: #e0e0e0;
+  }
+  50% {
+    background-color: #f3f4f6;
+  }
+  100% {
+    background-color: #e0e0e0;
+  }
+}
+
 .react-grid-item > .react-resizable-handle::after {
   display: none;
 }
 .apexcharts-tooltip-text-y-label {
-  fill: #6B7280;
-  color: #6B7280;
+  fill: #6b7280;
+  color: #6b7280;
   font-weight: 400;
   font-family: "Inter", sans-serif;
   line-height: 12px;
   font-size: 14px;
 }
 .apexcharts-tooltip-text-y-value {
-  fill: #11192B;
-  color: #11192B;
+  fill: #11192b;
+  color: #11192b;
   font-family: "Inter", sans-serif;
   line-height: 14px;
   font-size: 14px;
@@ -45,13 +82,13 @@
   font-weight: 400;
   font-size: 14px;
 }
-.apexcharts-tooltip-title
-{ font-family: "Inter", sans-serif;
+.apexcharts-tooltip-title {
+  font-family: "Inter", sans-serif;
 
-font-weight: 400;
-font-size: 12px;
-fill: #6B7280;
-color: #6B7280;
+  font-weight: 400;
+  font-size: 12px;
+  fill: #6b7280;
+  color: #6b7280;
 }
 .apexcharts-tooltip-text-z-label {
   fill: #6b7280;

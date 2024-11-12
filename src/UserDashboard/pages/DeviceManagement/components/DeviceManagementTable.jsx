@@ -437,21 +437,21 @@ const DeviceManagementTable = () => {
       locations
     )
       .then((data) => {
-        setTotalRows(data.count);
+        setTotalRows(data?.count);
 
-        // Sorting tableData by roomName alphabetically, handling null values
-        const sortedData = data.rows.sort((a, b) => {
-          if (!a.roomName) return 1;
-          if (!b.roomName) return -1;
+        // // Sorting tableData by roomName alphabetically, handling null values
+        // const sortedData = data.rows.sort((a, b) => {
+        //   if (!a.roomName) return 1;
+        //   if (!b.roomName) return -1;
 
-          // Compare roomName in a case-insensitive manner
-          return a.roomName.localeCompare(b.roomName, undefined, {
-            sensitivity: "base",
-          });
-        });
+        //   // Compare roomName in a case-insensitive manner
+        //   return a.roomName.localeCompare(b.roomName, undefined, {
+        //     sensitivity: "base",
+        //   });
+        // });
 
         // Set sorted data to the table
-        setTableData(sortedData);
+        setTableData(data?.rows);
         setLoading(false);
       })
       .catch((error) => {
