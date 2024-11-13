@@ -54,6 +54,9 @@ const Dashboard = (roomId) => {
       toolbar: { show: false },
       zoom: { enabled: false },
       fontFamily: "Inter, sans-serif",
+      animations: {
+        enabled: false,
+      },
     },
     dataLabels: { enabled: false },
     stroke: { width: 2 },
@@ -108,7 +111,162 @@ const Dashboard = (roomId) => {
     },
   };
 
-  //FORMATIING THE humidityData here data here POSTION DATA HERE
+  // //FORMATIING THE humidityData here data here POSTION DATA HERE
+  // const fetchHumidityData = async () => {
+  //   try {
+  //     const url = ApiUrls.SMARTHEATING_CHART.ROOM_HUMIDITY(
+  //       roomId.roomId,
+  //       dateFrom,
+  //       dateTo
+  //     );
+  //     const response = await axios.get(`${ApiUrls.BASE_URL}${url}`);
+  //     setHumidityData(response.data);
+  //   } catch (error) {
+  //     console.error("Error fetching humidity data:", error);
+  //   }
+  // };
+
+  // const convertUTCToGermanTime = (utcDateTimeString) => {
+  //   const date = new Date(utcDateTimeString);
+
+  //   // Set options for the date format in German without hour and seconds
+  //   const options = {
+  //     timeZone: "Europe/Berlin",
+  //     year: "numeric",
+  //     month: "2-digit",
+  //     day: "2-digit",
+  //     hour: "2-digit",
+  //     minute: "2-digit",
+  //     second: "2-digit",
+  //     hour12: false,
+  //   };
+
+  //   // Use Intl.DateTimeFormat to format the date to German
+  //   const dateFormatter = new Intl.DateTimeFormat("de-DE", options);
+  //   return dateFormatter.format(date); // Format as "dd.mm.yyyy"
+  // };
+
+  // const formatHumidityData = (data) => {
+  //   if (data.length === 0) return { formattedData: [], min: 0, max: 100 };
+
+  //   const formattedData = data.map((item) => {
+  //     const date = new Date(item.createdAt);
+  //     const localDate = new Date(
+  //       date.getTime() - date.getTimezoneOffset() * 60000
+  //     );
+
+  //     return {
+  //       x: localDate.toISOString(),
+  //       y: item.humidity,
+  //       timestamp: date.getTime(),
+  //     };
+  //   });
+
+  //   const humidityValues = formattedData.map((item) => item.y);
+  //   const minHumidity = Math.min(...humidityValues);
+  //   const maxHumidity = Math.max(...humidityValues);
+  //   const adjustedMin = Math.max(0, Math.floor((minHumidity - 5) / 5) * 5);
+  //   const adjustedMax = Math.min(100, Math.ceil((maxHumidity + 5) / 5) * 5);
+
+  //   const allData = [...humidityData];
+  //   const startTime = new Date(
+  //     Math.min(...allData.map((item) => new Date(item.createdAt).getTime()))
+  //   );
+  //   const endTime = new Date(
+  //     Math.max(...allData.map((item) => new Date(item.createdAt).getTime()))
+  //   );
+
+  //   const timeDifference = endTime - startTime;
+  //   let sequence = "";
+
+  //   const oneDay = 24 * 60 * 60 * 1000;
+  //   const oneWeek = 7 * oneDay;
+
+  //   const monthsDifference =
+  //     (endTime.getFullYear() - startTime.getFullYear()) * 12 +
+  //     (endTime.getMonth() - startTime.getMonth());
+
+  //   if (timeDifference < oneDay) {
+  //     sequence = "HH:mm";
+  //   } else if (timeDifference < oneWeek) {
+  //     sequence = "dd.MM";
+  //   } else if (monthsDifference < 12) {
+  //     sequence = "dd.MM.yy";
+  //   } else {
+  //     sequence = "dd.MM.yy";
+  //   }
+
+  //   return {
+  //     sequence: sequence,
+  //     formattedData,
+  //     min: adjustedMin,
+  //     max: adjustedMax,
+  //     tickAmount: Math.min(10, adjustedMax - adjustedMin),
+  //   };
+  // };
+
+  // const { formattedData, min, max, sequence } =
+  //   formatHumidityData(humidityData);
+
+  // const humidityOptions = {
+  //   ...commonOptions,
+  //   chart: {
+  //     ...commonOptions.chart,
+  //     type: "area",
+  //   },
+  //   title: {
+  //     text: "Luftfeuchtigkeit",
+  //     align: "left",
+  //     style: {
+  //       fontFamily: "Inter, sans-serif",
+  //       fontSize: "14px",
+  //       fontWeight: 500,
+  //       lineHeight: "21px",
+  //       textAlign: "left",
+  //       fill: "#11192B",
+  //     },
+  //   },
+  //   colors: ["#0CB4D5"],
+  //   fill: {
+  //     type: "gradient",
+  //     gradient: {
+  //       shadeIntensity: 1,
+  //       opacityFrom: 0.3,
+  //       opacityTo: 0.3,
+  //       stops: [0, 80, 100],
+  //     },
+  //   },
+  //   series: [
+  //     {
+  //       name: "Humidity",
+  //       data: formattedData,
+  //     },
+  //   ],
+  //   xaxis: {
+  //     type: "datetime",
+  //     labels: {
+  //       format: sequence,
+  //     },
+  //     tooltip: {
+  //       enabled: false,
+  //     },
+  //   },
+  //   yaxis: {
+  //     min: min,
+  //     max: max,
+  //     labels: {
+  //       formatter: (val) => `${val}%`,
+  //     },
+  //   },
+  //   grid: {
+  //     borderColor: "#e0e0e0",
+  //     strokeDashArray: 5,
+  //     padding: {
+  //       top: 10,
+  //       bottom: 10,
+  //     },
+  //   },
+  // };
   const fetchHumidityData = async () => {
     try {
       const url = ApiUrls.SMARTHEATING_CHART.ROOM_HUMIDITY(
@@ -122,88 +280,6 @@ const Dashboard = (roomId) => {
       console.error("Error fetching humidity data:", error);
     }
   };
-
-  const convertUTCToGermanTime = (utcDateTimeString) => {
-    const date = new Date(utcDateTimeString);
-
-    // Set options for the date format in German without hour and seconds
-    const options = {
-      timeZone: "Europe/Berlin",
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit",
-      hour12: false,
-    };
-
-    // Use Intl.DateTimeFormat to format the date to German
-    const dateFormatter = new Intl.DateTimeFormat("de-DE", options);
-    return dateFormatter.format(date); // Format as "dd.mm.yyyy"
-  };
-
-  const formatHumidityData = (data) => {
-    if (data.length === 0) return { formattedData: [], min: 0, max: 100 };
-
-    const formattedData = data.map((item) => {
-      const date = new Date(item.createdAt);
-      const localDate = new Date(
-        date.getTime() - date.getTimezoneOffset() * 60000
-      );
-
-      return {
-        x: localDate.toISOString(),
-        y: item.humidity,
-        timestamp: date.getTime(),
-      };
-    });
-
-    const humidityValues = formattedData.map((item) => item.y);
-    const minHumidity = Math.min(...humidityValues);
-    const maxHumidity = Math.max(...humidityValues);
-    const adjustedMin = Math.max(0, Math.floor((minHumidity - 5) / 5) * 5);
-    const adjustedMax = Math.min(100, Math.ceil((maxHumidity + 5) / 5) * 5);
-
-    const allData = [...humidityData];
-    const startTime = new Date(
-      Math.min(...allData.map((item) => new Date(item.createdAt).getTime()))
-    );
-    const endTime = new Date(
-      Math.max(...allData.map((item) => new Date(item.createdAt).getTime()))
-    );
-
-    const timeDifference = endTime - startTime;
-    let sequence = "";
-
-    const oneDay = 24 * 60 * 60 * 1000;
-    const oneWeek = 7 * oneDay;
-
-    const monthsDifference =
-      (endTime.getFullYear() - startTime.getFullYear()) * 12 +
-      (endTime.getMonth() - startTime.getMonth());
-
-    if (timeDifference < oneDay) {
-      sequence = "HH:mm";
-    } else if (timeDifference < oneWeek) {
-      sequence = "dd.MM";
-    } else if (monthsDifference < 12) {
-      sequence = "dd.MM.yy";
-    } else {
-      sequence = "dd.MM.yy";
-    }
-
-    return {
-      sequence: sequence,
-      formattedData,
-      min: adjustedMin,
-      max: adjustedMax,
-      tickAmount: Math.min(10, adjustedMax - adjustedMin),
-    };
-  };
-
-  const { formattedData, min, max, sequence } =
-    formatHumidityData(humidityData);
 
   const humidityOptions = {
     ...commonOptions,
@@ -236,21 +312,74 @@ const Dashboard = (roomId) => {
     series: [
       {
         name: "Humidity",
-        data: formattedData,
+        data: humidityData.map((item) => {
+          const date = new Date(item.createdAt);
+          const localDate = new Date(
+            date.getTime() - date.getTimezoneOffset() * 60000
+          );
+          return {
+            x: localDate.toISOString(),
+            y: item.humidity,
+            timestamp: date.getTime(),
+          };
+        }),
       },
     ],
     xaxis: {
       type: "datetime",
       labels: {
-        format: sequence,
+        format: (() => {
+          if (humidityData.length === 0) return "HH:mm";
+
+          const startTime = new Date(
+            Math.min(
+              ...humidityData.map((item) => new Date(item.createdAt).getTime())
+            )
+          );
+          const endTime = new Date(
+            Math.max(
+              ...humidityData.map((item) => new Date(item.createdAt).getTime())
+            )
+          );
+
+          const timeDifference = endTime - startTime;
+          const oneDay = 24 * 60 * 60 * 1000;
+          const oneWeek = 7 * oneDay;
+
+          const monthsDifference =
+            (endTime.getFullYear() - startTime.getFullYear()) * 12 +
+            (endTime.getMonth() - startTime.getMonth());
+
+          if (timeDifference < oneDay) {
+            return "HH:mm";
+          } else if (timeDifference < oneWeek) {
+            return "dd.MM";
+          } else if (monthsDifference < 12) {
+            return "dd.MM.yy";
+          } else {
+            return "dd.MM.yy";
+          }
+        })(),
       },
       tooltip: {
         enabled: false,
       },
     },
     yaxis: {
-      min: min,
-      max: max,
+      min: (() => {
+        if (humidityData.length === 0) return 0;
+        const minHumidity = Math.min(
+          ...humidityData.map((item) => item.humidity)
+        );
+        return Math.max(0, Math.floor((minHumidity - 5) / 5) * 5);
+      })(),
+      max: (() => {
+        if (humidityData.length === 0) return 100;
+        const maxHumidity = Math.max(
+          ...humidityData.map((item) => item.humidity)
+        );
+        return Math.min(100, Math.ceil((maxHumidity + 5) / 5) * 5);
+      })(),
       labels: {
         formatter: (val) => `${val}%`,
       },
