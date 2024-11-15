@@ -496,7 +496,7 @@ const EventLogsTable = () => {
 
   const renderSpecificContent = () => {
     if (browserName === 'Microsoft Edge' && parseInt(browserVersion) < 105) {
-      return <div>Your browser version is outdated. Please update to improve performance.</div>;
+      return <div>Your browser version is {browserVersion}. Please update to improve performance.</div>;
     }
     if (browserName === 'Chrome') {
       return <div>Welcome Chrome user! Enjoy your browsing experience.</div>;
