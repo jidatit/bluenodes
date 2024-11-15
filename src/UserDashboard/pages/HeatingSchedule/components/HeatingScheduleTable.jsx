@@ -188,7 +188,7 @@ function HeatingScheduleTable({ locationDetails, props }) {
             display: "flex",
             justifyContent: "flex-start",
             gap: "12px",
-            marginLeft: "55px",
+            marginLeft: "54px",
             alignItems: "center",
             marginBottom: "10px",
             zIndex: "1000",
