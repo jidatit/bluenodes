@@ -16,6 +16,8 @@ import "../../../../index.css";
 import formatTimestamp from "../../../../utils/formatTimeStamp";
 import { CiCircleRemove } from "react-icons/ci";
 import SkeletonTable from "./SkeltonTable";
+import Bowser from 'bowser';
+
 const EventLogsTable = () => {
   const [selectedEventFilters, setSelectedEventFilters] = useState(null);
   const [ApiLocationsToBeSend, setApiLocationsToBeSend] = useState(null);
@@ -488,11 +490,26 @@ const EventLogsTable = () => {
     setDateOpen(value);
   };
 
+  const browser = Bowser.getParser(window.navigator.userAgent);
+  const browserName = browser.getBrowserName();
+  const browserVersion = browser.getBrowserVersion();
+
+  const renderSpecificContent = () => {
+    if (browserName === 'Microsoft Edge' && parseInt(browserVersion) < 105) {
+      return <div>Your browser version is outdated. Please update to improve performance.</div>;
+    }
+    if (browserName === 'Chrome') {
+      return <div>Welcome Chrome user! Enjoy your browsing experience.</div>;
+    }
+    return <div>Welcome! Your browser is {browserName} version {browserVersion}.</div>;
+  };
+
   return (
     <div className=" flex flex-col gap-4 w-full overflow-hidden">
       <div className="flex flex-col justify-center items-start w-full">
         <h1 className=" font-[500] text-lg text-gray-900">Event Übersicht</h1>
       </div>
+      <div>{renderSpecificContent()}</div>
       <div
         className={`relative ${
           dateOpen && "min-h-[327px]"
