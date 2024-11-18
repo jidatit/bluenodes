@@ -325,7 +325,7 @@ const TemperatureSchedule = ({
                 >
                   <div className="flex items-center gap-2 text-xl ">
                     <img src={thermometer} alt="Thermometer" />
-                    <p className="text-sm w-[80px]">
+                    <p className="text-sm w-[130px]">
                       {room.roomTemperature
                         ? `${room.roomTemperature.toFixed(1)}°C`
                         : "nicht vorhanden"}
@@ -333,7 +333,7 @@ const TemperatureSchedule = ({
                   </div>
                 </Tooltip>
 
-                <Tooltip
+                {/* <Tooltip
                   className={`px-2 py-1.5 text-center max-w-xs`}
                   content={`Fenster ist ${room.windowOpen ? "offen" : "zu"}`}
                   style="light"
@@ -344,7 +344,7 @@ const TemperatureSchedule = ({
                       {room.windowOpen ? "offen" : "zu"}
                     </p>
                   </div>
-                </Tooltip>
+                </Tooltip> */}
               </div>
 
               <div className="w-auto 2xl:w-[30%] flex justify-end">

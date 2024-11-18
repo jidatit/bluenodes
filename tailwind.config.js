@@ -1,14 +1,9 @@
-// Import dependencies using ES modules
-import flowbite from 'flowbite/plugin';
-import autoprefixer from 'autoprefixer';
+// eslint-disable-next-line no-undef
+const flowbite = require("flowbite-react/tailwind");
 
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: [
-    "./index.html", 
-    "./src/**/*.{js,jsx,ts,tsx}", 
-    "node_modules/flowbite-react/**/*.{js,jsx,ts,tsx}" // Adjust path for Flowbite components
-  ],
+  content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}", flowbite.content()],
   theme: {
     extend: {
       fontFamily: {
@@ -24,11 +19,12 @@ export default {
         },
         gray: {
           400: "#9CA3AF",
-          900: "#111928", // Custom gray-900 color
+          900: "#111928", // your custom gray-900 color
         },
         green: {
           500: "#0E9F6E",
         },
+        // Add more custom colors here
       },
       keyframes: {
         slideIn: {
@@ -46,8 +42,5 @@ export default {
       },
     },
   },
-  plugins: [
-    flowbite,
-    autoprefixer
-  ],
+  plugins: [flowbite.plugin()],
 };
