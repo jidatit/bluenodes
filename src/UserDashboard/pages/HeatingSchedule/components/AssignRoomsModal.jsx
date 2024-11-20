@@ -511,7 +511,7 @@ function AssignRoomsModal({
                                       {filter === "Selected" ||
                                       filter === "Assigned"
                                         ? "Nichts ausgewählt"
-                                        : "Alle Räume ausgewählt"}
+                                        : "Alle Räume bereits zugewiesen"}
                                     </p>
                                   ) : (
                                     <Table theme={customTableTheme} hoverable>
@@ -658,7 +658,7 @@ function AssignRoomsModal({
                                         {filter === "Selected" ||
                                         filter === "Assigned"
                                           ? "Nichts ausgewählt"
-                                          : "Alle Räume ausgewählt"}
+                                          : "Alle Räume bereits zugewiesen"}
                                       </p>
                                     ) : (
                                       <Table theme={customTableTheme} hoverable>

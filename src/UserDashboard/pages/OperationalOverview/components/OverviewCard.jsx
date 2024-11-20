@@ -202,7 +202,7 @@ const DeleteModal = ({ openDeleteModal, setOpenDeleteModal, handleDelete }) => {
             <Button color="gray" onClick={() => setOpenDeleteModal(false)}>
               Abbrechen
             </Button>
-            <Button color="failure" onClick={handleDelete}>
+            <Button className="bg-primary" onClick={handleDelete}>
               Löschen
             </Button>
           </div>

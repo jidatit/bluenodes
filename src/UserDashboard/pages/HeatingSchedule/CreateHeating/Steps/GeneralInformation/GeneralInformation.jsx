@@ -36,7 +36,7 @@ function GeneralInformation({
               onBlur={checkName}
               sizing="sm"
               placeholder="Namen eingeben"
-              className="w-[250px]"
+              className="w-[250px] text-sm"
               onChange={handleChange}
               required
               color={errorMessages.programName ? "failure" : undefined}

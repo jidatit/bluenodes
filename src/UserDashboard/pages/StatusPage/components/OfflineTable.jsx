@@ -675,7 +675,7 @@ const OfflineTable = () => {
                         content={
                           item?.batteryLevel
                             ? getBatteryLevelText(item?.batteryLevel)
-                            : "No Payload"
+                            : "Unbekannt"
                         }
                         style="light"
                         animation="duration-500"

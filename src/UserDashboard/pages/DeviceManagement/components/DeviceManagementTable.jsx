@@ -954,7 +954,7 @@ const DeviceManagementTable = () => {
                         content={
                           item?.batteryLevel
                             ? getBatteryLevelText(item?.batteryLevel)
-                            : "No Payload"
+                            : "Unbekannt"
                         }
                         style="light"
                         animation="duration-500"
@@ -1203,7 +1203,7 @@ const DeviceManagementTable = () => {
                                 deviceData?.movementDetected === undefined &&
                                 deviceData?.error === undefined &&
                                 deviceData?.timestamp === undefined
-                                  ? "No Payload"
+                                  ? "Unbekannt"
                                   : deviceData?.timestamp
                                   ? formatTimestamp(deviceData.timestamp)
                                   : "--"}
@@ -1402,7 +1402,7 @@ const DeviceManagementTable = () => {
                                 deviceData?.movementDetected === undefined &&
                                 deviceData?.error === undefined &&
                                 deviceData?.timestamp === undefined
-                                  ? "No Payload"
+                                  ? "Unbekannt"
                                   : deviceData?.timestamp
                                   ? formatTimestamp(deviceData.timestamp)
                                   : "--"}

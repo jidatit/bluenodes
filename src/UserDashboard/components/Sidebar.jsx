@@ -203,7 +203,6 @@ const BottomMenu = ({ isCollapsed, isHovered }) => {
       )}
       <div className="h-px bg-gray-200 my-1" />
       <div className="flex items-center justify-between w-full ">
-        <img src={user.avatar} />
         <div
           className={classNames(" flex flex-col", {
             "hidden ": isCollapsed, // Hide button when sidebar is collapsed
@@ -265,7 +264,7 @@ const OptionsDropdown = () => {
           className="flex flex-row items-center justify-center gap-1"
         >
           <IoLogOut size={20} />
-          Sign out
+          Ausloggen
         </Dropdown.Item>
       </Dropdown>
       <ConfirmSignOutModal
@@ -300,7 +299,7 @@ const ConfirmSignOutModal = ({
             <Button color="gray" onClick={() => setIsSignoutModalOpen(false)}>
               Abbrechen
             </Button>
-            <Button color="failure" onClick={handleSignout}>
+            <Button className="bg-primary" onClick={handleSignout}>
               Ausloggen
             </Button>
           </div>

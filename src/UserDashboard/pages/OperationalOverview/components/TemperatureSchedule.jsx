@@ -307,53 +307,37 @@ const TemperatureSchedule = ({
           >
             <div className="flex flex-wrap items-center justify-between gap-2 mb-12 text-gray-900 md:gap-4 2xl:mb-10">
               <div className="flex flex-wrap items-center gap-2 w-full 2xl:w-[22%]  2xl:mr-0 ">
-                <Tooltip content={room.name} style="light">
+
                   <span className="text-sm font-bold block w-full overflow-hidden text-ellipsis whitespace-nowrap">
                     {room.name && room.name.length > 40
                       ? room.name.slice(0, 40) + "..."
                       : room.name}
                   </span>
-                </Tooltip>
+
               </div>
               <div className=" flex  items-center gap-4 justify-start w-auto 2xl:w-[25%] 2xl:gap-10">
-                <Tooltip
-                  className={`px-2 py-1.5 text-center max-w-xs`}
-                  content={`Raumtemperatur: ${
-                    room.roomTemperature ? `${room.roomTemperature}°C` : "Unset"
-                  }`}
-                  style="light"
-                >
+
                   <div className="flex items-center gap-2 text-xl ">
                     <img src={thermometer} alt="Thermometer" />
-                    <p className="text-sm w-[130px]">
+                    <p className="text-sm w-[80px]">
                       {room.roomTemperature
                         ? `${room.roomTemperature.toFixed(1)}°C`
                         : "nicht vorhanden"}
                     </p>
                   </div>
-                </Tooltip>
 
-                {/* <Tooltip
-                  className={`px-2 py-1.5 text-center max-w-xs`}
-                  content={`Fenster ist ${room.windowOpen ? "offen" : "zu"}`}
-                  style="light"
-                >
+
+
                   <div className="flex items-center w-full gap-2 text-xl ">
-                    <img src={windowicon} alt="Window" />
+                    {/*<img src={windowicon} alt="Window" />
                     <p className="text-sm w-[45px]">
                       {room.windowOpen ? "offen" : "zu"}
-                    </p>
+                    </p>*/}
                   </div>
-                </Tooltip> */}
               </div>
 
               <div className="w-auto 2xl:w-[30%] flex justify-end">
-                <Tooltip
-                  content={
-                    scheduleDetails[index]?.schedule?.templateName || "None"
-                  }
-                  style="light"
-                >
+
                   <p
                     className="text-sm text-primary"
                     style={{
@@ -371,7 +355,7 @@ const TemperatureSchedule = ({
                         : scheduleDetails[index].schedule.templateName
                       : "None"}
                   </p>
-                </Tooltip>
+
               </div>
 
               <div className="flex items-center justify-end gap-4 text-sm xl:w-[20%] 2xl:w-[15%]">
@@ -395,11 +379,7 @@ const TemperatureSchedule = ({
                   Details öffnen
                 </Button>
 
-                <Tooltip
-                  className={`px-2 py-1.5 text-center whitespace-nowrap max-w-xs`}
-                  content={`Heizplan bearbeiten`}
-                  style="light"
-                >
+
                   <div>
                     <svg
                       onClick={() => {
@@ -427,7 +407,6 @@ const TemperatureSchedule = ({
                       />
                     </svg>
                   </div>
-                </Tooltip>
               </div>
             </div>
 
@@ -448,16 +427,12 @@ const TemperatureSchedule = ({
                           zIndex: "1", // Ensure dots are above the temperature line
                         }}
                       >
-                        <Tooltip
-                          className={`px-2 py-1.5 text-center w-full min-w-[170px] max-w-xs`}
-                          content={`Raumnutzer änderte Soll-Temperatur auf ${change.targetTemperature}°C`}
-                          style="light"
-                        >
+
                           <div
                             key={`dot-${index}`}
                             className="w-2 h-2 bg-gray-400 rounded-full"
                           />
-                        </Tooltip>
+
                       </div>
                     ))}
                   </div>
@@ -478,11 +453,7 @@ const TemperatureSchedule = ({
                       zIndex: "1", // Ensure dots are above the temperature line
                     }}
                   >
-                    <Tooltip
-                      className={`px-2 py-1.5 text-center w-full min-w-[170px] max-w-96`}
-                      content={`Soll-Temperatur: ${room.heatingSchedule.currentTargetTemperature.targetTemperature}°C`}
-                      style="light"
-                    >
+
                       <div className="flex flex-col items-center justify-center">
                         <div
                           key={`dot-${1}`}
@@ -496,7 +467,7 @@ const TemperatureSchedule = ({
                         </div>
                         <div className="w-[1px] h-[26px] bg-red-500"></div>
                       </div>
-                    </Tooltip>
+
                   </div>
                 )}
 

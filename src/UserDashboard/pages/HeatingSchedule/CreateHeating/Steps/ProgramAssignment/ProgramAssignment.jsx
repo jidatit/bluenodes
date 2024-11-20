@@ -448,7 +448,7 @@ const ProgramAssignment = ({
                               <p className="text-gray-500">
                                 {filter === "Selected" || filter === "Assigned"
                                   ? "Nichts ausgewählt"
-                                  : "Alle Räume ausgewählt"}
+                                  : "Alle Räume bereits zugewiesen"}
                               </p>
                             ) : (
                               <Table theme={customTableTheme} hoverable>
@@ -585,7 +585,7 @@ const ProgramAssignment = ({
                                   {filter === "Selected" ||
                                   filter === "Assigned"
                                     ? "Nichts ausgewählt"
-                                    : "Alle Räume ausgewählt"}
+                                    : "Alle Räume bereits zugewiesen"}
                                 </p>
                               ) : (
                                 <Table theme={customTableTheme} hoverable>

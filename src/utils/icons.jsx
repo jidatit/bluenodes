@@ -5,4 +5,4 @@ import { MdOutlineBatteryUnknown } from "react-icons/md";
 export const BatteryUnknownIcon = () => (
   <MdOutlineBatteryUnknown className="w-6 h-6 text-gray-400" />
 );
-export const NoText = "No Payload";
+export const NoText = "Unbekannt";

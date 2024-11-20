@@ -113,9 +113,9 @@ function MainPage() {
                 </Tooltip>
               )}
             </h2>
-            <p className="text-sm text-gray-500">
+            {/*<p className="text-sm text-gray-500">
               Klicken Sie auf eine Kachel, um Details anzuzeigen.
-            </p>
+            </p>*/}
           </div>
           <div className="h-[100px]">
             {!dataLoaded && showSkeleton ? (
