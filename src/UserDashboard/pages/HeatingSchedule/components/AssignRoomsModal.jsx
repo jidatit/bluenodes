@@ -191,20 +191,28 @@ function AssignRoomsModal({
   const [select, setselect] = useState(true);
   const handleSelectAllRooms = (buildingId, floorId, isSelected) => {
     const newData = _.cloneDeep(firstData); // Reference original data from API
-    const buildingInNewData = newData.buildings.find((b) => b.id === buildingId);
-    const floorInNewData = buildingInNewData.floors.find((f) => f.id === floorId);
-  
+    const buildingInNewData = newData.buildings.find(
+      (b) => b.id === buildingId
+    );
+    const floorInNewData = buildingInNewData.floors.find(
+      (f) => f.id === floorId
+    );
+
     // Clone current data to selectively update
     const updatedData = _.cloneDeep(data);
-    const buildingInData = updatedData.buildings.find((b) => b.id === buildingId);
+    const buildingInData = updatedData.buildings.find(
+      (b) => b.id === buildingId
+    );
     const floorInData = buildingInData.floors.find((f) => f.id === floorId);
-  
+
     let count = floorInNewData.roomsAssigned;
-  
+
     // Iterate through rooms and apply changes based on selection
     floorInNewData.rooms.forEach((newRoom) => {
-      const roomInData = floorInData.rooms.find((room) => room.id === newRoom.id);
-  
+      const roomInData = floorInData.rooms.find(
+        (room) => room.id === newRoom.id
+      );
+
       // Update room state based on selection or deselection
       roomInData.assigned = isSelected;
       if (isSelected) {
@@ -212,32 +220,35 @@ function AssignRoomsModal({
         roomInData.algorithmOn = formData.applyAlgorithm;
       } else {
         const defaultValues = defaultValuesMap[newRoom.id];
-  
+
         // Reset to defaults if deselected, adjusting count accordingly
         roomInData.programAssigned =
           defaultValues.programAssigned === program.templateName
             ? ""
             : defaultValues.programAssigned;
         roomInData.algorithmOn = defaultValues.algorithmOn;
-  
+
         if (defaultValues.programAssigned === program.templateName) {
           count -= 1; // Decrease count if deselecting a previously assigned room
         }
       }
     });
-  
+
     // Update floor assignment count
     const previouslyAssigned = floorInData.roomsAssigned;
-    const newlyAssigned = isSelected ? floorInNewData.totalRooms : count > 0 ? count : 0;
+    const newlyAssigned = isSelected
+      ? floorInNewData.totalRooms
+      : count > 0
+      ? count
+      : 0;
     floorInData.roomsAssigned = newlyAssigned;
-  
+
     // Update building assigned count based on floor change
     const difference = newlyAssigned - previouslyAssigned;
     buildingInData.roomsAssigned += difference;
-  
+
     setData(updatedData); // Set only the updated data sections
   };
-  
 
   const isAllRoomsSelected = (floor) => {
     return floor.rooms.every((room) => room.assigned);
@@ -401,7 +412,7 @@ function AssignRoomsModal({
                   <option value="Unassigned">Nicht zugewiesen</option>
                 </Select>
               </div>
-              <form
+              {/* <form
                 onSubmit={(e) => {
                   e.preventDefault();
                 }}
@@ -439,7 +450,7 @@ function AssignRoomsModal({
                     required
                   />
                 </div>
-              </form>
+              </form> */}
             </div>
             <div className=" flex items-center justify-between gap-2">
               <p className=" text-sm text-gray-500"></p>

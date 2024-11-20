@@ -112,7 +112,11 @@ const OverviewCard = ({ formData }) => {
                   <Accordion.Content className="rounded-lg p-[16px]">
                     <div className="flex flex-row items-start justify-between w-full gap-4">
                       <div className="flex flex-col items-start justify-start w-full">
-                        <Accordion className="w-full border-none" collapseAll>
+                        <Accordion
+                          className="w-full border-none"
+                          collapseAll
+                          alwaysOpen
+                        >
                           {formData.children.map((child, index) => (
                             <Accordion.Panel key={index}>
                               <Accordion.Title className="w-full relative p-2 mb-1 flex-row-reverse items-center justify-end gap-3 border-none hover:bg-white focus:ring-none focus:ring-white bg-white focus:bg-white outline-0 [&>h2]:w-full">
