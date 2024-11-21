@@ -138,9 +138,9 @@ function HeatingScheduleTable({ locationDetails, props }) {
           fontSize: "12px",
           marginBottom: (index + 1) % 4 === 0 ? "2px" : "0px", // Apply mb 2px on every 4th child
           marginTop: isLastChild
-            ? "-6px"
-            : (index + 1) % 4 === 0
             ? "-2px"
+            : (index + 1) % 4 === 0
+            ? "-0.128rem"
             : "0px", // Apply mt -6px for the last child
         }}
       >
@@ -188,7 +188,7 @@ function HeatingScheduleTable({ locationDetails, props }) {
             display: "flex",
             justifyContent: "flex-start",
             gap: "12px",
-            marginLeft: "54px",
+            marginLeft: "50px",
             alignItems: "center",
             marginBottom: "10px",
             zIndex: "1000",
@@ -252,8 +252,8 @@ function HeatingScheduleTable({ locationDetails, props }) {
                   margin: "0 ",
                   position: "relative",
                   zIndex: "10",
-                  marginLeft:"-6px",
-                  marginRight:"6px"
+                  marginLeft:"-7px",
+                  marginRight:"8px"
                 }}
               >
                 <GridLayout

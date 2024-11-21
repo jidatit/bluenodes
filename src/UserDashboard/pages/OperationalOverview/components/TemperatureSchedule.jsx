@@ -56,6 +56,7 @@ const updatedTemperatureData = temperatureData.map((data) => ({
 }));
 
 const parseTimeToPercentage = (timestamp) => {
+  
   let date;
 
   // Try to parse the timestamp directly
@@ -297,6 +298,42 @@ const TemperatureSchedule = ({
     return `${hours}:${minutes}`;
   };
 
+  const calculateDynamicRem = (timestamp) => {
+    let date;
+  
+    // Try to parse the timestamp
+    try {
+      date = new Date(timestamp);
+    } catch (e) {
+      return "0rem"; // Fallback to 0 rem if parsing fails
+    }
+  
+    // Check if the input is a valid date or time-only string
+    if (!isNaN(date.getTime())) {
+      // ISO 8601 timestamp or valid Date string
+      const hours = date.getUTCHours();
+      const minutes = date.getUTCMinutes();
+      const seconds = date.getUTCSeconds();
+      const totalHours = hours + minutes / 60 + seconds / 3600;
+      const maxRem = 5; // Define maximum rem value for 24 hours
+      const remValue = (totalHours / 24) * maxRem;
+      return `${remValue}rem`;
+    } else {
+      // Handle time-only string format (e.g., "23:59:00")
+      const [timeString] = timestamp.split("T"); // Remove date part if present
+      const [hours, minutes, seconds = "0"] = timeString.split(":").map(Number);
+  
+      if (isNaN(hours) || isNaN(minutes)) {
+        return "0rem";
+      }
+      const totalHours = hours + minutes / 60 + seconds / 3600;
+      const maxRem = 1.975; // Define maximum rem value for 24 hours
+      const remValue = (totalHours / 24) * maxRem;
+      return `${remValue}rem`;
+    }
+  };
+  
+
   return (
     <>
       {RoomsDetail && RoomsDetail.length > 0 ? (
@@ -448,7 +485,7 @@ const TemperatureSchedule = ({
                     style={{
                       left: `calc(${parseTimeToPercentage(
                         room.heatingSchedule.currentTargetTemperature.createdAt
-                      )}% - 0.575rem)`,
+                      )}% - ${calculateDynamicRem(room.heatingSchedule.currentTargetTemperature.createdAt)})`,
                       top: `-28px`,
                       zIndex: "1", // Ensure dots are above the temperature line
                     }}

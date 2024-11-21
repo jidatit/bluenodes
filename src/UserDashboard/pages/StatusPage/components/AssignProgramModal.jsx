@@ -347,7 +347,7 @@ const AssignProgramModal = ({
                 )
               ) : (
                 <Button className="bg-primary" onClick={handleDone}>
-                  Fertig
+                  Zuweisen
                 </Button>
               )}
               <Button

@@ -315,23 +315,7 @@ const ProgramAssignment = ({
           </Tooltip>
           Wählen Sie die Räume aus.
         </h3>
-        <div className="w-full flex justify-end">
-          {!viewAll ? (
-            <Button
-              onClick={handleViewSelected}
-              className=" hover:!bg-transparent hover:opacity-80 border-none text-primary bg-transparent pr-2 py-0 [&>*]:p-0 focus:ring-transparent"
-            >
-              Auswahl anzeigen
-            </Button>
-          ) : (
-            <Button
-              onClick={handleViewAll}
-              className=" hover:!bg-transparent hover:opacity-80 border-none text-primary bg-transparent pr-2 py-0 [&>*]:p-0 focus:ring-transparent"
-            >
-              Alle anzeigen
-            </Button>
-          )}
-        </div>
+
         {noRoomsError && error && (
           <div className="text-red-800 px-4 py-3 bg-[#FDF2F2] w-fit text-[16px] font-semibold flex items-center gap-2">
             <FaCircleCheck />
@@ -352,6 +336,23 @@ const ProgramAssignment = ({
             <option value="Assigned">Zugewiesen</option>
             <option value="Unassigned">Nicht zugewiesen</option>
           </Select>
+        </div>
+        <div className="w-fit flex justify-end">
+          {!viewAll ? (
+            <Button
+              onClick={handleViewSelected}
+              className=" hover:!bg-transparent hover:opacity-80 border-none text-primary bg-transparent pr-2 py-0 [&>*]:p-0 focus:ring-transparent"
+            >
+              Auswahl anzeigen
+            </Button>
+          ) : (
+            <Button
+              onClick={handleViewAll}
+              className=" hover:!bg-transparent hover:opacity-80 border-none text-primary bg-transparent pr-2 py-0 [&>*]:p-0 focus:ring-transparent"
+            >
+              Alle anzeigen
+            </Button>
+          )}
         </div>
         {/* <form
           onSubmit={(e) => {
@@ -393,7 +394,7 @@ const ProgramAssignment = ({
           </div>
         </form> */}
       </div>
-      <div className=" flex items-center justify-between gap-2">
+      <div className=" flex items-center justify-between gap-2 -mt-2">
         <p className=" text-sm text-gray-500"></p>
         <Button
           onClick={resetAssignments}

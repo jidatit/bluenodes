@@ -3,13 +3,13 @@ import customTheme from "../../HeatingSchedule/CreateHeating/ModalTheme";
 import { IoInformationCircleOutline } from "react-icons/io5";
 import { useEffect, useState } from "react";
 import HeatingScheduleComparison from "./HeatingScheduleComparison";
-import HeatingScheduleTableStatic from "../../HeatingSchedule/components/HeatingScheduleTableStatic";
 import { Spinner } from "flowbite-react";
 import axios from "axios";
 import ApiUrls from "../../../../globals/apiURL.js";
 import HeatingPlanOverview from "../../../../shared/components/HeatingPlanOverview.jsx";
 import Dashboard from "./DashboardGraph.jsx";
 import CustomTabs from "./Tabs.jsx";
+import HeatingScheduleTable from "../../HeatingSchedule/components/HeatingScheduleTable.jsx";
 
 export function ViewRoomScheduleModal({
   openModal,
@@ -63,7 +63,7 @@ export function ViewRoomScheduleModal({
                 {!isChecked ? (
                   <div className="max-h-[400px] overflow-y-auto overflow-x-hidden pr-2">
                     {locationDetails && (
-                      <HeatingScheduleTableStatic
+                      <HeatingScheduleTable
                         locationDetails={locationDetails}
                       />
                     )}
