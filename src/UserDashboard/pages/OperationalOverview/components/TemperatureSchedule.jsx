@@ -459,7 +459,7 @@ const TemperatureSchedule = ({
                         style={{
                           left: `calc(${parseTimeToPercentage(
                             change.createdAt
-                          )}% + 0.215rem)`,
+                          )}% - 0.35rem)`,
                           top: `-9px`,
                           zIndex: "1", // Ensure dots are above the temperature line
                         }}
@@ -469,12 +469,14 @@ const TemperatureSchedule = ({
                             key={`dot-${index}`}
                             className="w-2 h-2 bg-gray-400 rounded-full"
                           />
+                          {console.log(change.createdAt,"change.createdAt")}
 
                       </div>
                     ))}
                   </div>
                 </div>
               )}
+
             {room.heatingSchedule && room.heatingSchedule.currentDay ? (
               <div className="relative w-full px-4">
                 {/* marker */}
